@@ -1,6 +1,6 @@
 const chai = require("chai");
 const path = require("path");
-const zkSnark = require("zksnark");
+const snarkjs = require("snarkjs");
 const compiler = require("circom");
 
 const assert = chai.assert;
@@ -17,17 +17,17 @@ describe("Mux4 test", () => {
 
 //        assert.equal(cirDef.nVars, 2);
 
-        const circuit = new zkSnark.Circuit(cirDef);
+        const circuit = new snarkjs.Circuit(cirDef);
 
         console.log("NConstrains: " + circuit.nConstraints);
 
         for (i=0; i<16; i++) {
-            const w = circuit.calculateWitness({ "selector": zkSnark.bigInt(i).toString() });
+            const w = circuit.calculateWitness({ "selector": snarkjs.bigInt(i).toString() });
 
-            assert(w[0].equals(zkSnark.bigInt(1)));
+            assert(w[0].equals(snarkjs.bigInt(1)));
 
             console.log(i + " -> " + w[circuit.getSignalIdx("main.out")].toString());
-//            assert(w[circuit.getSignalIdx("main.out")].equals(zkSnark.bigInt("100").add(zkSnark.bigInt(i))));
+//            assert(w[circuit.getSignalIdx("main.out")].equals(snarkjs.bigInt("100").add(snarkjs.bigInt(i))));
         }
     });
 });

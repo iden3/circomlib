@@ -43,10 +43,10 @@
  */
 
 include "mux4.circom";
-include "expw4table.circom";
+include "escalarmulw4table.circom";
 include "babyjub.circom";
 
-template ExpWindow(k) {
+template EscalarMulWindow(base, k) {
 
     signal input in[2];
     signal input sel[4];
@@ -58,7 +58,7 @@ template ExpWindow(k) {
 
     var i;
 
-    table = ExpW4Table(k);
+    table = EscalarMulW4Table(base, k);
     mux = MultiMux4(2);
     adder = BabyAdd();
 
@@ -86,7 +86,7 @@ template ExpWindow(k) {
 
                 ┏━━━━━━━━━┓      ┏━━━━━━━━━┓                            ┏━━━━━━━━━━━━━━━━━━━┓
                 ┃         ┃      ┃         ┃                            ┃                   ┃
-     (0,1) ════▶┃Window(0)┃═════▶┃Window(1)┃════════  . . . . ═════════▶┃ Window(nBlocks-1) ┃═════▶ out
+      inp  ════▶┃Window(0)┃═════▶┃Window(1)┃════════  . . . . ═════════▶┃ Window(nBlocks-1) ┃═════▶ out
                 ┃         ┃      ┃         ┃                            ┃                   ┃
                 ┗━━━━━━━━━┛      ┗━━━━━━━━━┛                            ┗━━━━━━━━━━━━━━━━━━━┛
                   ▲ ▲ ▲ ▲          ▲ ▲ ▲ ▲                                    ▲ ▲ ▲ ▲
@@ -105,8 +105,9 @@ template ExpWindow(k) {
 
  */
 
-template Exp(n) {
+template EscalarMul(n, base) {
     signal input in[n];
+    signal input inp[2];   // Point input to be added
     signal output out[2];
 
     var nBlocks = ((n-1)>>2)+1;
@@ -117,7 +118,7 @@ template Exp(n) {
 
     // Construct the windows
     for (i=0; i<nBlocks; i++) {
-      windows[i] = ExpWindow(i);
+      windows[i] = EscalarMulWindow(base, i);
     }
 
     // Connect the selectors
@@ -132,8 +133,8 @@ template Exp(n) {
     }
 
     // Start with generator
-    windows[0].in[0] <== 0;
-    windows[0].in[1] <== 1;
+    windows[0].in[0] <== inp[0];
+    windows[0].in[1] <== inp[1];
 
     for(i=0; i<nBlocks-1; i++) {
         windows[i].out[0] ==> windows[i+1].in[0];

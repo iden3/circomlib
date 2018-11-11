@@ -1,0 +1,298 @@
+{
+ "mainCode": "{\n    {\n    }\n    ctx.setVar(\"base\", [], [\"17777552123799933955779906779655732241715742912184938656739573121738514868268\",\"2626589144620713026669568689430873010625803728049924121243784502389097019475\"]);\n}\n",
+ "signalName2Idx": {
+  "one": 0,
+  "main.out[0][0]": 1,
+  "main.out[0][1]": 2,
+  "main.out[1][0]": 3,
+  "main.out[1][1]": 4,
+  "main.out[2][0]": 5,
+  "main.out[2][1]": 6,
+  "main.out[3][0]": 7,
+  "main.out[3][1]": 8,
+  "main.out[4][0]": 9,
+  "main.out[4][1]": 10,
+  "main.out[5][0]": 11,
+  "main.out[5][1]": 12,
+  "main.out[6][0]": 13,
+  "main.out[6][1]": 14,
+  "main.out[7][0]": 15,
+  "main.out[7][1]": 16,
+  "main.out[8][0]": 17,
+  "main.out[8][1]": 18,
+  "main.out[9][0]": 19,
+  "main.out[9][1]": 20,
+  "main.out[10][0]": 21,
+  "main.out[10][1]": 22,
+  "main.out[11][0]": 23,
+  "main.out[11][1]": 24,
+  "main.out[12][0]": 25,
+  "main.out[12][1]": 26,
+  "main.out[13][0]": 27,
+  "main.out[13][1]": 28,
+  "main.out[14][0]": 29,
+  "main.out[14][1]": 30,
+  "main.out[15][0]": 31,
+  "main.out[15][1]": 32
+ },
+ "components": [
+  {
+   "name": "main",
+   "params": {
+    "base": [
+     {
+      "type": "NUMBER",
+      "value": "17777552123799933955779906779655732241715742912184938656739573121738514868268",
+      "first_line": 3,
+      "first_column": 12,
+      "last_line": 3,
+      "last_column": 89
+     },
+     {
+      "type": "NUMBER",
+      "value": "2626589144620713026669568689430873010625803728049924121243784502389097019475",
+      "first_line": 4,
+      "first_column": 12,
+      "last_line": 4,
+      "last_column": 88
+     }
+    ],
+    "k": {
+     "type": "NUMBER",
+     "value": "0",
+     "first_line": 6,
+     "first_column": 41,
+     "last_line": 6,
+     "last_column": 42
+    }
+   },
+   "template": "EscalarMulW4Table",
+   "inputSignals": 0
+  }
+ ],
+ "componentName2Idx": {
+  "main": 0
+ },
+ "signals": [
+  {
+   "names": [
+    "one"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[0][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[0][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[1][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[1][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[2][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[2][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[3][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[3][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[4][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[4][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[5][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[5][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[6][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[6][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[7][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[7][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[8][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[8][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[9][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[9][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[10][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[10][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[11][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[11][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[12][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[12][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[13][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[13][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[14][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[14][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[15][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[15][1]"
+   ],
+   "triggerComponents": []
+  }
+ ],
+ "constraints": [],
+ "templates": {
+  "EscalarMulW4Table": "function(ctx) {\n    ctx.setVar(\"dbl\", [], ctx.getVar(\"base\",[]));\n    for (ctx.setVar(\"i\", [], \"0\");bigInt(ctx.getVar(\"i\",[])).lt(bigInt(bigInt(ctx.getVar(\"k\",[])).mul(bigInt(\"4\")).mod(__P__))) ? 1 : 0;(ctx.setVar(\"i\", [], bigInt(ctx.getVar(\"i\",[])).add(bigInt(\"1\")).mod(__P__))).add(__P__).sub(bigInt(1)).mod(__P__)) { \n    {\n        ctx.setVar(\"dbl\", [], ctx.callFunction(\"pointAdd\", [ctx.getVar(\"dbl\",[\"0\"]),ctx.getVar(\"dbl\",[\"1\"]),ctx.getVar(\"dbl\",[\"0\"]),ctx.getVar(\"dbl\",[\"1\"])]));\n    }\n\n     }\n    ctx.setSignal(\"out\", [\"0\",\"0\"], \"0\");\n    ctx.assert(ctx.getSignal(\"out\", [\"0\",\"0\"]), \"0\");\n    ctx.setSignal(\"out\", [\"0\",\"1\"], \"1\");\n    ctx.assert(ctx.getSignal(\"out\", [\"0\",\"1\"]), \"1\");\n    for (ctx.setVar(\"i\", [], \"1\");bigInt(ctx.getVar(\"i\",[])).lt(bigInt(\"16\")) ? 1 : 0;(ctx.setVar(\"i\", [], bigInt(ctx.getVar(\"i\",[])).add(bigInt(\"1\")).mod(__P__))).add(__P__).sub(bigInt(1)).mod(__P__)) { \n    {\n        ctx.setVar(\"p\", [], ctx.callFunction(\"pointAdd\", [ctx.getSignal(\"out\", [bigInt(ctx.getVar(\"i\",[])).add(__P__).sub(bigInt(\"1\")).mod(__P__),\"0\"]),ctx.getSignal(\"out\", [bigInt(ctx.getVar(\"i\",[])).add(__P__).sub(bigInt(\"1\")).mod(__P__),\"1\"]),ctx.getVar(\"dbl\",[\"0\"]),ctx.getVar(\"dbl\",[\"1\"])]));\n        ctx.setSignal(\"out\", [ctx.getVar(\"i\",[]),\"0\"], ctx.getVar(\"p\",[\"0\"]));\n        ctx.assert(ctx.getSignal(\"out\", [ctx.getVar(\"i\",[]),\"0\"]), ctx.getVar(\"p\",[\"0\"]));\n        ctx.setSignal(\"out\", [ctx.getVar(\"i\",[]),\"1\"], ctx.getVar(\"p\",[\"1\"]));\n        ctx.assert(ctx.getSignal(\"out\", [ctx.getVar(\"i\",[]),\"1\"]), ctx.getVar(\"p\",[\"1\"]));\n    }\n\n     }\n}\n"
+ },
+ "functions": {
+  "pointAdd": {
+   "params": [
+    "x1",
+    "y1",
+    "x2",
+    "y2"
+   ],
+   "func": "function(ctx) {\n    ctx.setVar(\"a\", [], \"168700\");\n    ctx.setVar(\"d\", [], \"168696\");\n    ctx.setVar(\"res\", [\"0\"], bigInt(bigInt(bigInt(ctx.getVar(\"x1\",[])).mul(bigInt(ctx.getVar(\"y2\",[]))).mod(__P__)).add(bigInt(bigInt(ctx.getVar(\"y1\",[])).mul(bigInt(ctx.getVar(\"x2\",[]))).mod(__P__))).mod(__P__)).mul( bigInt(bigInt(\"1\").add(bigInt(bigInt(bigInt(bigInt(bigInt(ctx.getVar(\"d\",[])).mul(bigInt(ctx.getVar(\"x1\",[]))).mod(__P__)).mul(bigInt(ctx.getVar(\"x2\",[]))).mod(__P__)).mul(bigInt(ctx.getVar(\"y1\",[]))).mod(__P__)).mul(bigInt(ctx.getVar(\"y2\",[]))).mod(__P__))).mod(__P__)).inverse(__P__) ).mod(__P__));\n    ctx.setVar(\"res\", [\"1\"], bigInt(bigInt(bigInt(ctx.getVar(\"y1\",[])).mul(bigInt(ctx.getVar(\"y2\",[]))).mod(__P__)).add(__P__).sub(bigInt(bigInt(bigInt(ctx.getVar(\"a\",[])).mul(bigInt(ctx.getVar(\"x1\",[]))).mod(__P__)).mul(bigInt(ctx.getVar(\"x2\",[]))).mod(__P__))).mod(__P__)).mul( bigInt(bigInt(\"1\").add(__P__).sub(bigInt(bigInt(bigInt(bigInt(bigInt(ctx.getVar(\"d\",[])).mul(bigInt(ctx.getVar(\"x1\",[]))).mod(__P__)).mul(bigInt(ctx.getVar(\"x2\",[]))).mod(__P__)).mul(bigInt(ctx.getVar(\"y1\",[]))).mod(__P__)).mul(bigInt(ctx.getVar(\"y2\",[]))).mod(__P__))).mod(__P__)).inverse(__P__) ).mod(__P__));\n    return ctx.getVar(\"res\",[]);;\n}\n"
+  }
+ },
+ "nPrvInputs": 0,
+ "nPubInputs": 0,
+ "nInputs": 0,
+ "nOutputs": 0,
+ "nVars": 1,
+ "nConstants": 32,
+ "nSignals": 33
+}

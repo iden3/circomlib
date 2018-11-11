@@ -1,6 +1,6 @@
 const chai = require("chai");
 const path = require("path");
-const zkSnark = require("zksnark");
+const snarkjs = require("snarkjs");
 const compiler = require("circom");
 
 const assert = chai.assert;
@@ -26,22 +26,22 @@ function print(circuit, w, s) {
 describe("Exponentioation test", () => {
     it("Should generate the Exponentiation table in k=0", async () => {
 
-        const cirDef = await compiler(path.join(__dirname, "circuits", "expw4table_test.circom"));
+        const cirDef = await compiler(path.join(__dirname, "circuits", "escalarmulw4table_test.circom"));
 
 //        console.log(JSON.stringify(cirDef, null, 1));
 
 //        assert.equal(cirDef.nVars, 2);
 
-        const circuit = new zkSnark.Circuit(cirDef);
+        const circuit = new snarkjs.Circuit(cirDef);
 
         console.log("NConstrains: " + circuit.nConstraints);
 
         const w = circuit.calculateWitness({});
 
-        let g = [zkSnark.bigInt("17777552123799933955779906779655732241715742912184938656739573121738514868268"),
-                 zkSnark.bigInt("2626589144620713026669568689430873010625803728049924121243784502389097019475")]
+        let g = [snarkjs.bigInt("17777552123799933955779906779655732241715742912184938656739573121738514868268"),
+                 snarkjs.bigInt("2626589144620713026669568689430873010625803728049924121243784502389097019475")]
 
-        dbl= [zkSnark.bigInt("0"), zkSnark.bigInt("1")];
+        dbl= [snarkjs.bigInt("0"), snarkjs.bigInt("1")];
 
         for (let i=0; i<16; i++) {
             const xout1 = w[circuit.getSignalIdx(`main.out[${i}][0]`)];
@@ -62,26 +62,26 @@ describe("Exponentioation test", () => {
 
     it("Should generate the Exponentiation table in k=3", async () => {
 
-        const cirDef = await compiler(path.join(__dirname, "circuits", "expw4table_test3.circom"));
+        const cirDef = await compiler(path.join(__dirname, "circuits", "escalarmulw4table_test3.circom"));
 
 //        console.log(JSON.stringify(cirDef, null, 1));
 
 //        assert.equal(cirDef.nVars, 2);
 
-        const circuit = new zkSnark.Circuit(cirDef);
+        const circuit = new snarkjs.Circuit(cirDef);
 
         console.log("NConstrains: " + circuit.nConstraints);
 
         const w = circuit.calculateWitness({});
 
-        let g = [zkSnark.bigInt("17777552123799933955779906779655732241715742912184938656739573121738514868268"),
-                 zkSnark.bigInt("2626589144620713026669568689430873010625803728049924121243784502389097019475")]
+        let g = [snarkjs.bigInt("17777552123799933955779906779655732241715742912184938656739573121738514868268"),
+                 snarkjs.bigInt("2626589144620713026669568689430873010625803728049924121243784502389097019475")]
 
         for (let i=0; i<12;i++) {
             g = addPoint(g,g);
         }
 
-        dbl= [zkSnark.bigInt("0"), zkSnark.bigInt("1")];
+        dbl= [snarkjs.bigInt("0"), snarkjs.bigInt("1")];
 
         for (let i=0; i<16; i++) {
             const xout1 = w[circuit.getSignalIdx(`main.out[${i}][0]`)];
@@ -102,13 +102,13 @@ describe("Exponentioation test", () => {
     });
 
     it("Should exponentiate g^31", async () => {
-        const cirDef = await compiler(path.join(__dirname, "circuits", "exp_test.circom"));
+        const cirDef = await compiler(path.join(__dirname, "circuits", "escalarmul_test.circom"));
 
 //        console.log(JSON.stringify(cirDef, null, 1));
 
 //        assert.equal(cirDef.nVars, 2);
 
-        const circuit = new zkSnark.Circuit(cirDef);
+        const circuit = new snarkjs.Circuit(cirDef);
 
         console.log("NConstrains: " + circuit.nConstraints);
 
@@ -116,8 +116,8 @@ describe("Exponentioation test", () => {
 
         assert(circuit.checkWitness(w));
 
-        let g = [zkSnark.bigInt("17777552123799933955779906779655732241715742912184938656739573121738514868268"),
-                 zkSnark.bigInt("2626589144620713026669568689430873010625803728049924121243784502389097019475")]
+        let g = [snarkjs.bigInt("17777552123799933955779906779655732241715742912184938656739573121738514868268"),
+                 snarkjs.bigInt("2626589144620713026669568689430873010625803728049924121243784502389097019475")]
 
         let c = [0n, 1n];
 
@@ -158,9 +158,9 @@ describe("Exponentioation test", () => {
     }).timeout(10000000);
 
     it("Number of constrains for 256 bits", async () => {
-        const cirDef = await compiler(path.join(__dirname, "circuits", "exp_test_min.circom"));
+        const cirDef = await compiler(path.join(__dirname, "circuits", "escalarmul_test_min.circom"));
 
-        const circuit = new zkSnark.Circuit(cirDef);
+        const circuit = new snarkjs.Circuit(cirDef);
 
         console.log("NConstrains: " + circuit.nConstraints);
     }).timeout(10000000);

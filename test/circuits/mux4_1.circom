@@ -1,5 +1,5 @@
 include "../../circuit/mux4.circom";
-include "../../node_modules/circom/circuits/sha256/bitify.circom";
+include "../../node_modules/circom/circuits/bitify.circom";
 
 
 template Constants() {

@@ -1,4 +1,4 @@
-include "../../circuit/exp.circom";
+include "../../circuit/escalarmul.circom";
 
 
 template Main() {
@@ -7,14 +7,14 @@ template Main() {
 
     var i;
 
-    component exp = Exp(256);
+    component escalarMul = EscalarMul(256);
 
     for  (i=0; i<256; i++) {
-        in[i] ==> exp.in[i];
+        in[i] ==> escalarMul.in[i];
     }
 
-    exp.out[0] ==> out[0];
-    exp.out[1] ==> out[1];
+    escalarMul.out[0] ==> out[0];
+    escalarMul.out[1] ==> out[1];
 }
 
 component main = Main();

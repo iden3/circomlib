@@ -8,16 +8,13 @@ function pointAdd(x1,y1,x2,y2) {
     return res;
 }
 
-template ExpW4Table(k) {
+template EscalarMulW4Table(base, k) {
     signal output out[16][2];
 
     var i;
     var p[2];
 
-    var g = [17777552123799933955779906779655732241715742912184938656739573121738514868268,
-             2626589144620713026669568689430873010625803728049924121243784502389097019475];
-
-    var dbl = g;
+    var dbl = base;
 
     for (i=0; i<k*4; i++) {
         dbl = pointAdd(dbl[0], dbl[1], dbl[0], dbl[1]);
