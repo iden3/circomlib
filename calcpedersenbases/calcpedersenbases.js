@@ -62,7 +62,7 @@ function getPoint(S) {
 
     const p = [bn128.Fr.affine(x), bn128.Fr.affine(y)];
 
-    const p8 =mulPointEscalar(p, 8, q);
+    const p8 =mulPointEscalar(p, 8, bn128.r);
 
     return p8;
 }
@@ -83,12 +83,9 @@ function generatePoint(S) {
 
 
 
-
-
-const q = bigInt("21888242871839275222246405745257275088548364400416034343698204186575808495617");
 const r = bigInt("21888242871839275222246405745257275088614511777268538073601725287587578984328").shr(3);
-function isLowGrade(p, q) {
-    const res= mulPointEscalar(p, r, q);
+function isLowGrade(p) {
+    const res= mulPointEscalar(p, r, bn128.r);
     return (res[0].equals(bigInt(0))) && (res[1].equals(bigInt(1)));
 }
 
@@ -105,7 +102,7 @@ function inCurve(p) {
         F.add(F.mul(a, x2), y2),
         F.add(F.one, F.mul(F.mul(x2, y2), d)))) return false;
 
-    if (!isLowGrade(p, q)) return false;
+    if (!isLowGrade(p)) return false;
 
     return true;
 }
