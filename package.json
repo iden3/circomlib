@@ -1,6 +1,6 @@
 {
   "name": "cirpedersen",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Pesersen Circuit for Circom",
   "main": "index.js",
   "directories": {
