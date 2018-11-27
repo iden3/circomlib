@@ -21,6 +21,7 @@ function pruneBuffer(_buff) {
     buff[0] = buff[0] & 0xF8;
     buff[31] = buff[31] & 0x7F;
     buff[31] = buff[31] | 0x40;
+    return buff;
 }
 
 function prv2pub(prv) {
@@ -36,13 +37,13 @@ function sign(prv, msg) {
     const s = bigInt.leBuff2int(sBuff);
     const A = babyJub.mulPointEscalar(babyJub.Base8, s.shr(3));
 
-    const rBuff = createBlakeHash("blake512").update(Buffer.concat(h1.slice(32,64), msg)).digest();
+    const rBuff = createBlakeHash("blake512").update(Buffer.concat([h1.slice(32,64), msg])).digest();
     let r = bigInt.leBuff2int(rBuff);
     r = r.mod(babyJub.subOrder);
     const R8 = babyJub.mulPointEscalar(babyJub.Base8, r);
     const R8p = babyJub.packPoint(R8);
     const Ap = babyJub.packPoint(A);
-    const hmBuff = pedersenHash(Buffer.concat(R8p, Ap, msg));
+    const hmBuff = pedersenHash(Buffer.concat([R8p, Ap, msg]));
     const hm = bigInt.leBuff2int(hmBuff);
     const S = r.add(hm.mul(s)).mod(babyJub.subOrder);
     return {
@@ -59,17 +60,17 @@ function verify(msg, sig, A) {
     if (!babyJub.inCurve(sig.R8)) return false;
     if (!Array.isArray(A)) return false;
     if (A.length!= 2) return false;
-    if (!babyJub.inCurve(sig.A)) return false;
+    if (!babyJub.inCurve(A)) return false;
     if (sig.S>= babyJub.subOrder) return false;
 
     const R8p = babyJub.packPoint(sig.R8);
     const Ap = babyJub.packPoint(A);
-    const hmBuff = pedersenHash(Buffer.concat(R8p, Ap, msg));
+    const hmBuff = pedersenHash(Buffer.concat([R8p, Ap, msg]));
     const hm = bigInt.leBuff2int(hmBuff);
 
     const Pleft = babyJub.mulPointEscalar(babyJub.Base8, sig.S);
-    let Pright = babyJub.mulPointEscalar(A, hm.mul(8));
-    Pright = babyJub.addaddPoint(sig.R8, Pright);
+    let Pright = babyJub.mulPointEscalar(A, hm.mul(bigInt("8")));
+    Pright = babyJub.addPoint(sig.R8, Pright);
 
     if (!Pleft[0].equals(Pright[0])) return false;
     if (!Pleft[1].equals(Pright[1])) return false;
@@ -79,7 +80,7 @@ function verify(msg, sig, A) {
 function packSignature(sig) {
     const R8p = babyJub.packPoint(sig.R8);
     const Sp = bigInt.leInt2Buff(sig.S, 32);
-    return Buffer.concat(R8p, Sp);
+    return Buffer.concat([R8p, Sp]);
 }
 
 function unpackSignature(sigBuff) {

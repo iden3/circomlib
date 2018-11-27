@@ -204,7 +204,7 @@ template Pedersen(n) {
             adders[i].y2 <== segments[1].out[1];
         } else {
             adders[i].x1 <== adders[i-1].xout;
-            adders[i].y1 <== adders[i-1].xout;
+            adders[i].y1 <== adders[i-1].yout;
             adders[i].x2 <== segments[i+1].out[0];
             adders[i].y2 <== segments[i+1].out[1];
         }

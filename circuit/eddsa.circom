@@ -1,11 +1,15 @@
-
-include "../node_modules/circom/circuits/bitify.circom";
-include "../node_modules/circom/circuits/comparators.circom";
+include "compconstant.circom";
+include "pointbits.circom";
+include "pedersen2.circom";
 include "escalarmulany.circom";
+include "escalarmulfix.circom";
+
+/*
+include "../node_modules/circom/circuits/bitify.circom";
 include "babyjub.circom";
+*/
 
-
-templete EdDSAVerfier(n) {
+template EdDSAVerifier(n) {
     signal input msg[n];
 
     signal input A[256];
@@ -24,12 +28,12 @@ templete EdDSAVerfier(n) {
 
     component  compConstant = CompConstant(2736030358979909402780800718157159386076813972158567259200215660948447373040);
 
-    for (var i=0; i<254; i++) {
+    for (i=0; i<254; i++) {
         S[i] ==> compConstant.in[i];
     }
     compConstant.out === 0;
+    S[254] === 0;
     S[255] === 0;
-    S[256] === 0;
 
 // Convert A to Field elements (And verify A)
 
@@ -56,12 +60,16 @@ templete EdDSAVerfier(n) {
     component hash = Pedersen(512+n);
 
     for (i=0; i<256; i++) {
-        hash.in[i] <== R[i];
+        hash.in[i] <== R8[i];
         hash.in[256+i] <== A[i];
     }
     for (i=0; i<n; i++) {
         hash.in[512+i] <== msg[i];
     }
+
+    component point2bitsH = Point2Bits_Strict();
+    point2bitsH.in[0] <== hash.out[0];
+    point2bitsH.in[1] <== hash.out[1];
 
 // Calculate second part of the right side:  right2 = h*8*A
 
@@ -71,11 +79,11 @@ templete EdDSAVerfier(n) {
     dbl1.x <== Ax;
     dbl1.y <== Ay;
     component dbl2 = BabyDbl();
-    dbl2.x <== dbl1.outx;
-    dbl2.y <== dbl1.outy;
+    dbl2.x <== dbl1.xout;
+    dbl2.y <== dbl1.yout;
     component dbl3 = BabyDbl();
-    dbl3.x <== dbl2.outx;
-    dbl3.y <== dbl2.outy;
+    dbl3.x <== dbl2.xout;
+    dbl3.y <== dbl2.yout;
 
     // We check that A is not zero.
     component isZero = IsZero();
@@ -84,10 +92,10 @@ templete EdDSAVerfier(n) {
 
     component mulAny = EscalarMulAny(256);
     for (i=0; i<256; i++) {
-        mulAny.e[i] <== hash.out[i];
+        mulAny.e[i] <== point2bitsH.out[i];
     }
-    mulAny.p[0] <== dbl3.outx;
-    mulAny.p[1] <== dbl3.outy;
+    mulAny.p[0] <== dbl3.xout;
+    mulAny.p[1] <== dbl3.yout;
 
 
 // Compute the right side: right =  R8 + right2

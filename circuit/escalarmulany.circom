@@ -11,7 +11,7 @@ template Multiplexor2() {
     out[1] <== (in[1][1] - in[0][1])*sel + in[0][1];
 }
 
-template BitElement() {
+template BitElementMulAny() {
     signal input sel;
     signal input dblIn[2];
     signal input addIn[2];
@@ -47,7 +47,7 @@ template BitElement() {
 // returns out in twisted edwards
 // Double is in montgomery to be linked;
 
-template Segment(n) {
+template SegmentMulAny(n) {
     signal input e[n];
     signal input p[2];
     signal output out[2];
@@ -62,7 +62,7 @@ template Segment(n) {
 
     var i;
 
-    bits[0] = BitElement();
+    bits[0] = BitElementMulAny();
     e2m.out[0] ==> bits[0].dblIn[0]
     e2m.out[1] ==> bits[0].dblIn[1]
     e2m.out[0] ==> bits[0].addIn[0]
@@ -70,7 +70,7 @@ template Segment(n) {
     e[1] ==> bits[0].sel;
 
     for (i=1; i<n-1; i++) {
-        bits[i] = BitElement();
+        bits[i] = BitElementMulAny();
 
         bits[i-1].dblOut[0] ==> bits[i].dblIn[0]
         bits[i-1].dblOut[1] ==> bits[i].dblIn[1]
@@ -129,7 +129,7 @@ template EscalarMulAny(n) {
 
         nseg = (s < nsegments-1) ? 148 : nlastsegment;
 
-        segments[s] = Segment(nseg);
+        segments[s] = SegmentMulAny(nseg);
 
         for (i=0; i<nseg; i++) {
             e[s*148+i] ==> segments[s].e[i];
