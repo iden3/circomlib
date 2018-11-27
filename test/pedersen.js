@@ -88,7 +88,7 @@ describe("Double Pedersen test", function() {
     it("Should pedersen all ones", async () => {
         let w, xout, yout;
 
-        const allOnes = bigInt("1").shl(251).sub(bigInt("1"));
+        const allOnes = bigInt("1").shl(250).sub(bigInt("1"));
         w = circuit.calculateWitness({ in: [allOnes, allOnes]});
 
         xout = w[circuit.getSignalIdx("main.out[0]")];

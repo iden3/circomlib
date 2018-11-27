@@ -5,8 +5,8 @@ template Pedersen(n) {
     signal input in[n];
     signal output out[2];
 
-    var nexps = ((n-1) \ 253) + 1;
-    var nlastbits = n - (nexps-1)*253;
+    var nexps = ((n-1) \ 250) + 1;
+    var nlastbits = n - (nexps-1)*250;
 
     component escalarMuls[nexps];
 
@@ -27,11 +27,11 @@ template Pedersen(n) {
     var j;
     var nexpbits;
     for (i=0; i<nexps; i++) {
-        nexpbits = (i == nexps-1) ? nlastbits : 253;
+        nexpbits = (i == nexps-1) ? nlastbits : 250;
         escalarMuls[i] = EscalarMul(nexpbits, PBASE[i]);
 
         for (j=0; j<nexpbits; j++) {
-            escalarMuls[i].in[j] <== in[253*i + j];
+            escalarMuls[i].in[j] <== in[250*i + j];
         }
 
         if (i==0) {
