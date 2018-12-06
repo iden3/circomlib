@@ -25,7 +25,7 @@ function getBits(v, n) {
 
 const q = bigInt("21888242871839275222246405745257275088548364400416034343698204186575808495617");
 
-describe("Aliascheck test", () => {
+describe("Sign test", () => {
     let circuit;
     before( async() => {
         const cirDef = await compiler(path.join(__dirname, "circuits", "sign_test.circom"));

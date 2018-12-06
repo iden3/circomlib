@@ -1,6 +1,6 @@
 include "../node_modules/circom/circuits/bitify.circom";
-include "aliascheck.circom";
-include "compconstant.circom";
+include "../node_modules/circom/circuits/aliascheck.circom";
+include "../node_modules/circom/circuits/compconstant.circom";
 include "babyjub.circom";
 
 

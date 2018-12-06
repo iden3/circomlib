@@ -1,6 +1,6 @@
-include "compconstant.circom";
+include "../node_modules/circom/circuits/compconstant.circom";
 include "pointbits.circom";
-include "pedersen2.circom";
+include "pedersen.circom";
 include "escalarmulany.circom";
 include "escalarmulfix.circom";
 

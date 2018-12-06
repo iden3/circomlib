@@ -1,3 +1,3 @@
-include "../../circuit/aliascheck.circom";
+include "../../node_modules/circom/circuits/aliascheck.circom";
 
 component main = AliasCheck()

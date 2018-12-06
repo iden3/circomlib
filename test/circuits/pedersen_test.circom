@@ -1,4 +1,4 @@
-include "../../circuit/pedersen.circom";
+include "../../circuit/pedersen_old.circom";
 include "../../node_modules/circom/circuits/bitify.circom";
 
 
