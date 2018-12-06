@@ -1,3 +1,3 @@
-include "../../circuit/montgomery.circom";
+include "../../circuits/montgomery.circom";
 
 component main = MontgomeryDouble();

@@ -1,3 +1,3 @@
-include "../../circuit/babyjub.circom";
+include "../../circuits/babyjub.circom";
 
 component main = BabyAdd();

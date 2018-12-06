@@ -1,13 +1,8 @@
-include "../node_modules/circom/circuits/compconstant.circom";
+include "compconstant.circom";
 include "pointbits.circom";
 include "pedersen.circom";
 include "escalarmulany.circom";
 include "escalarmulfix.circom";
-
-/*
-include "../node_modules/circom/circuits/bitify.circom";
-include "babyjub.circom";
-*/
 
 template EdDSAVerifier(n) {
     signal input msg[n];

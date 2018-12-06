@@ -1,5 +1,5 @@
-include "../../circuit/pedersen_old.circom";
-include "../../node_modules/circom/circuits/bitify.circom";
+include "../../circuits/pedersen_old.circom";
+include "../../circuits/bitify.circom";
 
 
 template Main() {

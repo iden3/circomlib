@@ -1,4 +1,4 @@
-include "../../circuit/escalarmul.circom";
+include "../../circuits/escalarmul.circom";
 
 
 template Main() {

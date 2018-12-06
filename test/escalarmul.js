@@ -5,17 +5,17 @@ const compiler = require("circom");
 
 const assert = chai.assert;
 
-const bigInt = require("big-integer");
+const bigInt = snarkjs.bigInt;
 
 
-const q=21888242871839275222246405745257275088548364400416034343698204186575808495617n
+const q=bigInt("21888242871839275222246405745257275088548364400416034343698204186575808495617");
 function addPoint(a,b) {
-    const cta = 168700n;
-    const d = 168696n;
+    const cta = bigInt("168700");
+    const d = bigInt("168696");
 
     const res = [];
-    res[0] = bigInt((a[0]*b[1] + b[0]*a[1]) *  bigInt(1n + d*a[0]*b[0]*a[1]*b[1]).inverse(q)).affine(q);
-    res[1] = bigInt((a[1]*b[1] - cta*a[0]*b[0]) * bigInt(1n - d*a[0]*b[0]*a[1]*b[1]).inverse(q)).affine(q);
+    res[0] = bigInt((a[0]*b[1] + b[0]*a[1]) *  bigInt(bigInt.one + d*a[0]*b[0]*a[1]*b[1]).inverse(q)).affine(q);
+    res[1] = bigInt((a[1]*b[1] - cta*a[0]*b[0]) * bigInt(bigInt.one - d*a[0]*b[0]*a[1]*b[1]).inverse(q)).affine(q);
     return res;
 }
 
@@ -38,10 +38,10 @@ describe("Exponentioation test", () => {
 
         const w = circuit.calculateWitness({});
 
-        let g = [snarkjs.bigInt("17777552123799933955779906779655732241715742912184938656739573121738514868268"),
-                 snarkjs.bigInt("2626589144620713026669568689430873010625803728049924121243784502389097019475")]
+        let g = [bigInt("17777552123799933955779906779655732241715742912184938656739573121738514868268"),
+                 bigInt("2626589144620713026669568689430873010625803728049924121243784502389097019475")]
 
-        dbl= [snarkjs.bigInt("0"), snarkjs.bigInt("1")];
+        dbl= [bigInt("0"), snarkjs.bigInt("1")];
 
         for (let i=0; i<16; i++) {
             const xout1 = w[circuit.getSignalIdx(`main.out[${i}][0]`)];

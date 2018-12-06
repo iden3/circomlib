@@ -1,5 +1,5 @@
-include "../../circuit/escalarmulany.circom";
-include "../../node_modules/circom/circuits/bitify.circom";
+include "../../circuits/escalarmulany.circom";
+include "../../circuits/bitify.circom";
 
 template Main() {
     signal input e;

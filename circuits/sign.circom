@@ -1,4 +1,4 @@
-include "../node_modules/circom/circuits/compconstant.circom";
+include "compconstant.circom";
 
 template Sign() {
     signal input in[254];

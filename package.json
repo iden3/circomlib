@@ -21,11 +21,13 @@
   "license": "GPL-3.0",
   "dependencies": {
     "blake-hash": "^1.1.0",
-    "circom": "0.0.21",
     "snarkjs": "0.1.7"
   },
   "devDependencies": {
+    "circom": "0.0.22",
     "eslint-plugin-mocha": "^5.2.0",
-    "mocha": "^5.2.0"
+    "ganache-cli": "^6.2.3",
+    "mocha": "^5.2.0",
+    "web3": "^1.0.0-beta.36"
   }
 }

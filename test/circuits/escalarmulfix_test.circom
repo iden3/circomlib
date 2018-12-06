@@ -1,5 +1,5 @@
-include "../../circuit/escalarmulfix.circom";
-include "../../node_modules/circom/circuits/bitify.circom";
+include "../../circuits/escalarmulfix.circom";
+include "../../circuits/bitify.circom";
 
 
 template Main() {

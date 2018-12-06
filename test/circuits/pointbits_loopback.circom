@@ -1,4 +1,4 @@
-include "../../circuit/pointbits.circom";
+include "../../circuits/pointbits.circom";
 
 
 template Main() {
