@@ -55,7 +55,7 @@ a parent with a sibling != 0.
  */
 
 template SMTLevIns(nLevels) {
-    signal input siblins[nLevels];
+    signal input siblings[nLevels];
     signal output levIns[nLevels];
     signal done[nLevels-1];        // Indicates if the insLevel has aready been detecetd.
 

@@ -18,6 +18,7 @@
 */
 
 include "comparators.circom";
+include "aliascheck.circom";
 
 
 template Num2Bits(n) {
@@ -32,7 +33,20 @@ template Num2Bits(n) {
     }
 
     lc1 === in;
+}
 
+template Num2Bits_strict() {
+    signal input in;
+    signal output out[254];
+
+    component aliasCheck = AliasCheck();
+    component n2b = Num2Bits(254);
+    in ==> n2b.in;
+
+    for (var i=0; i<254; i++) {
+        n2b.out[i] ==> out[i];
+        n2b.out[i] ==> aliasCheck.in[i];
+    }
 }
 
 template Bits2Num(n) {
@@ -45,6 +59,21 @@ template Bits2Num(n) {
     }
 
     lc1 ==> out;
+}
+
+template Bits2Num_strict() {
+    signal input in[n];
+    signal output out;
+
+    component aliasCheck = AliasCheck();
+    component b2n = Bits2Num(254);
+
+    for (var i=0; i<254; i++) {
+        in[i] ==> b2n.in[i];
+        in[i] ==> aliasCheck.in[i];
+    }
+
+    b2n.out ==> out;
 }
 
 template Num2BitsNeg(n) {

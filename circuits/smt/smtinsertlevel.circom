@@ -49,27 +49,27 @@ template SMTInsertLevel() {
 
     // Old side
 
-    oldSwitcher.inL <== oldChild;
-    oldSwitcher.inR <== sibling;
+    oldSwitcher.L <== oldChild;
+    oldSwitcher.R <== sibling;
 
     oldSwitcher.sel <== newlrbit;
     oldProofHash.L <== oldSwitcher.outL;
     oldProofHash.R <== oldSwitcher.outR;
 
-    aux[0] <== old1 * st_old1;
+    aux[0] <== old1leaf * st_old1;
     oldRoot <== aux[0] +  oldProofHash.out * st_top;
 
     // New side
 
-    aux[1] <== newChild * ( st_top + st_old1 + st_but);
-    oldSwitcher.inL <== aux[1] + new1leaf*st_new1;
+    aux[1] <== newChild * ( st_top + st_old1 + st_bot);
+    newSwitcher.L <== aux[1] + new1leaf*st_new1;
 
     aux[2] <== sibling*st_top;
-    oldSwitcher.inR <== aux[2] + old1leaf*st_new1;
+    newSwitcher.R <== aux[2] + old1leaf*st_new1;
 
-    newProofHash.sel <== newlrbit;
-    newProofHash.L <== newProofHash.outL;
-    newProofHash.R <== newProofHash.outR;
+    newSwitcher.sel <== newlrbit;
+    newProofHash.L <== newSwitcher.outL;
+    newProofHash.R <== newSwitcher.outR;
 
     aux[3] <== newProofHash.out * (st_top + st_old1 + st_bot + st_new1);
     newRoot <==  aux[3] + new1leaf * st_old0;

@@ -23,29 +23,37 @@ old and the new trees with just one element.
 na: Not appliable.  After inserting it, we go to the na level.
 
 
+Fnction
+fnc[0]  fnc[1]
+0       0             NOP
+0       1             UPDATE
+1       0             INSERT
+1       1             DELETE
+
+
 
                                                 ###########
-                     levIns==curLevel          #           #
-   xor=0                  is0=1 ┌────────────▶#    old0     #────────┐
-  ┌─────┐                       │              ##         ##         │
-  │     │                       │                #########           │ any
-  │     ▼                       │                                    │
-  │    ###########              │                                    │          ###########
-  │   #           # ────────────┘                                    └────────▶#           #
+                         levIns=1              #           #
+  levIns=0                is0=1 ┌────────────▶#    old0     #────────┐                 any
+  ┌─────┐                       │              ##         ##         │               ┌──────┐
+  │     │                       │                #########           │ any           │      │
+  │     ▼                       │                                    │               ▼      │
+  │    ###########              │                                    │          ########### │
+  │   #           # ────────────┘                                    └────────▶#           #│
   └──#    top      #                                                          #    na       #
       ##         ## ────┐                                                  ┌──▶##         ##
         #########       │                                                  │     #########
                         │                                                  │
                         │      ###########                  ###########    │ any
-       levIns==curLevel │     #           #      xor=1     #           #   │
+           levIns=1     │     #           #      xor=1     #           #   │
             is0=0       └───▶#   old1      #─────────────▶#    new1     #──┘
                               ##         ##                ##         ##
-                                #########──┐                 #########
-                                           │                     ▲
-                                           │               ┌─────┘
-                                      any  │    ###########│  xor=1
-                                           │   #           #
-                                           └─▶#    btn      #
+                                #########│                   #########
+                                         │                       ▲
+                                         └───┐             ┌─────┘
+                                     xor=0   │  ###########│  xor=1
+                                             │ #           #
+                                             ▼#    btn      #
                                                ##         ##
                                                  #########◀───────┐
                                                      │            │
@@ -55,4 +63,47 @@ na: Not appliable.  After inserting it, we go to the na level.
 
 ***************************************************************************************************/
 
-state
+template SMTInsertSM() {
+  signal input xor;
+  signal input is0;
+  signal input levIns;
+  signal input fnc[0];
+  signal input fnc[1];
+
+  signal input prev_top;
+  signal input prev_old0;
+  signal input prev_old1;
+  signal input prev_bot;
+  signal input prev_new1;
+  signal input prev_na;
+  signal input prev_upd;
+
+  signal output st_top;
+  signal output st_old0;
+  signal output st_old1;
+  signal output st_bot;
+  signal output st_new1;
+  signal output st_na;
+  signal output st_upd;
+
+  signal aux1;
+  signal aux2;
+
+  aux1 <== prev_top * levIns;
+  aux2 <== aux1*is0;
+  st_top <==  prev_top - aux1            // prev_top * (1-levIns) =
+                                         //  = prev_top - aux1;
+  st_old0 <== aux2 * fnc[0];                       // (prev_top * levIns * is0)*fnc[0] = aux2
+  st_old1 <== (aux1 - aux2)*fnc[0];                // (prev_top * levIns * (1-is0))*fnc[0] =
+                                                   //   = (aux1 * (1-is0))*fnc[0] =
+                                                   //   = (aux1 - aux2) * fnc[0]
+  st_new1 <== (prev_old1 + prev_bot)*xor     // prev_old1*xor + prev_bot*xor =
+                                             //   = (prev_old1 + prev_bot)*xor;
+  st_bot <== -st_new1 + prev_old1 + prev_bot // prev_old1*(1-xor) + prev_bot*(1-xor) =
+                                             //  = - prev_old1*xor -prev_bot*xor + prev_old1 + prev_bot =
+                                             //  = -st_new1 + prev_old1 + prev_bot
+  st_na <== prev_new1 + prev_old0 + prev_na + st_upd;
+  st_upd <== aux1*(1-fnc[0]);                // prev_top*levIns*(1-fnc[0]) =
+                                             //   = aux1 * (1-fnc[0])
+
+}

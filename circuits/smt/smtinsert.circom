@@ -96,65 +96,72 @@ Insert to a used leaf.
 
 ***************************************************************************************************/
 
-include "../node_modules/circom/circuits/gates.circom";
-include "../node_modules/circom/circuits/bitify.circom";
+include "../gates.circom";
+include "../bitify.circom";
+include "../comparators.circom";
+include "../switcher.circom";
+include "smtlevins.circom";
+include "smtinsertlevel.circom";
+include "smtinsertsm.circom";
+include "smthash.circom";
 
 template SMTInsert(nLevels) {
     signal input oldRoot;
     signal input newRoot;
     signal input siblings[nLevels];
-    signal input oldHKey;
-    signal input oldHValue;
-    signal input newHKey;
-    signal input newHValue;
+    signal input oldKey;
+    signal input oldValue;
+    signal input isOld0;
+    signal input newKey;
+    signal input newValue;
 
     component hash1Old = SMTHash1();
-    hash1Old.l <== oldHKey;
-    hash1Old.r <== oldHValue;
+    hash1Old.key <== oldKey;
+    hash1Old.value <== oldValue;
 
     component hash1New = SMTHash1();
-    hash1New.l <== newHKey;
-    hash1New.r <== newHValue;
+    hash1New.key <== newKey;
+    hash1New.value <== newValue;
 
-    component n2bOld = Num2BinStrinct();
-    component n2bNew = Num2BinStrinct();
+    component n2bOld = Num2Bits_strict();
+    component n2bNew = Num2Bits_strict();
 
-    component dmtLevIns = SMTLevIns(nLevels);
-    for (var i=0; i<nLevels; i++) dmtLevIns.siblings[i] <== siblings[i];
+    n2bOld.in <== oldKey;
+    n2bNew.in <== newKey;
+
+    component smtLevIns = SMTLevIns(nLevels);
+    for (var i=0; i<nLevels; i++) smtLevIns.siblings[i] <== siblings[i];
 
     component xors[nLevels];
     for (var i=0; i<nLevels; i++) {
         xors[i] = XOR();
         xors[i].a <== n2bOld.out[i];
-        xors[i].a <== n2bNew.out[i];
+        xors[i].b <== n2bNew.out[i];
     }
-
-    component isOld0 = IsZero();
-    isOld0.in <== oldHValue;
 
     component sm[nLevels];
-    for (var i=0; i<sm; i++) {
+    for (var i=0; i<nLevels; i++) {
         sm[i] = SMTInsertSM();
         if (i==0) {
-            sm[i].prevst_top <== 1;
-            sm[i].prevst_old1 <== 0;
-            sm[i].prevst_old0 <== 0;
-            sm[i].prevst_bot <== 0;
-            sm[i].prevst_new1 <== 0;
-            sm[i].prevst_na <== 0;
+            sm[i].prev_top <== 1;
+            sm[i].prev_old1 <== 0;
+            sm[i].prev_old0 <== 0;
+            sm[i].prev_bot <== 0;
+            sm[i].prev_new1 <== 0;
+            sm[i].prev_na <== 0;
         } else {
-            sm[i].prevst_top <== sm[i-1].st_top;
-            sm[i].prevst_old1 <== sm[i-1].st_old1;
-            sm[i].prevst_old0 <== sm[i-1].st_old0;
-            sm[i].prevst_bot <== sm[i-1].st_bot;
-            sm[i].prevst_new1 <== sm[i-1].st_new1;
-            sm[i].prevst_na <== sm[i-1].st_na;
+            sm[i].prev_top <== sm[i-1].st_top;
+            sm[i].prev_old1 <== sm[i-1].st_old1;
+            sm[i].prev_old0 <== sm[i-1].st_old0;
+            sm[i].prev_bot <== sm[i-1].st_bot;
+            sm[i].prev_new1 <== sm[i-1].st_new1;
+            sm[i].prev_na <== sm[i-1].st_na;
         }
-        sm[i].is0 <== isOld0.out;
+        sm[i].is0 <== isOld0;
         sm[i].xor <== xors[i].out;
-        sm[i].levIns <== dmtLevIns.out[i];
+        sm[i].levIns <== smtLevIns.levIns[i];
     }
-    sm[nLevels-1].prevst_na === 1;
+    sm[nLevels-1].st_na === 1;
 
     component levels[nLevels];
     for (var i=nLevels-1; i != -1; i--) {
@@ -171,7 +178,7 @@ template SMTInsert(nLevels) {
         levels[i].old1leaf <== hash1Old.out;
         levels[i].new1leaf <== hash1New.out;
 
-        levels[i].new1lrbit <== n2bNew.out[i];
+        levels[i].newlrbit <== n2bNew.out[i];
         if (i==nLevels-1) {
             levels[i].oldChild <== 0;
             levels[i].newChild <== 0;
