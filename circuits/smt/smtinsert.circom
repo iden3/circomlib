@@ -94,6 +94,15 @@ Insert to a used leaf.
    na                ┃ Hash  ┃                                      ┃ Hash  ┃
                      ┗━━━━━━━┛                                      ┗━━━━━━━┛
 
+
+Fnction
+fnc[0]  fnc[1]
+0       0             NOP
+0       1             UPDATE
+1       0             INSERT
+1       1             DELETE
+
+
 ***************************************************************************************************/
 
 include "../gates.circom";
@@ -114,6 +123,11 @@ template SMTInsert(nLevels) {
     signal input isOld0;
     signal input newKey;
     signal input newValue;
+    signal input fnc[2];
+
+    signal enabled;
+
+    enabled <== fnc[0] + fnc[1] - fnc[0]*fnc[1]
 
     component hash1Old = SMTHash1();
     hash1Old.key <== oldKey;
@@ -131,6 +145,7 @@ template SMTInsert(nLevels) {
 
     component smtLevIns = SMTLevIns(nLevels);
     for (var i=0; i<nLevels; i++) smtLevIns.siblings[i] <== siblings[i];
+    smtLevIns.enabled <== enabled;
 
     component xors[nLevels];
     for (var i=0; i<nLevels; i++) {
@@ -143,12 +158,13 @@ template SMTInsert(nLevels) {
     for (var i=0; i<nLevels; i++) {
         sm[i] = SMTInsertSM();
         if (i==0) {
-            sm[i].prev_top <== 1;
+            sm[i].prev_top <== enabled;
             sm[i].prev_old1 <== 0;
             sm[i].prev_old0 <== 0;
             sm[i].prev_bot <== 0;
             sm[i].prev_new1 <== 0;
-            sm[i].prev_na <== 0;
+            sm[i].prev_na <== 1-enabled;
+            sm[i].prev_upd <== 0;
         } else {
             sm[i].prev_top <== sm[i-1].st_top;
             sm[i].prev_old1 <== sm[i-1].st_old1;
@@ -156,9 +172,12 @@ template SMTInsert(nLevels) {
             sm[i].prev_bot <== sm[i-1].st_bot;
             sm[i].prev_new1 <== sm[i-1].st_new1;
             sm[i].prev_na <== sm[i-1].st_na;
+            sm[i].prev_upd <== sm[i-1].st_upd;
         }
         sm[i].is0 <== isOld0;
         sm[i].xor <== xors[i].out;
+        sm[i].fnc[0] <== fnc[0];
+        sm[i].fnc[1] <== fnc[1];
         sm[i].levIns <== smtLevIns.levIns[i];
     }
     sm[nLevels-1].st_na === 1;
@@ -172,7 +191,8 @@ template SMTInsert(nLevels) {
         levels[i].st_old0 <== sm[i].st_old0;
         levels[i].st_bot <== sm[i].st_bot;
         levels[i].st_new1 <== sm[i].st_new1;
-        levels[i].st_na <==sm[i].st_na;
+        levels[i].st_na <== sm[i].st_na;
+        levels[i].st_upd <== sm[i].st_upd;
 
         levels[i].sibling <== siblings[i];
         levels[i].old1leaf <== hash1Old.out;
@@ -188,6 +208,12 @@ template SMTInsert(nLevels) {
         }
     }
 
-    levels[0].oldRoot === oldRoot;
-    levels[0].newRoot === newRoot;
+    component topSwitcher = Switcher();
+
+    topSwitcher.sel <== fnc[0]*fnc[1];
+    topSwitcher.L <== levels[0].oldRoot;
+    topSwitcher.R <== levels[0].newRoot;
+
+    topSwitcher.outL === oldRoot*enabled;
+    topSwitcher.outR === newRoot*enabled;
 }

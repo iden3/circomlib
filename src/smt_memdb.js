@@ -10,21 +10,40 @@ class SMTMemDb {
         return this.root;
     }
 
-    async get(key) {
-        const res = [];
-        const keyS = bigInt(key).leInt2Buff(32).toString("hex");
-        for (let i=0; i<this.nodes[keyS].length; i++) {
-            res.push(bigInt(this.nodes[keyS][i]));
-        }
-        return res;
+    _key2str(k) {
+        // const keyS = bigInt(key).leInt2Buff(32).toString("hex");
+        const keyS = bigInt(k).toString();
+        return keyS;
     }
 
-    async save(root, inserts) {
+    _normalize(n) {
+        for (let i=0; i<n.length; i++) {
+            n[i] = bigInt(n[i]);
+        }
+    }
+
+    async get(key) {
+        const keyS = this._key2str(key);
+        return this.nodes[keyS];
+    }
+
+    async setRoot(rt) {
+        this.root = rt;
+    }
+
+    async multiIns(inserts) {
         for (let i=0; i<inserts.length; i++) {
-            const keyS = bigInt(inserts[i][0]).leInt2Buff(32).toString("hex");
+            const keyS = this._key2str(inserts[i][0]);
+            this._normalize(inserts[i][1]);
             this.nodes[keyS] = inserts[i][1];
         }
-        this.root = root;
+    }
+
+    async multiDel(dels) {
+        for (let i=0; i<dels.length; i++) {
+            const keyS = this._key2str(dels[i]);
+            delete this.nodes[keyS];
+        }
     }
 }
 
