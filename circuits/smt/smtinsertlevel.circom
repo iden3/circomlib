@@ -11,10 +11,9 @@ Outputs according to the state.
 State        oldRoot                    newRoot
 =====        =======                    =======
 top          H'(oldChild, sibling)       H'(newChild, sibling)
-old1         old1leaf                    H'(newChild, 0)
 old0         0                           new1leaf
-bot          0                           H'(newChild, 0)
-new1         0                           H'(new1leaf, old1leaf)
+bot          old1leaf                    H'(newChild, 0)
+new1         old1leaf                    H'(new1leaf, old1leaf)
 na           0                           0
 
 upd          old1leaf                    new1leaf
@@ -26,7 +25,6 @@ H' is the Hash function with the inputs shifted acordingly.
 
 template SMTInsertLevel() {
     signal input st_top;
-    signal input st_old1;
     signal input st_old0;
     signal input st_bot;
     signal input st_new1;
@@ -59,12 +57,12 @@ template SMTInsertLevel() {
     oldProofHash.L <== oldSwitcher.outL;
     oldProofHash.R <== oldSwitcher.outR;
 
-    aux[0] <== old1leaf * (st_old1 + st_upd);
+    aux[0] <== old1leaf * (st_bot + st_new1 + st_upd);
     oldRoot <== aux[0] +  oldProofHash.out * st_top;
 
     // New side
 
-    aux[1] <== newChild * ( st_top + st_old1 + st_bot);
+    aux[1] <== newChild * ( st_top + st_bot);
     newSwitcher.L <== aux[1] + new1leaf*st_new1;
 
     aux[2] <== sibling*st_top;
@@ -74,6 +72,6 @@ template SMTInsertLevel() {
     newProofHash.L <== newSwitcher.outL;
     newProofHash.R <== newSwitcher.outR;
 
-    aux[3] <== newProofHash.out * (st_top + st_old1 + st_bot + st_new1);
+    aux[3] <== newProofHash.out * (st_top + st_bot + st_new1);
     newRoot <==  aux[3] + new1leaf * (st_old0 + st_upd);
 }

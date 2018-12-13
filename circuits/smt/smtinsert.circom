@@ -66,7 +66,7 @@ Insert to a used leaf.
                                    │                                               │
                                    │                                               │
                               ┌────┴────┐                                      ┏━━━┻━━━┓   ┌───────┐
-  old1                        │Old1Leaf │                               ┌─────▶┃ Hash  ┃◀──┼─  0   │
+   bot                        │Old1Leaf │                               ┌─────▶┃ Hash  ┃◀──┼─  0   │
                               └─────────┘                               │      ┗━━━━━━━┛   └───────┘
                                                                         │
                                                                         │
@@ -159,7 +159,6 @@ template SMTInsert(nLevels) {
         sm[i] = SMTInsertSM();
         if (i==0) {
             sm[i].prev_top <== enabled;
-            sm[i].prev_old1 <== 0;
             sm[i].prev_old0 <== 0;
             sm[i].prev_bot <== 0;
             sm[i].prev_new1 <== 0;
@@ -167,7 +166,6 @@ template SMTInsert(nLevels) {
             sm[i].prev_upd <== 0;
         } else {
             sm[i].prev_top <== sm[i-1].st_top;
-            sm[i].prev_old1 <== sm[i-1].st_old1;
             sm[i].prev_old0 <== sm[i-1].st_old0;
             sm[i].prev_bot <== sm[i-1].st_bot;
             sm[i].prev_new1 <== sm[i-1].st_new1;
@@ -187,7 +185,6 @@ template SMTInsert(nLevels) {
         levels[i] = SMTInsertLevel();
 
         levels[i].st_top <== sm[i].st_top;
-        levels[i].st_old1 <== sm[i].st_old1;
         levels[i].st_old0 <== sm[i].st_old0;
         levels[i].st_bot <== sm[i].st_bot;
         levels[i].st_new1 <== sm[i].st_new1;

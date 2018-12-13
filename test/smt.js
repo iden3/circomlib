@@ -108,8 +108,8 @@ describe("SMT test", function () {
         const tree6 = await smt.newMemEmptyTrie();
 
         await testInsert(tree1,keys[0],values[0], circuit);
-        await testInsert(tree1,keys[1],values[1], circuit, console.log);
-/*        await testInsert(tree1,keys[2],values[2], circuit);
+        await testInsert(tree1,keys[1],values[1], circuit);
+        await testInsert(tree1,keys[2],values[2], circuit);
 
         await testInsert(tree2,keys[0],values[0], circuit);
         await testInsert(tree2,keys[2],values[2], circuit);
@@ -153,7 +153,7 @@ describe("SMT test", function () {
         await testDelete(tree3, keys[1], circuit);
         await testDelete(tree4, keys[1], circuit);
         await testDelete(tree5, keys[0], circuit);
-        await testDelete(tree6, keys[0], circuit); */
+        await testDelete(tree6, keys[0], circuit);
     });
 
     it("Should match a NOp with random vals", async () => {
