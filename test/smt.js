@@ -16,7 +16,7 @@ function print(circuit, w, s) {
 async function testInsert(tree, key, value, circuit, log ) {
 
     const res = await tree.insert(key,value);
-    let siblings = res.sibblings;
+    let siblings = res.siblings;
     while (siblings.length<10) siblings.push(bigInt(0));
 
     const w = circuit.calculateWitness({
@@ -38,7 +38,7 @@ async function testInsert(tree, key, value, circuit, log ) {
 
 async function testDelete(tree, key, circuit) {
     const res = await tree.delete(key);
-    let siblings = res.sibblings;
+    let siblings = res.siblings;
     while (siblings.length<10) siblings.push(bigInt(0));
 
     const w = circuit.calculateWitness({
@@ -59,6 +59,29 @@ async function testDelete(tree, key, circuit) {
     assert(root1.equals(res.newRoot));
 }
 
+async function testUpdate(tree, key, newValue, circuit) {
+    const res = await tree.update(key, newValue);
+    let siblings = res.siblings;
+    while (siblings.length<10) siblings.push(bigInt(0));
+
+    const w = circuit.calculateWitness({
+        fnc: [0,1],
+        oldRoot: res.oldRoot,
+        newRoot: res.newRoot,
+        siblings: siblings,
+        oldKey: res.oldKey,
+        oldValue: res.oldValue,
+        isOld0: 0,
+        newKey: res.newKey,
+        newValue: res.newValue
+    });
+
+    const root1 = w[circuit.getSignalIdx("main.topSwitcher.outR")];
+
+    assert(circuit.checkWitness(w));
+    assert(root1.equals(res.newRoot));
+}
+
 
 describe("SMT test", function () {
     let circuit;
@@ -67,11 +90,11 @@ describe("SMT test", function () {
     this.timeout(100000);
 
     before( async () => {
-        const cirDef = await compiler(path.join(__dirname, "circuits", "smtinsert10_test.circom"));
+        const cirDef = await compiler(path.join(__dirname, "circuits", "smtprocessor10_test.circom"));
 
         circuit = new snarkjs.Circuit(cirDef);
 
-        console.log("NConstrains SMTInsert: " + circuit.nConstraints);
+        console.log("NConstrains SMTProcessor: " + circuit.nConstraints);
 
         tree = await smt.newMemEmptyTrie();
     });
@@ -175,7 +198,20 @@ describe("SMT test", function () {
 
     });
     it("Should update an element", async () => {
+        const tree1 = await smt.newMemEmptyTrie();
+        const tree2 = await smt.newMemEmptyTrie();
 
+        await testInsert(tree1,8,88, circuit);
+        await testInsert(tree1,9,99, circuit);
+        await testInsert(tree1,32,3232, circuit);
+
+        await testInsert(tree2,8,888, circuit);
+        await testInsert(tree2,9,999, circuit);
+        await testInsert(tree2,32,323232, circuit);
+
+        await testUpdate(tree1, 8, 888, circuit);
+        await testUpdate(tree1, 9, 999, circuit);
+        await testUpdate(tree1, 32, 323232, circuit);
     });
 
     it("Should verify existance of an element", async () => {

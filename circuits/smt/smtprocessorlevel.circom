@@ -2,7 +2,7 @@
 
 /******
 
-SMTInsertLevel
+SMTProcessorLevel
 
 This circuit has 2 has
 
@@ -23,7 +23,7 @@ H' is the Hash function with the inputs shifted acordingly.
 *****/
 
 
-template SMTInsertLevel() {
+template SMTProcessorLevel() {
     signal input st_top;
     signal input st_old0;
     signal input st_bot;

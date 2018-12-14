@@ -160,4 +160,23 @@ describe("SMT Javascript test", function () {
         assert.equal(Object.keys(tree.db.nodes).length, 0);
     });
 
+    it("Should test update", async () => {
+        const tree1 = await smt.newMemEmptyTrie();
+        const tree2 = await smt.newMemEmptyTrie();
+
+        await tree1.insert(8,88);
+        await tree1.insert(9,99,);
+        await tree1.insert(32,3232);
+
+        await tree2.insert(8,888);
+        await tree2.insert(9,999);
+        await tree2.insert(32,323232);
+
+        await tree1.update(8, 888);
+        await tree1.update(9, 999);
+        await tree1.update(32, 323232);
+
+        assert(tree1.root.equals(tree2.root));
+    });
+
 });

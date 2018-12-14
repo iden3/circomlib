@@ -110,11 +110,11 @@ include "../bitify.circom";
 include "../comparators.circom";
 include "../switcher.circom";
 include "smtlevins.circom";
-include "smtinsertlevel.circom";
-include "smtinsertsm.circom";
+include "smtprocessorlevel.circom";
+include "smtprocessorsm.circom";
 include "smthash.circom";
 
-template SMTInsert(nLevels) {
+template SMTProcessor(nLevels) {
     signal input oldRoot;
     signal input newRoot;
     signal input siblings[nLevels];
@@ -156,7 +156,7 @@ template SMTInsert(nLevels) {
 
     component sm[nLevels];
     for (var i=0; i<nLevels; i++) {
-        sm[i] = SMTInsertSM();
+        sm[i] = SMTProcessorSM();
         if (i==0) {
             sm[i].prev_top <== enabled;
             sm[i].prev_old0 <== 0;
@@ -182,7 +182,7 @@ template SMTInsert(nLevels) {
 
     component levels[nLevels];
     for (var i=nLevels-1; i != -1; i--) {
-        levels[i] = SMTInsertLevel();
+        levels[i] = SMTProcessorLevel();
 
         levels[i].st_top <== sm[i].st_top;
         levels[i].st_old0 <== sm[i].st_old0;

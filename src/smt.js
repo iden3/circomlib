@@ -37,6 +37,55 @@ class SMT {
         return res;
     }
 
+    async update(_key, _newValue) {
+        const key = bigInt(_key);
+        const newValue = bigInt(_newValue);
+
+
+        const resFind = await this.find(key);
+        const res = {};
+        res.oldRoot = this.root;
+        res.oldKey = key;
+        res.oldValue = resFind.foundValue;
+        res.newKey = key;
+        res.newValue = newValue;
+        res.siblings = resFind.siblings;
+
+        const ins = [];
+        const dels = [];
+
+        let rtOld = smtHash([1, key, resFind.foundValue]);
+        let rtNew = smtHash([1, key, newValue]);
+        ins.push([rtNew, [1, key, newValue ]]);
+        dels.push(rtOld);
+
+        const keyBits = this._splitBits(key);
+        for (let level = resFind.siblings.length-1; level >=0; level--) {
+            let oldNode, newNode;
+            const sibling = resFind.siblings[level];
+            if (keyBits[level]) {
+                oldNode = [sibling, rtOld];
+                newNode = [sibling, rtNew];
+            } else {
+                oldNode = [rtOld, sibling, ];
+                newNode = [rtNew, sibling, ];
+            }
+            rtOld = smtHash(oldNode);
+            rtNew = smtHash(newNode);
+            dels.push(rtOld);
+            ins.push([rtNew, newNode]);
+        }
+
+        res.newRoot = rtNew;
+
+        await this.db.multiIns(ins);
+        await this.db.setRoot(rtNew);
+        this.root = rtNew;
+        await this.db.multiDel(dels);
+
+        return res;
+    }
+
     async delete(_key) {
         const key = bigInt(_key);
 
@@ -44,7 +93,7 @@ class SMT {
         if (!resFind.found) throw new Error("Key does not exists");
 
         const res = {
-            sibblings: [],
+            siblings: [],
             delKey: key,
             delValue: resFind.foundValue
         };
@@ -55,16 +104,15 @@ class SMT {
         let rtNew;
         dels.push(rtOld);
 
-
         let mixed;
-        if (resFind.sibblings.length > 0) {
-            const record = await this.db.get(resFind.sibblings[resFind.sibblings.length - 1]);
+        if (resFind.siblings.length > 0) {
+            const record = await this.db.get(resFind.siblings[resFind.siblings.length - 1]);
             if ((record.length == 3)&&(record[0].equals(bigInt.one))) {
                 mixed = false;
                 res.oldKey = record[1];
                 res.oldValue = record[2];
                 res.isOld0 = false;
-                rtNew = resFind.sibblings[resFind.sibblings.length - 1];
+                rtNew = resFind.siblings[resFind.siblings.length - 1];
             } else if (record.length == 2) {
                 mixed = true;
                 res.oldKey = key;
@@ -83,12 +131,12 @@ class SMT {
 
         const keyBits = this._splitBits(key);
 
-        for (let level = resFind.sibblings.length-1; level >=0; level--) {
-            let newSibling = resFind.sibblings[level];
-            if ((level == resFind.sibblings.length-1)&&(!res.isOld0)) {
+        for (let level = resFind.siblings.length-1; level >=0; level--) {
+            let newSibling = resFind.siblings[level];
+            if ((level == resFind.siblings.length-1)&&(!res.isOld0)) {
                 newSibling = bigInt.zero;
             }
-            const oldSibling = resFind.sibblings[level];
+            const oldSibling = resFind.siblings[level];
             if (keyBits[level]) {
                 rtOld = smtHash([oldSibling, rtOld]);
             } else {
@@ -100,7 +148,7 @@ class SMT {
             }
 
             if (mixed) {
-                res.sibblings.unshift(resFind.sibblings[level]);
+                res.siblings.unshift(resFind.siblings[level]);
                 let newNode;
                 if (keyBits[level]) {
                     newNode = [newSibling, rtNew];
@@ -137,19 +185,19 @@ class SMT {
 
         if (resFind.found) throw new Error("Key already exists");
 
-        res.sibblings = resFind.sibblings;
+        res.siblings = resFind.siblings;
         let mixed;
 
         if (!resFind.isOld0) {
             const oldKeyits = this._splitBits(resFind.notFoundKey);
-            for (let i= res.sibblings.length; oldKeyits[i] == newKeyBits[i]; i++) {
-                res.sibblings.push(bigInt.zero);
+            for (let i= res.siblings.length; oldKeyits[i] == newKeyBits[i]; i++) {
+                res.siblings.push(bigInt.zero);
             }
             rtOld = smtHash([1, resFind.notFoundKey, resFind.notFoundValue]);
-            res.sibblings.push(rtOld);
+            res.siblings.push(rtOld);
             addedOne = true;
             mixed = false;
-        } else if (res.sibblings.length >0) {
+        } else if (res.siblings.length >0) {
             mixed = true;
             rtOld = bigInt.zero;
         }
@@ -160,12 +208,12 @@ class SMT {
         let rt = smtHash([1, key, value]);
         inserts.push([rt,[1, key, value]] );
 
-        for (let i=res.sibblings.length-1; i>=0; i--) {
-            if ((i<res.sibblings.length-1)&&(!res.sibblings[i].isZero())) {
+        for (let i=res.siblings.length-1; i>=0; i--) {
+            if ((i<res.siblings.length-1)&&(!res.siblings[i].isZero())) {
                 mixed = true;
             }
             if (mixed) {
-                const oldSibling = resFind.sibblings[i];
+                const oldSibling = resFind.siblings[i];
                 if (newKeyBits[i]) {
                     rtOld = smtHash([oldSibling, rtOld]);
                 } else {
@@ -177,18 +225,18 @@ class SMT {
 
             let newRt;
             if (newKeyBits[i]) {
-                newRt = smtHash([res.sibblings[i], rt]);
-                inserts.push([newRt,[res.sibblings[i], rt]] );
+                newRt = smtHash([res.siblings[i], rt]);
+                inserts.push([newRt,[res.siblings[i], rt]] );
             } else {
-                newRt = smtHash([rt, res.sibblings[i]]);
-                inserts.push([newRt,[rt, res.sibblings[i]]] );
+                newRt = smtHash([rt, res.siblings[i]]);
+                inserts.push([newRt,[rt, res.siblings[i]]] );
             }
             rt = newRt;
         }
 
-        if (addedOne) res.sibblings.pop();
-        while ((res.sibblings.length>0) && (res.sibblings[res.sibblings.length-1].isZero())) {
-            res.sibblings.pop();
+        if (addedOne) res.siblings.pop();
+        while ((res.siblings.length>0) && (res.siblings[res.siblings.length-1].isZero())) {
+            res.siblings.pop();
         }
         res.oldKey = resFind.notFoundKey;
         res.oldValue = resFind.notFoundValue;
@@ -216,7 +264,7 @@ class SMT {
         if (root.isZero()) {
             res = {
                 found: false,
-                sibblings: [],
+                siblings: [],
                 notFoundKey: key,
                 notFoundValue: bigInt.zero,
                 isOld0: true
@@ -230,14 +278,14 @@ class SMT {
             if (record[1].equals(key)) {
                 res = {
                     found: true,
-                    sibblings: [],
+                    siblings: [],
                     foundValue: record[2],
                     isOld0: false
                 };
             } else {
                 res = {
                     found: false,
-                    sibblings: [],
+                    siblings: [],
                     notFoundKey: record[1],
                     notFoundValue: record[2],
                     isOld0: false
@@ -246,10 +294,10 @@ class SMT {
         } else {
             if (keyBits[level] == 0) {
                 res = await this._find(key, keyBits, record[0], level+1);
-                res.sibblings.unshift(record[1]);
+                res.siblings.unshift(record[1]);
             } else {
                 res = await this._find(key, keyBits, record[1], level+1);
-                res.sibblings.unshift(record[0]);
+                res.siblings.unshift(record[0]);
             }
         }
         return res;
