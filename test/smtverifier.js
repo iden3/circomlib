@@ -51,7 +51,7 @@ async function testExclusion(tree, key, circuit) {
         isOld0: res.isOld0 ? 1 : 0,
         key: key,
         value: 0
-    }, console.log);
+    });
 
     assert(circuit.checkWitness(w));
 }
@@ -82,13 +82,13 @@ describe("SMT test", function () {
     });
 
     it("Check exclussion in a tree of 3", async () => {
-//        await testExclusion(tree, 0, circuit);
+        await testExclusion(tree, 0, circuit);
         await testExclusion(tree, 6, circuit);
-/*        await testExclusion(tree, 9, circuit);
+        await testExclusion(tree, 9, circuit);
         await testExclusion(tree, 33, circuit);
         await testExclusion(tree, 31, circuit);
         await testExclusion(tree, 16, circuit);
-        await testExclusion(tree, 64, circuit); */
+        await testExclusion(tree, 64, circuit);
     });
 
 

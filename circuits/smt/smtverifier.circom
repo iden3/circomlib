@@ -46,13 +46,6 @@ template SMTVerifier(nLevels) {
     for (var i=0; i<nLevels; i++) smtLevIns.siblings[i] <== siblings[i];
     smtLevIns.enabled <== 1;
 
-    component xors[nLevels];
-    for (var i=0; i<nLevels; i++) {
-        xors[i] = XOR();
-        xors[i].a <== n2bOld.out[i];
-        xors[i].b <== n2bNew.out[i];
-    }
-
     component sm[nLevels];
     for (var i=0; i<nLevels; i++) {
         sm[i] = SMTVerifierSM();
@@ -70,11 +63,10 @@ template SMTVerifier(nLevels) {
             sm[i].prev_na <== sm[i-1].st_na;
         }
         sm[i].is0 <== isOld0;
-        sm[i].xor <== xors[i].out;
         sm[i].fnc <== fnc;
         sm[i].levIns <== smtLevIns.levIns[i];
     }
-//    sm[nLevels-1].st_na === 1;
+    sm[nLevels-1].st_na === 1;
 
     component levels[nLevels];
     for (var i=nLevels-1; i != -1; i--) {

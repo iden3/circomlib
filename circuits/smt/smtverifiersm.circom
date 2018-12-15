@@ -15,38 +15,32 @@ err state is not a state itself. It's a lack of state.
 
 The end of the last level will have to be `na`
 
-                          levIns=0               ###########
-                          xor=1                 #           #
-                          fnc=1    ┌──────────▶#   err       #
-                                   │            ##         ##
-  levIns=0                         │              #########
-  xor=0 || fnc=0                   │                                                        any
-      ┌────┐                       │                                                      ┌────┐
-      │    │                       │                                                      │    │
-      │    ▼                       │  levIns=1                                            ▼    │
-      │    ###########             │  is0=1      ###########                    ###########    │
-      │   #           # ───────────┘  fnc=1     #           #       any        #           #   │
-      └──#    top      # ─────────────────────▶#     i0      #───────────────▶#    na       #──┘
-          ##         ## ──────────┐             ##         ##         ┌───────▶##         ##
-            ########─────────────┐│               #########           │┌────────▶#########
-                                 ││ levIns=1                          ││
-                                 ││ is0=0        ###########          ││
-                                 ││ fnc=1       #           #       any│
-                                 │└──────────▶ #    iold     #────────┘│
-                                 │              ##         ##          │
-                                 │                #########            │
-                                 │                                     │
-                                 │  levIns=1     ###########           │
-                                 │  fnc=0       #           #        any
-                                 └────────────▶#    inew     #─────────┘
-                                                ##         ##
-                                                  #########
+   levIns=0                                                                                any
+     ┌────┐                                                                              ┌────┐
+     │    │                                                                              │    │
+     │    ▼                          levIns=1                                            ▼    │
+     │    ###########                is0=1      ###########                    ###########    │
+     │   #           #               fnc=1     #           #       any        #           #   │
+     └──#    top      # ─────────────────────▶#     i0      #───────────────▶#    na       #──┘
+         ##         ## ──────────┐             ##         ##         ┌───────▶##         ##
+           ########─────────────┐│               #########           │┌────────▶#########
+                                ││ levIns=1                          ││
+                                ││ is0=0        ###########          ││
+                                ││ fnc=1       #           #       any│
+                                │└──────────▶ #    iold     #────────┘│
+                                │              ##         ##          │
+                                │                #########            │
+                                │                                     │
+                                │  levIns=1     ###########           │
+                                │  fnc=0       #           #        any
+                                └────────────▶#    inew     #─────────┘
+                                               ##         ##
+                                                 #########
 
  */
 
 
 template SMTVerifierSM() {
-    signal input xor;
     signal input is0;
     signal input levIns;
     signal input fnc;
@@ -65,19 +59,14 @@ template SMTVerifierSM() {
 
     signal prev_top_lev_ins;
     signal prev_top_lev_ins_fnc;
-    signal xor_fnc;
 
     prev_top_lev_ins <== prev_top * levIns;
     prev_top_lev_ins_fnc <== prev_top_lev_ins*fnc;  // prev_top * levIns * fnc
-    xor_fnc <== xor*fnc;
 
-
-    // st_top = prev_top * (1-levIns) * (1 - xor*fnc)
+    // st_top = prev_top * (1-levIns)
     //    = + prev_top
     //      - prev_top * levIns
-    //      - prev_top *          xor * fnc
-    //      + prev_top * levIns * xor * fnc
-    st_top <== (prev_top - prev_top_lev_ins)*(1-xor_fnc);
+    st_top <== prev_top - prev_top_lev_ins;
 
     // st_inew = prev_top * levIns * (1-fnc)
     //   = + prev_top * levIns
