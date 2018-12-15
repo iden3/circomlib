@@ -1,10 +1,8 @@
-
-
 /******
 
 SMTProcessorLevel
 
-This circuit has 2 has
+This circuit has 2 hash
 
 Outputs according to the state.
 

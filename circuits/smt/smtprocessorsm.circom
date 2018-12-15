@@ -15,9 +15,9 @@ are inserting/deleting in a leaf that contains an element.
 The states are:
 
 top: While the index bits of the old and new insex in the top level is the same, whe are in the top state.
-old0 and old1: When the we reach processor level,  we go to old0 and old1 states
-according to `is0` signal.
-btn: Once in old1 we go to btn until xor=1
+old0: When the we reach insert level,  we go to old0 state
+if `is0`=1.
+btn: Once in insert level and `is0` =0 we go to btn or new1 level if xor=1
 new1: This level is reached when xor=1. Here is where we insert/delete the hash of the
 old and the new trees with just one element.
 na: Not appliable.  After processing it, we go to the na level.

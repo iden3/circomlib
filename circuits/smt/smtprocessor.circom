@@ -1,5 +1,9 @@
 /***************************************************************************************************
 
+SMTProcessor: Sparse Merkle Tree processor is a component to verify an insert/update/delete elements
+into the Sparse Merkle tree.
+
+
 Insert to an empty leaf
 =======================
 
@@ -213,4 +217,16 @@ template SMTProcessor(nLevels) {
 
     topSwitcher.outL === oldRoot*enabled;
     topSwitcher.outR === newRoot*enabled;
+
+    // Ckeck keys are equal if updating
+    component areKeyEquals = IsEqual();
+    areKeyEquals.in[0] <== oldKey;
+    areKeyEquals.in[1] <== newKey;
+
+    component keysOk = MultiAND(3);
+    keysOk.in[0] <== 1-fnc[0];
+    keysOk.in[1] <== fnc[1];
+    keysOk.in[2] <== 1-areKeyEquals.out;
+
+    keysOk.out === 0;
 }
