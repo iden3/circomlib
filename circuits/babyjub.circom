@@ -11,7 +11,6 @@ template BabyAdd() {
     signal beta;
     signal gamma;
     signal delta;
-    signal epsilon;
     signal tau;
 
     var a = 168700;
@@ -19,15 +18,14 @@ template BabyAdd() {
 
     beta <== x1*y2;
     gamma <== y1*x2;
-    delta <== y1*y2;
-    epsilon <== x1*x2;
-    tau <== delta * epsilon;
+    delta <== (-a*x1+y1)*(x2 + y2);
+    tau <== beta * gamma;
 
     xout <-- (beta + gamma) / (1+ d*tau);
     (1+ d*tau) * xout === (beta + gamma);
 
-    yout <-- (delta - a * epsilon) / (1-d*tau);
-    (1-d*tau)*yout === (delta - a * epsilon);
+    yout <-- (delta + a*beta - gamma) / (1-d*tau);
+    (1-d*tau)*yout === (delta + a*beta - gamma);
 }
 
 template BabyDbl() {
