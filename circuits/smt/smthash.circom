@@ -11,7 +11,7 @@ template SMTHash1() {
     signal output out;
 
     component h1 = MiMC7(91);   // Constant
-    h1.x_in <== 0;
+    h1.x_in <== 15021630795539610737508582392395901278341266317943626182700664337106830745361;
     h1.k <== 1;
 
     component h2 = MiMC7(91);
@@ -37,7 +37,7 @@ template SMTHash2() {
     signal output out;
 
     component h1 = MiMC7(91);
-    h1.x_in <== 0;
+    h1.x_in <== 15021630795539610737508582392395901278341266317943626182700664337106830745361;
     h1.k <== L;
 
     component h2 = MiMC7(91);

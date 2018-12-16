@@ -3,11 +3,20 @@ const bigInt = require("snarkjs").bigInt;
 const Web3 = require("web3");
 const F = bn128.Fr;
 
-const SEED = "iden3_mimc";
-const nRounds = 91;
+const SEED = "mimc";
+const NROUNDS = 91;
 
+exports.getIV = (seed) => {
+    if (typeof seed === "undefined") seed = SEED;
+    const c = Web3.utils.keccak256(seed+"_iv");
+    const cn = bigInt(Web3.utils.toBN(c).toString());
+    const iv = cn.mod(F.q);
+    return iv;
+};
 
 exports.getConstants = (seed, nRounds) => {
+    if (typeof seed === "undefined") seed = SEED;
+    if (typeof nRounds === "undefined") nRounds = NROUNDS;
     const cts = new Array(nRounds);
     let c = Web3.utils.keccak256(SEED);
     for (let i=1; i<nRounds; i++) {
@@ -27,7 +36,7 @@ exports.hash =  (_x_in, _k) =>{
     const x_in = bigInt(_x_in);
     const k = bigInt(_k);
     let r;
-    for (let i=0; i<nRounds; i++) {
+    for (let i=0; i<NROUNDS; i++) {
         const c = cts[i];
         const t = (i==0) ? F.add(x_in, k) : F.add(F.add(r, k), c);
         r = F.exp(t, 7);

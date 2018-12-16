@@ -8,7 +8,7 @@ const mimcjs = require("../src/mimc7.js");
 const assert = chai.assert;
 const log = (msg) => { if (process.env.MOCHA_VERBOSE) console.log(msg); };
 
-const SEED = "iden3_mimc";
+const SEED = "mimc";
 
 describe("MiMC Smart contract test", () => {
     let testrpc;

@@ -1,12 +1,12 @@
 const bigInt = require("snarkjs").bigInt;
 
 const SMTMemDB = require("./smt_memdb");
-const mimc7 = require("./mimc7").hash;
+const mimc7 = require("./mimc7");
 
 function smtHash(arr) {
-    let r = bigInt(0);
+    let r = mimc7.getIV();
     for (let i=0; i<arr.length; i++) {
-        r = mimc7(r, bigInt(arr[i]));
+        r = mimc7.hash(r, bigInt(arr[i]));
     }
     return r;
 }

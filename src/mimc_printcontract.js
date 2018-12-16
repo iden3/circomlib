@@ -1,6 +1,6 @@
 const mimcGenContract = require("./mimc_gencontract");
 
-const SEED = "iden3_mimc";
+const SEED = "mimc";
 
 let nRounds;
 if (typeof process.argv[2] != "undefined") {
@@ -10,3 +10,4 @@ if (typeof process.argv[2] != "undefined") {
 }
 
 console.log(mimcGenContract.createCode(SEED, nRounds));
+

@@ -4,7 +4,7 @@ const babyJub = require("./babyjub");
 const assert = require("assert");
 const createBlakeHash = require("blake-hash");
 
-const GENPOINT_PREFIX = "Iden3_PedersenGenerator";
+const GENPOINT_PREFIX = "PedersenGenerator";
 const windowSize = 4;
 const nWindowsPerSegment = 50;
 
