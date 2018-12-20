@@ -1,7 +1,7 @@
 {
-  "name": "cirpedersen",
-  "version": "0.0.3",
-  "description": "Pesersen Circuit for Circom",
+  "name": "circomlib",
+  "version": "0.0.1",
+  "description": "Basic circuits library for Circom",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -17,7 +17,11 @@
     "circom",
     "zksnark"
   ],
-  "author": "Jordi Baylina",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iden3/circomlib.git"
+  },
+  "author": "0Kims",
   "license": "GPL-3.0",
   "dependencies": {
     "blake-hash": "^1.1.0",
