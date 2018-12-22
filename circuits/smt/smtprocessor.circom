@@ -139,7 +139,7 @@ include "smthash.circom";
 
 template SMTProcessor(nLevels) {
     signal input oldRoot;
-    signal input newRoot;
+    signal output newRoot;
     signal input siblings[nLevels];
     signal input oldKey;
     signal input oldValue;
@@ -201,7 +201,7 @@ template SMTProcessor(nLevels) {
         sm[i].fnc[1] <== fnc[1];
         sm[i].levIns <== smtLevIns.levIns[i];
     }
-    sm[nLevels-1].st_na === 1;
+    sm[nLevels-1].st_na + sm[nLevels-1].st_new1 + sm[nLevels-1].st_old0 +sm[nLevels-1].st_upd === 1;
 
     component levels[nLevels];
     for (var i=nLevels-1; i != -1; i--) {
@@ -234,8 +234,15 @@ template SMTProcessor(nLevels) {
     topSwitcher.L <== levels[0].oldRoot;
     topSwitcher.R <== levels[0].newRoot;
 
-    topSwitcher.outL === oldRoot*enabled;
-    topSwitcher.outR === newRoot*enabled;
+    component checkOldInput = ForceEqualIfEnabled();
+    checkOldInput.enabled <== enabled;
+    checkOldInput.in[0] <== oldRoot;
+    checkOldInput.in[1] <== topSwitcher.outL;
+
+    newRoot <== enabled * (topSwitcher.outR - oldRoot) + oldRoot;
+
+//    topSwitcher.outL === oldRoot*enabled;
+//    topSwitcher.outR === newRoot*enabled;
 
     // Ckeck keys are equal if updating
     component areKeyEquals = IsEqual();

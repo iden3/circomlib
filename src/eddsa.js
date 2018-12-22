@@ -2,12 +2,15 @@ const createBlakeHash = require("blake-hash");
 const bigInt = require("snarkjs").bigInt;
 const babyJub = require("./babyjub");
 const pedersenHash = require("./pedersenHash").hash;
+const mimc7 = require("./mimc7");
 const crypto = require("crypto");
 
 exports.cratePrvKey = cratePrvKey;
 exports.prv2pub= prv2pub;
 exports.sign = sign;
+exports.signMiMC = signMiMC;
 exports.verify = verify;
+exports.verifyMiMC = verifyMiMC;
 exports.packSignature = packSignature;
 exports.unpackSignature = unpackSignature;
 
@@ -52,6 +55,25 @@ function sign(prv, msg) {
     };
 }
 
+function signMiMC(prv, msg) {
+    const h1 = createBlakeHash("blake512").update(prv).digest();
+    const sBuff = pruneBuffer(h1.slice(0,32));
+    const s = bigInt.leBuff2int(sBuff);
+    const A = babyJub.mulPointEscalar(babyJub.Base8, s.shr(3));
+
+    const msgBuff = bigInt.leInt2Buff(msg, 32);
+    const rBuff = createBlakeHash("blake512").update(Buffer.concat([h1.slice(32,64), msgBuff])).digest();
+    let r = bigInt.leBuff2int(rBuff);
+    r = r.mod(babyJub.subOrder);
+    const R8 = babyJub.mulPointEscalar(babyJub.Base8, r);
+    const hm = mimc7.multiHash([R8[0], R8[1], A[0], A[1], msg]);
+    const S = r.add(hm.mul(s)).mod(babyJub.subOrder);
+    return {
+        R8: R8,
+        S: S
+    };
+}
+
 function verify(msg, sig, A) {
     // Check parameters
     if (typeof sig != "object") return false;
@@ -67,6 +89,28 @@ function verify(msg, sig, A) {
     const Ap = babyJub.packPoint(A);
     const hmBuff = pedersenHash(Buffer.concat([R8p, Ap, msg]));
     const hm = bigInt.leBuff2int(hmBuff);
+
+    const Pleft = babyJub.mulPointEscalar(babyJub.Base8, sig.S);
+    let Pright = babyJub.mulPointEscalar(A, hm.mul(bigInt("8")));
+    Pright = babyJub.addPoint(sig.R8, Pright);
+
+    if (!Pleft[0].equals(Pright[0])) return false;
+    if (!Pleft[1].equals(Pright[1])) return false;
+    return true;
+}
+
+function verifyMiMC(msg, sig, A) {
+    // Check parameters
+    if (typeof sig != "object") return false;
+    if (!Array.isArray(sig.R8)) return false;
+    if (sig.R8.length!= 2) return false;
+    if (!babyJub.inCurve(sig.R8)) return false;
+    if (!Array.isArray(A)) return false;
+    if (A.length!= 2) return false;
+    if (!babyJub.inCurve(A)) return false;
+    if (sig.S>= babyJub.subOrder) return false;
+
+    const hm = mimc7.multiHash([sig.R8[0], sig.R8[1], A[0], A[1], msg]);
 
     const Pleft = babyJub.mulPointEscalar(babyJub.Base8, sig.S);
     let Pright = babyJub.mulPointEscalar(A, hm.mul(bigInt("8")));

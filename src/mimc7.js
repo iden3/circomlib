@@ -43,3 +43,11 @@ exports.hash =  (_x_in, _k) =>{
     }
     return F.affine(F.add(r, k));
 };
+
+exports.multiHash = (arr) => {
+    let r = exports.getIV();
+    for (let i=0; i<arr.length; i++) {
+        r = exports.hash(r, bigInt(arr[i]));
+    }
+    return r;
+};

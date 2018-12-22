@@ -22,7 +22,6 @@ async function testInsert(tree, key, value, circuit, log ) {
     const w = circuit.calculateWitness({
         fnc: [1,0],
         oldRoot: res.oldRoot,
-        newRoot: res.newRoot,
         siblings: siblings,
         oldKey: res.isOld0 ? 0 : res.oldKey,
         oldValue: res.isOld0 ? 0 : res.oldValue,
@@ -31,7 +30,7 @@ async function testInsert(tree, key, value, circuit, log ) {
         newValue: value
     }, log);
 
-    const root1 = w[circuit.getSignalIdx("main.topSwitcher.outR")];
+    const root1 = w[circuit.getSignalIdx("main.newRoot")];
     assert(circuit.checkWitness(w));
     assert(root1.equals(res.newRoot));
 }
@@ -44,7 +43,6 @@ async function testDelete(tree, key, circuit) {
     const w = circuit.calculateWitness({
         fnc: [1,1],
         oldRoot: res.oldRoot,
-        newRoot: res.newRoot,
         siblings: siblings,
         oldKey: res.isOld0 ? 0 : res.oldKey,
         oldValue: res.isOld0 ? 0 : res.oldValue,
@@ -53,7 +51,7 @@ async function testDelete(tree, key, circuit) {
         newValue: res.delValue
     });
 
-    const root1 = w[circuit.getSignalIdx("main.topSwitcher.outR")];
+    const root1 = w[circuit.getSignalIdx("main.newRoot")];
 
     assert(circuit.checkWitness(w));
     assert(root1.equals(res.newRoot));
@@ -67,7 +65,6 @@ async function testUpdate(tree, key, newValue, circuit) {
     const w = circuit.calculateWitness({
         fnc: [0,1],
         oldRoot: res.oldRoot,
-        newRoot: res.newRoot,
         siblings: siblings,
         oldKey: res.oldKey,
         oldValue: res.oldValue,
@@ -76,7 +73,7 @@ async function testUpdate(tree, key, newValue, circuit) {
         newValue: res.newValue
     });
 
-    const root1 = w[circuit.getSignalIdx("main.topSwitcher.outR")];
+    const root1 = w[circuit.getSignalIdx("main.newRoot")];
 
     assert(circuit.checkWitness(w));
     assert(root1.equals(res.newRoot));
@@ -185,7 +182,6 @@ describe("SMT test", function () {
         const w = circuit.calculateWitness({
             fnc: [0,0],
             oldRoot: 11,
-            newRoot: 22,
             siblings: siblings,
             oldKey: 33,
             oldValue: 44,
@@ -194,7 +190,11 @@ describe("SMT test", function () {
             newValue: 77
         });
 
+        const root1 = w[circuit.getSignalIdx("main.oldRoot")];
+        const root2 = w[circuit.getSignalIdx("main.newRoot")];
+
         assert(circuit.checkWitness(w));
+        assert(root1.equals(root2));
 
     });
     it("Should update an element", async () => {

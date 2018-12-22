@@ -3,14 +3,6 @@ const bigInt = require("snarkjs").bigInt;
 const SMTMemDB = require("./smt_memdb");
 const mimc7 = require("./mimc7");
 
-function smtHash(arr) {
-    let r = mimc7.getIV();
-    for (let i=0; i<arr.length; i++) {
-        r = mimc7.hash(r, bigInt(arr[i]));
-    }
-    return r;
-}
-
 class SMT {
 
     constructor(db, root) {
@@ -54,8 +46,8 @@ class SMT {
         const ins = [];
         const dels = [];
 
-        let rtOld = smtHash([1, key, resFind.foundValue]);
-        let rtNew = smtHash([1, key, newValue]);
+        let rtOld = mimc7.multiHash([1, key, resFind.foundValue]);
+        let rtNew = mimc7.multiHash([1, key, newValue]);
         ins.push([rtNew, [1, key, newValue ]]);
         dels.push(rtOld);
 
@@ -70,8 +62,8 @@ class SMT {
                 oldNode = [rtOld, sibling, ];
                 newNode = [rtNew, sibling, ];
             }
-            rtOld = smtHash(oldNode);
-            rtNew = smtHash(newNode);
+            rtOld = mimc7.multiHash(oldNode);
+            rtNew = mimc7.multiHash(newNode);
             dels.push(rtOld);
             ins.push([rtNew, newNode]);
         }
@@ -100,7 +92,7 @@ class SMT {
 
         const dels = [];
         const ins = [];
-        let rtOld = smtHash([1, key, resFind.foundValue]);
+        let rtOld = mimc7.multiHash([1, key, resFind.foundValue]);
         let rtNew;
         dels.push(rtOld);
 
@@ -138,9 +130,9 @@ class SMT {
             }
             const oldSibling = resFind.siblings[level];
             if (keyBits[level]) {
-                rtOld = smtHash([oldSibling, rtOld]);
+                rtOld = mimc7.multiHash([oldSibling, rtOld]);
             } else {
-                rtOld = smtHash([rtOld, oldSibling]);
+                rtOld = mimc7.multiHash([rtOld, oldSibling]);
             }
             dels.push(rtOld);
             if (!newSibling.isZero()) {
@@ -155,7 +147,7 @@ class SMT {
                 } else {
                     newNode = [rtNew, newSibling];
                 }
-                rtNew = smtHash(newNode);
+                rtNew = mimc7.multiHash(newNode);
                 ins.push([rtNew, newNode]);
             }
         }
@@ -193,7 +185,7 @@ class SMT {
             for (let i= res.siblings.length; oldKeyits[i] == newKeyBits[i]; i++) {
                 res.siblings.push(bigInt.zero);
             }
-            rtOld = smtHash([1, resFind.notFoundKey, resFind.notFoundValue]);
+            rtOld = mimc7.multiHash([1, resFind.notFoundKey, resFind.notFoundValue]);
             res.siblings.push(rtOld);
             addedOne = true;
             mixed = false;
@@ -205,7 +197,7 @@ class SMT {
         const inserts = [];
         const dels = [];
 
-        let rt = smtHash([1, key, value]);
+        let rt = mimc7.multiHash([1, key, value]);
         inserts.push([rt,[1, key, value]] );
 
         for (let i=res.siblings.length-1; i>=0; i--) {
@@ -215,9 +207,9 @@ class SMT {
             if (mixed) {
                 const oldSibling = resFind.siblings[i];
                 if (newKeyBits[i]) {
-                    rtOld = smtHash([oldSibling, rtOld]);
+                    rtOld = mimc7.multiHash([oldSibling, rtOld]);
                 } else {
-                    rtOld = smtHash([rtOld, oldSibling]);
+                    rtOld = mimc7.multiHash([rtOld, oldSibling]);
                 }
                 dels.push(rtOld);
             }
@@ -225,10 +217,10 @@ class SMT {
 
             let newRt;
             if (newKeyBits[i]) {
-                newRt = smtHash([res.siblings[i], rt]);
+                newRt = mimc7.multiHash([res.siblings[i], rt]);
                 inserts.push([newRt,[res.siblings[i], rt]] );
             } else {
-                newRt = smtHash([rt, res.siblings[i]]);
+                newRt = mimc7.multiHash([rt, res.siblings[i]]);
                 inserts.push([newRt,[rt, res.siblings[i]]] );
             }
             rt = newRt;

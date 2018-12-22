@@ -38,6 +38,7 @@ include "smtverifiersm.circom";
 include "smthash.circom";
 
 template SMTVerifier(nLevels) {
+    signal input enabled;
     signal input root;
     signal input siblings[nLevels];
     signal input oldKey;
@@ -63,17 +64,17 @@ template SMTVerifier(nLevels) {
 
     component smtLevIns = SMTLevIns(nLevels);
     for (var i=0; i<nLevels; i++) smtLevIns.siblings[i] <== siblings[i];
-    smtLevIns.enabled <== 1;
+    smtLevIns.enabled <== enabled;
 
     component sm[nLevels];
     for (var i=0; i<nLevels; i++) {
         sm[i] = SMTVerifierSM();
         if (i==0) {
-            sm[i].prev_top <== 1;
+            sm[i].prev_top <== enabled;
             sm[i].prev_i0 <== 0;
             sm[i].prev_inew <== 0;
             sm[i].prev_iold <== 0;
-            sm[i].prev_na <== 0;
+            sm[i].prev_na <== 1-enabled;
         } else {
             sm[i].prev_top <== sm[i-1].st_top;
             sm[i].prev_i0 <== sm[i-1].st_i0;
@@ -85,7 +86,7 @@ template SMTVerifier(nLevels) {
         sm[i].fnc <== fnc;
         sm[i].levIns <== smtLevIns.levIns[i];
     }
-    sm[nLevels-1].st_na === 1;
+    sm[nLevels-1].st_na + sm[nLevels-1].st_iold + sm[nLevels-1].st_inew + sm[nLevels-1].st_i0 === 1;
 
     component levels[nLevels];
     for (var i=nLevels-1; i != -1; i--) {
@@ -115,14 +116,20 @@ template SMTVerifier(nLevels) {
     areKeyEquals.in[0] <== oldKey;
     areKeyEquals.in[1] <== key;
 
-    component keysOk = MultiAND(3);
+    component keysOk = MultiAND(4);
     keysOk.in[0] <== fnc;
     keysOk.in[1] <== 1-isOld0;
     keysOk.in[2] <== areKeyEquals.out;
+    keysOk.in[3] <== enabled;
 
     keysOk.out === 0;
 
-    // Check the roots
-    levels[0].root === root;
+    // Check the root
+    component checkRoot = ForceEqualIfEnabled();
+    checkRoot.enabled <== enabled;
+    checkRoot.in[0] <== levels[0].root;
+    checkRoot.in[1] <== root;
+
+    // levels[0].root === root;
 
 }

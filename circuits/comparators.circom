@@ -44,6 +44,17 @@ template IsEqual() {
     isz.out ==> out;
 }
 
+template ForceEqualIfEnabled() {
+    signal input enabled;
+    signal input in[2];
+
+    component isz = IsZero();
+
+    in[1] - in[0] ==> isz.in;
+
+    (1 - isz.out)*enabled === 0;
+}
+
 
 // N is the number of bits the input  have.
 // The MSF is the sign bit.

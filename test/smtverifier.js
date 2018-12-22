@@ -22,6 +22,7 @@ async function testInclusion(tree, key, circuit) {
     while (siblings.length<10) siblings.push(bigInt(0));
 
     const w = circuit.calculateWitness({
+        enabled: 1,
         fnc: 0,
         root: tree.root,
         siblings: siblings,
@@ -43,6 +44,7 @@ async function testExclusion(tree, key, circuit) {
     while (siblings.length<10) siblings.push(bigInt(0));
 
     const w = circuit.calculateWitness({
+        enabled: 1,
         fnc: 1,
         root: tree.root,
         siblings: siblings,
@@ -89,6 +91,24 @@ describe("SMT test", function () {
         await testExclusion(tree, 31, circuit);
         await testExclusion(tree, 16, circuit);
         await testExclusion(tree, 64, circuit);
+    });
+
+    it("Check not enabled accepts any thing", async () => {
+        let siblings = [];
+        for (let i=0; i<10; i++) siblings.push(i);
+
+        const w = circuit.calculateWitness({
+            enabled: 0,
+            fnc: 0,
+            root: 1,
+            siblings: siblings,
+            oldKey: 22,
+            oldValue: 33,
+            isOld0: 0,
+            key: 44,
+            value: 0
+        });
+        assert(circuit.checkWitness(w));
     });
 
 

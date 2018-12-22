@@ -77,7 +77,7 @@ template SMTLevIns(nLevels) {
     signal input enabled;
     signal input siblings[nLevels];
     signal output levIns[nLevels];
-    signal done[nLevels-1];        // Indicates if the insLevel has aready been detecetd.
+    signal done[nLevels-1];        // Indicates if the insLevel has aready been detected.
 
     component isZero[nLevels];
 
@@ -87,7 +87,7 @@ template SMTLevIns(nLevels) {
     }
 
     // The last level must always have a sibling of 0. If not, then it cannot be inserted.
-    (isZero[nLevels-2].out - 1) * enabled === 0;
+    (isZero[nLevels-1].out - 1) * enabled === 0;
 
     levIns[nLevels-1] <== (1-isZero[nLevels-2].out);
     done[nLevels-2] <== levIns[nLevels-1];
