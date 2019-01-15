@@ -48,10 +48,10 @@ function stringifyBigInts(o) {
     }
 }
 
-function newEntryFromBigInts(a, b, c, d) {
+function newEntry(arr) {
     return {
-        hi: mimcjs.multiHash([c, d]),
-        hv: mimcjs.multiHash([a, b]),
+        hi: mimcjs.multiHash(arr.slice(2)),
+        hv: mimcjs.multiHash(arr.slice(0, 2)),
     };
 }
 
@@ -71,26 +71,45 @@ describe("[sparse-merkle-tree] Javascript test", function () {
 
     it("Mimc7 hash", async () => {
         const entries = [bigInt(12), bigInt(45), bigInt(78), bigInt(41)];
-        const test = entries.slice(2);
         const hi = mimcjs.multiHash(entries.slice(2));
         const hiHex = bytesToHex(bigIntToBuffer(hi));
-		    //"0x0a546e62170e636895398e3831a7834affd35adad67016ff2d5215828e643aaf"
+        expect(hiHex).to.be.equal("0x1fd4bc970a697084ec1f83ecf81936d4a047e27c654752ddbc89f9ed1728e0ab");
+        const hv = mimcjs.multiHash(entries.slice(0, 2));
+        const hvHex = bytesToHex(bigIntToBuffer(hv));
+        expect(hvHex).to.be.equal("0x263924eb9ae730cea9ce31bb9ada695ec3525536b4c058813552b074db36ba9a");
     });
 
 
-    // it("Add one claim", async () => {
-    //     const entries = newEntryFromBigInts(bigInt(12), bigInt(45), bigInt(78), bigInt(41));
-    //     const tree = await smt.newMemEmptyTrie();
-    //     const key1 = entries.hi;
-    //     const value1 = entries.hv;
+    it("Add one claim", async () => {
+        const claim = [bigInt(12), bigInt(45), bigInt(78), bigInt(41)]; 
+        const entries = newEntry(claim);
+        const tree = await smt.newMemEmptyTrie();
+        const key1 = entries.hi;
+        const value1 = entries.hv;
 
-    //     await tree.insert(key1,value1);
-    //     const root = tree.root;
-    //     const rootBuff = bigIntToBuffer(root);
-    //     const rootHex = bytesToHex(rootBuff);
-    //     //0x2e4bd3b61579f9ed4d814dfa4228c743b853fb6d0b5d6a80735bd5aab579231f
-    //     assert(tree.root.isZero());
-    //});
+        await tree.insert(key1,value1);
+        const root = tree.root;
+        const rootBuff = bigIntToBuffer(root);
+        expect(bytesToHex(rootBuff)).to.be.equal("0x112bae1c89a7a51a9a09e88c2f095bfe8a7d94d7c0cf5ba017a491c3e0b95c8f");
+    });
+
+    it("Add two claims", async () => {
+        const firstClaim = [bigInt(12), bigInt(45), bigInt(78), bigInt(41)]; 
+        const firstEntries = newEntry(firstClaim);
+        const secondClaim = [bigInt(33), bigInt(44), bigInt(55), bigInt(66)]; 
+        const secondEntries = newEntry(secondClaim);
+        const tree = await smt.newMemEmptyTrie();
+        const key1 = firstEntries.hi;
+        const value1 = firstEntries.hv;
+        const key2 = secondEntries.hi;
+        const value2 = secondEntries.hv;
+
+        await tree.insert(key1,value1);
+        await tree.insert(key2,value2);
+        const root = tree.root;
+        const rootBuff = bigIntToBuffer(root);
+        expect(bytesToHex(rootBuff)).to.be.equal("0x1fb755a3677f8fd6c47b5462b69778ef6383c31d2d498b765e953f8cacaa6744");
+    });
 
 });
 
@@ -250,4 +269,3 @@ describe("[sparse-merkle-tree] Javascript test", function () {
 //   });
 
 // });
-
