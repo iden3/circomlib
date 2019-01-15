@@ -36,17 +36,6 @@ describe("[sparse-merkle-tree] Javascript test", function () {
     before( async () => {
     });
 
-    it("Mimc7 hash", async () => {
-        const entries = [bigInt(12), bigInt(45), bigInt(78), bigInt(41)];
-        const hi = mimcjs.multiHash(entries.slice(2));
-        const hiHex = bytesToHex(bigIntToBuffer(hi));
-        expect(hiHex).to.be.equal("0x1fd4bc970a697084ec1f83ecf81936d4a047e27c654752ddbc89f9ed1728e0ab");
-        const hv = mimcjs.multiHash(entries.slice(0, 2));
-        const hvHex = bytesToHex(bigIntToBuffer(hv));
-        expect(hvHex).to.be.equal("0x263924eb9ae730cea9ce31bb9ada695ec3525536b4c058813552b074db36ba9a");
-    });
-
-
     it("Add one claim", async () => {
         const claim = [bigInt(12), bigInt(45), bigInt(78), bigInt(41)]; 
         const entries = newEntry(claim);
