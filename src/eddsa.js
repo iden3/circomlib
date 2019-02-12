@@ -4,7 +4,7 @@ const babyJub = require("./babyjub");
 const pedersenHash = require("./pedersenHash").hash;
 const mimc7 = require("./mimc7");
 const crypto = require("crypto");
-
+    
 exports.cratePrvKey = cratePrvKey;
 exports.prv2pub= prv2pub;
 exports.sign = sign;
@@ -13,6 +13,7 @@ exports.verify = verify;
 exports.verifyMiMC = verifyMiMC;
 exports.packSignature = packSignature;
 exports.unpackSignature = unpackSignature;
+exports.pruneBuffer = pruneBuffer;
 
 
 function cratePrvKey() {
