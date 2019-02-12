@@ -3,9 +3,7 @@ const bigInt = require("snarkjs").bigInt;
 const babyJub = require("./babyjub");
 const pedersenHash = require("./pedersenHash").hash;
 const mimc7 = require("./mimc7");
-const crypto = require("crypto");
     
-exports.cratePrvKey = cratePrvKey;
 exports.prv2pub= prv2pub;
 exports.sign = sign;
 exports.signMiMC = signMiMC;
@@ -15,10 +13,6 @@ exports.packSignature = packSignature;
 exports.unpackSignature = unpackSignature;
 exports.pruneBuffer = pruneBuffer;
 
-
-function cratePrvKey() {
-    return crypto.randomBytes(32);
-}
 
 function pruneBuffer(_buff) {
     const buff = Buffer.from(_buff);

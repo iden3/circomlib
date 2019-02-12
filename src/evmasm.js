@@ -4,7 +4,6 @@
 
 
 const Web3Utils = require("web3-utils");
-const assert = require("assert");
 
 class Contract {
     constructor() {
@@ -141,7 +140,9 @@ class Contract {
     msize()  { this.code.push(0x59); }
     gas()  { this.code.push(0x5a); }
     label(name)  {
-        assert(typeof this.labels[name] == "undefined", "Label already defined");
+        if (typeof this.labels[name] != "undefined") {
+            throw new Error("Label already defined");
+        }
         this.labels[name] = this.code.length;
         this.code.push(0x5b);
 
@@ -150,20 +151,23 @@ class Contract {
 
     push(data) {
         const d = Web3Utils.hexToBytes(Web3Utils.toHex(data));
-        assert(d.length>0);
-        assert(d.length<=32);
+        if (d.length == 0 || d.length > 32) {
+            throw new Error("Assertion failed");
+        }
         this.code = this.code.concat([0x5F + d.length], d);
     }
 
     dup(n) {
-        assert(n>=0);
-        assert(n<16);
+        if (n < 0 || n >= 16) {
+            throw new Error("Assertion failed");
+        }
         this.code.push(0x80 + n);
     }
 
     swap(n) {
-        assert(n>=1);
-        assert(n<=16);
+        if (n < 1 || n > 16) {
+            throw new Error("Assertion failed");
+        }
         this.code.push(0x8f + n);
     }
 
