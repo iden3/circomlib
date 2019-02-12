@@ -3,7 +3,7 @@
 //
 
 
-const Web3 = require("web3");
+const Web3Utils = require("web3-utils");
 const assert = require("assert");
 
 class Contract {
@@ -39,7 +39,7 @@ class Contract {
             genLoadedLength = C.code.length;
         }
 
-        return Web3.utils.bytesToHex(C.code.concat(this.code));
+        return Web3Utils.bytesToHex(C.code.concat(this.code));
     }
 
     stop() { this.code.push(0x00); }
@@ -149,7 +149,7 @@ class Contract {
     }
 
     push(data) {
-        const d = Web3.utils.hexToBytes(Web3.utils.toHex(data));
+        const d = Web3Utils.hexToBytes(Web3Utils.toHex(data));
         assert(d.length>0);
         assert(d.length<=32);
         this.code = this.code.concat([0x5F + d.length], d);
