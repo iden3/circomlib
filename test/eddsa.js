@@ -2,6 +2,7 @@ const chai = require("chai");
 const path = require("path");
 const snarkjs = require("snarkjs");
 const compiler = require("circom");
+// const crypto = require("crypto");
 
 const eddsa = require("../src/eddsa.js");
 const babyJub = require("../src/babyjub.js");
@@ -45,7 +46,7 @@ describe("EdDSA test", function () {
     it("Sign a single 10 bytes from 0 to 9", async () => {
         const msg = Buffer.from("00010203040506070809", "hex");
 
-//        const prvKey = eddsa.cratePrvKey();
+//        const prvKey = crypto.randomBytes(32);
 
         const prvKey = Buffer.from("0001020304050607080900010203040506070809000102030405060708090001", "hex");
 
