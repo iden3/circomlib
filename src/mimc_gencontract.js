@@ -2,13 +2,13 @@
 // License: LGPL-3.0+
 //
 
-const Web3 = require("web3");
+const Web3Utils = require("web3-utils");
 
 const Contract = require("./evmasm");
 
 function createCode(seed, n) {
 
-    let ci = Web3.utils.keccak256(seed);
+    let ci = Web3Utils.keccak256(seed);
 
     const C = new Contract();
 
@@ -51,7 +51,7 @@ function createCode(seed, n) {
     C.mulmod();         // r=t^7 k q
 
     for (let i=0; i<n-1; i++) {
-        ci = Web3.utils.keccak256(ci);
+        ci = Web3Utils.keccak256(ci);
         C.dup(2);       // q r k q
         C.dup(0);       // q q r k q
         C.dup(0);       // q q q r k q

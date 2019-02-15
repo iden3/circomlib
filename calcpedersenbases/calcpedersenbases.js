@@ -1,14 +1,15 @@
 const bn128 = require("snarkjs").bn128;
 const bigInt = require("snarkjs").bigInt;
 const createBlakeHash = require("blake-hash");
-const assert = require("assert");
 const babyJub = require("../src/babyjub");
 
 function getPoint(S) {
     const F = bn128.Fr;
     const h = createBlakeHash("blake256").update(S).digest();
 
-    assert(h.length == 32);
+    if (h.length != 32) {
+        throw new Error("Invalid length")
+    }
 
     let sign = false;
     if (h[31] & 0x80) {
@@ -52,7 +53,9 @@ function generatePoint(S) {
         p = getPoint(S+"_"+sidx);
         idx++;
     }
-    assert(babyJub.inCurve(p), "Point not in curve");
+    if (!babyJub.inCurve(p)){
+        throw new Error("Point not in curve");
+    }
     return p;
 }
 

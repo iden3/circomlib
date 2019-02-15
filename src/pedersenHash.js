@@ -1,7 +1,6 @@
 const bn128 = require("snarkjs").bn128;
 const bigInt = require("snarkjs").bigInt;
 const babyJub = require("./babyjub");
-const assert = require("assert");
 const createBlakeHash = require("blake-hash");
 
 const GENPOINT_PREFIX = "PedersenGenerator";
@@ -73,7 +72,9 @@ function getBasePoint(pointIdx) {
 
     const p8 = babyJub.mulPointEscalar(p, 8);
 
-    assert(babyJub.inSubgroup(p8), "Point not in curve");
+    if (!babyJub.inSubgroup(p8)) {
+        throw new Error("Point not in curve");
+    }
 
     bases[pointIdx] = p8;
     return p8;
