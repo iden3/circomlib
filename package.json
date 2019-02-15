@@ -25,7 +25,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "blake-hash": "^1.1.0",
-    "snarkjs": "0.1.9",
+    "snarkjs": "0.1.11",
     "web3": "^1.0.0-beta.36"
   },
   "devDependencies": {
