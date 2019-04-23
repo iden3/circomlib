@@ -47,11 +47,11 @@ template CompConstant(ct) {
         smsb = in[i*2+1];
 
 
-        if ((cmsb==0)&(clsb==0)) {
+        if (((cmsb==0)&(clsb==0)) == 1) {
             parts[i] <== -b*smsb*slsb + b*smsb + b*slsb;
-        } else if ((cmsb==0)&(clsb==1)) {
+        } else if (((cmsb==0)&(clsb==1)) == 1) {
             parts[i] <== a*smsb*slsb - a*slsb + b*smsb - a*smsb + a;
-        } else if ((cmsb==1)&(clsb==0)) {
+        } else if (((cmsb==1)&(clsb==0)) == 1) {
             parts[i] <== b*smsb*slsb - a*smsb + a;
         } else {
             parts[i] <== -a*smsb*slsb + a;
