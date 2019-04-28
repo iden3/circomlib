@@ -9,7 +9,7 @@ const assert = chai.assert;
 
 const bigInt = snarkjs.bigInt;
 
-describe("EdDSA test", function () {
+describe("EdDSA MiMC test", function () {
     let circuit;
 
     this.timeout(100000);

@@ -58,6 +58,7 @@ template EdDSAMiMCVerifier() {
     hash.in[2] <== Ax;
     hash.in[3] <== Ay;
     hash.in[4] <== M;
+    hash.k <== 0;
 
     component h2bits = Num2Bits_strict();
     h2bits.in <== hash.out;

@@ -3,7 +3,7 @@ const bigInt = require("snarkjs").bigInt;
 const babyJub = require("./babyjub");
 const pedersenHash = require("./pedersenHash").hash;
 const mimc7 = require("./mimc7");
-    
+
 exports.prv2pub= prv2pub;
 exports.sign = sign;
 exports.signMiMC = signMiMC;
