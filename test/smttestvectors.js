@@ -140,5 +140,8 @@ describe("[sparse-merkle-tree] Javascript test", function () {
         
         expect(bytesToHex(root1)).to.be.equal("0x27990ef22656f49f010b2b48b2418c46f2bc93e4afb2e3377a1eb09f129e9802");
     });
+<<<<<<< HEAD
     */
+=======
+>>>>>>> 5b7abbc4ec56447e5e2baa31e3b4ce3a0c0617a8
 });
