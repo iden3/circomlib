@@ -3,10 +3,12 @@ const path = require("path");
 const snarkjs = require("snarkjs");
 const compiler = require("circom");
 
+const createBlakeHash = require("blake-hash");
+const eddsa = require("../src/eddsa.js");
+
 const assert = chai.assert;
 
-const bigInt = require("big-integer");
-
+const bigInt = require("snarkjs").bigInt;
 
 describe("Baby Jub test", function () {
     let circuitAdd;
@@ -22,6 +24,11 @@ describe("Baby Jub test", function () {
         const cirDefTest = await compiler(path.join(__dirname, "circuits", "babycheck_test.circom"));
         circuitTest = new snarkjs.Circuit(cirDefTest);
         console.log("NConstrains BabyTest: " + circuitTest.nConstraints);
+
+        const cirDefPbk = await compiler(path.join(__dirname, "circuits", "babypbk_test.circom"));
+        circuitPbk = new snarkjs.Circuit(cirDefPbk);
+        console.log("NConstrains BabyPbk: " + circuitPbk.nConstraints);
+
     });
 
     it("Should add point (0,1) and (0,1)", async () => {
@@ -95,6 +102,24 @@ describe("Baby Jub test", function () {
         } catch(err) {
             assert.equal(err.message, "Constraint doesn't match: 168700 != 1");
         }
+    });
+
+    it("Should extract the public key from the private one", async () => {    
+
+        const rawpvk = Buffer.from("0001020304050607080900010203040506070809000102030405060708090021", "hex");
+        const pvk    = eddsa.pruneBuffer(createBlakeHash("blake512").update(rawpvk).digest().slice(0,32));
+        const S      = bigInt.leBuff2int(pvk).shr(3);
+
+        const A      = eddsa.prv2pub(rawpvk);
+
+        const input = {
+            in : S,
+            Ax : A[0],
+            Ay : A[1]
+        }
+
+        const w = circuitPbk.calculateWitness(input);
+        assert(circuitPbk.checkWitness(w));
     });
 
 });
