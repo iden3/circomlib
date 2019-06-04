@@ -29,7 +29,7 @@
     "web3": "^1.0.0-beta.36"
   },
   "devDependencies": {
-    "circom": "0.0.24",
+    "circom": "0.0.28",
     "eslint-plugin-mocha": "^5.2.0",
     "ganache-cli": "^6.2.3",
     "mocha": "^5.2.0"
