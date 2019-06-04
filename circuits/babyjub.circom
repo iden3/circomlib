@@ -17,6 +17,9 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
+include "bitify.circom";
+include "escalarmulfix.circom";
+
 template BabyAdd() {
     signal input x1;
     signal input y1;
@@ -76,4 +79,28 @@ template BabyCheck() {
     y2 <== y*y;
 
     a*x2 + y2 === 1 + d*x2*y2;
+}
+
+// Extracts the public key from private key
+template BabyPbk() {
+    signal private input  in;
+    signal         output Ax;
+    signal         output Ay;
+
+    var BASE8 = [
+        17777552123799933955779906779655732241715742912184938656739573121738514868268,
+        2626589144620713026669568689430873010625803728049924121243784502389097019475
+    ];
+
+    component pvkBits = Num2Bits(253);
+    pvkBits.in <== in;
+
+    component mulFix = EscalarMulFix(253, BASE8);
+
+    var i;
+    for (i=0; i<253; i++) {
+        mulFix.e[i] <== pvkBits.out[i];
+    }
+    Ax  <== mulFix.out[0];
+    Ay  <== mulFix.out[1];
 }
