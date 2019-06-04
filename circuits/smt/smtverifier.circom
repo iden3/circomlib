@@ -35,7 +35,7 @@ include "../switcher.circom";
 include "smtlevins.circom";
 include "smtverifierlevel.circom";
 include "smtverifiersm.circom";
-include "smthash.circom";
+include "smthash_poseidon.circom";
 
 template SMTVerifier(nLevels) {
     signal input enabled;

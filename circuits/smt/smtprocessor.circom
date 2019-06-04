@@ -135,7 +135,7 @@ include "../switcher.circom";
 include "smtlevins.circom";
 include "smtprocessorlevel.circom";
 include "smtprocessorsm.circom";
-include "smthash.circom";
+include "smthash_poseidon.circom";
 
 template SMTProcessor(nLevels) {
     signal input oldRoot;

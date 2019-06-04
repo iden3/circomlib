@@ -46,12 +46,12 @@ describe("Poseidon Smart contract test", () => {
 
         const res = await mimc.methods.poseidon([1,2]).call();
 
-        console.log("Cir: " + bigInt(res.toString(16)).toString(16));
+        // console.log("Cir: " + bigInt(res.toString(16)).toString(16));
 
         const hash = Poseidon.createHash(6, 8, 57);
 
         const res2 = hash([1,2]);
-        console.log("Ref: " + bigInt(res2).toString(16));
+        // console.log("Ref: " + bigInt(res2).toString(16));
 
         assert.equal(res.toString(), res2.toString());
     });
