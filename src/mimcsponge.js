@@ -53,6 +53,10 @@ exports.multiHash = (arr, key, numOutputs) => {
     if (typeof(numOutputs) === "undefined") {
       numOutputs = 1;
     }
+    if (typeof(key) === "undefined") {
+        key = F.zero;
+    }
+
     let R = F.zero;
     let C = F.zero;
 
