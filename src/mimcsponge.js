@@ -27,10 +27,11 @@ exports.getConstants = (seed, nRounds) => {
         cts[i] = bigInt(Web3Utils.toBN(c2).toString());
     }
     cts[0] = bigInt(0);
+    cts[cts.length - 1] = bigInt(0);
     return cts;
 };
 
-const cts = exports.getConstants(SEED, 220);
+const cts = exports.getConstants(SEED, NROUNDS);
 
 exports.hash = (_xL_in, _xR_in, _k) =>{
     let xL = bigInt(_xL_in);
@@ -40,8 +41,12 @@ exports.hash = (_xL_in, _xR_in, _k) =>{
         const c = cts[i];
         const t = (i==0) ? F.add(xL, k) : F.add(F.add(xL, k), c);
         const xR_tmp = bigInt(xR);
-        xR = xL;
-        xL = F.add(xR_tmp, F.exp(t, 5));
+        if (i < (NROUNDS - 1)) {
+          xR = xL;
+          xL = F.add(xR_tmp, F.exp(t, 5));
+        } else {
+          xR = F.add(xR_tmp, F.exp(t, 5));
+        }
     }
     return {
       xL: F.affine(xL),
