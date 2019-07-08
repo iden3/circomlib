@@ -50,7 +50,11 @@ function createCode(seed, n) {
     C.addmod();         // e=t^5+xR xL k q (for next round: xL xR k q)
 
     for (let i=0; i<n-1; i++) {
-        ci = Web3Utils.keccak256(ci);
+        if (i < n-2) {
+          ci = Web3Utils.keccak256(ci);
+        } else {
+          ci = "0x00";
+        }
         C.swap(1);      // xR xL k q
         C.dup(3);       // q xR xL k q
         C.dup(3);       // k q xR xL k q
@@ -74,9 +78,9 @@ function createCode(seed, n) {
         C.addmod();     // e=t^5+xR xL k q (for next round: xL xR k q)
     }
 
-    C.push("0x00");
-    C.mstore();     // Save it to pos 0;
     C.push("0x20");
+    C.mstore();     // Save it to pos 0;
+    C.push("0x00");
     C.mstore();     // Save it to pos 1;
     C.push("0x40");
     C.push("0x00");
