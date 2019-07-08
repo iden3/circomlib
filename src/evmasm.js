@@ -127,12 +127,16 @@ class Contract {
 
 
     jmp(label)  {
-        this._pushLabel(label);
+        if (typeof label !== "undefined") {
+            this._pushLabel(label);
+        }
         this.code.push(0x56);
     }
 
     jmpi(label)  {
-        this._pushLabel(label);
+        if (typeof label !== "undefined") {
+            this._pushLabel(label);
+        }
         this.code.push(0x57);
     }
 

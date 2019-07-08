@@ -9,7 +9,7 @@ const bigInt = snarkjs.bigInt;
 
 
 describe("Mux4 test", () => {
-    it("Should create a constant multiplexer", async () => {
+    it("Should create a constant multiplexer 4", async () => {
 
         const cirDef = await compiler(path.join(__dirname, "circuits", "mux4_1.circom"));
 
@@ -50,7 +50,7 @@ describe("Mux4 test", () => {
         }
     });
 
-    it("Should create a constant multiplexer", async () => {
+    it("Should create a constant multiplexer 3", async () => {
 
         const cirDef = await compiler(path.join(__dirname, "circuits", "mux3_1.circom"));
 
@@ -70,6 +70,52 @@ describe("Mux4 test", () => {
         ];
 
         for (let i=0; i<8; i++) {
+            const w = circuit.calculateWitness({ "selector": i });
+
+            assert(w[0].equals(bigInt(1)));
+
+            // console.log(i + " -> " + w[circuit.getSignalIdx("main.out")].toString());
+            assert(w[circuit.getSignalIdx("main.out")].equals(ct8[i]));
+        }
+    });
+    it("Should create a constant multiplexer 2", async () => {
+
+        const cirDef = await compiler(path.join(__dirname, "circuits", "mux2_1.circom"));
+
+        const circuit = new snarkjs.Circuit(cirDef);
+
+        console.log("NConstrains Mux2: " + circuit.nConstraints);
+
+        const ct8 = [
+            bigInt("37"),
+            bigInt("47"),
+            bigInt("53"),
+            bigInt("71"),
+        ];
+
+        for (let i=0; i<4; i++) {
+            const w = circuit.calculateWitness({ "selector": i });
+
+            assert(w[0].equals(bigInt(1)));
+
+            // console.log(i + " -> " + w[circuit.getSignalIdx("main.out")].toString());
+            assert(w[circuit.getSignalIdx("main.out")].equals(ct8[i]));
+        }
+    });
+    it("Should create a constant multiplexer 1", async () => {
+
+        const cirDef = await compiler(path.join(__dirname, "circuits", "mux1_1.circom"));
+
+        const circuit = new snarkjs.Circuit(cirDef);
+
+        console.log("NConstrains Mux1: " + circuit.nConstraints);
+
+        const ct8 = [
+            bigInt("37"),
+            bigInt("47"),
+        ];
+
+        for (let i=0; i<2; i++) {
             const w = circuit.calculateWitness({ "selector": i });
 
             assert(w[0].equals(bigInt(1)));

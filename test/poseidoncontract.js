@@ -1,22 +1,20 @@
 const ganache = require("ganache-cli");
 const Web3 = require("web3");
 const chai = require("chai");
-const mimcGenContract = require("../src/mimc_gencontract.js");
-const mimcjs = require("../src/mimc7.js");
-
+const poseidonGenContract = require("../src/poseidon_gencontract.js");
+const Poseidon = require("../src/poseidon.js");
+const bigInt = require("snarkjs").bigInt;
 
 const assert = chai.assert;
 const log = (msg) => { if (process.env.MOCHA_VERBOSE) console.log(msg); };
 
 const SEED = "mimc";
 
-describe("MiMC Smart contract test", function () {
+describe("Poseidon Smart contract test", () => {
     let testrpc;
     let web3;
     let mimc;
     let accounts;
-
-    this.timeout(100000);
 
     before(async () => {
         web3 = new Web3(ganache.provider(), null, { transactionConfirmationBlocks: 1 });
@@ -24,23 +22,26 @@ describe("MiMC Smart contract test", function () {
     });
 
     it("Should deploy the contract", async () => {
-        const C = new web3.eth.Contract(mimcGenContract.abi);
+        const C = new web3.eth.Contract(poseidonGenContract.abi);
 
         mimc = await C.deploy({
-            data: mimcGenContract.createCode(SEED, 91),
-            arguments: []
+            data: poseidonGenContract.createCode()
         }).send({
-            gas: 1500000,
-            gasPrice: '30000000000000',
+            gas: 2500000,
             from: accounts[0]
-        }).on("error", (error) => {
-            console.log("ERROR: "+error);
         });
     });
 
     it("Shold calculate the mimic correctly", async () => {
-        const res = await mimc.methods.MiMCpe7(1,2).call();
-        const res2 = await mimcjs.hash(1,2,91);
+
+        const res = await mimc.methods.poseidon([1,2]).call();
+
+        // console.log("Cir: " + bigInt(res.toString(16)).toString(16));
+
+        const hash = Poseidon.createHash(6, 8, 57);
+
+        const res2 = hash([1,2]);
+        // console.log("Ref: " + bigInt(res2).toString(16));
 
         assert.equal(res.toString(), res2.toString());
     });

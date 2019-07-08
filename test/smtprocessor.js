@@ -84,7 +84,7 @@ describe("SMT test", function () {
     let circuit;
     let tree;
 
-    this.timeout(100000);
+    this.timeout(10000000);
 
     before( async () => {
         const cirDef = await compiler(path.join(__dirname, "circuits", "smtprocessor10_test.circom"));
