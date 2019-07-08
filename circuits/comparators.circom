@@ -55,7 +55,7 @@ template ForceEqualIfEnabled() {
     (1 - isz.out)*enabled === 0;
 }
 
-
+/*
 // N is the number of bits the input  have.
 // The MSF is the sign bit.
 template LessThan(n) {
@@ -83,3 +83,57 @@ template LessThan(n) {
 
     adder.out[n-1] ==> out;
 }
+*/
+
+template LessThan(n) {
+    signal input in[2];
+    signal output out;
+
+    component n2b = Num2Bits(n*2+1);
+
+    n2b.in <== in[0]+ (1<<n) - in[1];
+
+    out <== 1-n2b.out[n];
+}
+
+
+
+// N is the number of bits the input  have.
+// The MSF is the sign bit.
+template LessEqThan(n) {
+    signal input in[2];
+    signal output out;
+
+    component lt = LessThan(n);
+
+    lt.in[0] <== in[0];
+    lt.in[1] <== in[1]+1;
+    lt.out ==> out;
+}
+
+// N is the number of bits the input  have.
+// The MSF is the sign bit.
+template GreaterThan(n) {
+    signal input in[2];
+    signal output out;
+
+    component lt = LessThan(n);
+
+    lt.in[0] <== in[1];
+    lt.in[1] <== in[0];
+    lt.out ==> out;
+}
+
+// N is the number of bits the input  have.
+// The MSF is the sign bit.
+template GreaterEqThan(n) {
+    signal input in[2];
+    signal output out;
+
+    component lt = LessThan(n);
+
+    lt.in[0] <== in[1];
+    lt.in[1] <== in[0]+1;
+    lt.out ==> out;
+}
+
