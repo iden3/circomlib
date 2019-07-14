@@ -54,6 +54,49 @@ exports.hash = (_xL_in, _xR_in, _k) =>{
     };
 };
 
+exports.encrypt = exports.hash
+
+exports.decrypt = (_xL_in, _xR_in, _k) => {
+    let xL = bigInt(_xL_in);
+    let xR = bigInt(_xR_in);
+    const k = bigInt(_k);
+    for (let i=0; i<NROUNDS; i++) {
+        const c = cts[NROUNDS-1-i];
+        const t = (i==0) ? F.add(xL, k) : F.add(F.add(xL, k), c);
+        const xR_tmp = bigInt(xR);
+        if (i < (NROUNDS - 1)) {
+          xR = xL;
+          xL = F.sub(xR_tmp, F.exp(t, 5));
+        } else {
+          xR = F.sub(xR_tmp, F.exp(t, 5));
+        }
+    }
+    return {
+      xL: F.affine(xL),
+      xR: F.affine(xR),
+    };
+}
+
+/*
+       m[0]       m[1]              m[n]
+  ^     |          |                 |
+  |     |    +-+   |    +-+     +-+  |    +-+
+  |     v    | |   v    | |     | |  v    | |
+R | 0+--+--->+ +---+--->+ |     | +--+--->+ |
+  |          | |        | |     | |       | |
+  |          | |        | |     | |       | |
+  v          | |        | |     | |       | |
+  ^          |f|        |f|- - -|f|       |f|
+  |          | |        | |     | |       | |
+  |          | |        | |     | |       | |
+C | 0+------>+ +------->+ |     | +------>+ |
+  |          | |        | |     | |       | |
+  |          +++        +++     +-+       +++
+  v           ^          ^                 ^
+              k          k                 k
++--------------------------------------------+
+                    absorb
+*/
 exports.multiHash = (arr, key, numOutputs) => {
     if (typeof(numOutputs) === "undefined") {
       numOutputs = 1;
@@ -71,6 +114,7 @@ exports.multiHash = (arr, key, numOutputs) => {
       R = S.xL;
       C = S.xR;
     }
+
     let outputs = [R];
     for (let i=1; i < numOutputs; i++) {
       const S = exports.hash(R, C, key);
@@ -78,6 +122,7 @@ exports.multiHash = (arr, key, numOutputs) => {
       C = S.xR;
       outputs.push(R);
     }
+
     if (numOutputs == 1) {
       return F.affine(outputs[0]);
     } else {

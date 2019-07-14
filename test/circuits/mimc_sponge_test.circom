@@ -1,3 +1,3 @@
 include "../../circuits/mimcsponge.circom"
 
-component main = MiMCFeistel(220);
+component main = MiMCFeistelHash(220);
