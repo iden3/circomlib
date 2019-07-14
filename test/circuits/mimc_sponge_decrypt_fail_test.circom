@@ -8,7 +8,7 @@ template Main() {
 	signal output xL_out;
 	signal output xR_out;
 
-	component encrypt = MiMCFeistelHash(220);
+	component encrypt = MiMCFeistelEncrypt(220);
 	component decrypt = MiMCFeistelDecrypt(220);
 
 	encrypt.xL_in <== xL_in;
