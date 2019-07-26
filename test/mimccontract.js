@@ -1,4 +1,4 @@
-const TestRPC = require("ganache-cli");
+const ganache = require("ganache-cli");
 const Web3 = require("web3");
 const chai = require("chai");
 const mimcGenContract = require("../src/mimc_gencontract.js");
@@ -10,35 +10,31 @@ const log = (msg) => { if (process.env.MOCHA_VERBOSE) console.log(msg); };
 
 const SEED = "mimc";
 
-describe("MiMC Smart contract test", () => {
+describe("MiMC Smart contract test", function () {
     let testrpc;
     let web3;
     let mimc;
     let accounts;
 
+    this.timeout(100000);
+
     before(async () => {
-        testrpc = TestRPC.server({
-            ws: true,
-            gasLimit: 5800000,
-            total_accounts: 10,
-        });
-
-        testrpc.listen(8546, "127.0.0.1");
-
-        web3 = new Web3("ws://127.0.0.1:8546");
+        web3 = new Web3(ganache.provider(), null, { transactionConfirmationBlocks: 1 });
         accounts = await web3.eth.getAccounts();
     });
-
-    after(async () => testrpc.close());
 
     it("Should deploy the contract", async () => {
         const C = new web3.eth.Contract(mimcGenContract.abi);
 
         mimc = await C.deploy({
-            data: mimcGenContract.createCode(SEED, 91)
+            data: mimcGenContract.createCode(SEED, 91),
+            arguments: []
         }).send({
             gas: 1500000,
+            gasPrice: '30000000000000',
             from: accounts[0]
+        }).on("error", (error) => {
+            console.log("ERROR: "+error);
         });
     });
 

@@ -1,6 +1,6 @@
 const bn128 = require("snarkjs").bn128;
 const bigInt = require("snarkjs").bigInt;
-const createBlakeHash = require("blake-hash");
+const blake2b = require('blake2b');
 const assert = require("assert");
 const F = bn128.Fr;
 
@@ -11,11 +11,12 @@ const T = 6;
 
 function getPseudoRandom(seed, n) {
     const res = [];
-    let h = createBlakeHash("blake256").update(seed).digest();
+    let input = Buffer.from(seed);
+    let h = blake2b(32).update(input).digest()
     while (res.length<n) {
         const n = F.affine(bigInt.leBuff2int(h));
         res.push(n);
-        h = createBlakeHash("blake256").update(h).digest();
+        h = blake2b(32).update(h).digest()
     }
 
     return res;

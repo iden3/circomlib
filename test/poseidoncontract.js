@@ -1,4 +1,4 @@
-const TestRPC = require("ganache-cli");
+const ganache = require("ganache-cli");
 const Web3 = require("web3");
 const chai = require("chai");
 const poseidonGenContract = require("../src/poseidon_gencontract.js");
@@ -17,19 +17,9 @@ describe("Poseidon Smart contract test", () => {
     let accounts;
 
     before(async () => {
-        testrpc = TestRPC.server({
-            ws: true,
-            gasLimit: 5800000,
-            total_accounts: 10,
-        });
-
-        testrpc.listen(8546, "127.0.0.1");
-
-        web3 = new Web3("ws://127.0.0.1:8546");
+        web3 = new Web3(ganache.provider(), null, { transactionConfirmationBlocks: 1 });
         accounts = await web3.eth.getAccounts();
     });
-
-    after(async () => testrpc.close());
 
     it("Should deploy the contract", async () => {
         const C = new web3.eth.Contract(poseidonGenContract.abi);

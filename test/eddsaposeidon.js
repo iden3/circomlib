@@ -9,17 +9,17 @@ const assert = chai.assert;
 
 const bigInt = snarkjs.bigInt;
 
-describe("EdDSA MiMC test", function () {
+describe("EdDSA Poseidon test", function () {
     let circuit;
 
     this.timeout(100000);
 
     before( async () => {
-        const cirDef = await compiler(path.join(__dirname, "circuits", "eddsamimc_test.circom"));
+        const cirDef = await compiler(path.join(__dirname, "circuits", "eddsaposeidon_test.circom"));
 
         circuit = new snarkjs.Circuit(cirDef);
 
-        console.log("NConstrains EdDSA MiMC: " + circuit.nConstraints);
+        console.log("NConstrains EdDSA Poseidon: " + circuit.nConstraints);
     });
 
     it("Sign a single number", async () => {
@@ -29,9 +29,9 @@ describe("EdDSA MiMC test", function () {
 
         const pubKey = eddsa.prv2pub(prvKey);
 
-        const signature = eddsa.signMiMC(prvKey, msg);
+        const signature = eddsa.signPoseidon(prvKey, msg);
 
-        assert(eddsa.verifyMiMC(msg, signature, pubKey));
+        assert(eddsa.verifyPoseidon(msg, signature, pubKey));
 
         const w = circuit.calculateWitness({
             enabled: 1,
@@ -53,11 +53,11 @@ describe("EdDSA MiMC test", function () {
         const pubKey = eddsa.prv2pub(prvKey);
 
 
-        const signature = eddsa.signMiMC(prvKey, msg);
+        const signature = eddsa.signPoseidon(prvKey, msg);
 
-        assert(eddsa.verifyMiMC(msg, signature, pubKey));
+        assert(eddsa.verifyPoseidon(msg, signature, pubKey));
         try {
-            const w = circuit.calculateWitness({
+            circuit.calculateWitness({
                 enabled: 1,
                 Ax: pubKey[0],
                 Ay: pubKey[1],
@@ -80,9 +80,9 @@ describe("EdDSA MiMC test", function () {
         const pubKey = eddsa.prv2pub(prvKey);
 
 
-        const signature = eddsa.signMiMC(prvKey, msg);
+        const signature = eddsa.signPoseidon(prvKey, msg);
 
-        assert(eddsa.verifyMiMC(msg, signature, pubKey));
+        assert(eddsa.verifyPoseidon(msg, signature, pubKey));
 
         const w = circuit.calculateWitness({
             enabled: 0,
