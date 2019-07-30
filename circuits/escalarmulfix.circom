@@ -28,6 +28,22 @@ include "babyjub.circom";
 
     The result should be compensated.
  */
+
+/*
+
+    The scalar is s = a0 + a1*2^3 + a2*2^6 + ...... + a81*2^243
+    First We calculate Q = B + 2^3*B + 2^6*B + ......... + 2^246*B
+
+    Then we calculate S1 = 2*2^246*B + (1 + a0)*B + (2^3 + a1)*B + .....+ (2^243 + a81)*B
+
+    And Finaly we compute the result: RES = SQ - Q
+
+    As you can see the input of the adders cannot be equal nor zero, except for the last
+    substraction that it's done in montgomery.
+
+    A good way to see it is that the accumulator input of the adder >= 2^247*B and the other input
+    is the output of the windows that it's going to be <= 2^246*B
+ */
 template WindowMulFix() {
     signal input in[3];
     signal input base[2];
@@ -142,6 +158,10 @@ template SegmentMulFix(nWindows) {
     component windows[nWindows];
     component adders[nWindows];
     component cadders[nWindows];
+
+    // In the last step we add an extra doubler so that numbers do not match.
+    component dblLast = MontgomeryDouble();
+
     for (i=0; i<nWindows; i++) {
         windows[i] = WindowMulFix();
         cadders[i] = MontgomeryAdd();
@@ -156,8 +176,15 @@ template SegmentMulFix(nWindows) {
             cadders[i].in1[0] <== cadders[i-1].out[0];
             cadders[i].in1[1] <== cadders[i-1].out[1];
         }
-        cadders[i].in2[0] <== windows[i].out8[0];
-        cadders[i].in2[1] <== windows[i].out8[1];
+        if (i<nWindows-1) {
+            cadders[i].in2[0] <== windows[i].out8[0];
+            cadders[i].in2[1] <== windows[i].out8[1];
+        } else {
+            dblLast.in[0] <== windows[i].out8[0];
+            dblLast.in[1] <== windows[i].out8[1];
+            cadders[i].in2[0] <== dblLast.out[0];
+            cadders[i].in2[1] <== dblLast.out[1];
+        }
         for (j=0; j<3; j++) {
             windows[i].in[j] <== e[3*i+j];
         }
@@ -166,8 +193,8 @@ template SegmentMulFix(nWindows) {
     for (i=0; i<nWindows; i++) {
         adders[i] = MontgomeryAdd();
         if (i==0) {
-            adders[i].in1[0] <== windows[nWindows-1].out8[0];
-            adders[i].in1[1] <== windows[nWindows-1].out8[1];
+            adders[i].in1[0] <== dblLast.out[0];
+            adders[i].in1[1] <== dblLast.out[1];
         } else {
             adders[i].in1[0] <== adders[i-1].out[0];
             adders[i].in1[1] <== adders[i-1].out[1];
