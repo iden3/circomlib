@@ -140,61 +140,55 @@ template SegmentMulFix(nWindows) {
     e2m.in[1] <== base[1];
 
     component windows[nWindows];
-    component adders[nWindows-1];
-    component cadders[nWindows-1];
+    component adders[nWindows];
+    component cadders[nWindows];
     for (i=0; i<nWindows; i++) {
         windows[i] = WindowMulFix();
+        cadders[i] = MontgomeryAdd();
         if (i==0) {
             windows[i].base[0] <== e2m.out[0];
             windows[i].base[1] <== e2m.out[1];
+            cadders[i].in1[0] <== e2m.out[0];
+            cadders[i].in1[1] <== e2m.out[1];
         } else {
             windows[i].base[0] <== windows[i-1].out8[0];
             windows[i].base[1] <== windows[i-1].out8[1];
-
-            adders[i-1] = MontgomeryAdd();
-            cadders[i-1] = MontgomeryAdd();
-            if (i==1) {
-                adders[i-1].in1[0] <== windows[0].out[0];
-                adders[i-1].in1[1] <== windows[0].out[1];
-                cadders[i-1].in1[0] <== e2m.out[0];
-                cadders[i-1].in1[1] <== e2m.out[1];
-            } else {
-                adders[i-1].in1[0] <== adders[i-2].out[0];
-                adders[i-1].in1[1] <== adders[i-2].out[1];
-                cadders[i-1].in1[0] <== cadders[i-2].out[0];
-                cadders[i-1].in1[1] <== cadders[i-2].out[1];
-            }
-            adders[i-1].in2[0] <== windows[i].out[0];
-            adders[i-1].in2[1] <== windows[i].out[1];
-            cadders[i-1].in2[0] <== windows[i-1].out8[0];
-            cadders[i-1].in2[1] <== windows[i-1].out8[1];
+            cadders[i].in1[0] <== cadders[i-1].out[0];
+            cadders[i].in1[1] <== cadders[i-1].out[1];
         }
+        cadders[i].in2[0] <== windows[i].out8[0];
+        cadders[i].in2[1] <== windows[i].out8[1];
         for (j=0; j<3; j++) {
             windows[i].in[j] <== e[3*i+j];
         }
     }
 
+    for (i=0; i<nWindows; i++) {
+        adders[i] = MontgomeryAdd();
+        if (i==0) {
+            adders[i].in1[0] <== windows[nWindows-1].out8[0];
+            adders[i].in1[1] <== windows[nWindows-1].out8[1];
+        } else {
+            adders[i].in1[0] <== adders[i-1].out[0];
+            adders[i].in1[1] <== adders[i-1].out[1];
+        }
+        adders[i].in2[0] <== windows[i].out[0];
+        adders[i].in2[1] <== windows[i].out[1];
+    }
+
     component m2e = Montgomery2Edwards();
     component cm2e = Montgomery2Edwards();
 
-    if (nWindows > 1) {
-        m2e.in[0] <== adders[nWindows-2].out[0];
-        m2e.in[1] <== adders[nWindows-2].out[1];
-        cm2e.in[0] <== cadders[nWindows-2].out[0];
-        cm2e.in[1] <== cadders[nWindows-2].out[1];
-    } else {
-        m2e.in[0] <== windows[0].out[0];
-        m2e.in[1] <== windows[0].out[1];
-        cm2e.in[0] <== e2m.out[0];
-        cm2e.in[1] <== e2m.out[1];
-    }
+    m2e.in[0] <== adders[nWindows-1].out[0];
+    m2e.in[1] <== adders[nWindows-1].out[1];
+    cm2e.in[0] <== cadders[nWindows-1].out[0];
+    cm2e.in[1] <== cadders[nWindows-1].out[1];
 
     component cAdd = BabyAdd();
     cAdd.x1 <== m2e.out[0];
     cAdd.y1 <== m2e.out[1];
     cAdd.x2 <== -cm2e.out[0];
     cAdd.y2 <== cm2e.out[1];
-
 
     cAdd.xout ==> out[0];
     cAdd.yout ==> out[1];
@@ -214,7 +208,7 @@ template EscalarMulFix(n, BASE) {
     signal input e[n];              // Input in binary format
     signal output out[2];           // Point (Twisted format)
 
-    var nsegments = (n-1)\249 +1;
+    var nsegments = (n-1)\246 +1;       // 249 probably would work. But I'm not sure and for security I keep 246
     var nlastsegment = n - (nsegments-1)*249;
 
     component segments[nsegments];

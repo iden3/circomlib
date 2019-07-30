@@ -50,6 +50,51 @@ describe("Escalarmul test", function () {
         assert(yout.equals(babyjub.Base8[1]));
     });
 
+    it("Should generate scalar mul of a specific constant", async () => {
+
+        const s = bigInt("2351960337287830298912035165133676222414898052661454064215017316447594616519");
+        const base8 = [
+            bigInt("17777552123799933955779906779655732241715742912184938656739573121738514868268"),
+            bigInt("2626589144620713026669568689430873010625803728049924121243784502389097019475")
+        ];
+
+        const w = circuit.calculateWitness({"e": s});
+
+        assert(circuit.checkWitness(w));
+
+        const xout = w[circuit.getSignalIdx("main.out[0]")];
+        const yout = w[circuit.getSignalIdx("main.out[1]")];
+
+        const expectedRes = babyjub.mulPointEscalar(base8, s);
+
+        assert(xout.equals(expectedRes[0]));
+        assert(yout.equals(expectedRes[1]));
+    });
+
+    it("Should generate scalar mul of the firsts 50 elements", async () => {
+
+        const base8 = [
+            bigInt("17777552123799933955779906779655732241715742912184938656739573121738514868268"),
+            bigInt("2626589144620713026669568689430873010625803728049924121243784502389097019475")
+        ];
+
+        for (let i=0; i<50; i++) {
+            const s = bigInt(i);
+
+            const w = circuit.calculateWitness({"e": s});
+
+            assert(circuit.checkWitness(w));
+
+            const xout = w[circuit.getSignalIdx("main.out[0]")];
+            const yout = w[circuit.getSignalIdx("main.out[1]")];
+
+            const expectedRes = babyjub.mulPointEscalar(base8, s);
+
+            assert(xout.equals(expectedRes[0]));
+            assert(yout.equals(expectedRes[1]));
+        }
+    });
+
     it("If multiply by order should return 0", async () => {
 
         const w = circuit.calculateWitness({"e": babyjub.subOrder });
