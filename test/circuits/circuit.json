@@ -1,0 +1,776 @@
+{
+ "mainCode": "{\n    {\n    }\n}\n",
+ "signalName2Idx": {
+  "one": 0,
+  "main.in": 33,
+  "main.out[0][0]": 1,
+  "main.out[0][1]": 2,
+  "main.out[1][0]": 3,
+  "main.out[1][1]": 4,
+  "main.out[2][0]": 5,
+  "main.out[2][1]": 6,
+  "main.out[3][0]": 7,
+  "main.out[3][1]": 8,
+  "main.out[4][0]": 9,
+  "main.out[4][1]": 10,
+  "main.out[5][0]": 11,
+  "main.out[5][1]": 12,
+  "main.out[6][0]": 13,
+  "main.out[6][1]": 14,
+  "main.out[7][0]": 15,
+  "main.out[7][1]": 16,
+  "main.out[8][0]": 17,
+  "main.out[8][1]": 18,
+  "main.out[9][0]": 19,
+  "main.out[9][1]": 20,
+  "main.out[10][0]": 21,
+  "main.out[10][1]": 22,
+  "main.out[11][0]": 23,
+  "main.out[11][1]": 24,
+  "main.out[12][0]": 25,
+  "main.out[12][1]": 26,
+  "main.out[13][0]": 27,
+  "main.out[13][1]": 28,
+  "main.out[14][0]": 29,
+  "main.out[14][1]": 30,
+  "main.out[15][0]": 31,
+  "main.out[15][1]": 32,
+  "main.escalarMul.out[0][0]": 34,
+  "main.escalarMul.out[0][1]": 35,
+  "main.escalarMul.out[1][0]": 36,
+  "main.escalarMul.out[1][1]": 37,
+  "main.escalarMul.out[2][0]": 38,
+  "main.escalarMul.out[2][1]": 39,
+  "main.escalarMul.out[3][0]": 40,
+  "main.escalarMul.out[3][1]": 41,
+  "main.escalarMul.out[4][0]": 42,
+  "main.escalarMul.out[4][1]": 43,
+  "main.escalarMul.out[5][0]": 44,
+  "main.escalarMul.out[5][1]": 45,
+  "main.escalarMul.out[6][0]": 46,
+  "main.escalarMul.out[6][1]": 47,
+  "main.escalarMul.out[7][0]": 48,
+  "main.escalarMul.out[7][1]": 49,
+  "main.escalarMul.out[8][0]": 50,
+  "main.escalarMul.out[8][1]": 51,
+  "main.escalarMul.out[9][0]": 52,
+  "main.escalarMul.out[9][1]": 53,
+  "main.escalarMul.out[10][0]": 54,
+  "main.escalarMul.out[10][1]": 55,
+  "main.escalarMul.out[11][0]": 56,
+  "main.escalarMul.out[11][1]": 57,
+  "main.escalarMul.out[12][0]": 58,
+  "main.escalarMul.out[12][1]": 59,
+  "main.escalarMul.out[13][0]": 60,
+  "main.escalarMul.out[13][1]": 61,
+  "main.escalarMul.out[14][0]": 62,
+  "main.escalarMul.out[14][1]": 63,
+  "main.escalarMul.out[15][0]": 64,
+  "main.escalarMul.out[15][1]": 65
+ },
+ "components": [
+  {
+   "name": "main",
+   "params": {},
+   "template": "Main",
+   "inputSignals": 1
+  },
+  {
+   "name": "main.escalarMul",
+   "params": {
+    "base": [
+     "5299619240641551281634865583518297030282874472190772894086521144482721001553",
+     "16950150798460657717958625567821834550301663161624707787222815936182638968203"
+    ],
+    "k": "0"
+   },
+   "template": "EscalarMulW4Table",
+   "inputSignals": 0
+  }
+ ],
+ "componentName2Idx": {
+  "main": 0,
+  "main.escalarMul": 1
+ },
+ "signals": [
+  {
+   "names": [
+    "one"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[0][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[0][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[1][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[1][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[2][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[2][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[3][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[3][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[4][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[4][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[5][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[5][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[6][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[6][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[7][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[7][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[8][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[8][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[9][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[9][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[10][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[10][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[11][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[11][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[12][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[12][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[13][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[13][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[14][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[14][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[15][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.out[15][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.in"
+   ],
+   "triggerComponents": [
+    0
+   ]
+  },
+  {
+   "names": [
+    "main.escalarMul.out[0][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[0][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[1][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[1][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[2][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[2][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[3][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[3][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[4][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[4][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[5][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[5][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[6][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[6][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[7][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[7][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[8][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[8][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[9][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[9][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[10][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[10][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[11][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[11][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[12][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[12][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[13][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[13][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[14][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[14][1]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[15][0]"
+   ],
+   "triggerComponents": []
+  },
+  {
+   "names": [
+    "main.escalarMul.out[15][1]"
+   ],
+   "triggerComponents": []
+  }
+ ],
+ "constraints": [
+  [
+   {},
+   {
+    "33": "1"
+   },
+   {
+    "1": "21888242871839275222246405745257275088548364400416034343698204186575808495616"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "2": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "1"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "3": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "5299619240641551281634865583518297030282874472190772894086521144482721001553"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "4": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "16950150798460657717958625567821834550301663161624707787222815936182638968203"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "5": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "10031262171927540148667355526369034398030886437092045105752248699557385197826"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "6": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "633281375905621697187330766174974863687049529291089048651929454608812697683"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "7": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "2763488322167937039616325905516046217694264098671987087929565332380420898366"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "8": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "15305195750036305661220525648961313310481046260814497672243197092298550508693"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "9": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "12252886604826192316928789929706397349846234911198931249025449955069330867144"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "10": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "1286140751908834028607023759717162073146610688084909004843365841635476459484"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "11": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "11480966271046430430613841218147196773252373073876138147006741179837832100836"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "12": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "15148236048131954717802795400425086368006776860859772698778589175317365693546"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "13": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "10483991165196995731760716870725509190315033255344071753161464961897900552628"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "14": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "16822899191463256771813724222715007505997804748105685077895991386716774358231"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "15": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "20092560661213339045022877747484245238324772779820628739268223482659246842641"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "16": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "12112450042127193446189577552007703839818242727902437791835414514847797088033"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "17": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "7582035475627193640797276505418002166691739036475590846121162698650004832581"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "18": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "7801528930831391612913542953849263092120765287178679640990215688947513841260"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "19": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "4705897243203718691035604313913899717760209962238015362153877735592901317263"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "20": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "11533909001000295577818857040682494493436124051895563619976413559559984357704"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "21": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "153240920024090527149238595127650983736082984617707450012091413752625486998"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "22": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "4020276081434545615309760015178511782232038136121596626881988383789905359767"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "23": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "21605515851820432880964235241069234202284600780825340516808373216881770219365"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "24": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "18856460861531942120859708048677603751294231190189224157283439874962410808705"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "25": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "13745444942333935831105476262872495530232646590228527111681360848540626474828"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "26": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "12593235468414968750242085888471035041062129592669413010808753916989521208231"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "27": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "2645068156583085050795409844793952496341966587935372213947442411891928926825"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "28": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "18721023485287444620535873833099074300132272004358512346950884094158923211889"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "29": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "6271573312546148160329629673815240458676221818610765478794395550121752710497"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "30": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "20729133862440981855920571719405839551572203482913253618619962546642052100217"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "31": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "5958787406588418500595239545974275039455545059833263445973445578199987122248"
+   }
+  ],
+  [
+   {},
+   {},
+   {
+    "32": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
+    "33": "6291453822075498887551694851992571215511219854100590306020486222643399599966"
+   }
+  ]
+ ],
+ "templates": {
+  "EscalarMulW4Table": "function(ctx) {\n    ctx.setVar(\"dbl\", [], ctx.getVar(\"base\",[]));\n    for (ctx.setVar(\"i\", [], \"0\");bigInt(bigInt(ctx.getVar(\"i\",[])).lt(bigInt(bigInt(ctx.getVar(\"k\",[])).mul(bigInt(\"4\")).mod(__P__))) ? 1 : 0).neq(bigInt(0));(ctx.setVar(\"i\", [], bigInt(ctx.getVar(\"i\",[])).add(bigInt(\"1\")).mod(__P__))).add(__P__).sub(bigInt(1)).mod(__P__)) { \n    {\n        ctx.setVar(\"dbl\", [], ctx.callFunction(\"pointAdd\", [ctx.getVar(\"dbl\",[\"0\"]),ctx.getVar(\"dbl\",[\"1\"]),ctx.getVar(\"dbl\",[\"0\"]),ctx.getVar(\"dbl\",[\"1\"])]));\n    }\n\n     }\n    ctx.setSignal(\"out\", [\"0\",\"0\"], \"0\");\n    ctx.assert(ctx.getSignal(\"out\", [\"0\",\"0\"]), \"0\");\n    ctx.setSignal(\"out\", [\"0\",\"1\"], \"1\");\n    ctx.assert(ctx.getSignal(\"out\", [\"0\",\"1\"]), \"1\");\n    for (ctx.setVar(\"i\", [], \"1\");bigInt(bigInt(ctx.getVar(\"i\",[])).lt(bigInt(\"16\")) ? 1 : 0).neq(bigInt(0));(ctx.setVar(\"i\", [], bigInt(ctx.getVar(\"i\",[])).add(bigInt(\"1\")).mod(__P__))).add(__P__).sub(bigInt(1)).mod(__P__)) { \n    {\n        ctx.setVar(\"p\", [], ctx.callFunction(\"pointAdd\", [ctx.getSignal(\"out\", [bigInt(ctx.getVar(\"i\",[])).add(__P__).sub(bigInt(\"1\")).mod(__P__),\"0\"]),ctx.getSignal(\"out\", [bigInt(ctx.getVar(\"i\",[])).add(__P__).sub(bigInt(\"1\")).mod(__P__),\"1\"]),ctx.getVar(\"dbl\",[\"0\"]),ctx.getVar(\"dbl\",[\"1\"])]));\n        ctx.setSignal(\"out\", [ctx.getVar(\"i\",[]),\"0\"], ctx.getVar(\"p\",[\"0\"]));\n        ctx.assert(ctx.getSignal(\"out\", [ctx.getVar(\"i\",[]),\"0\"]), ctx.getVar(\"p\",[\"0\"]));\n        ctx.setSignal(\"out\", [ctx.getVar(\"i\",[]),\"1\"], ctx.getVar(\"p\",[\"1\"]));\n        ctx.assert(ctx.getSignal(\"out\", [ctx.getVar(\"i\",[]),\"1\"]), ctx.getVar(\"p\",[\"1\"]));\n    }\n\n     }\n}\n",
+  "Main": "function(ctx) {\n    ctx.setVar(\"base\", [], [\"5299619240641551281634865583518297030282874472190772894086521144482721001553\",\"16950150798460657717958625567821834550301663161624707787222815936182638968203\"]);\n    for (ctx.setVar(\"i\", [], \"0\");bigInt(bigInt(ctx.getVar(\"i\",[])).lt(bigInt(\"16\")) ? 1 : 0).neq(bigInt(0));(ctx.setVar(\"i\", [], bigInt(ctx.getVar(\"i\",[])).add(bigInt(\"1\")).mod(__P__))).add(__P__).sub(bigInt(1)).mod(__P__)) { \n    {\n        ctx.setSignal(\"out\", [ctx.getVar(\"i\",[]),\"0\"], bigInt(ctx.getPin(\"escalarMul\", [], \"out\", [ctx.getVar(\"i\",[]),\"0\"])).mul(bigInt(ctx.getSignal(\"in\", []))).mod(__P__));\n        ctx.assert(ctx.getSignal(\"out\", [ctx.getVar(\"i\",[]),\"0\"]), bigInt(ctx.getPin(\"escalarMul\", [], \"out\", [ctx.getVar(\"i\",[]),\"0\"])).mul(bigInt(ctx.getSignal(\"in\", []))).mod(__P__));\n        ctx.setSignal(\"out\", [ctx.getVar(\"i\",[]),\"1\"], bigInt(ctx.getPin(\"escalarMul\", [], \"out\", [ctx.getVar(\"i\",[]),\"1\"])).mul(bigInt(ctx.getSignal(\"in\", []))).mod(__P__));\n        ctx.assert(ctx.getSignal(\"out\", [ctx.getVar(\"i\",[]),\"1\"]), bigInt(ctx.getPin(\"escalarMul\", [], \"out\", [ctx.getVar(\"i\",[]),\"1\"])).mul(bigInt(ctx.getSignal(\"in\", []))).mod(__P__));\n    }\n\n     }\n}\n"
+ },
+ "functions": {
+  "pointAdd": {
+   "params": [
+    "x1",
+    "y1",
+    "x2",
+    "y2"
+   ],
+   "func": "function(ctx) {\n    ctx.setVar(\"a\", [], \"168700\");\n    ctx.setVar(\"d\", [], \"168696\");\n    ctx.setVar(\"res\", [\"0\"], bigInt(bigInt(bigInt(ctx.getVar(\"x1\",[])).mul(bigInt(ctx.getVar(\"y2\",[]))).mod(__P__)).add(bigInt(bigInt(ctx.getVar(\"y1\",[])).mul(bigInt(ctx.getVar(\"x2\",[]))).mod(__P__))).mod(__P__)).mul( bigInt(bigInt(\"1\").add(bigInt(bigInt(bigInt(bigInt(bigInt(ctx.getVar(\"d\",[])).mul(bigInt(ctx.getVar(\"x1\",[]))).mod(__P__)).mul(bigInt(ctx.getVar(\"x2\",[]))).mod(__P__)).mul(bigInt(ctx.getVar(\"y1\",[]))).mod(__P__)).mul(bigInt(ctx.getVar(\"y2\",[]))).mod(__P__))).mod(__P__)).inverse(__P__) ).mod(__P__));\n    ctx.setVar(\"res\", [\"1\"], bigInt(bigInt(bigInt(ctx.getVar(\"y1\",[])).mul(bigInt(ctx.getVar(\"y2\",[]))).mod(__P__)).add(__P__).sub(bigInt(bigInt(bigInt(ctx.getVar(\"a\",[])).mul(bigInt(ctx.getVar(\"x1\",[]))).mod(__P__)).mul(bigInt(ctx.getVar(\"x2\",[]))).mod(__P__))).mod(__P__)).mul( bigInt(bigInt(\"1\").add(__P__).sub(bigInt(bigInt(bigInt(bigInt(bigInt(ctx.getVar(\"d\",[])).mul(bigInt(ctx.getVar(\"x1\",[]))).mod(__P__)).mul(bigInt(ctx.getVar(\"x2\",[]))).mod(__P__)).mul(bigInt(ctx.getVar(\"y1\",[]))).mod(__P__)).mul(bigInt(ctx.getVar(\"y2\",[]))).mod(__P__))).mod(__P__)).inverse(__P__) ).mod(__P__));\n    return ctx.getVar(\"res\",[]);;\n}\n"
+  }
+ },
+ "nPrvInputs": 0,
+ "nPubInputs": 1,
+ "nInputs": 1,
+ "nOutputs": 32,
+ "nVars": 34,
+ "nConstants": 32,
+ "nSignals": 66
+}
