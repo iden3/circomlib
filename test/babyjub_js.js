@@ -28,6 +28,16 @@ describe("Baby Jub js test", function () {
         assert(out[1].equals(1));
     });
 
+    it("Should base be 8*generator", () => {
+        let res;
+        res = babyjub.addPoint(babyjub.Generator, babyjub.Generator);
+        res = babyjub.addPoint(res, res);
+        res = babyjub.addPoint(res, res);
+
+        assert(res[0].equals(babyjub.Base8[0]));
+        assert(res[1].equals(babyjub.Base8[1]));
+    });
+
     it("Should add 2 same numbers", () => {
 
         const p1 = [
