@@ -19,6 +19,7 @@
 
 include "montgomery.circom";
 include "babyjub.circom";
+include "comparators.circom";
 
 template Multiplexor2() {
     signal input sel;
@@ -138,6 +139,8 @@ template EscalarMulAny(n) {
     component doublers[nsegments-1];
     component m2e[nsegments-1];
     component adders[nsegments-1];
+    component zeropoint = IsZero();
+    zeropoint.in <== p[0];
 
     var s;
     var i;
@@ -154,8 +157,9 @@ template EscalarMulAny(n) {
         }
 
         if (s==0) {
-            p[0] ==> segments[s].p[0];
-            p[1] ==> segments[s].p[1];
+            // force G8 point if input point is zero
+            segments[s].p[0] <== p[0] + (5299619240641551281634865583518297030282874472190772894086521144482721001553 - p[0])*zeropoint.out;
+            segments[s].p[1] <== p[1] + (16950150798460657717958625567821834550301663161624707787222815936182638968203 - p[1])*zeropoint.out;
         } else {
             doublers[s-1] = MontgomeryDouble();
             m2e[s-1] = Montgomery2Edwards();
@@ -183,10 +187,10 @@ template EscalarMulAny(n) {
     }
 
     if (nsegments == 1) {
-        segments[0].out[0] ==> out[0];
-        segments[0].out[1] ==> out[1];
+        segments[0].out[0]*(1-zeropoint.out) ==> out[0];
+        segments[0].out[1]+(1-segments[0].out[1])*zeropoint.out ==> out[1];
     } else {
-        adders[nsegments-2].xout ==> out[0];
-        adders[nsegments-2].yout ==> out[1];
+        adders[nsegments-2].xout*(1-zeropoint.out) ==> out[0];
+        adders[nsegments-2].yout+(1-adders[nsegments-2].yout)*zeropoint.out ==> out[1];
     }
 }

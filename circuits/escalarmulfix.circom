@@ -246,7 +246,7 @@ template EscalarMulFix(n, BASE) {
     var s;
     var i;
     var nseg;
-    var nWindows
+    var nWindows;
 
     for (s=0; s<nsegments; s++) {
 
