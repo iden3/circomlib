@@ -24,6 +24,7 @@ include "../binsum.circom";
 include "sigmaplus.circom";
 
 template Sha256compression() {
+    signal input hin[256];
     signal input inp[512];
     signal output out[256];
     signal a[65][32];
@@ -43,15 +44,6 @@ template Sha256compression() {
 
     component ct_k[64];
     for (i=0; i<64; i++) ct_k[i] = K(i);
-
-    component ha0 = H(0);
-    component hb0 = H(1);
-    component hc0 = H(2);
-    component hd0 = H(3);
-    component he0 = H(4);
-    component hf0 = H(5);
-    component hg0 = H(6);
-    component hh0 = H(7);
 
     component t1[64];
     for (i=0; i<64; i++) t1[i] = T1();
@@ -88,14 +80,14 @@ template Sha256compression() {
     }
 
     for (k=0; k<32; k++ ) {
-        a[0][k] <== ha0.out[k]
-        b[0][k] <== hb0.out[k]
-        c[0][k] <== hc0.out[k]
-        d[0][k] <== hd0.out[k]
-        e[0][k] <== he0.out[k]
-        f[0][k] <== hf0.out[k]
-        g[0][k] <== hg0.out[k]
-        h[0][k] <== hh0.out[k]
+        a[0][k] <== hin[k];
+        b[0][k] <== hin[32*1 + k];
+        c[0][k] <== hin[32*2 + k];
+        d[0][k] <== hin[32*3 + k];
+        e[0][k] <== hin[32*4 + k];
+        f[0][k] <== hin[32*5 + k];
+        g[0][k] <== hin[32*6 + k];
+        h[0][k] <== hin[32*7 + k];
     }
 
     for (t = 0; t<64; t++) {
@@ -133,21 +125,21 @@ template Sha256compression() {
     }
 
     for (k=0; k<32; k++) {
-        fsum[0].in[0][k] <==  ha0.out[k];
+        fsum[0].in[0][k] <==  hin[32*0+k];
         fsum[0].in[1][k] <==  a[64][k];
-        fsum[1].in[0][k] <==  hb0.out[k];
+        fsum[1].in[0][k] <==  hin[32*1+k];
         fsum[1].in[1][k] <==  b[64][k];
-        fsum[2].in[0][k] <==  hc0.out[k];
+        fsum[2].in[0][k] <==  hin[32*2+k];
         fsum[2].in[1][k] <==  c[64][k];
-        fsum[3].in[0][k] <==  hd0.out[k];
+        fsum[3].in[0][k] <==  hin[32*3+k];
         fsum[3].in[1][k] <==  d[64][k];
-        fsum[4].in[0][k] <==  he0.out[k];
+        fsum[4].in[0][k] <==  hin[32*4+k];
         fsum[4].in[1][k] <==  e[64][k];
-        fsum[5].in[0][k] <==  hf0.out[k];
+        fsum[5].in[0][k] <==  hin[32*5+k];
         fsum[5].in[1][k] <==  f[64][k];
-        fsum[6].in[0][k] <==  hg0.out[k];
+        fsum[6].in[0][k] <==  hin[32*6+k];
         fsum[6].in[1][k] <==  g[64][k];
-        fsum[7].in[0][k] <==  hh0.out[k];
+        fsum[7].in[0][k] <==  hin[32*7+k];
         fsum[7].in[1][k] <==  h[64][k];
     }
 

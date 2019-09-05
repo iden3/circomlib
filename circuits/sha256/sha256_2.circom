@@ -17,6 +17,7 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
+include "constants.circom";
 include "sha256compression.circom";
 include "../bitify.circom"
 
@@ -24,6 +25,9 @@ template Sha256_2() {
     signal input a;
     signal input b;
     signal output out;
+
+    var i;
+    var k;
 
     component bits2num = Bits2Num(216);
     component num2bits[2];
@@ -34,9 +38,28 @@ template Sha256_2() {
     num2bits[0].in <== a;
     num2bits[1].in <== b;
 
+
     component sha256compression = Sha256compression() ;
 
-    var i;
+    component ha0 = H(0);
+    component hb0 = H(1);
+    component hc0 = H(2);
+    component hd0 = H(3);
+    component he0 = H(4);
+    component hf0 = H(5);
+    component hg0 = H(6);
+    component hh0 = H(7);
+
+    for (k=0; k<32; k++ ) {
+        sha256compression.hin[0*32+k] <== ha0.out[k];
+        sha256compression.hin[1*32+k] <== hb0.out[k];
+        sha256compression.hin[2*32+k] <== hc0.out[k];
+        sha256compression.hin[3*32+k] <== hd0.out[k];
+        sha256compression.hin[4*32+k] <== he0.out[k];
+        sha256compression.hin[5*32+k] <== hf0.out[k];
+        sha256compression.hin[6*32+k] <== hg0.out[k];
+        sha256compression.hin[7*32+k] <== hh0.out[k];
+    }
 
     for (i=0; i<216; i++) {
         sha256compression.inp[i] <== num2bits[0].out[215-i];
