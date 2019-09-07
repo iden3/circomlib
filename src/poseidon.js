@@ -95,7 +95,7 @@ exports.createHash = (t, nRoundsF, nRoundsP, seed) => {
     const M = exports.getMatrix(t, seed, nRoundsF + nRoundsP);
     return function(inputs) {
         let state = [];
-        assert(inputs.length < t);
+        assert(inputs.length <= t);
         assert(inputs.length > 0);
         for (let i=0; i<inputs.length; i++) state[i] = bigInt(inputs[i]);
         for (let i=inputs.length; i<t; i++) state[i] = F.zero;
