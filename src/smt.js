@@ -310,3 +310,4 @@ async function newMemEmptyTrie() {
 module.exports.loadFromFile = loadFromFile;
 module.exports.newMemEmptyTrie = newMemEmptyTrie;
 module.exports.SMT = SMT;
+module.exports.SMTMemDB = SMTMemDB;
