@@ -111,5 +111,28 @@ describe("SMT test", function () {
         assert(circuit.checkWitness(w));
     });
 
+    it("Check inclussion Adria case", async () => {
+        const e1_hi= bigInt("17124152697573569611556136390143205198134245887034837071647643529178599000839");
+        const e1_hv= bigInt("19650379996168153643111744440707177573540245771926102415571667548153444658179");
+
+        const e2ok_hi= bigInt("16498254692537945203721083102154618658340563351558973077349594629411025251262");
+        const e2ok_hv= bigInt("19650379996168153643111744440707177573540245771926102415571667548153444658179");
+
+        const e2fail_hi= bigInt("17195092312975762537892237130737365903429674363577646686847513978084990105579");
+        const e2fail_hv= bigInt("19650379996168153643111744440707177573540245771926102415571667548153444658179");
+
+        const tree1 = await smt.newMemEmptyTrie();
+        await tree1.insert(e1_hi,e1_hv);
+        await tree1.insert(e2ok_hi,e2ok_hv);
+
+        await testInclusion(tree1, e2ok_hi, circuit);
+
+        const tree2 = await smt.newMemEmptyTrie();
+        await tree2.insert(e1_hi,e1_hv);
+        await tree2.insert(e2fail_hi,e2fail_hv);
+
+        await testInclusion(tree2, e2fail_hi, circuit);
+    });
+
 
 });

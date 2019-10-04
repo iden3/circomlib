@@ -47,7 +47,7 @@ template EdDSAPoseidonVerifier() {
         snum2bits.out[i] ==> compConstant.in[i];
     }
     compConstant.in[253] <== 0;
-    compConstant.out === 0;
+    compConstant.out*enabled === 0;
 
 // Calculate the h = H(R,A, msg)
 
@@ -79,7 +79,7 @@ template EdDSAPoseidonVerifier() {
     // We check that A is not zero.
     component isZero = IsZero();
     isZero.in <== dbl3.x;
-    isZero.out === 0;
+    isZero.out*enabled === 0;
 
     component mulAny = EscalarMulAny(254);
     for (i=0; i<254; i++) {

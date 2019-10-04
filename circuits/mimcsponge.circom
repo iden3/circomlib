@@ -23,7 +23,7 @@ template MiMCSponge(nInputs, nRounds, nOutputs) {
     }
   }
 
-  outs[0] = S[nInputs - 1].xL_out;
+  outs[0] <== S[nInputs - 1].xL_out;
 
   for (var i = 0; i < nOutputs - 1; i++) {
     S[nInputs + i] = MiMCFeistelHash(nRounds);
