@@ -99,8 +99,8 @@ template MiMCFeistelPermutation(nrounds, reverse) {
     signal output xL_out;
     signal output xR_out;
 
-    var c = [
-      0,
+    // doesn't contain the first and last round constants, which are always zero
+    var c_partial = [
       7120861356467848435263064379192047478074060781135320967663101236819528304084,
       5024705281721889198577876690145313457398658950011302225525409148828000436681,
       17980351014018068290387269214713820287804403312720763401943303895585469787384,
@@ -318,8 +318,7 @@ template MiMCFeistelPermutation(nrounds, reverse) {
       18224457394066545825553407391290108485121649197258948320896164404518684305122,
       274945154732293792784580363548970818611304339008964723447672490026510689427,
       11050822248291117548220126630860474473945266276626263036056336623671308219529,
-      2119542016932434047340813757208803962484943912710204325088879681995922344971,
-      0
+      2119542016932434047340813757208803962484943912710204325088879681995922344971
     ];
 
     var t;
@@ -329,10 +328,18 @@ template MiMCFeistelPermutation(nrounds, reverse) {
     signal xL[nrounds-1];
     signal xR[nrounds-1];
 
+    var c;
     for (var i=0; i<nrounds; i++) {
         // If we are in decryption mode, then we need to reverse the order of
         // round constants and also rerverse the round function application.
-        t = (i==0) ? k+xL_in : k + xL[i-1] + ((reverse==1) ? c[nrounds - 1 - i] : c[i]);
+
+        if ((i == 0) || (i == nrounds - 1)) {
+          c = 0;
+        } else {
+          c = ((reverse==1) ? c_partial[nrounds - 1 - (i + 1)] : c_partial[i - 1]);
+        }
+
+        t = (i==0) ? k+xL_in : k + xL[i-1] + c;
         t2[i] <== t*t;
         t4[i] <== t2[i]*t2[i];
 
