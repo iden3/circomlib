@@ -512,7 +512,7 @@ Implementation of MiMC-7 hash in Fp being...  (link to description of the hash)
 
 ### mimcsponge
 
-- `MiMCSponge(nInputs, nRounds, nOutputs)`
+- `MiMCSponge(nInputs, nOutputs)`
 
     - DESCRIPTION
     - SCHEMA
