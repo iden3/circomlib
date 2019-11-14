@@ -1,10 +1,12 @@
 // implements MiMC-2n/n as hash using a sponge construction.
 // log_5(21888242871839275222246405745257275088548364400416034343698204186575808495617) ~= 110
 // => nRounds should be 220
-template MiMCSponge(nInputs, nRounds, nOutputs) {
+template MiMCSponge(nInputs, nOutputs) {
   signal input ins[nInputs];
   signal input k;
   signal output outs[nOutputs];
+
+  var nRounds = 220;
 
   // S = R||C
   component S[nInputs + nOutputs - 1];

@@ -52,7 +52,7 @@ template EdDSAMiMCSpongeVerifier() {
 
 // Calculate the h = H(R,A, msg)
 
-    component hash = MiMCSponge(5, 220, 1);
+    component hash = MiMCSponge(5, 1);
     hash.ins[0] <== R8x;
     hash.ins[1] <== R8y;
     hash.ins[2] <== Ax;
