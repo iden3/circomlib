@@ -50,6 +50,7 @@ To waranty binary outputs:
     This function calculates the number of extra bits in the output to do the full sum.
  */
 
+/* a must be < Nq/2, where Nq is the number of elements in the scalar field */
 function nbits(a) {
     var n = 1;
     var r = 0;
@@ -61,6 +62,7 @@ function nbits(a) {
 }
 
 
+/* n must be such that (2**(n+1) -2) < Nq/ops, where Nq is the number of bits in the scalar field */
 template BinSum(n, ops) {
     var nout = nbits((2**n -1)*ops);
     signal input in[ops][n];
