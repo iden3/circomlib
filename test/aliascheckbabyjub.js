@@ -23,12 +23,12 @@ function getBits(v, n) {
     return res;
 }
 
-const q = bigInt("21888242871839275222246405745257275088548364400416034343698204186575808495617");
+const r = bigInt("2736030358979909402780800718157159386076813972158567259200215660948447373041");
 
 describe("Aliascheck test", () => {
     let circuit;
     before( async() => {
-        const cirDef = await compiler(path.join(__dirname, "circuits", "aliascheck_test.circom"));
+        const cirDef = await compiler(path.join(__dirname, "circuits", "aliascheckbabyjub_test.circom"));
 
         circuit = new snarkjs.Circuit(cirDef);
 
@@ -36,22 +36,22 @@ describe("Aliascheck test", () => {
     });
 
     it("Satisfy the aliastest 0", async () => {
-        const inp = getBits(bigInt.zero, 254);
+        const inp = getBits(bigInt.zero, 251);
         circuit.calculateWitness({in: inp});
     });
 
     it("Satisfy the aliastest 3", async () => {
-        const inp = getBits(bigInt(3), 254);
+        const inp = getBits(bigInt(3), 251);
         circuit.calculateWitness({in: inp});
     });
 
-    it("Satisfy the aliastest q-1", async () => {
-        const inp = getBits(q.sub(bigInt.one), 254);
+    it("Satisfy the aliastest r-1", async () => {
+        const inp = getBits(r.sub(bigInt.one), 251);
         circuit.calculateWitness({in: inp});
     });
 
-    it("Nhot not satisfy an input of q", async () => {
-        const inp = getBits(q, 254);
+    it("Nhot not satisfy an input of r", async () => {
+        const inp = getBits(r, 251);
         try {
             circuit.calculateWitness({in: inp});
             assert(false);
@@ -62,8 +62,7 @@ describe("Aliascheck test", () => {
     });
 
     it("Nhot not satisfy all ones", async () => {
-
-        const inp = getBits(bigInt(1).shl(254).sub(bigInt(1)), 254);
+        const inp = getBits(bigInt(1).shl(251).sub(bigInt(1)), 251);
         try {
             circuit.calculateWitness({in: inp});
             assert(false);

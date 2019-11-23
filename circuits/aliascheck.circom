@@ -21,12 +21,22 @@ include "compconstant.circom";
 
 
 template AliasCheck() {
-
     signal input in[254];
 
     component  compConstant = CompConstant(-1);
 
     for (var i=0; i<254; i++) in[i] ==> compConstant.in[i];
+
+    compConstant.out === 0;
+}
+
+template AliasCheckBabyJub() {
+    signal input in[251];
+
+    component  compConstant = CompConstant(2736030358979909402780800718157159386076813972158567259200215660948447373040);
+
+    for (var i=0; i<251; i++) in[i] ==> compConstant.in[i];
+    for (var i=0; i<3; i++) 0 ==> compConstant.in[251+i];
 
     compConstant.out === 0;
 }
