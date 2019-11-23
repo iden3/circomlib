@@ -108,6 +108,7 @@ template Window4() {
 }
 
 
+/* nWindows must not exceed 50 */
 template Segment(nWindows) {
     signal input in[nWindows*4];
     signal input base[2];

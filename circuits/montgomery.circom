@@ -85,6 +85,7 @@ template Montgomery2Edwards() {
 
  */
 
+/* in1 must be != in2 */
 template MontgomeryAdd() {
     signal input in1[2];
     signal input in2[2];
