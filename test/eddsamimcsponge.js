@@ -9,17 +9,17 @@ const assert = chai.assert;
 
 const bigInt = snarkjs.bigInt;
 
-describe("EdDSA Poseidon test", function () {
+describe("EdDSA MiMCSponge test", function () {
     let circuit;
 
     this.timeout(100000);
 
     before( async () => {
-        const cirDef = await compiler(path.join(__dirname, "circuits", "eddsaposeidon_test.circom"));
+        const cirDef = await compiler(path.join(__dirname, "circuits", "eddsamimcsponge_test.circom"));
 
         circuit = new snarkjs.Circuit(cirDef);
 
-        console.log("NConstrains EdDSA Poseidon: " + circuit.nConstraints);
+        console.log("NConstrains EdDSA MiMCSponge: " + circuit.nConstraints);
     });
 
     it("Sign a single number", async () => {
@@ -29,9 +29,9 @@ describe("EdDSA Poseidon test", function () {
 
         const pubKey = eddsa.prv2pub(prvKey);
 
-        const signature = eddsa.signPoseidon(prvKey, msg);
+        const signature = eddsa.signMiMCSponge(prvKey, msg);
 
-        assert(eddsa.verifyPoseidon(msg, signature, pubKey));
+        assert(eddsa.verifyMiMCSponge(msg, signature, pubKey));
 
         const w = circuit.calculateWitness({
             enabled: 1,
@@ -53,11 +53,11 @@ describe("EdDSA Poseidon test", function () {
         const pubKey = eddsa.prv2pub(prvKey);
 
 
-        const signature = eddsa.signPoseidon(prvKey, msg);
+        const signature = eddsa.signMiMCSponge(prvKey, msg);
 
-        assert(eddsa.verifyPoseidon(msg, signature, pubKey));
+        assert(eddsa.verifyMiMCSponge(msg, signature, pubKey));
         try {
-            circuit.calculateWitness({
+            const w = circuit.calculateWitness({
                 enabled: 1,
                 Ax: pubKey[0],
                 Ay: pubKey[1],
@@ -81,9 +81,9 @@ describe("EdDSA Poseidon test", function () {
         const pubKey = eddsa.prv2pub(prvKey);
 
 
-        const signature = eddsa.signPoseidon(prvKey, msg);
+        const signature = eddsa.signMiMCSponge(prvKey, msg);
 
-        assert(eddsa.verifyPoseidon(msg, signature, pubKey));
+        assert(eddsa.verifyMiMCSponge(msg, signature, pubKey));
 
         const w = circuit.calculateWitness({
             enabled: 0,

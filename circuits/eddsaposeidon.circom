@@ -38,16 +38,15 @@ template EdDSAPoseidonVerifier() {
 
 // Ensure S<Subgroup Order
 
-    component snum2bits = Num2Bits(253);
+    component snum2bits = Num2Bits(251);
     snum2bits.in <== S;
 
-    component  compConstant = CompConstant(2736030358979909402780800718157159386076813972158567259200215660948447373040);
+    component aliasCheck = AliasCheckBabyJub();
+    aliasCheck.enabled <== enabled;
 
-    for (i=0; i<253; i++) {
-        snum2bits.out[i] ==> compConstant.in[i];
+    for (i=0; i<251; i++) {
+        snum2bits.out[i] ==> aliasCheck.in[i];
     }
-    compConstant.in[253] <== 0;
-    compConstant.out*enabled === 0;
 
 // Calculate the h = H(R,A, msg)
 
@@ -103,8 +102,8 @@ template EdDSAPoseidonVerifier() {
         5299619240641551281634865583518297030282874472190772894086521144482721001553,
         16950150798460657717958625567821834550301663161624707787222815936182638968203
     ];
-    component mulFix = EscalarMulFix(253, BASE8);
-    for (i=0; i<253; i++) {
+    component mulFix = EscalarMulFix(251, BASE8);
+    for (i=0; i<251; i++) {
         mulFix.e[i] <== snum2bits.out[i];
     }
 

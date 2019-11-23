@@ -32,11 +32,12 @@ template AliasCheck() {
 
 template AliasCheckBabyJub() {
     signal input in[251];
+    signal input enabled;
 
     component  compConstant = CompConstant(2736030358979909402780800718157159386076813972158567259200215660948447373040);
 
     for (var i=0; i<251; i++) in[i] ==> compConstant.in[i];
     for (var i=0; i<3; i++) 0 ==> compConstant.in[251+i];
 
-    compConstant.out === 0;
+    compConstant.out*enabled === 0;
 }
