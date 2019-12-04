@@ -100,11 +100,11 @@ describe("Baby Jub test", function () {
             circuitTest.calculateWitness({x: 1, y: 0});
             assert(false, "Should be a valid point");
         } catch(err) {
-            assert.equal(err.message, "Constraint doesn't match: 168700 != 1");
+            assert(/Constraint\sdoesn't\smatch(.*)168700\s!=\s1/.test(err.message) );
         }
     });
 
-    it("Should extract the public key from the private one", async () => {    
+    it("Should extract the public key from the private one", async () => {
 
         const rawpvk = Buffer.from("0001020304050607080900010203040506070809000102030405060708090021", "hex");
         const pvk    = eddsa.pruneBuffer(createBlakeHash("blake512").update(rawpvk).digest().slice(0,32));

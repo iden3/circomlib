@@ -279,7 +279,7 @@ template MiMCFeistel(nrounds) {
         t4[i] <== t2[i]*t2[i];
         if (i<nrounds-1) {
           xL[i] <== ((i==0) ? xR_in : xR[i-1]) + t4[i]*t;
-          xR[i] = (i==0) ? xL_in : xL[i-1];
+          xR[i] <== (i==0) ? xL_in : xL[i-1];
         } else {
           xR_out <== xR[i-1] + t4[i]*t;
           xL_out <== xL[i-1];
