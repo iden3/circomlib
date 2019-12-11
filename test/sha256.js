@@ -116,10 +116,10 @@ describe("SHA256 test", () => {
         const testStr = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
 
         const b = Buffer.from(testStr, 'utf8');
-        for (let i=0; i<64; i++) {
+/*        for (let i=0; i<64; i++) {
             b[i] = i+1;
         }
-
+*/
         const hash = crypto.createHash("sha256")
             .update(b)
             .digest("hex");
