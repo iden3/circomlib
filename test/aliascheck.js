@@ -56,7 +56,7 @@ describe("Aliascheck test", () => {
             circuit.calculateWitness({in: inp});
             assert(false);
         } catch(err) {
-            assert(err.message.indexOf("Constraint doesn't match") >= 0);
+            assert(/Constraint\sdoesn't\smatch(.*)1\s!=\s0/.test(err.message) );
             assert(err.message.indexOf("1 != 0") >= 0);
         }
     });
@@ -68,7 +68,7 @@ describe("Aliascheck test", () => {
             circuit.calculateWitness({in: inp});
             assert(false);
         } catch(err) {
-            assert(err.message.indexOf("Constraint doesn't match") >= 0);
+            assert(/Constraint\sdoesn't\smatch(.*)1\s!=\s0/.test(err.message) );
             assert(err.message.indexOf("1 != 0") >= 0);
         }
     });

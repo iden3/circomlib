@@ -43,6 +43,8 @@ describe("Mux4 test", () => {
         for (let i=0; i<16; i++) {
             const w = circuit.calculateWitness({ "selector": i });
 
+            assert(circuit.checkWitness(w));
+
             assert(w[0].equals(bigInt(1)));
 
             // console.log(i + " -> " + w[circuit.getSignalIdx("main.out")].toString());
@@ -96,6 +98,8 @@ describe("Mux4 test", () => {
         for (let i=0; i<4; i++) {
             const w = circuit.calculateWitness({ "selector": i });
 
+            assert(circuit.checkWitness(w));
+
             assert(w[0].equals(bigInt(1)));
 
             // console.log(i + " -> " + w[circuit.getSignalIdx("main.out")].toString());
@@ -117,6 +121,8 @@ describe("Mux4 test", () => {
 
         for (let i=0; i<2; i++) {
             const w = circuit.calculateWitness({ "selector": i });
+
+            assert(circuit.checkWitness(w));
 
             assert(w[0].equals(bigInt(1)));
 
