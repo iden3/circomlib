@@ -3,11 +3,11 @@ const path = require("path");
 const snarkjs = require("snarkjs");
 const crypto = require("crypto");
 
-const compiler = require("circom");
-
 const assert = chai.assert;
 
 const sha256 = require("./helpers/sha256");
+
+const c_tester = require("circom").c_tester;
 
 // const printSignal = require("./helpers/printsignal");
 
@@ -34,9 +34,10 @@ function bitArray2buffer(a) {
 }
 
 
-describe("SHA256 test", () => {
+describe("SHA256 test", function () {
+    this.timeout(100000);
 
-
+/*
     it("Should work bits to array and array to bits", async () => {
         const b = new Buffer.alloc(64);
         for (let i=0; i<64; i++) {
@@ -80,11 +81,9 @@ describe("SHA256 test", () => {
         console.log("Vars: "+circuit.nVars);
         console.log("Constraints: "+circuit.nConstraints);
 
-/*
-        const testStr = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
+        // const testStr = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
 
-        const b = Buffer.from(testStr, 'utf8');
-*/
+        // const b = Buffer.from(testStr, 'utf8');
         const b = new Buffer.alloc(64);
         for (let i=0; i<64; i++) {
             b[i] = i+1;
@@ -95,7 +94,7 @@ describe("SHA256 test", () => {
             .digest("hex");
 
         const arrIn = buffer2bitArray(b);
-        const witness = circuit.calculateWitness({ "in": arrIn } /*, {logOutput: true} */);
+        const witness = circuit.calculateWitness({ "in": arrIn } , {logOutput: false} );
 
         const arrOut = witness.slice(1, 257);
         const hash2 = bitArray2buffer(arrOut).toString("hex");
@@ -116,16 +115,16 @@ describe("SHA256 test", () => {
         const testStr = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
 
         const b = Buffer.from(testStr, 'utf8');
-/*        for (let i=0; i<64; i++) {
-            b[i] = i+1;
-        }
-*/
+        //  for (let i=0; i<64; i++) {
+        //    b[i] = i+1;
+        //  }
+
         const hash = crypto.createHash("sha256")
             .update(b)
             .digest("hex");
 
         const arrIn = buffer2bitArray(b);
-        const witness = circuit.calculateWitness({ "in": arrIn } /*, {logOutput: true} */);
+        const witness = circuit.calculateWitness({ "in": arrIn }, {logOutput: false});
 
         const arrOut = witness.slice(1, 257);
         const hash2 = bitArray2buffer(arrOut).toString("hex");
@@ -133,4 +132,27 @@ describe("SHA256 test", () => {
         assert.equal(hash, hash2);
 
     }).timeout(1000000);
+*/
+    it ("Should calculate a hash of 2 compressor", async () => {
+        const cir = await c_tester(path.join(__dirname, "circuits", "sha256_test448.circom"));
+
+        const testStr = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
+
+        const b = Buffer.from(testStr, "utf8");
+
+        const hash = crypto.createHash("sha256")
+            .update(b)
+            .digest("hex");
+
+        const arrIn = buffer2bitArray(b);
+
+        console.log(JSON.stringify({ "in": arrIn }));
+        const witness = await cir.calculateWitness({ "in": arrIn });
+
+        const arrOut = witness.slice(1, 257);
+        const hash2 = bitArray2buffer(arrOut).toString("hex");
+
+        assert.equal(hash, hash2);
+    });
+
 });
