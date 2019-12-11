@@ -80,11 +80,11 @@ describe("SHA256 test", () => {
         console.log("Vars: "+circuit.nVars);
         console.log("Constraints: "+circuit.nConstraints);
 
-/*
-        const testStr = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
 
-        const b = Buffer.from(testStr, 'utf8');
-*/
+        // const testStr = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
+
+        // const b = Buffer.from(testStr, 'utf8');
+
         const b = new Buffer.alloc(64);
         for (let i=0; i<64; i++) {
             b[i] = i+1;
@@ -95,7 +95,7 @@ describe("SHA256 test", () => {
             .digest("hex");
 
         const arrIn = buffer2bitArray(b);
-        const witness = circuit.calculateWitness({ "in": arrIn } /*, {logOutput: true} */);
+        const witness = circuit.calculateWitness({ "in": arrIn }, {logOutput: false});
 
         const arrOut = witness.slice(1, 257);
         const hash2 = bitArray2buffer(arrOut).toString("hex");
@@ -104,7 +104,6 @@ describe("SHA256 test", () => {
 
     }).timeout(1000000);
 
-
     it("Should calculate a hash of 2 compressor", async () => {
         const cirDef = await compiler(path.join(__dirname, "circuits", "sha256_test448.circom"),  {reduceConstraints:false}  );
         const circuit = new snarkjs.Circuit(cirDef);
@@ -112,20 +111,19 @@ describe("SHA256 test", () => {
         console.log("Vars: "+circuit.nVars);
         console.log("Constraints: "+circuit.nConstraints);
 
-
         const testStr = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
 
-        const b = Buffer.from(testStr, 'utf8');
-/*        for (let i=0; i<64; i++) {
-            b[i] = i+1;
-        }
-*/
+        const b = Buffer.from(testStr, "utf8");
+        // for (let i=0; i<64; i++) {
+        //    b[i] = i+1;
+        // }
+
         const hash = crypto.createHash("sha256")
             .update(b)
             .digest("hex");
 
         const arrIn = buffer2bitArray(b);
-        const witness = circuit.calculateWitness({ "in": arrIn } /*, {logOutput: true} */);
+        const witness = circuit.calculateWitness({ "in": arrIn } , {logOutput: false});
 
         const arrOut = witness.slice(1, 257);
         const hash2 = bitArray2buffer(arrOut).toString("hex");
