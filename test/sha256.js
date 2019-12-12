@@ -37,7 +37,7 @@ function bitArray2buffer(a) {
 describe("SHA256 test", function () {
     this.timeout(100000);
 
-/*
+
     it("Should work bits to array and array to bits", async () => {
         const b = new Buffer.alloc(64);
         for (let i=0; i<64; i++) {
@@ -50,13 +50,9 @@ describe("SHA256 test", function () {
     });
 
     it("Should calculate a hash of 1 compressor", async () => {
-        const cirDef = await compiler(path.join(__dirname, "circuits", "sha256_2_test.circom"));
-        const circuit = new snarkjs.Circuit(cirDef);
+        const cir = await c_tester(path.join(__dirname, "circuits", "sha256_2_test.circom"));
 
-        console.log("Vars: "+circuit.nVars);
-        console.log("Constraints: "+circuit.nConstraints);
-
-        const witness = circuit.calculateWitness({ "a": "1", "b": "2" });
+        const witness = await cir.calculateWitness({ "a": "1", "b": "2" });
 
         const b = new Buffer.alloc(54);
         b[26] = 1;
@@ -75,15 +71,8 @@ describe("SHA256 test", function () {
     }).timeout(1000000);
 
     it("Should calculate a hash of 2 compressor", async () => {
-        const cirDef = await compiler(path.join(__dirname, "circuits", "sha256_test512.circom"),  {reduceConstraints:false}  );
-        const circuit = new snarkjs.Circuit(cirDef);
+        const cir = await c_tester(path.join(__dirname, "circuits", "sha256_test512.circom"));
 
-        console.log("Vars: "+circuit.nVars);
-        console.log("Constraints: "+circuit.nConstraints);
-
-        // const testStr = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
-
-        // const b = Buffer.from(testStr, 'utf8');
         const b = new Buffer.alloc(64);
         for (let i=0; i<64; i++) {
             b[i] = i+1;
@@ -94,7 +83,7 @@ describe("SHA256 test", function () {
             .digest("hex");
 
         const arrIn = buffer2bitArray(b);
-        const witness = circuit.calculateWitness({ "in": arrIn } , {logOutput: false} );
+        const witness = await cir.calculateWitness({ "in": arrIn });
 
         const arrOut = witness.slice(1, 257);
         const hash2 = bitArray2buffer(arrOut).toString("hex");
@@ -102,37 +91,6 @@ describe("SHA256 test", function () {
         assert.equal(hash, hash2);
 
     }).timeout(1000000);
-
-
-    it("Should calculate a hash of 2 compressor", async () => {
-        const cirDef = await compiler(path.join(__dirname, "circuits", "sha256_test448.circom"),  {reduceConstraints:false}  );
-        const circuit = new snarkjs.Circuit(cirDef);
-
-        console.log("Vars: "+circuit.nVars);
-        console.log("Constraints: "+circuit.nConstraints);
-
-
-        const testStr = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
-
-        const b = Buffer.from(testStr, 'utf8');
-        //  for (let i=0; i<64; i++) {
-        //    b[i] = i+1;
-        //  }
-
-        const hash = crypto.createHash("sha256")
-            .update(b)
-            .digest("hex");
-
-        const arrIn = buffer2bitArray(b);
-        const witness = circuit.calculateWitness({ "in": arrIn }, {logOutput: false});
-
-        const arrOut = witness.slice(1, 257);
-        const hash2 = bitArray2buffer(arrOut).toString("hex");
-
-        assert.equal(hash, hash2);
-
-    }).timeout(1000000);
-*/
     it ("Should calculate a hash of 2 compressor", async () => {
         const cir = await c_tester(path.join(__dirname, "circuits", "sha256_test448.circom"));
 
@@ -146,7 +104,6 @@ describe("SHA256 test", function () {
 
         const arrIn = buffer2bitArray(b);
 
-        console.log(JSON.stringify({ "in": arrIn }));
         const witness = await cir.calculateWitness({ "in": arrIn });
 
         const arrOut = witness.slice(1, 257);

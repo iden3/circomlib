@@ -26,20 +26,24 @@ template SigmaPlus() {
     signal input in15[32];
     signal input in16[32];
     signal output out[32];
+    var k;
 
-    component sum = BinSum(32, 4);
     component sigma1 = SmallSigma(17,19,10);
     component sigma0 = SmallSigma(7, 18, 3);
-
-    for (var k=0; k<32; k++) {
+    for (k=0; k<32; k++) {
         sigma1.in[k] <== in2[k];
         sigma0.in[k] <== in15[k];
+    }
 
+    component sum = BinSum(32, 4);
+    for (k=0; k<32; k++) {
         sum.in[0][k] <== sigma1.out[k];
         sum.in[1][k] <== in7[k];
         sum.in[2][k] <== sigma0.out[k];
         sum.in[3][k] <== in16[k];
+    }
 
+    for (k=0; k<32; k++) {
         out[k] <== sum.out[k];
     }
 }
