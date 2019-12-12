@@ -176,6 +176,9 @@ template SegmentMulFix(nWindows) {
             cadders[i].in1[0] <== cadders[i-1].out[0];
             cadders[i].in1[1] <== cadders[i-1].out[1];
         }
+        for (j=0; j<3; j++) {
+            windows[i].in[j] <== e[3*i+j];
+        }
         if (i<nWindows-1) {
             cadders[i].in2[0] <== windows[i].out8[0];
             cadders[i].in2[1] <== windows[i].out8[1];
@@ -184,9 +187,6 @@ template SegmentMulFix(nWindows) {
             dblLast.in[1] <== windows[i].out8[1];
             cadders[i].in2[0] <== dblLast.out[0];
             cadders[i].in2[1] <== dblLast.out[1];
-        }
-        for (j=0; j<3; j++) {
-            windows[i].in[j] <== e[3*i+j];
         }
     }
 
