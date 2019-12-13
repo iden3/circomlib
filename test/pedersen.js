@@ -1,11 +1,8 @@
 const chai = require("chai");
 const path = require("path");
-const snarkjs = require("snarkjs");
-const compiler = require("circom");
 
-const assert = chai.assert;
-
-const bigInt = snarkjs.bigInt;
+const bigInt = require("big-integer");
+const tester = require("circom").tester;
 
 const babyJub = require("../src/babyjub.js");
 
@@ -22,79 +19,59 @@ describe("Double Pedersen test", function() {
     let circuit;
     this.timeout(100000);
     before( async() => {
-        const cirDef = await compiler(path.join(__dirname, "circuits", "pedersen_test.circom"));
 
-        circuit = new snarkjs.Circuit(cirDef);
+        circuit = await tester(path.join(__dirname, "circuits", "pedersen_test.circom"));
 
-        console.log("NConstrains: " + circuit.nConstraints);
     });
     it("Should pedersen at zero", async () => {
 
-        let w, xout, yout;
+        let w;
 
-        w = circuit.calculateWitness({ in: ["0", "0"]});
+        w = await circuit.calculateWitness({ in: ["0", "0"]});
 
-        xout = w[circuit.getSignalIdx("main.out[0]")];
-        yout = w[circuit.getSignalIdx("main.out[1]")];
+        await circuit.assertOut(w, {out: [0,1]});
 
-        assert(xout.equals("0"));
-        assert(yout.equals("1"));
     });
     it("Should pedersen at one first generator", async () => {
-        let w, xout, yout;
+        let w;
 
-        w = circuit.calculateWitness({ in: ["1", "0"]});
+        w = await circuit.calculateWitness({ in: ["1", "0"]});
 
-        xout = bigInt(w[circuit.getSignalIdx("main.out[0]")]);
-        yout = bigInt(w[circuit.getSignalIdx("main.out[1]")]);
+        await circuit.assertOut(w, {out: PBASE[0]});
 
-        assert(xout.equals(PBASE[0][0]));
-        assert(yout.equals(PBASE[0][1]));
     });
     it("Should pedersen at one second generator", async () => {
-        let w, xout, yout;
+        let w;
 
-        w = circuit.calculateWitness({ in: ["0", "1"]});
+        w = await circuit.calculateWitness({ in: ["0", "1"]});
 
-        xout = w[circuit.getSignalIdx("main.out[0]")];
-        yout = w[circuit.getSignalIdx("main.out[1]")];
-
-        assert(xout.equals(PBASE[1][0]));
-        assert(yout.equals(PBASE[1][1]));
+        await circuit.assertOut(w, {out: PBASE[1]});
 
     });
     it("Should pedersen at mixed generators", async () => {
-        let w, xout, yout;
-        w = circuit.calculateWitness({ in: ["3", "7"]});
-
-        xout = w[circuit.getSignalIdx("main.out[0]")];
-        yout = w[circuit.getSignalIdx("main.out[1]")];
-
+        let w;
+        w = await circuit.calculateWitness({ in: ["3", "7"]});
 
         const r = babyJub.addPoint(
             babyJub.mulPointEscalar(PBASE[0], 3),
             babyJub.mulPointEscalar(PBASE[1], 7)
         );
 
-        assert(xout.equals(r[0]));
-        assert(yout.equals(r[1]));
+        await circuit.assertOut(w, {out: r});
 
     });
     it("Should pedersen all ones", async () => {
-        let w, xout, yout;
+        let w;
 
-        const allOnes = bigInt("1").shl(250).sub(bigInt("1"));
-        w = circuit.calculateWitness({ in: [allOnes, allOnes]});
+        const allOnes = bigInt("1").shiftLeft(250).minus(bigInt("1"));
+        w = await circuit.calculateWitness({ in: [allOnes, allOnes]});
 
-        xout = w[circuit.getSignalIdx("main.out[0]")];
-        yout = w[circuit.getSignalIdx("main.out[1]")];
 
         const r2 = babyJub.addPoint(
             babyJub.mulPointEscalar(PBASE[0], allOnes),
             babyJub.mulPointEscalar(PBASE[1], allOnes)
         );
 
-        assert(xout.equals(r2[0]));
-        assert(yout.equals(r2[1]));
+        await circuit.assertOut(w, {out: r2});
     });
 });

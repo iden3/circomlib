@@ -1,5 +1,4 @@
-const bn128 = require("snarkjs").bn128;
-const bigInt = require("snarkjs").bigInt;
+const bigInt = require("big-integer");
 const babyJub = require("./babyjub");
 const createBlakeHash = require("blake-hash");
 
