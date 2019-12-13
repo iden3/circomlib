@@ -1,7 +1,4 @@
-const chai = require("chai");
 const path = require("path");
-
-const assert = chai.assert;
 
 const bigInt = require("big-integer");
 const tester = require("circom").tester;
