@@ -6,10 +6,12 @@ template MiMCSponge(nInputs, nRounds, nOutputs) {
   signal input k;
   signal output outs[nOutputs];
 
+  var i;
+
   // S = R||C
   component S[nInputs + nOutputs - 1];
 
-  for (var i = 0; i < nInputs; i++) {
+  for (i = 0; i < nInputs; i++) {
     S[i] = MiMCFeistel(nRounds);
     S[i].k <== k;
     if (i == 0) {
@@ -23,7 +25,7 @@ template MiMCSponge(nInputs, nRounds, nOutputs) {
 
   outs[0] <== S[nInputs - 1].xL_out;
 
-  for (var i = 0; i < nOutputs - 1; i++) {
+  for (i = 0; i < nOutputs - 1; i++) {
     S[nInputs + i] = MiMCFeistel(nRounds);
     S[nInputs + i].k <== k;
     S[nInputs + i].xL_in <== S[nInputs + i - 1].xL_out;

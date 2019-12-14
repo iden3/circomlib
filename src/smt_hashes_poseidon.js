@@ -1,5 +1,5 @@
 const Poseidon = require("./poseidon");
-const bigInt = require("snarkjs").bigInt;
+const bigInt = require("big-integer");
 
 const hash = Poseidon.createHash(6, 8, 57);
 

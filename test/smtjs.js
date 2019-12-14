@@ -1,11 +1,10 @@
 const chai = require("chai");
-const snarkjs = require("snarkjs");
+
+const bigInt = require("big-integer");
 
 const smt = require("../src/smt.js");
 
 const assert = chai.assert;
-
-const bigInt = snarkjs.bigInt;
 
 
 function stringifyBigInts(o) {

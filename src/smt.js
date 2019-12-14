@@ -1,4 +1,4 @@
-const bigInt = require("snarkjs").bigInt;
+const bigInt = require("big-integer");
 
 const SMTMemDB = require("./smt_memdb");
 const {hash0, hash1} = require("./smt_hashes_poseidon");
@@ -21,7 +21,7 @@ class SMT {
             } else {
                 res.push(false);
             }
-            k = k.shr(1);
+            k = k.shiftRight(1);
         }
 
         while (res.length<256) res.push(false);

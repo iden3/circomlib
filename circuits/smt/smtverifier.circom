@@ -48,6 +48,8 @@ template SMTVerifier(nLevels) {
     signal input value;
     signal input fnc;
 
+    var i;
+
     component hash1Old = SMTHash1();
     hash1Old.key <== oldKey;
     hash1Old.value <== oldValue;
@@ -63,11 +65,11 @@ template SMTVerifier(nLevels) {
     n2bNew.in <== key;
 
     component smtLevIns = SMTLevIns(nLevels);
-    for (var i=0; i<nLevels; i++) smtLevIns.siblings[i] <== siblings[i];
+    for (i=0; i<nLevels; i++) smtLevIns.siblings[i] <== siblings[i];
     smtLevIns.enabled <== enabled;
 
     component sm[nLevels];
-    for (var i=0; i<nLevels; i++) {
+    for (i=0; i<nLevels; i++) {
         sm[i] = SMTVerifierSM();
         if (i==0) {
             sm[i].prev_top <== enabled;
@@ -89,7 +91,7 @@ template SMTVerifier(nLevels) {
     sm[nLevels-1].st_na + sm[nLevels-1].st_iold + sm[nLevels-1].st_inew + sm[nLevels-1].st_i0 === 1;
 
     component levels[nLevels];
-    for (var i=nLevels-1; i != -1; i--) {
+    for (i=nLevels-1; i != -1; i--) {
         levels[i] = SMTVerifierLevel();
 
         levels[i].st_top <== sm[i].st_top;
