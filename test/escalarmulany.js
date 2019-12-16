@@ -25,8 +25,7 @@ describe("Escalarmul test", function () {
 
         const w = await circuitEMulAny.calculateWitness({"e": 1, "p": g});
 
-        // TODO
-        // assert(circuitEMulAny.checkWitness(w));
+        await circuitEMulAny.checkConstraints(w);
 
         await circuitEMulAny.assertOut(w, {out: g});
 
@@ -37,8 +36,7 @@ describe("Escalarmul test", function () {
         const r = bigInt("2736030358979909402780800718157159386076813972158567259200215660948447373041");
         const w = await circuitEMulAny.calculateWitness({"e": r, "p": g});
 
-        // TODO
-        // assert(circuitEMulAny.checkWitness(w));
+        await circuitEMulAny.checkConstraints(w);
 
         await circuitEMulAny.assertOut(w, {out: [0,1]});
 

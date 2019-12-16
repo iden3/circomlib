@@ -20,8 +20,7 @@ describe("Exponentioation test", function () {
 
         const w = await circuit.calculateWitness({in: 1});
 
-        // TODO
-        // assert(circuit.checkWitness(w));
+        await circuit.checkConstraints(w);
 
         let g = [
             bigInt("5299619240641551281634865583518297030282874472190772894086521144482721001553"),
@@ -48,8 +47,7 @@ describe("Exponentioation test", function () {
 
         const w = await circuit.calculateWitness({in: 1});
 
-        // TODO
-        // assert(circuit.checkWitness(w));
+        await circuit.checkConstraints(w);
 
         let g = [
             bigInt("5299619240641551281634865583518297030282874472190772894086521144482721001553"),
@@ -80,8 +78,7 @@ describe("Exponentioation test", function () {
 
         const w = await circuit.calculateWitness({"in": 31});
 
-        // TODO
-        // assert(circuit.checkWitness(w));
+        await circuit.checkConstraints(w);
 
         let g = [
             bigInt("5299619240641551281634865583518297030282874472190772894086521144482721001553"),

@@ -28,8 +28,7 @@ async function testInsert(tree, key, value, circuit, log ) {
         newValue: value
     }, log);
 
-    // TODO
-    // assert(circuit.checkWitness(w));
+    await circuit.checkConstraints(w);
 
     await circuit.assertOut(w, {newRoot: res.newRoot});
 
@@ -51,8 +50,7 @@ async function testDelete(tree, key, circuit) {
         newValue: res.delValue
     });
 
-    // TODO
-    // assert(circuit.checkWitness(w));
+    await circuit.checkConstraints(w);
 
     await circuit.assertOut(w, {newRoot: res.newRoot});
 }
@@ -73,8 +71,7 @@ async function testUpdate(tree, key, newValue, circuit) {
         newValue: res.newValue
     });
 
-    // TODO
-    // assert(circuit.checkWitness(w));
+    await circuit.checkConstraints(w);
 
     await circuit.assertOut(w, {newRoot: res.newRoot});
 }
@@ -190,8 +187,7 @@ describe("SMT test", function () {
         const root1 = w[circuit.symbols["main.oldRoot"].idxWit];
         const root2 = w[circuit.symbols["main.newRoot"].idxWit];
 
-        // TODO
-        // assert(circuit.checkWitness(w));
+        await circuit.checkConstraints(w);
 
         assert(root1.equals(root2));
     });

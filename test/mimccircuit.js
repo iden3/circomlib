@@ -20,7 +20,6 @@ describe("MiMC Circuit test", function () {
 
         await circuit.assertOut(w, {out: res2});
 
-        // TODO
-        // assert(circuit.checkWitness(w));
+        await circuit.checkConstraints(w);
     });
 });

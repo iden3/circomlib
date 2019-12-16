@@ -62,8 +62,6 @@ describe("EdDSA test", function () {
 
         const w = await circuit.calculateWitness({A: aBits, R8: r8Bits, S: sBits, msg: msgBits});
 
-        // TODO
-        // assert(circuit.checkWitness(w));
-
+        await circuit.checkConstraints(w);
     });
 });

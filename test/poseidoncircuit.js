@@ -37,8 +37,7 @@ describe("Poseidon Circuit test", function () {
 
         await circuit.assertOut(w, {out : res2});
 
-        // TODO
-        // assert(circuit.checkWitness(w));
+        await circuit.checkConstraints(w);
     });
 
     it("Should check constrain of hash([3, 4])", async () => {
@@ -51,7 +50,6 @@ describe("Poseidon Circuit test", function () {
 
         await circuit.assertOut(w, {out : res2});
 
-        // TODO
-        // assert(circuit.checkWitness(w));
+        await circuit.checkConstraints(w);
     });
 });

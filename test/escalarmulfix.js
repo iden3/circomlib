@@ -23,8 +23,7 @@ describe("Escalarmul test", function () {
 
         const w = await circuit.calculateWitness({"e": 0});
 
-        // TODO
-        // assert(circuit.checkWitness(w));
+        await circuit.checkConstraints(w);
 
         await circuit.assertOut(w, {out: [0,1]});
 
@@ -34,8 +33,7 @@ describe("Escalarmul test", function () {
 
         const w = await circuit.calculateWitness({"e": 1});
 
-        // TODO
-        // assert(circuit.checkWitness(w));
+        await circuit.checkConstraints(w);
 
         await circuit.assertOut(w, {out: babyjub.Base8});
 
@@ -51,8 +49,7 @@ describe("Escalarmul test", function () {
 
         const w = await circuit.calculateWitness({"e": s});
 
-        // TODO
-        // assert(circuit.checkWitness(w));
+        await circuit.checkConstraints(w);
 
         const expectedRes = babyjub.mulPointEscalar(base8, s);
 
@@ -72,8 +69,7 @@ describe("Escalarmul test", function () {
 
             const w = await circuit.calculateWitness({"e": s});
 
-            // TODO
-            // assert(circuit.checkWitness(w));
+            await circuit.checkConstraints(w);
 
             const expectedRes = babyjub.mulPointEscalar(base8, s);
 
@@ -85,8 +81,7 @@ describe("Escalarmul test", function () {
 
         const w = await circuit.calculateWitness({"e": babyjub.subOrder });
 
-        // TODO
-        // assert(circuit.checkWitness(w));
+        await circuit.checkConstraints(w);
 
         await circuit.assertOut(w, {out: [0,1]});
     });

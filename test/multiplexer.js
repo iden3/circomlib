@@ -4,7 +4,6 @@ const tester = require("circom").tester;
 
 describe("Mux4 test", function() {
     this.timeout(100000);
-
     it("Should create a constant multiplexer 4", async () => {
 
         const circuit = await tester(path.join(__dirname, "circuits", "mux4_1.circom"));
@@ -31,11 +30,9 @@ describe("Mux4 test", function() {
         for (let i=0; i<16; i++) {
             const w = await circuit.calculateWitness({ "selector": i });
 
-            // TODO
-            // assert(circuit.checkWitness(w));
+            await circuit.checkConstraints(w);
 
             await circuit.assertOut(w, {out: ct16[i]});
-
         }
     });
 
@@ -57,8 +54,7 @@ describe("Mux4 test", function() {
         for (let i=0; i<8; i++) {
             const w = await circuit.calculateWitness({ "selector": i });
 
-            // TODO
-            // assert(circuit.checkWitness(w));
+            await circuit.checkConstraints(w);
 
             await circuit.assertOut(w, {out: ct8[i]});
         }
@@ -77,8 +73,7 @@ describe("Mux4 test", function() {
         for (let i=0; i<4; i++) {
             const w = await circuit.calculateWitness({ "selector": i });
 
-            // TODO
-            // assert(circuit.checkWitness(w));
+            await circuit.checkConstraints(w);
 
             await circuit.assertOut(w, {out: ct4[i]});
         }
@@ -95,8 +90,7 @@ describe("Mux4 test", function() {
         for (let i=0; i<2; i++) {
             const w = await circuit.calculateWitness({ "selector": i });
 
-            // TODO
-            // assert(circuit.checkWitness(w));
+            await circuit.checkConstraints(w);
 
             await circuit.assertOut(w, {out: ct2[i]});
         }

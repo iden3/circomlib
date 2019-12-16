@@ -19,8 +19,7 @@ describe("MiMC Sponge Circuit test", function () {
 
         await circuit.assertOut(w, {xL_out: out2.xL, xR_out: out2.xR});
 
-        // TODO
-        // assert(circuit.checkWitness(w));
+        await circuit.checkConstraints(w);
 
     });
 
@@ -33,7 +32,6 @@ describe("MiMC Sponge Circuit test", function () {
 
         await circuit.assertOut(w, {outs: out2});
 
-        // TODO
-        // assert(circuit.checkWitness(w));
+        await circuit.checkConstraints(w);
     });
 });

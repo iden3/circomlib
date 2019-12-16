@@ -31,8 +31,8 @@ async function testInclusion(tree, key, circuit) {
         value: res.foundValue
     });
 
-    // TODO
-    // assert(circuit.checkWitness(w));
+    await circuit.checkConstraints(w);
+
 }
 
 async function testExclusion(tree, key, circuit) {
@@ -54,11 +54,11 @@ async function testExclusion(tree, key, circuit) {
         value: 0
     });
 
-    // TODO
-    // assert(circuit.checkWitness(w));
+    await circuit.checkConstraints(w);
+
 }
 
-describe("SMT test", function () {
+describe("SMT Verifier test", function () {
     let circuit;
     let tree;
 
@@ -105,8 +105,8 @@ describe("SMT test", function () {
             value: 0
         });
 
-        // TODO
-        // assert(circuit.checkWitness(w));
+
+        await circuit.checkConstraints(w);
     });
 
     it("Check inclussion Adria case", async () => {

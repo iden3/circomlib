@@ -13,13 +13,11 @@ describe("Point 2 bits test", function() {
     it("Should do the both convertions for 8Base", async () => {
         const w = await circuit.calculateWitness({ in: babyJub.Base8});
 
-        // TODO
-        // assert(circuit.checkWitness(w));
+        await circuit.checkConstraints(w);
     });
     it("Should do the both convertions for Zero point", async () => {
         const w = await circuit.calculateWitness({ in: [0, 1]});
 
-        // TODO
-        // assert(circuit.checkWitness(w));
+        await circuit.checkConstraints(w);
     });
 });

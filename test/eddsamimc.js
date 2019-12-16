@@ -37,8 +37,9 @@ describe("EdDSA MiMC test", function () {
             S: signature.S,
             M: msg});
 
-        // TODO
-        // assert(circuit.checkWitness(w));
+
+        await circuit.checkConstraints(w);
+
     });
 
     it("Detect Invalid signature", async () => {
@@ -89,7 +90,7 @@ describe("EdDSA MiMC test", function () {
             S: signature.S,
             M: msg});
 
-        // TODO
-        // assert(circuit.checkWitness(w));
+        await circuit.checkConstraints(w);
+
     });
 });

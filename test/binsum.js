@@ -9,13 +9,13 @@ const assert = chai.assert;
 
 describe("Sum test", function () {
 
-    this.timeout(100000);
+    this.timeout(100000000);
 
     it("Should create a constant circuit", async () => {
         const circuit = await tester(path.join(__dirname, "circuits", "constants_test.circom"));
+        await circuit.loadConstraints();
 
-        // TODO
-        // assert.equal(cirDef.nVars, 2);
+        assert.equal(circuit.nWires, 2);
 
         const witness = await circuit.calculateWitness({ "in": bigInt("d807aa98", 16)});
 
@@ -24,9 +24,9 @@ describe("Sum test", function () {
     });
     it("Should create a sum circuit", async () => {
         const circuit = await tester(path.join(__dirname, "circuits", "sum_test.circom"));
+        await circuit.loadConstraints();
 
-        // TODO
-        // assert.equal(cirDef.nVars, 97);  // 32 (in1) + 32(in2) + 32(out) + 1 (carry)
+        assert.equal(circuit.nWires, 97);  // 32 (in1) + 32(in2) + 32(out) + 1 (carry)
 
         const witness = await circuit.calculateWitness({ "a": "111", "b": "222" });
 

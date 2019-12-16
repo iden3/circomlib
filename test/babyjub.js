@@ -77,8 +77,8 @@ describe("Baby Jub test", function () {
 
     it("Should check (0,1) is a valid poiny", async() => {
         const w = await circuitTest.calculateWitness({x: 0, y:1});
-        // TODO Check constraints
-        // assert(circuitTest.checkWitness(w));
+
+        await circuitTest.checkConstraints(w);
     });
 
     it("Should check (1,0) is an invalid point", async() => {
@@ -106,8 +106,7 @@ describe("Baby Jub test", function () {
 
         await circuitPbk.assertOut(w, {Ax : A[0], Ay: A[1]});
 
-        // TODO Check constraints
-        // assert(circuitPbk.checkWitness(w));
+        await circuitPbk.checkConstraints(w);
     });
 
 });
