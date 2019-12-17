@@ -77,7 +77,7 @@ async function testUpdate(tree, key, newValue, circuit) {
 }
 
 
-describe("SMT test", function () {
+describe("SMT Processor test", function () {
     let circuit;
     let tree;
 
