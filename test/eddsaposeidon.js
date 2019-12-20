@@ -2,6 +2,7 @@ const chai = require("chai");
 const path = require("path");
 const bigInt = require("big-integer");
 const tester = require("circom").tester;
+const utils = require("../src/utils");
 
 const eddsa = require("../src/eddsa.js");
 
@@ -29,14 +30,19 @@ describe("EdDSA Poseidon test", function () {
 
         assert(eddsa.verifyPoseidon(msg, signature, pubKey));
 
-        const w = await circuit.calculateWitness({
+        const input = {
             enabled: 1,
             Ax: pubKey[0],
             Ay: pubKey[1],
             R8x: signature.R8[0],
             R8y: signature.R8[1],
             S: signature.S,
-            M: msg});
+            M: msg
+        };
+
+        // console.log(JSON.stringify(utils.stringifyBigInts(input)));
+
+        const w = await circuit.calculateWitness(input);
 
         await circuit.checkConstraints(w);
     });
