@@ -71,7 +71,7 @@ template EscalarMulWindow(base, k) {
     signal input sel[4];
     signal output out[2];
 
-    var table;
+    var table[16][2];
     component mux;
     component adder;
 

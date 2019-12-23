@@ -50,7 +50,7 @@ exports.getMatrix = (t, seed, nRounds) => {
     for (let i=0; i<t; i++) {
         M[i] = new Array(t);
         for (let j=0; j<t; j++) {
-            M[i][j] = F.normalize(F.inverse(F.sub(cmatrix[i], cmatrix[t+j])));
+            M[i][j] = F.normalize(F.inv(F.sub(cmatrix[i], cmatrix[t+j])));
         }
     }
     return M;
