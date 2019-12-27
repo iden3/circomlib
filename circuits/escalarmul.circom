@@ -1,4 +1,4 @@
-/*
+  /*
     Copyright 2018 0KIMS association.
 
     This file is part of circom (Zero Knowledge Circuit Compiler).
@@ -71,7 +71,7 @@ template EscalarMulWindow(base, k) {
     signal input sel[4];
     signal output out[2];
 
-    component table;
+    var table;
     component mux;
     component adder;
 
@@ -86,8 +86,8 @@ template EscalarMulWindow(base, k) {
     }
 
     for (i=0; i<16; i++) {
-        table.out[i][0] ==> mux.c[0][i];
-        table.out[i][1] ==> mux.c[1][i];
+        mux.c[0][i] <== table[i][0];
+        mux.c[1][i] <== table[i][1];
     }
 
     in[0] ==> adder.x1;

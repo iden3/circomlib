@@ -23,7 +23,7 @@ describe("Sum test", () => {
     it("Should create a sum circuit", async () => {
 
         const cirDef = await compiler(path.join(__dirname, "circuits", "sum_test.circom"));
-        assert.equal(cirDef.nVars, 101);
+        assert.equal(cirDef.nVars, 97);  // 32 (in1) + 32(in2) + 32(out) + 1 (carry)
 
         const circuit = new snarkjs.Circuit(cirDef);
 

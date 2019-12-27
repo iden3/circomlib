@@ -321,8 +321,8 @@ template MiMCFeistelPermutation(nrounds, reverse) {
       2119542016932434047340813757208803962484943912710204325088879681995922344971
     ];
 
-    var t;
-    var round;
+    signal round[nrounds];
+    signal t[nrounds];
     signal t2[nrounds];
     signal t4[nrounds];
     signal xL[nrounds-1];
@@ -339,8 +339,12 @@ template MiMCFeistelPermutation(nrounds, reverse) {
           c = ((reverse==1) ? c_partial[nrounds - 1 - (i + 1)] : c_partial[i - 1]);
         }
 
-        t = (i==0) ? k+xL_in : k + xL[i-1] + c;
-        t2[i] <== t*t;
+        if (i == 0) {
+          t[i] <== k + xL_in + c;
+        } else {
+          t[i] <== k + xL[i-1] + c;
+        }
+        t2[i] <== t[i]*t[i];
         t4[i] <== t2[i]*t2[i];
 
         // The round function is computed once and then either applied to the
@@ -350,12 +354,21 @@ template MiMCFeistelPermutation(nrounds, reverse) {
         //                           ^ from §5.3 in [1]
         // F_r = 21888242871839275222246405745257275088548364400416034343698204186575808495617
         // gcd(5, F_r - 1) = 1
-        round = ((reverse==1) ? -t4[i]*t : t4[i]*t)
-        if (i<nrounds-1) {
-          xL[i] <== ((i==0) ? xR_in : xR[i-1]) + round;
-          xR[i] = (i==0) ? xL_in : xL[i-1];
+        if (reverse == 1) {
+          round[i] <== -t4[i]*t[i];
         } else {
-          xR_out <== xR[i-1] + round;
+          round[i] <== t4[i]*t[i];
+        }
+        if (i<nrounds-1) {
+          if (i == 0) {
+            xL[i] <== xR_in + round[i];
+            xR[i] <== xL_in;
+          } else {
+            xL[i] <== xR[i-1] + round[i];
+            xR[i] <== xL[i-1];
+          }
+        } else {
+          xR_out <== xR[i-1] + round[i];
           xL_out <== xL[i-1];
         }
     }

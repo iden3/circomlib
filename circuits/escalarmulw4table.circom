@@ -27,8 +27,8 @@ function pointAdd(x1,y1,x2,y2) {
     return res;
 }
 
-template EscalarMulW4Table(base, k) {
-    signal output out[16][2];
+function EscalarMulW4Table(base, k) {
+    var out[16][2];
 
     var i;
     var p[2];
@@ -39,11 +39,13 @@ template EscalarMulW4Table(base, k) {
         dbl = pointAdd(dbl[0], dbl[1], dbl[0], dbl[1]);
     }
 
-    out[0][0] <== 0;
-    out[0][1] <== 1;
+    out[0][0] = 0;
+    out[0][1] = 1;
     for (i=1; i<16; i++) {
         p = pointAdd(out[i-1][0], out[i-1][1], dbl[0], dbl[1]);
-        out[i][0] <== p[0];
-        out[i][1] <== p[1];
+        out[i][0] = p[0];
+        out[i][1] = p[1];
     }
+
+    return out;
 }

@@ -67,7 +67,7 @@ describe("EdDSA MiMC test", function () {
                 M: msg});
             assert(false);
         } catch(err) {
-            assert.equal(err.message, "Constraint doesn't match: 1 != 0");
+            assert(/Constraint\sdoesn't\smatch(.*)1\s!=\s0/.test(err.message) );
         }
     });
 
