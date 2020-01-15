@@ -263,7 +263,7 @@ template MiMCFeistel(nrounds) {
       2119542016932434047340813757208803962484943912710204325088879681995922344971
     ];
 
-    var t;
+    signal t[nrounds];
     signal t2[nrounds];
     signal t4[nrounds];
     signal xL[nrounds-1];
@@ -276,14 +276,18 @@ template MiMCFeistel(nrounds) {
         } else {
           c = c_partial[i - 1];
         }
-        t = (i==0) ? k+xL_in : k + xL[i-1] + c;
-        t2[i] <== t*t;
+        if (i == 0) {
+          t[i] <== k + xL_in + c;
+        } else {
+          t[i] <== k + xL[i-1] + c;
+        }
+        t2[i] <== t[i]*t[i];
         t4[i] <== t2[i]*t2[i];
         if (i<nrounds-1) {
-          xL[i] <== ((i==0) ? xR_in : xR[i-1]) + t4[i]*t;
+          xL[i] <== ((i==0) ? xR_in : xR[i-1]) + t4[i]*t[i];
           xR[i] <== (i==0) ? xL_in : xL[i-1];
         } else {
-          xR_out <== xR[i-1] + t4[i]*t;
+          xR_out <== xR[i-1] + t4[i]*t[i];
           xL_out <== xL[i-1];
         }
     }

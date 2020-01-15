@@ -37,23 +37,23 @@ describe("Aliascheck test", () => {
 
     it("Satisfy the aliastest 0", async () => {
         const inp = getBits(bigInt.zero, 251);
-        circuit.calculateWitness({in: inp});
+        circuit.calculateWitness({in: inp, enabled: bigInt(1)});
     });
 
     it("Satisfy the aliastest 3", async () => {
         const inp = getBits(bigInt(3), 251);
-        circuit.calculateWitness({in: inp});
+        circuit.calculateWitness({in: inp, enabled: bigInt(1)});
     });
 
     it("Satisfy the aliastest r-1", async () => {
         const inp = getBits(r.sub(bigInt.one), 251);
-        circuit.calculateWitness({in: inp});
+        circuit.calculateWitness({in: inp, enabled: bigInt(1)});
     });
 
     it("Nhot not satisfy an input of r", async () => {
         const inp = getBits(r, 251);
         try {
-            circuit.calculateWitness({in: inp});
+            circuit.calculateWitness({in: inp, enabled: bigInt(1)});
             assert(false);
         } catch(err) {
             assert(err.message.indexOf("Constraint doesn't match") >= 0);
@@ -64,7 +64,7 @@ describe("Aliascheck test", () => {
     it("Nhot not satisfy all ones", async () => {
         const inp = getBits(bigInt(1).shl(251).sub(bigInt(1)), 251);
         try {
-            circuit.calculateWitness({in: inp});
+            circuit.calculateWitness({in: inp, enabled: bigInt(1)});
             assert(false);
         } catch(err) {
             assert(err.message.indexOf("Constraint doesn't match") >= 0);

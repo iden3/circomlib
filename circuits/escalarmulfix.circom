@@ -20,6 +20,7 @@
 include "mux3.circom";
 include "montgomery.circom";
 include "babyjub.circom";
+include "assert.circom";
 
 /*
     Window of 3 elements, it calculates
@@ -143,6 +144,8 @@ template WindowMulFix() {
  */
 
 template SegmentMulFix(nWindows) {
+    assert(nWindows <= 82);
+
     signal input e[nWindows*3];
     signal input base[2];
     signal output out[2];
@@ -237,7 +240,7 @@ template EscalarMulFix(n, BASE) {
     signal input e[n];              // Input in binary format
     signal output out[2];           // Point (Twisted format)
 
-    var nsegments = (n-1)\246 +1;       // 249 probably would work. But I'm not sure and for security I keep 246
+    var nsegments = (n-1)\246 +1;
     var nlastsegment = n - (nsegments-1)*246;
 
     component segments[nsegments];

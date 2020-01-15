@@ -26,6 +26,8 @@
 
  */
 
+include "assert.circom";
+
 template Edwards2Montgomery() {
     signal input in[2];
     signal output out[2];
@@ -90,6 +92,9 @@ template MontgomeryAdd() {
     signal input in1[2];
     signal input in2[2];
     signal output out[2];
+
+    assert (in1[0] != in2[0]);
+    assert (in1[1] != in2[1]);
 
     var a = 168700;
     var d = 168696;

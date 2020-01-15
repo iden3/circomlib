@@ -45,6 +45,8 @@ To waranty binary outputs:
 
  */
 
+include "assert.circom";
+
 
 /*
     This function calculates the number of extra bits in the output to do the full sum.
@@ -52,6 +54,9 @@ To waranty binary outputs:
 
 /* a must be < Nq/2, where Nq is the number of elements in the scalar field */
 function nbits(a) {
+    var babyjub_scalar_field_size = 2736030358979909402780800718157159386076813972158567259200215660948447373041;
+    assert (a < babyjub_scalar_field_size/2);
+
     var n = 1;
     var r = 0;
     while (n-1<a) {
@@ -62,7 +67,7 @@ function nbits(a) {
 }
 
 
-/* n must be such that (2**(n+1) -2) < Nq/ops, where Nq is the number of bits in the scalar field */
+/* n must be such that (2**(n+1) -2) < Nq/ops, where Nq is the number of elements in the scalar field */
 template BinSum(n, ops) {
     var nout = nbits((2**n -1)*ops);
     signal input in[ops][n];

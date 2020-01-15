@@ -34,6 +34,7 @@ template AliasCheckBabyJub() {
     signal input in[251];
     signal input enabled;
 
+    // babyjub prime subgroup order - 1
     component  compConstant = CompConstant(2736030358979909402780800718157159386076813972158567259200215660948447373040);
 
     for (var i=0; i<251; i++) in[i] ==> compConstant.in[i];

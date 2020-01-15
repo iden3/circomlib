@@ -19,7 +19,7 @@
 
 include "comparators.circom";
 include "aliascheck.circom";
-
+include "assert.circom";
 
 /* This doesn't check aliasing, so for n > 253 there are multiple bit strings for each number */
 template Num2Bits(n) {
@@ -79,6 +79,8 @@ template Bits2Num_strict() {
 
 /* n must not exceed 253 */  
 template Num2BitsNeg(n) {
+    assert (n <= 253);
+
     signal input in;
     signal output out[n];
     var lc1=0;
