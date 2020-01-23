@@ -72,19 +72,26 @@ template BinSum(n, ops) {
     var k;
     var j;
 
+    var e2;
+
+    e2 = 1;
     for (k=0; k<n; k++) {
         for (j=0; j<ops; j++) {
-            lin += in[j][k] * 2**k;
+            lin += in[j][k] * e2;
         }
+        e2 = e2 + e2;
     }
 
+    e2 = 1;
     for (k=0; k<nout; k++) {
         out[k] <-- (lin >> k) & 1;
 
         // Ensure out is binary
         out[k] * (out[k] - 1) === 0;
 
-        lout += out[k] * 2**k;
+        lout += out[k] * e2;
+
+        e2 = e2+e2;
     }
 
     // Ensure the sum;
