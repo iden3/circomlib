@@ -39,7 +39,7 @@ template T1() {
         bigsigma1.in[ki] <== e[ki];
         ch.a[ki] <== e[ki];
         ch.b[ki] <== f[ki];
-        ch.c[ki] <== g[ki]
+        ch.c[ki] <== g[ki];
 
         sum.in[0][ki] <== h[ki];
         sum.in[1][ki] <== bigsigma1.out[ki];
