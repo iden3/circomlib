@@ -150,7 +150,7 @@ template SMTProcessor(nLevels) {
 
     signal enabled;
 
-    enabled <== fnc[0] + fnc[1] - fnc[0]*fnc[1]
+    enabled <== fnc[0] + fnc[1] - fnc[0]*fnc[1];
 
     component hash1Old = SMTHash1();
     hash1Old.key <== oldKey;

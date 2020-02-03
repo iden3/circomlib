@@ -92,7 +92,7 @@ template SMTLevIns(nLevels) {
     levIns[nLevels-1] <== (1-isZero[nLevels-2].out);
     done[nLevels-2] <== levIns[nLevels-1];
     for (var i=nLevels-2; i>0; i--) {
-        levIns[i] <== (1-done[i])*(1-isZero[i-1].out)
+        levIns[i] <== (1-done[i])*(1-isZero[i-1].out);
         done[i-1] <== levIns[i] + done[i];
     }
 

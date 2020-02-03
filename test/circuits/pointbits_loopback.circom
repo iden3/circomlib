@@ -4,7 +4,7 @@ include "../../circuits/pointbits.circom";
 template Main() {
     signal input in[2];
 
-    var i
+    var i;
 
     component p2b = Point2Bits_Strict();
     component b2p = Bits2Point_Strict();
