@@ -7,7 +7,7 @@ const bigInt = require("big-integer");
 
 const assert = chai.assert;
 
-describe("Sum test", function ()  {
+describe("Comparators test", function ()  {
 
     this.timeout(100000);
 
