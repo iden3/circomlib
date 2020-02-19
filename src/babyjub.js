@@ -21,6 +21,84 @@ exports.subOrder = exports.order.shiftRight(3);
 exports.p = bigInt("21888242871839275222246405745257275088548364400416034343698204186575808495617");
 exports.A = bigInt("168700");
 exports.D = bigInt("168696");
+exports.subgroupDecompress = subgroupDecompress;
+exports.SWUSelect = SWUSelect;
+
+
+function subgroupDecompress(x) {
+    x = bigInt(x);
+    const p = exports.p;
+    const x2 = x.mul(x, p);
+    const t = exports.A.mul(x2).sub(bigInt.one).mul(exports.D.mul(x2).sub(bigInt.one).inverse(p)).affine(p);
+    const y = bn128.Fr.sqrt(t);
+
+    if(inSubgroup([x,y]))
+        return [x,y];
+    
+    if(inSubgroup([x,-y]))
+        return [x,-y];
+    
+    throw("Not a compressed point at subgroup");
+}
+
+
+function WeierstrassCoefficients() {    
+    const p = exports.p;
+    const s = exports.A.sub(exports.D).mul(bigInt("4").invmod(p)).mod(p);
+    const t = exports.A.add(exports.D).mul(bigInt("6").invmod(p)).mod(p);
+    
+    return [
+        s.mul(s).sub(t.mul(t).mul(bigInt("3"))).mod(p),
+        t.mul(t).mul(t).mul(bigInt("2")).sub(t.mul(s).mul(s)).mod(p)
+    ]
+
+}
+
+function WeierstrassExpr(x) {
+    const p = exports.p;
+    const [WA, WB] = WeierstrassCoefficients();
+    const x3 = x.mul(x).mul(x);
+    return x3.add(x.mul(WA)).add(WB).mod(p);
+}
+
+function Weierstrass2Edwards(w) {
+    const p = exports.p;
+    const s = exports.A.sub(exports.D).mul(bigInt("4").invmod(p)).mod(p);
+    const t = exports.A.add(exports.D).mul(bigInt("6").invmod(p)).mod(p);
+    return [
+        w[0].sub(t).mul(w[1].invmod(p)).mod(p),
+        w[0].sub(t).sub(s).mul(w[0].sub(t).add(s).invmod(p)).mod(p)
+     ]
+}
+
+
+
+
+
+//The Shallue-Woestijne-Ulas Algorithm for point selection on the curve
+
+function SWUSelect(t) {
+    const p = exports.p;
+    t = bigInt(t);
+    // 70297686841582442057940100194421294204074774541372193073554880658839844120511n == sha256("t regularization")
+    t = t.isZero(p) ? bigInt("70297686841582442057940100194421294204074774541372193073554880658839844120511") : t;
+    const [WA, WB] = WeierstrassCoefficients();
+    
+    const g = WeierstrassExpr(bigInt.one);
+    const t2g = t.mul(t).mul(g).mod(p);
+    const t4g2 =  t2g.mul(t2g).mod(p);
+
+    
+    const x2 = WB.neg(p).mul(WA.invmod(p)).mul(bigInt.one.add(t4g2.add(t2g).invmod(p))).mod(p);
+    const x3 = t2g.mul(x2).mod(p);
+
+    const x = isSquare(WeierstrassExpr(x2)) ? x2 : x3;
+    const y = bn128.Fr.sqrt(WeierstrassExpr(x));
+    let P = Weierstrass2Edwards([x,y]);
+    if (P[0] <= bigInt("10944121435919637611123202872628637544274182200208017171849102093287904247808")) P[0]=P[0].neg(p);
+    return mulPointEscalar(P, bigInt(8));
+} 
+
 
 
 function addPoint(a,b) {
