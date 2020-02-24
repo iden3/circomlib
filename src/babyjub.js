@@ -81,7 +81,7 @@ function SWUSelect(t) {
     t = t.mod(exports.p).isZero() ? bigInt("70297686841582442057940100194421294204074774541372193073554880658839844120511") : t;
     const [WA, WB] = WeierstrassCoefficients();
     
-    const g = WeierstrassExpr(bigInt.one);
+    const g = WeierstrassExpr(bigInt(5));
     
     const t2g = F.mul(F.square(t), g);
     const t4g2 = F.square(t2g);
