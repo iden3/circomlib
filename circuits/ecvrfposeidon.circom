@@ -3,18 +3,20 @@ include "escalarmulany.circom";
 include "escalarmulfix.circom";
 include "comparators.circom";
 include "babyjub.circom";
-include "swupointpicker.circom";
+include "swuselect.circom";
 include "esubgroupcheck.circom";
 include "poseidon.circom";
 
 // assume Q in subgroup
 // assume Gamma in subgroup
+// assume c[C] structly in Fq
+// assume s[S] strictly in Fs
 
-template IsECVRFPoseidon(S, C) {
+template IsECVRFPoseidon(C, S) {
   signal input Q[2];
   signal input Gamma[2];
-  signal input s[S];
   signal input c[C];
+  signal input s[S];
   signal input alpha;
   signal output out;
 

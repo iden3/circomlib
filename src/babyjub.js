@@ -24,78 +24,78 @@ exports.D = bigInt("168696");
 exports.subgroupDecompress = subgroupDecompress;
 exports.SWUSelect = SWUSelect;
 
+const F = new ZqField(exports.p);
 
 function subgroupDecompress(x) {
-    x = bigInt(x);
-    const p = exports.p;
-    const x2 = x.mul(x, p);
-    const t = exports.A.mul(x2).sub(bigInt.one).mul(exports.D.mul(x2).sub(bigInt.one).inverse(p)).affine(p);
-    const y = bn128.Fr.sqrt(t);
+    const x2 = F.square(x);
+    const t = F.div(F.sub(F.mul(exports.A, x2), F.one), F.sub(F.mul(exports.D, x2), F.one));
+    let y = F.sqrt(t);
 
     if(inSubgroup([x,y]))
         return [x,y];
     
-    if(inSubgroup([x,-y]))
-        return [x,-y];
+    y = F.neg(y);
+    
+    if(inSubgroup([x,y]))
+        return [x,y];
     
     throw("Not a compressed point at subgroup");
 }
 
 
 function WeierstrassCoefficients() {    
-    const p = exports.p;
-    const s = exports.A.sub(exports.D).mul(bigInt("4").invmod(p)).mod(p);
-    const t = exports.A.add(exports.D).mul(bigInt("6").invmod(p)).mod(p);
-    
-    return [
-        s.mul(s).sub(t.mul(t).mul(bigInt("3"))).mod(p),
-        t.mul(t).mul(t).mul(bigInt("2")).sub(t.mul(s).mul(s)).mod(p)
-    ]
+    const s = F.div(F.sub(exports.A, exports.D), bigInt("4"));
+    const t = F.div(F.add(exports.A, exports.D), bigInt("6"));
+    const s2 = F.square(s);
+    const t2 = F.square(t);
 
+    const x = F.sub(s2, F.mul(t2, bigInt("3")));
+    const y = F.sub(F.mul(F.mul(t2, t), bigInt("2")), F.mul(t, s2));
+    return [x, y]
 }
 
 function WeierstrassExpr(x) {
-    const p = exports.p;
     const [WA, WB] = WeierstrassCoefficients();
-    const x3 = x.mul(x).mul(x);
-    return x3.add(x.mul(WA)).add(WB).mod(p);
+    const x3 = F.mul(F.square(x), x);
+    return F.add(F.add(x3, F.mul(x, WA)), WB);
 }
 
 function Weierstrass2Edwards(w) {
-    const p = exports.p;
-    const s = exports.A.sub(exports.D).mul(bigInt("4").invmod(p)).mod(p);
-    const t = exports.A.add(exports.D).mul(bigInt("6").invmod(p)).mod(p);
-    return [
-        w[0].sub(t).mul(w[1].invmod(p)).mod(p),
-        w[0].sub(t).sub(s).mul(w[0].sub(t).add(s).invmod(p)).mod(p)
-     ]
+    const s = F.div(F.sub(exports.A, exports.D), bigInt("4"));
+    const t = F.div(F.add(exports.A, exports.D), bigInt("6"));
+
+    const x = F.div(F.sub(w[0], t), w[1]);
+    const y = F.div(F.sub(F.sub(w[0], t), s), F.add(F.sub(w[0], t), s));
+
+    return [ x, y ]
 }
 
 
 
-
+const isSquare = x=> F.sqrt(x)!==null;
 
 //The Shallue-Woestijne-Ulas Algorithm for point selection on the curve
 
 function SWUSelect(t) {
-    const p = exports.p;
-    t = bigInt(t);
     // 70297686841582442057940100194421294204074774541372193073554880658839844120511n == sha256("t regularization")
-    t = t.isZero(p) ? bigInt("70297686841582442057940100194421294204074774541372193073554880658839844120511") : t;
+    t = t.mod(exports.p).isZero() ? bigInt("70297686841582442057940100194421294204074774541372193073554880658839844120511") : t;
     const [WA, WB] = WeierstrassCoefficients();
     
     const g = WeierstrassExpr(bigInt.one);
-    const t2g = t.mul(t).mul(g).mod(p);
-    const t4g2 =  t2g.mul(t2g).mod(p);
-
     
-    const x2 = WB.neg(p).mul(WA.invmod(p)).mul(bigInt.one.add(t4g2.add(t2g).invmod(p))).mod(p);
-    const x3 = t2g.mul(x2).mod(p);
+    const t2g = F.mul(F.square(t), g);
+    const t4g2 = F.square(t2g);
+    const x2 = F.mul(
+        F.div(F.neg(WB), WA),
+        F.add(bigInt.one, F.inv(F.add(t4g2, t2g)))
+    );
 
+    const x3 = F.mul(t2g, x2);
     const x = isSquare(WeierstrassExpr(x2)) ? x2 : x3;
-    const y = bn128.Fr.sqrt(WeierstrassExpr(x));
+    const y = F.sqrt(WeierstrassExpr(x));
+
     let P = Weierstrass2Edwards([x,y]);
-    if (P[0] <= bigInt("10944121435919637611123202872628637544274182200208017171849102093287904247808")) P[0]=P[0].neg(p);
+    if (P[0].leq(bigInt("10944121435919637611123202872628637544274182200208017171849102093287904247808"))) P[0]=F.neg(P[0]);
     return mulPointEscalar(P, bigInt(8));
 } 
 

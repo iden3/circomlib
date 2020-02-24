@@ -72,7 +72,7 @@ template SWUSelect() {
   }
 
   component dbl1 = BabyDbl();
-  dbl1.x <== xbits.in * (1 - 2 * signCalc.out);
+  dbl1.x <== xbits.in * (2 * signCalc.out - 1);
   dbl1.y <== w2e.out[1];
   component dbl2 = BabyDbl();
   dbl2.x <== dbl1.xout;
