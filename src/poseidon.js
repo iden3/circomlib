@@ -36,6 +36,8 @@ exports.getMatrix = (t, seed, nRounds) => {
     if (typeof seed === "undefined") seed = SEED;
     if (typeof nRounds === "undefined") nRounds = NROUNDSF + NROUNDSP;
     if (typeof t === "undefined") t = T;
+    assert(t<=6);  // Force the same matrix for all.
+    t=6;
     let nonce = "0000";
     let cmatrix = getPseudoRandom(seed+"_matrix_"+nonce, t*2);
     while (!allDifferent(cmatrix)) {
