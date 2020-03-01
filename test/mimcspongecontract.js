@@ -33,8 +33,8 @@ describe("MiMC Sponge Smart contract test", () => {
     });
 
     it("Shold calculate the mimc correctly", async () => {
-        const res = await mimc.methods.MiMCSponge(1,2,3).call();
-        const res2 = await mimcjs.hash(1,2,3);
+        const res = await mimc.methods.MiMCSponge(1,2).call();
+        const res2 = await mimcjs.hash(1,2, 0);
 
         assert.equal(res.xL.toString(), res2.xL.toString());
         assert.equal(res.xR.toString(), res2.xR.toString());
