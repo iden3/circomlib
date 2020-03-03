@@ -1,10 +1,12 @@
 // implements MiMC-2n/n as hash using a sponge construction.
 // log_5(21888242871839275222246405745257275088548364400416034343698204186575808495617) ~= 110
 // => nRounds should be 220
-template MiMCSponge(nInputs, nRounds, nOutputs) {
+template MiMCSponge(nInputs, nOutputs) {
   signal input ins[nInputs];
   signal input k;
   signal output outs[nOutputs];
+
+  var nRounds = 220;
 
   // S = R||C
   component S[nInputs + nOutputs - 1];
@@ -261,7 +263,7 @@ template MiMCFeistel(nrounds) {
       2119542016932434047340813757208803962484943912710204325088879681995922344971
     ];
 
-    var t;
+    signal t[nrounds];
     signal t2[nrounds];
     signal t4[nrounds];
     signal xL[nrounds-1];
@@ -274,14 +276,18 @@ template MiMCFeistel(nrounds) {
         } else {
           c = c_partial[i - 1];
         }
-        t = (i==0) ? k+xL_in : k + xL[i-1] + c;
-        t2[i] <== t*t;
+        if (i == 0) {
+          t[i] <== k + xL_in + c;
+        } else {
+          t[i] <== k + xL[i-1] + c;
+        }
+        t2[i] <== t[i]*t[i];
         t4[i] <== t2[i]*t2[i];
         if (i<nrounds-1) {
-          xL[i] <== ((i==0) ? xR_in : xR[i-1]) + t4[i]*t;
+          xL[i] <== ((i==0) ? xR_in : xR[i-1]) + t4[i]*t[i];
           xR[i] <== (i==0) ? xL_in : xL[i-1];
         } else {
-          xR_out <== xR[i-1] + t4[i]*t;
+          xR_out <== xR[i-1] + t4[i]*t[i];
           xL_out <== xL[i-1];
         }
     }

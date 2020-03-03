@@ -20,6 +20,7 @@
 include "mux3.circom";
 include "montgomery.circom";
 include "babyjub.circom";
+include "assert.circom";
 
 /*
     Window of 3 elements, it calculates
@@ -44,6 +45,7 @@ include "babyjub.circom";
     A good way to see it is that the accumulator input of the adder >= 2^247*B and the other input
     is the output of the windows that it's going to be <= 2^246*B
  */
+ /* base must not be the neutral element nor points of small order */
 template WindowMulFix() {
     signal input in[3];
     signal input base[2];
@@ -133,14 +135,17 @@ template WindowMulFix() {
 
 /*
     This component does a multiplication of a escalar times a fix base
+    nWindows must not exceed 82
     Signals:
         e: The scalar in bits
         base: the base point in edwards format
         out:  The result
-        dbl: Point in Edwards to be linked to the next segment.
+        dbl: Point in Montgomery to be linked to the next segment.
  */
 
 template SegmentMulFix(nWindows) {
+    assert(nWindows <= 82);
+
     signal input e[nWindows*3];
     signal input base[2];
     signal output out[2];
@@ -235,8 +240,8 @@ template EscalarMulFix(n, BASE) {
     signal input e[n];              // Input in binary format
     signal output out[2];           // Point (Twisted format)
 
-    var nsegments = (n-1)\246 +1;       // 249 probably would work. But I'm not sure and for security I keep 246
-    var nlastsegment = n - (nsegments-1)*249;
+    var nsegments = (n-1)\246 +1;
+    var nlastsegment = n - (nsegments-1)*246;
 
     component segments[nsegments];
 
@@ -250,13 +255,13 @@ template EscalarMulFix(n, BASE) {
 
     for (s=0; s<nsegments; s++) {
 
-        nseg = (s < nsegments-1) ? 249 : nlastsegment;
+        nseg = (s < nsegments-1) ? 246 : nlastsegment;
         nWindows = ((nseg - 1)\3)+1;
 
         segments[s] = SegmentMulFix(nWindows);
 
         for (i=0; i<nseg; i++) {
-            segments[s].e[i] <== e[s*249+i];
+            segments[s].e[i] <== e[s*246+i];
         }
 
         for (i = nseg; i<nWindows*3; i++) {

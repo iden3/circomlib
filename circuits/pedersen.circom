@@ -20,6 +20,7 @@
 include "montgomery.circom";
 include "mux3.circom";
 include "babyjub.circom";
+include "assert.circom";
 
 template Window4() {
     signal input in[4];
@@ -108,7 +109,10 @@ template Window4() {
 }
 
 
+/* nWindows must not exceed 50 */
 template Segment(nWindows) {
+    assert (nWindows <= 50);
+
     signal input in[nWindows*4];
     signal input base[2];
     signal output out[2];

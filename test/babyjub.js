@@ -101,6 +101,7 @@ describe("Baby Jub test", function () {
             assert(false, "Should be a valid point");
         } catch(err) {
             assert(/Constraint\sdoesn't\smatch(.*)168700\s!=\s1/.test(err.message) );
+            assert(err.message.indexOf("168700 != 1") >= 0);
         }
     });
 

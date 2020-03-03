@@ -81,7 +81,7 @@ template BabyCheck() {
     a*x2 + y2 === 1 + d*x2*y2;
 }
 
-// Extracts the public key from private key
+// Extracts the public key from private key, as mentioned in https://tools.ietf.org/html/rfc8032
 template BabyPbk() {
     signal private input  in;
     signal         output Ax;
