@@ -2,6 +2,11 @@ const chai = require("chai");
 const path = require("path");
 const snarkjs = require("snarkjs");
 const compiler = require("circom");
+const bn128 = require("snarkjs").bn128;
+const bigInt = require("snarkjs").bigInt;
+
+const w3utils = require("web3-utils");
+const F = bn128.Fr;
 
 const mimcjs = require("../src/mimcsponge.js");
 
@@ -33,6 +38,42 @@ describe("MiMC Sponge Circuit test", function () {
 
     });
 
+    it("Should encrypt and decrypt a single message", async () => {
+        const cirDef = await compiler(path.join(__dirname, "circuits", "mimc_sponge_decrypt_test.circom"));
+
+        circuit = new snarkjs.Circuit(cirDef);
+
+        console.log("MiMC Feistel constraints: " + circuit.nConstraints);
+
+        const w = circuit.calculateWitness({xL_in: 1, xR_in: 2, k: 3});
+
+        const xLout = w[circuit.getSignalIdx("main.xL_out")];
+        const xRout = w[circuit.getSignalIdx("main.xR_out")];
+
+        assert.equal(xLout.toString(), 1 + "");
+        assert.equal(xRout.toString(), 2 + "");
+
+        assert(circuit.checkWitness(w));
+    });
+
+    it("Should fail to encrypt and decrypt a single message with different keys", async () => {
+        const cirDef = await compiler(path.join(__dirname, "circuits", "mimc_sponge_decrypt_fail_test.circom"));
+
+        circuit = new snarkjs.Circuit(cirDef);
+
+        console.log("MiMC Feistel constraints: " + circuit.nConstraints);
+
+        const w = circuit.calculateWitness({xL_in: 1, xR_in: 2, k: 3, k_two: 4});
+
+        const xLout = w[circuit.getSignalIdx("main.xL_out")];
+        const xRout = w[circuit.getSignalIdx("main.xR_out")];
+
+        assert.notEqual(xLout.toString(), 1 + "");
+        assert.notEqual(xRout.toString(), 2 + "");
+
+        assert(circuit.checkWitness(w));
+    });
+
     it("Should check hash", async () => {
         const cirDef = await compiler(path.join(__dirname, "circuits", "mimc_sponge_hash_test.circom"));
 
@@ -55,4 +96,5 @@ describe("MiMC Sponge Circuit test", function () {
         assert(circuit.checkWitness(w));
 
     });
+
 });

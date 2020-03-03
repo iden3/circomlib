@@ -1,6 +1,8 @@
 // implements MiMC-2n/n as hash using a sponge construction.
 // log_5(21888242871839275222246405745257275088548364400416034343698204186575808495617) ~= 110
 // => nRounds should be 220
+// Given the pre-computed round constants, it really only works for 220 rounds
+// at the moment.
 template MiMCSponge(nInputs, nRounds, nOutputs) {
   signal input ins[nInputs];
   signal input k;
@@ -10,7 +12,7 @@ template MiMCSponge(nInputs, nRounds, nOutputs) {
   component S[nInputs + nOutputs - 1];
 
   for (var i = 0; i < nInputs; i++) {
-    S[i] = MiMCFeistel(nRounds);
+    S[i] = MiMCFeistelHash(nRounds);
     S[i].k <== k;
     if (i == 0) {
       S[i].xL_in <== ins[0];
@@ -24,7 +26,7 @@ template MiMCSponge(nInputs, nRounds, nOutputs) {
   outs[0] <== S[nInputs - 1].xL_out;
 
   for (var i = 0; i < nOutputs - 1; i++) {
-    S[nInputs + i] = MiMCFeistel(nRounds);
+    S[nInputs + i] = MiMCFeistelHash(nRounds);
     S[nInputs + i].k <== k;
     S[nInputs + i].xL_in <== S[nInputs + i - 1].xL_out;
     S[nInputs + i].xR_in <== S[nInputs + i - 1].xR_out;
@@ -32,7 +34,65 @@ template MiMCSponge(nInputs, nRounds, nOutputs) {
   }
 }
 
-template MiMCFeistel(nrounds) {
+template MiMCFeistelHash(nrounds) {
+    signal input xL_in;
+    signal input xR_in;
+    signal input k;
+    signal output xL_out;
+    signal output xR_out;
+
+    component permutation = MiMCFeistelPermutation(nrounds, 0);
+    permutation.xL_in <== xL_in;
+    permutation.xR_in <== xR_in;
+    permutation.k <== k;
+
+    permutation.xL_out ==> xL_out;
+    permutation.xR_out ==> xR_out;
+}
+
+
+template MiMCFeistelEncrypt(nrounds) {
+    signal input xL_in;
+    signal input xR_in;
+    signal input k;
+    signal output xL_out;
+    signal output xR_out;
+
+    component permutation = MiMCFeistelPermutation(nrounds, 0);
+    permutation.xL_in <== xL_in;
+    permutation.xR_in <== xR_in;
+    permutation.k <== k;
+
+    permutation.xL_out ==> xL_out;
+    permutation.xR_out ==> xR_out;
+}
+
+template MiMCFeistelDecrypt(nrounds) {
+    signal input xL_in;
+    signal input xR_in;
+    signal input k;
+    signal output xL_out;
+    signal output xR_out;
+
+    component permutation = MiMCFeistelPermutation(nrounds, 1);
+    permutation.xL_in <== xL_in;
+    permutation.xR_in <== xR_in;
+    permutation.k <== k;
+
+    permutation.xL_out ==> xL_out;
+    permutation.xR_out ==> xR_out;
+}
+
+
+// The following is an implementation of MiMC in Feistel mode as introduced in
+// [1]: Albrecht, Martin, et al. "MiMC: Efficient encryption and cryptographic
+//      hashing with minimal multiplicative complexity." International 
+//      Conference on the Theory and Application of Cryptology and Information
+//      Security. Springer, Berlin, Heidelberg, 2016.
+
+// To use the permutation for decrypting, set reverse to 1.
+// Otherwise, it will operate in the encryption/hash mode.
+template MiMCFeistelPermutation(nrounds, reverse) {
     signal input xL_in;
     signal input xR_in;
     signal input k;
@@ -261,7 +321,8 @@ template MiMCFeistel(nrounds) {
       2119542016932434047340813757208803962484943912710204325088879681995922344971
     ];
 
-    var t;
+    signal round[nrounds];
+    signal t[nrounds];
     signal t2[nrounds];
     signal t4[nrounds];
     signal xL[nrounds-1];
@@ -269,19 +330,45 @@ template MiMCFeistel(nrounds) {
 
     var c;
     for (var i=0; i<nrounds; i++) {
+        // If we are in decryption mode, then we need to reverse the order of
+        // round constants and also rerverse the round function application.
+
         if ((i == 0) || (i == nrounds - 1)) {
           c = 0;
         } else {
-          c = c_partial[i - 1];
+          c = ((reverse==1) ? c_partial[nrounds - 1 - (i + 1)] : c_partial[i - 1]);
         }
-        t = (i==0) ? k+xL_in : k + xL[i-1] + c;
-        t2[i] <== t*t;
-        t4[i] <== t2[i]*t2[i];
-        if (i<nrounds-1) {
-          xL[i] <== ((i==0) ? xR_in : xR[i-1]) + t4[i]*t;
-          xR[i] <== (i==0) ? xL_in : xL[i-1];
+
+        if (i == 0) {
+          t[i] <== k + xL_in + c;
         } else {
-          xR_out <== xR[i-1] + t4[i]*t;
+          t[i] <== k + xL[i-1] + c;
+        }
+        t2[i] <== t[i]*t[i];
+        t4[i] <== t2[i]*t2[i];
+
+        // The round function is computed once and then either applied to the
+        // left side, which is the typical Feistel network swap, or to the
+        // right side because there is no swap in the last round.
+        // The round function is (xL+k+c)^5, which is then combined with xR.
+        //                           ^ from §5.3 in [1]
+        // F_r = 21888242871839275222246405745257275088548364400416034343698204186575808495617
+        // gcd(5, F_r - 1) = 1
+        if (reverse == 1) {
+          round[i] <== -t4[i]*t[i];
+        } else {
+          round[i] <== t4[i]*t[i];
+        }
+        if (i<nrounds-1) {
+          if (i == 0) {
+            xL[i] <== xR_in + round[i];
+            xR[i] <== xL_in;
+          } else {
+            xL[i] <== xR[i-1] + round[i];
+            xR[i] <== xL[i-1];
+          }
+        } else {
+          xR_out <== xR[i-1] + round[i];
           xL_out <== xL[i-1];
         }
     }
