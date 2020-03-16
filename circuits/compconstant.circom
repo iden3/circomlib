@@ -24,51 +24,39 @@ include "bitify.circom";
 template CompConstant(ct) {
     signal input in[254];
     signal output out;
-
     signal parts[127];
-    signal sout;
+    
+    var ct_l;
+    var ct_u;
+    var sig_l;
+    var sig_u;
 
-    var clsb;
-    var cmsb;
-    var slsb;
-    var smsb;
+    var acc=0;
 
-    var sum=0;
-
-    var b = (1 << 128) -1;
     var a = 1;
-    var e = 1;
-    var i;
 
-    for (i=0;i<127; i++) {
-        clsb = (ct >> (i*2)) & 1;
-        cmsb = (ct >> (i*2+1)) & 1;
-        slsb = in[i*2];
-        smsb = in[i*2+1];
+    for (var i=0;i<127; i++) {
+        ct_l = (ct >> (i*2)) & 1;
+        ct_u = (ct >> (i*2+1)) & 1;
+        sig_l = in[i*2];
+        sig_u = in[i*2+1];
 
+        if (ct_l == 0 && ct_u == 0) {
+            parts[i] <== sig_l + sig_u - sig_l*sig_u;
+        } else if (ct_l == 1 && ct_u == 0) {
+            parts[i] <==  sig_l + 2*sig_u - sig_l*sig_u - 1;
+        } else if (ct_l == 0 && ct_u ==1) {
+            parts[i] <==  sig_l*sig_u + sig_u - 1;
+        } else parts[i] <==  sig_l*sig_u - 1;
 
-        if ((cmsb==0)&(clsb==0)) {
-            parts[i] <== -b*smsb*slsb + b*smsb + b*slsb;
-        } else if ((cmsb==0)&(clsb==1)) {
-            parts[i] <== a*smsb*slsb - a*slsb + b*smsb - a*smsb + a;
-        } else if ((cmsb==1)&(clsb==0)) {
-            parts[i] <== b*smsb*slsb - a*smsb + a;
-        } else {
-            parts[i] <== -a*smsb*slsb + a;
-        }
-
-        sum = sum + parts[i];
-
-        b = b -e;
-        a = a +e;
-        e = e*2;
+        acc = acc + parts[i]*a;
+        a = a * 2;
     }
 
-    sout <== sum;
+    acc = acc + a - 1;
 
-    component num2bits = Num2Bits(135);
-
-    num2bits.in <== sout;
-
+    component num2bits = Num2Bits(128);
+    num2bits.in <== acc;
     out <== num2bits.out[127];
 }
+
