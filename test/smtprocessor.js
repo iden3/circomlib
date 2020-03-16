@@ -104,8 +104,6 @@ describe("SMT Processor test", function () {
         await testInsert(tree, key, value, circuit);
     });
 
-
-
     it("Should remove an element", async () => {
         await testDelete(tree, 111, circuit);
         await testDelete(tree, 333, circuit);
@@ -207,5 +205,4 @@ describe("SMT Processor test", function () {
         await testUpdate(tree1, 9, 999, circuit);
         await testUpdate(tree1, 32, 323232, circuit);
     });
-
 });
