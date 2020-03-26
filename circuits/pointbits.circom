@@ -61,7 +61,7 @@ function sqrt(n) {
         r = r*b;
     }
 
-    if (r > ((-1) >> 1)) {
+    if (r < 0 ) {
         r = -r;
     }
 

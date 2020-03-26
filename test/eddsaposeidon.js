@@ -1,13 +1,11 @@
 const chai = require("chai");
 const path = require("path");
-const snarkjs = require("snarkjs");
-const compiler = require("circom");
+const bigInt = require("big-integer");
+const tester = require("circom").tester;
 
 const eddsa = require("../src/eddsa.js");
 
 const assert = chai.assert;
-
-const bigInt = snarkjs.bigInt;
 
 describe("EdDSA Poseidon test", function () {
     let circuit;
@@ -15,11 +13,9 @@ describe("EdDSA Poseidon test", function () {
     this.timeout(100000);
 
     before( async () => {
-        const cirDef = await compiler(path.join(__dirname, "circuits", "eddsaposeidon_test.circom"));
 
-        circuit = new snarkjs.Circuit(cirDef);
+        circuit = await tester(path.join(__dirname, "circuits", "eddsaposeidon_test.circom"));
 
-        console.log("NConstrains EdDSA Poseidon: " + circuit.nConstraints);
     });
 
     it("Sign a single number", async () => {
@@ -33,16 +29,21 @@ describe("EdDSA Poseidon test", function () {
 
         assert(eddsa.verifyPoseidon(msg, signature, pubKey));
 
-        const w = circuit.calculateWitness({
+        const input = {
             enabled: 1,
             Ax: pubKey[0],
             Ay: pubKey[1],
             R8x: signature.R8[0],
             R8y: signature.R8[1],
             S: signature.S,
-            M: msg});
+            M: msg
+        };
 
-        assert(circuit.checkWitness(w));
+        // console.log(JSON.stringify(utils.stringifyBigInts(input)));
+
+        const w = await circuit.calculateWitness(input, true);
+
+        await circuit.checkConstraints(w);
     });
 
     it("Detect Invalid signature", async () => {
@@ -57,14 +58,14 @@ describe("EdDSA Poseidon test", function () {
 
         assert(eddsa.verifyPoseidon(msg, signature, pubKey));
         try {
-            circuit.calculateWitness({
+            await circuit.calculateWitness({
                 enabled: 1,
                 Ax: pubKey[0],
                 Ay: pubKey[1],
                 R8x: signature.R8[0].add(bigInt(1)),
                 R8y: signature.R8[1],
                 S: signature.S,
-                M: msg});
+                M: msg}, true);
             assert(false);
         } catch(err) {
             assert(/Constraint\sdoesn't\smatch(.*)1\s!=\s0/.test(err.message) );
@@ -84,15 +85,15 @@ describe("EdDSA Poseidon test", function () {
 
         assert(eddsa.verifyPoseidon(msg, signature, pubKey));
 
-        const w = circuit.calculateWitness({
+        const w = await circuit.calculateWitness({
             enabled: 0,
             Ax: pubKey[0],
             Ay: pubKey[1],
             R8x: signature.R8[0].add(bigInt(1)),
             R8y: signature.R8[1],
             S: signature.S,
-            M: msg});
+            M: msg}, true);
 
-        assert(circuit.checkWitness(w));
+        await circuit.checkConstraints(w);
     });
 });

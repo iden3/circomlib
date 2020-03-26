@@ -1,15 +1,13 @@
 const chai = require("chai");
 const path = require("path");
-const snarkjs = require("snarkjs");
-const compiler = require("circom");
-// const crypto = require("crypto");
+
+const tester = require("circom").tester;
+const bigInt = require("big-integer");
 
 const eddsa = require("../src/eddsa.js");
 const babyJub = require("../src/babyjub.js");
 
 const assert = chai.assert;
-
-const bigInt = snarkjs.bigInt;
 
 function print(circuit, w, s) {
     console.log(s + ": " + w[circuit.getSignalIdx(s)]);
@@ -36,11 +34,7 @@ describe("EdDSA test", function () {
     this.timeout(100000);
 
     before( async () => {
-        const cirDef = await compiler(path.join(__dirname, "circuits", "eddsa_test.circom"));
-
-        circuit = new snarkjs.Circuit(cirDef);
-
-        console.log("NConstrains EdDSA: " + circuit.nConstraints);
+        circuit = await tester(path.join(__dirname, "circuits", "eddsa_test.circom"));
     });
 
     it("Sign a single 10 bytes from 0 to 9", async () => {
@@ -66,9 +60,8 @@ describe("EdDSA test", function () {
         const sBits = buffer2bits(pSignature.slice(32, 64));
         const aBits = buffer2bits(pPubKey);
 
-        const w = circuit.calculateWitness({A: aBits, R8: r8Bits, S: sBits, msg: msgBits});
+        const w = await circuit.calculateWitness({A: aBits, R8: r8Bits, S: sBits, msg: msgBits}, true);
 
-        assert(circuit.checkWitness(w));
-
+        await circuit.checkConstraints(w);
     });
 });

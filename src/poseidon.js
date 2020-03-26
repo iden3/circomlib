@@ -1,8 +1,10 @@
-const bn128 = require("snarkjs").bn128;
-const bigInt = require("snarkjs").bigInt;
-const blake2b = require('blake2b');
+const bigInt = require("big-integer");
+const blake2b = require("blake2b");
 const assert = require("assert");
-const F = bn128.Fr;
+const ZqField = require("ffjavascript").ZqField;
+const utils = require("./utils");
+
+const F = new ZqField(bigInt("21888242871839275222246405745257275088548364400416034343698204186575808495617"));
 
 const SEED = "poseidon";
 const NROUNDSF = 8;
@@ -12,11 +14,11 @@ const T = 6;
 function getPseudoRandom(seed, n) {
     const res = [];
     let input = Buffer.from(seed);
-    let h = blake2b(32).update(input).digest()
+    let h = blake2b(32).update(input).digest();
     while (res.length<n) {
-        const n = F.affine(bigInt.leBuff2int(h));
+        const n = F.normalize(utils.leBuff2int(h));
         res.push(n);
-        h = blake2b(32).update(h).digest()
+        h = blake2b(32).update(h).digest();
     }
 
     return res;
@@ -50,7 +52,7 @@ exports.getMatrix = (t, seed, nRounds) => {
     for (let i=0; i<t; i++) {
         M[i] = new Array(t);
         for (let j=0; j<t; j++) {
-            M[i][j] = F.affine(F.inverse(F.sub(cmatrix[i], cmatrix[t+j])));
+            M[i][j] = F.normalize(F.inv(F.sub(cmatrix[i], cmatrix[t+j])));
         }
     }
     return M;
@@ -111,7 +113,7 @@ exports.createHash = (t, nRoundsF, nRoundsP, seed) => {
             }
             mix(state, M);
         }
-        return F.affine(state[0]);
+        return F.normalize(state[0]);
     };
 };
 

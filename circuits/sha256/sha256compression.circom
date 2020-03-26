@@ -74,6 +74,9 @@ template Sha256compression() {
                 sigmaPlus[t-16].in7[k] <== w[t-7][k];
                 sigmaPlus[t-16].in15[k] <== w[t-15][k];
                 sigmaPlus[t-16].in16[k] <== w[t-16][k];
+            }
+
+            for (k=0; k<32; k++) {
                 w[t][k] <== sigmaPlus[t-16].out[k];
             }
         }

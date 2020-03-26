@@ -1,5 +1,5 @@
 const mimc7 = require("./mimc7");
-const bigInt = require("snarkjs").bigInt;
+const bigInt = require("big-integer");
 
 exports.hash0 = function (left, right) {
     return mimc7.multiHash(left, right);

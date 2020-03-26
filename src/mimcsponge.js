@@ -1,7 +1,7 @@
-const bn128 = require("snarkjs").bn128;
-const bigInt = require("snarkjs").bigInt;
+const bigInt = require("big-integer");
 const Web3Utils = require("web3-utils");
-const F = bn128.Fr;
+const ZqField = require("ffjavascript").ZqField;
+const F = new ZqField(bigInt("21888242871839275222246405745257275088548364400416034343698204186575808495617"));
 
 const SEED = "mimcsponge";
 const NROUNDS = 220;
@@ -10,7 +10,7 @@ exports.getIV = (seed) => {
     if (typeof seed === "undefined") seed = SEED;
     const c = Web3Utils.keccak256(seed+"_iv");
     const cn = bigInt(Web3Utils.toBN(c).toString());
-    const iv = cn.mod(F.q);
+    const iv = cn.mod(F.p);
     return iv;
 };
 
@@ -22,7 +22,7 @@ exports.getConstants = (seed, nRounds) => {
     for (let i=1; i<nRounds; i++) {
         c = Web3Utils.keccak256(c);
 
-        const n1 = Web3Utils.toBN(c).mod(Web3Utils.toBN(F.q.toString()));
+        const n1 = Web3Utils.toBN(c).mod(Web3Utils.toBN(F.p.toString()));
         const c2 = Web3Utils.padLeft(Web3Utils.toHex(n1), 64);
         cts[i] = bigInt(Web3Utils.toBN(c2).toString());
     }
@@ -42,21 +42,21 @@ exports.hash = (_xL_in, _xR_in, _k) =>{
         const t = (i==0) ? F.add(xL, k) : F.add(F.add(xL, k), c);
         const xR_tmp = bigInt(xR);
         if (i < (NROUNDS - 1)) {
-          xR = xL;
-          xL = F.add(xR_tmp, F.exp(t, 5));
+            xR = xL;
+            xL = F.add(xR_tmp, F.pow(t, 5));
         } else {
-          xR = F.add(xR_tmp, F.exp(t, 5));
+            xR = F.add(xR_tmp, F.pow(t, 5));
         }
     }
     return {
-      xL: F.affine(xL),
-      xR: F.affine(xR),
+        xL: F.normalize(xL),
+        xR: F.normalize(xR),
     };
 };
 
 exports.multiHash = (arr, key, numOutputs) => {
     if (typeof(numOutputs) === "undefined") {
-      numOutputs = 1;
+        numOutputs = 1;
     }
     if (typeof(key) === "undefined") {
         key = F.zero;
@@ -66,21 +66,21 @@ exports.multiHash = (arr, key, numOutputs) => {
     let C = F.zero;
 
     for (let i=0; i<arr.length; i++) {
-      R = F.add(R, bigInt(arr[i]));
-      const S = exports.hash(R, C, key);
-      R = S.xL;
-      C = S.xR;
+        R = F.add(R, bigInt(arr[i]));
+        const S = exports.hash(R, C, key);
+        R = S.xL;
+        C = S.xR;
     }
     let outputs = [R];
     for (let i=1; i < numOutputs; i++) {
-      const S = exports.hash(R, C, key);
-      R = S.xL;
-      C = S.xR;
-      outputs.push(R);
+        const S = exports.hash(R, C, key);
+        R = S.xL;
+        C = S.xR;
+        outputs.push(R);
     }
     if (numOutputs == 1) {
-      return F.affine(outputs[0]);
+        return F.normalize(outputs[0]);
     } else {
-      return outputs.map(x => F.affine(x));
+        return outputs.map(x => F.normalize(x));
     }
 };

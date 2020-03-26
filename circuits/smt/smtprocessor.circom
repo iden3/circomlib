@@ -150,6 +150,8 @@ template SMTProcessor(nLevels) {
 
     signal enabled;
 
+    var i;
+
     enabled <== fnc[0] + fnc[1] - fnc[0]*fnc[1]
 
     component hash1Old = SMTHash1();
@@ -167,18 +169,18 @@ template SMTProcessor(nLevels) {
     n2bNew.in <== newKey;
 
     component smtLevIns = SMTLevIns(nLevels);
-    for (var i=0; i<nLevels; i++) smtLevIns.siblings[i] <== siblings[i];
+    for (i=0; i<nLevels; i++) smtLevIns.siblings[i] <== siblings[i];
     smtLevIns.enabled <== enabled;
 
     component xors[nLevels];
-    for (var i=0; i<nLevels; i++) {
+    for (i=0; i<nLevels; i++) {
         xors[i] = XOR();
         xors[i].a <== n2bOld.out[i];
         xors[i].b <== n2bNew.out[i];
     }
 
     component sm[nLevels];
-    for (var i=0; i<nLevels; i++) {
+    for (i=0; i<nLevels; i++) {
         sm[i] = SMTProcessorSM();
         if (i==0) {
             sm[i].prev_top <== enabled;
@@ -204,7 +206,7 @@ template SMTProcessor(nLevels) {
     sm[nLevels-1].st_na + sm[nLevels-1].st_new1 + sm[nLevels-1].st_old0 +sm[nLevels-1].st_upd === 1;
 
     component levels[nLevels];
-    for (var i=nLevels-1; i != -1; i--) {
+    for (i=nLevels-1; i != -1; i--) {
         levels[i] = SMTProcessorLevel();
 
         levels[i].st_top <== sm[i].st_top;

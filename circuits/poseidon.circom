@@ -25,9 +25,12 @@ template Mix(t, M) {
     signal output out[t];
     var lc;
 
-    for (var i=0; i<t; i++) {
+    var i;
+    var j;
+
+    for (i=0; i<t; i++) {
         lc = 0;
-        for (var j=0; j<t; j++) {
+        for (j=0; j<t; j++) {
             lc = lc + M[i][j]*in[j];
         }
         out[i] <== lc;
@@ -40,7 +43,7 @@ template Mix(t, M) {
 
 template Poseidon(nInputs, t, nRoundsF, nRoundsP) {
 
-    var C = [
+    var C[65] = [
         14397397413755236225575615486459253198602422701513067526754101844196324375522,
         10405129301473404666785234951972711717481302463898292859783056520670200613128,
         5179144822360023508491245509308555580251733042407187134628755730783052214509,
@@ -108,7 +111,7 @@ template Poseidon(nInputs, t, nRoundsF, nRoundsP) {
         10635360132728137321700090133109897687122647659471659996419791842933639708516
     ];
 
-    var M = [
+    var M[6][6] = [
         [
             19167410339349846567561662441069598364702008768579734801591448511131028229281,
             14183033936038168803360723133013092560869148726790180682363054735190196956789,
@@ -163,13 +166,15 @@ template Poseidon(nInputs, t, nRoundsF, nRoundsP) {
     component sigmaP[nRoundsP];
     component mix[nRoundsF + nRoundsP];
 
+    var i;
+    var j;
     var k;
 
-    for (var i=0; i<(nRoundsF + nRoundsP); i++) {
+    for (i=0; i<(nRoundsF + nRoundsP); i++) {
         ark[i] = Ark(t, C[i]);
         mix[i] = Mix(t, M);
 
-        for (var j=0; j<t; j++) {
+        for (j=0; j<t; j++) {
             if (i==0) {
                 if (j<nInputs) {
                     ark[i].in[j] <== inputs[j];
@@ -183,7 +188,7 @@ template Poseidon(nInputs, t, nRoundsF, nRoundsP) {
 
         if ((i<(nRoundsF/2)) || (i>= (nRoundsP + nRoundsF/2))) {
             k= i<nRoundsF/2 ? i : (i-nRoundsP);
-            for (var j=0; j<t; j++) {
+            for (j=0; j<t; j++) {
                 sigmaF[k][j] = Sigma();
                 sigmaF[k][j].in <== ark[i].out[j];
                 mix[i].in[j] <== sigmaF[k][j].out;
@@ -193,7 +198,7 @@ template Poseidon(nInputs, t, nRoundsF, nRoundsP) {
             sigmaP[k] = Sigma();
             sigmaP[k].in <== ark[i].out[0];
             mix[i].in[0] <== sigmaP[k].out;
-            for (var j=1; j<t; j++) {
+            for (j=1; j<t; j++) {
                 mix[i].in[j] <== ark[i].out[j];
             }
         }

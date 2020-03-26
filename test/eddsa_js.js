@@ -1,12 +1,12 @@
 const chai = require("chai");
-const snarkjs = require("snarkjs");
 
 const eddsa = require("../src/eddsa.js");
 const babyJub = require("../src/babyjub.js");
 
 const assert = chai.assert;
 
-const bigInt = snarkjs.bigInt;
+const bigInt = require("big-integer");
+const utils = require("../src/utils.js");
 
 describe("EdDSA js test", function () {
 
@@ -14,7 +14,7 @@ describe("EdDSA js test", function () {
 
     it("Sign (using Mimc7) a single 10 bytes from 0 to 9", () => {
         const msgBuf = Buffer.from("00010203040506070809", "hex");
-        const msg = bigInt.leBuff2int(msgBuf);
+        const msg = utils.leBuff2int(msgBuf);
 
         //  const prvKey = crypto.randomBytes(32);
 
@@ -49,7 +49,7 @@ describe("EdDSA js test", function () {
 
     it("Sign (using Poseidon) a single 10 bytes from 0 to 9", () => {
         const msgBuf = Buffer.from("00010203040506070809", "hex");
-        const msg = bigInt.leBuff2int(msgBuf);
+        const msg = utils.leBuff2int(msgBuf);
 
         const prvKey = Buffer.from("0001020304050607080900010203040506070809000102030405060708090001", "hex");
 

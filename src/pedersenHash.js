@@ -1,5 +1,4 @@
-const bn128 = require("snarkjs").bn128;
-const bigInt = require("snarkjs").bigInt;
+const bigInt = require("big-integer");
 const babyJub = require("./babyjub");
 const createBlakeHash = require("blake-hash");
 
@@ -32,18 +31,18 @@ function pedersenHash(msg) {
             let acc = bigInt.one;
             for (let b=0; ((b<windowSize-1)&&(o<bits.length)) ; b++) {
                 if (bits[o]) {
-                    acc = acc.add( bigInt.one.shl(b) );
+                    acc = acc.add( bigInt.one.shiftLeft(b) );
                 }
                 o++;
             }
             if (o<bits.length) {
                 if (bits[o]) {
-                    acc = acc.neg();
+                    acc = bigInt.zero.minus(acc);
                 }
                 o++;
             }
-            escalar = escalar.add(acc.mul(exp));
-            exp = exp.shl(windowSize+1);
+            escalar = escalar.add(acc.times(exp));
+            exp = exp.shiftLeft(windowSize+1);
         }
 
         if (escalar.lesser(bigInt.zero)) {
