@@ -33,6 +33,8 @@ template IsZero() {
 }
 
 
+
+
 template IsEqual() {
     signal input in[2];
     signal output out;

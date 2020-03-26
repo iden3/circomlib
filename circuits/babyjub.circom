@@ -19,6 +19,66 @@
 
 include "bitify.circom";
 include "escalarmulfix.circom";
+include "comparators.circom";
+
+function inCurve(P) {
+    var A = 168700;
+    var D = 168696;
+    var x2 = P[0]*P[0];
+    var y2 = P[1]*P[1];
+    if ((A * x2 + y2) == ( 1 + D*x2*y2)){
+        return 1;
+    } else {
+        return 0;
+    }
+    return 0;
+}
+
+
+template InCurve() {
+    signal input in[2];
+    signal output out;
+    var A = 168700;
+    var D = 168696;
+
+    signal x2;
+    x2 <== in[0] * in[0];
+    signal y2;
+    y2 <== in[1] * in[1];
+
+    component res = IsZero();
+    res.in <== A * x2 + y2 - 1 - D * x2 * y2;
+    out <== res.out;
+}
+
+
+function babyAdd(a,b) {
+    var A = 168700;
+    var D = 168696;
+    return [(a[0]*b[1]+b[0]*a[1])/(1 + D*a[0]*b[0]*a[1]*b[1]), (a[1]*b[1] - A*a[0]*b[0])/(1 - D*a[0]*b[0]*a[1]*b[1])];
+
+}
+
+function mulPointEscalar(base, e) {
+    var res = [0, 1];
+    var rem = e;
+    var exp = base;
+
+    while (rem!=0) {
+        if (rem&1==1) {
+            res = babyAdd(res, exp);
+        }
+        exp = babyAdd(exp, exp);
+        rem = rem >> 1;
+    }
+
+    return res;
+}
+
+function babyNeg(p) {
+    return [-p[0], p[1]];
+}
+
 
 template BabyAdd() {
     signal input x1;
@@ -64,6 +124,36 @@ template BabyDbl() {
     adder.yout ==> yout;
 }
 
+template BabyMul8() {
+    signal input x;
+    signal input y;
+    signal output xout;
+    signal output yout;
+
+    component dbl1 = BabyDbl();
+    dbl1.x <== x;
+    dbl1.y <== y;
+    component dbl2 = BabyDbl();
+    dbl2.x <== dbl1.xout;
+    dbl2.y <== dbl1.yout;
+    component dbl3 = BabyDbl();
+    dbl3.x  <== dbl2.xout;
+    dbl3.y  <== dbl2.yout;
+    xout <== dbl3.xout;
+    yout <== dbl3.yout;
+}
+
+template BabyIsZero() {
+    signal input x;
+    signal input y;
+    signal output out;
+    component xz = IsZero();
+    xz.in <== x;
+    component yz = IsZero();
+    yz.in <== y-1;
+    out <== xz.out * yz.out;
+
+}
 
 template BabyCheck() {
     signal input x;
