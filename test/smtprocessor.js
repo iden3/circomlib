@@ -11,7 +11,7 @@ function print(circuit, w, s) {
     console.log(s + ": " + w[circuit.getSignalIdx(s)]);
 }
 
-async function testInsert(tree, key, value, circuit, log ) {
+async function testInsert(tree, key, value, circuit ) {
 
     const res = await tree.insert(key,value);
     let siblings = res.siblings;
@@ -26,7 +26,7 @@ async function testInsert(tree, key, value, circuit, log ) {
         isOld0: res.isOld0 ? 1 : 0,
         newKey: key,
         newValue: value
-    }, log);
+    }, true);
 
     await circuit.checkConstraints(w);
 
@@ -48,7 +48,7 @@ async function testDelete(tree, key, circuit) {
         isOld0: res.isOld0 ? 1 : 0,
         newKey: res.delKey,
         newValue: res.delValue
-    });
+    }, true);
 
     await circuit.checkConstraints(w);
 
@@ -182,8 +182,8 @@ describe("SMT Processor test", function () {
             newValue: 77
         });
 
-        const root1 = w[circuit.symbols["main.oldRoot"].idxWit];
-        const root2 = w[circuit.symbols["main.newRoot"].idxWit];
+        const root1 = w[circuit.symbols["main.oldRoot"].varIdx];
+        const root2 = w[circuit.symbols["main.newRoot"].varIdx];
 
         await circuit.checkConstraints(w);
 

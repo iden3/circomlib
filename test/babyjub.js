@@ -34,7 +34,7 @@ describe("Baby Jub test", function () {
             y2: bigInt(1)
         };
 
-        const w = await circuitAdd.calculateWitness(input);
+        const w = await circuitAdd.calculateWitness(input, true);
 
         await circuitAdd.assertOut(w, {xout: bigInt(0), yout: bigInt(1)});
     });
@@ -48,7 +48,7 @@ describe("Baby Jub test", function () {
             y2: bigInt("2626589144620713026669568689430873010625803728049924121243784502389097019475")
         };
 
-        const w = await circuitAdd.calculateWitness(input);
+        const w = await circuitAdd.calculateWitness(input, true);
 
         await circuitAdd.assertOut(w, {
             xout: bigInt("6890855772600357754907169075114257697580319025794532037257385534741338397365"),
@@ -66,7 +66,7 @@ describe("Baby Jub test", function () {
             y2: bigInt("20819045374670962167435360035096875258406992893633759881276124905556507972311")
         };
 
-        const w = await circuitAdd.calculateWitness(input);
+        const w = await circuitAdd.calculateWitness(input, true);
 
         await circuitAdd.assertOut(w, {
             xout: bigInt("7916061937171219682591368294088513039687205273691143098332585753343424131937"),
@@ -75,15 +75,15 @@ describe("Baby Jub test", function () {
 
     });
 
-    it("Should check (0,1) is a valid poiny", async() => {
-        const w = await circuitTest.calculateWitness({x: 0, y:1});
+    it("Should check (0,1) is a valid point", async() => {
+        const w = await circuitTest.calculateWitness({x: 0, y:1}, true);
 
         await circuitTest.checkConstraints(w);
     });
 
     it("Should check (1,0) is an invalid point", async() => {
         try {
-            await circuitTest.calculateWitness({x: 1, y: 0});
+            await circuitTest.calculateWitness({x: 1, y: 0}, true);
             assert(false, "Should be a valid point");
         } catch(err) {
             assert(/Constraint\sdoesn't\smatch(.*)168700\s!=\s1/.test(err.message) );
@@ -102,7 +102,7 @@ describe("Baby Jub test", function () {
             in : S
         };
 
-        const w = await circuitPbk.calculateWitness(input);
+        const w = await circuitPbk.calculateWitness(input, true);
 
         await circuitPbk.assertOut(w, {Ax : A[0], Ay: A[1]});
 

@@ -27,7 +27,7 @@ describe("Escalarmul test", function () {
 
         await circuitEMulAny.checkConstraints(w);
 
-        await circuitEMulAny.assertOut(w, {out: g});
+        await circuitEMulAny.assertOut(w, {out: g}, true);
 
     });
 
@@ -38,7 +38,7 @@ describe("Escalarmul test", function () {
 
         await circuitEMulAny.checkConstraints(w);
 
-        await circuitEMulAny.assertOut(w, {out: [0,1]});
+        await circuitEMulAny.assertOut(w, {out: [0,1]}, true);
 
     });
 

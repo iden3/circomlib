@@ -1,5 +1,5 @@
 const bigInt = require("big-integer");
-const ZqField = require("fflib").ZqField;
+const ZqField = require("ffjavascript").ZqField;
 
 const Web3Utils = require("web3-utils");
 const F = new ZqField(bigInt("21888242871839275222246405745257275088548364400416034343698204186575808495617"));

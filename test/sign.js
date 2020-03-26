@@ -30,49 +30,49 @@ describe("Sign test", function() {
 
     it("Sign of 0", async () => {
         const inp = getBits(bigInt.zero, 254);
-        const w = await circuit.calculateWitness({in: inp});
+        const w = await circuit.calculateWitness({in: inp}, true);
 
         await circuit.assertOut(w, {sign: 0});
     });
 
     it("Sign of 3", async () => {
         const inp = getBits(bigInt(3), 254);
-        const w = await circuit.calculateWitness({in: inp});
+        const w = await circuit.calculateWitness({in: inp}, true);
 
         await circuit.assertOut(w, {sign: 0});
     });
 
     it("Sign of q/2", async () => {
         const inp = getBits(q.shiftRight(bigInt.one), 254);
-        const w = await circuit.calculateWitness({in: inp});
+        const w = await circuit.calculateWitness({in: inp}, true);
 
         await circuit.assertOut(w, {sign: 0});
     });
 
     it("Sign of q/2+1", async () => {
         const inp = getBits(q.shiftRight(bigInt.one).add(bigInt.one), 254);
-        const w = await circuit.calculateWitness({in: inp});
+        const w = await circuit.calculateWitness({in: inp}, true);
 
         await circuit.assertOut(w, {sign: 1});
     });
 
     it("Sign of q-1", async () => {
         const inp = getBits(q.minus(bigInt.one), 254);
-        const w = await circuit.calculateWitness({in: inp});
+        const w = await circuit.calculateWitness({in: inp}, true);
 
         await circuit.assertOut(w, {sign: 1});
     });
 
     it("Sign of q", async () => {
         const inp = getBits(q, 254);
-        const w = await circuit.calculateWitness({in: inp});
+        const w = await circuit.calculateWitness({in: inp}, true);
 
         await circuit.assertOut(w, {sign: 1});
     });
 
     it("Sign of all ones", async () => {
         const inp = getBits(bigInt(1).shiftLeft(254).minus(bigInt(1)), 254);
-        const w = await circuit.calculateWitness({in: inp});
+        const w = await circuit.calculateWitness({in: inp}, true);
 
         await circuit.assertOut(w, {sign: 1});
     });

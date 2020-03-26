@@ -28,7 +28,7 @@ describe("Mux4 test", function() {
         ];
 
         for (let i=0; i<16; i++) {
-            const w = await circuit.calculateWitness({ "selector": i });
+            const w = await circuit.calculateWitness({ "selector": i }, true);
 
             await circuit.checkConstraints(w);
 
@@ -52,7 +52,7 @@ describe("Mux4 test", function() {
         ];
 
         for (let i=0; i<8; i++) {
-            const w = await circuit.calculateWitness({ "selector": i });
+            const w = await circuit.calculateWitness({ "selector": i }, true);
 
             await circuit.checkConstraints(w);
 
@@ -71,7 +71,7 @@ describe("Mux4 test", function() {
         ];
 
         for (let i=0; i<4; i++) {
-            const w = await circuit.calculateWitness({ "selector": i });
+            const w = await circuit.calculateWitness({ "selector": i }, true);
 
             await circuit.checkConstraints(w);
 
@@ -88,7 +88,7 @@ describe("Mux4 test", function() {
         ];
 
         for (let i=0; i<2; i++) {
-            const w = await circuit.calculateWitness({ "selector": i });
+            const w = await circuit.calculateWitness({ "selector": i }, true);
 
             await circuit.checkConstraints(w);
 

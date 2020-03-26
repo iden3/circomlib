@@ -29,7 +29,7 @@ async function testInclusion(tree, key, circuit) {
         isOld0: 0,
         key: key,
         value: res.foundValue
-    });
+    }, true);
 
     await circuit.checkConstraints(w);
 

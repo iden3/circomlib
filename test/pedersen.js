@@ -27,7 +27,7 @@ describe("Double Pedersen test", function() {
 
         let w;
 
-        w = await circuit.calculateWitness({ in: ["0", "0"]});
+        w = await circuit.calculateWitness({ in: ["0", "0"]}, true);
 
         await circuit.assertOut(w, {out: [0,1]});
 
@@ -35,7 +35,7 @@ describe("Double Pedersen test", function() {
     it("Should pedersen at one first generator", async () => {
         let w;
 
-        w = await circuit.calculateWitness({ in: ["1", "0"]});
+        w = await circuit.calculateWitness({ in: ["1", "0"]}, true);
 
         await circuit.assertOut(w, {out: PBASE[0]});
 
@@ -43,14 +43,14 @@ describe("Double Pedersen test", function() {
     it("Should pedersen at one second generator", async () => {
         let w;
 
-        w = await circuit.calculateWitness({ in: ["0", "1"]});
+        w = await circuit.calculateWitness({ in: ["0", "1"]}, true);
 
         await circuit.assertOut(w, {out: PBASE[1]});
 
     });
     it("Should pedersen at mixed generators", async () => {
         let w;
-        w = await circuit.calculateWitness({ in: ["3", "7"]});
+        w = await circuit.calculateWitness({ in: ["3", "7"]}, true);
 
         const r = babyJub.addPoint(
             babyJub.mulPointEscalar(PBASE[0], 3),
@@ -64,7 +64,7 @@ describe("Double Pedersen test", function() {
         let w;
 
         const allOnes = bigInt("1").shiftLeft(250).minus(bigInt("1"));
-        w = await circuit.calculateWitness({ in: [allOnes, allOnes]});
+        w = await circuit.calculateWitness({ in: [allOnes, allOnes]}, true);
 
 
         const r2 = babyJub.addPoint(

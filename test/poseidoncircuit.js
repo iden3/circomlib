@@ -28,7 +28,7 @@ describe("Poseidon Circuit test", function () {
     });
 
     it("Should check constrain of hash([1, 2])", async () => {
-        const w = await circuit.calculateWitness({inputs: [1, 2]});
+        const w = await circuit.calculateWitness({inputs: [1, 2]}, true);
 
         const hash = poseidon.createHash(6, 8, 57);
 
@@ -41,7 +41,7 @@ describe("Poseidon Circuit test", function () {
     });
 
     it("Should check constrain of hash([3, 4])", async () => {
-        const w = await circuit.calculateWitness({inputs: [3, 4]});
+        const w = await circuit.calculateWitness({inputs: [3, 4]}, true);
 
         const hash = poseidon.createHash(6, 8, 57);
 

@@ -33,17 +33,17 @@ describe("Montgomery test", function () {
     it("Convert Edwards to Montgomery and back again", async () => {
         let w, xout, yout;
 
-        w = await circuitE2M.calculateWitness({ in: g});
+        w = await circuitE2M.calculateWitness({ in: g}, true);
 
-        xout = w[circuitE2M.symbols["main.out[0]"].idxWit];
-        yout = w[circuitE2M.symbols["main.out[1]"].idxWit];
+        xout = w[circuitE2M.symbols["main.out[0]"].varIdx];
+        yout = w[circuitE2M.symbols["main.out[1]"].varIdx];
 
         mg = [xout, yout];
 
-        w = await circuitM2E.calculateWitness({ in: [xout, yout]});
+        w = await circuitM2E.calculateWitness({ in: [xout, yout]}, true);
 
-        xout = w[circuitM2E.symbols["main.out[0]"].idxWit];
-        yout = w[circuitM2E.symbols["main.out[1]"].idxWit];
+        xout = w[circuitM2E.symbols["main.out[0]"].varIdx];
+        yout = w[circuitM2E.symbols["main.out[1]"].varIdx];
 
         assert(xout.equals(g[0]));
         assert(yout.equals(g[1]));
@@ -53,17 +53,17 @@ describe("Montgomery test", function () {
 
         g2 = babyJub.addPoint(g,g);
 
-        w = await circuitMDouble.calculateWitness({ in: mg});
+        w = await circuitMDouble.calculateWitness({ in: mg}, true);
 
-        xout = w[circuitE2M.symbols["main.out[0]"].idxWit];
-        yout = w[circuitE2M.symbols["main.out[1]"].idxWit];
+        xout = w[circuitE2M.symbols["main.out[0]"].varIdx];
+        yout = w[circuitE2M.symbols["main.out[1]"].varIdx];
 
         mg2 = [xout, yout];
 
-        w = await circuitM2E.calculateWitness({ in: mg2});
+        w = await circuitM2E.calculateWitness({ in: mg2}, true);
 
-        xout = w[circuitM2E.symbols["main.out[0]"].idxWit];
-        yout = w[circuitM2E.symbols["main.out[1]"].idxWit];
+        xout = w[circuitM2E.symbols["main.out[0]"].varIdx];
+        yout = w[circuitM2E.symbols["main.out[1]"].varIdx];
 
         assert(xout.equals(g2[0]));
         assert(yout.equals(g2[1]));
@@ -73,17 +73,17 @@ describe("Montgomery test", function () {
 
         g3 = babyJub.addPoint(g,g2);
 
-        w = await circuitMAdd.calculateWitness({ in1: mg, in2: mg2});
+        w = await circuitMAdd.calculateWitness({ in1: mg, in2: mg2}, true);
 
-        xout = w[circuitMAdd.symbols["main.out[0]"].idxWit];
-        yout = w[circuitMAdd.symbols["main.out[1]"].idxWit];
+        xout = w[circuitMAdd.symbols["main.out[0]"].varIdx];
+        yout = w[circuitMAdd.symbols["main.out[1]"].varIdx];
 
         mg3 = [xout, yout];
 
-        w = await circuitM2E.calculateWitness({ in: mg3});
+        w = await circuitM2E.calculateWitness({ in: mg3}, true);
 
-        xout = w[circuitM2E.symbols["main.out[0]"].idxWit];
-        yout = w[circuitM2E.symbols["main.out[1]"].idxWit];
+        xout = w[circuitM2E.symbols["main.out[0]"].varIdx];
+        yout = w[circuitM2E.symbols["main.out[1]"].varIdx];
 
         assert(xout.equals(g3[0]));
         assert(yout.equals(g3[1]));

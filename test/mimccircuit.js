@@ -14,7 +14,7 @@ describe("MiMC Circuit test", function () {
     });
 
     it("Should check constrain", async () => {
-        const w = await circuit.calculateWitness({x_in: 1, k: 2});
+        const w = await circuit.calculateWitness({x_in: 1, k: 2}, true);
 
         const res2 = mimcjs.hash(1,2,91);
 

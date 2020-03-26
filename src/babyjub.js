@@ -1,5 +1,5 @@
 const bigInt = require("big-integer");
-const ZqField = require("fflib").ZqField;
+const ZqField = require("ffjavascript").ZqField;
 const utils = require("./utils.js");
 
 exports.addPoint = addPoint;

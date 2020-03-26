@@ -2,7 +2,6 @@ const chai = require("chai");
 const path = require("path");
 const bigInt = require("big-integer");
 const tester = require("circom").tester;
-const utils = require("../src/utils");
 
 const eddsa = require("../src/eddsa.js");
 
@@ -42,7 +41,7 @@ describe("EdDSA Poseidon test", function () {
 
         // console.log(JSON.stringify(utils.stringifyBigInts(input)));
 
-        const w = await circuit.calculateWitness(input);
+        const w = await circuit.calculateWitness(input, true);
 
         await circuit.checkConstraints(w);
     });
@@ -66,7 +65,7 @@ describe("EdDSA Poseidon test", function () {
                 R8x: signature.R8[0].add(bigInt(1)),
                 R8y: signature.R8[1],
                 S: signature.S,
-                M: msg});
+                M: msg}, true);
             assert(false);
         } catch(err) {
             assert(/Constraint\sdoesn't\smatch(.*)1\s!=\s0/.test(err.message) );
@@ -93,7 +92,7 @@ describe("EdDSA Poseidon test", function () {
             R8x: signature.R8[0].add(bigInt(1)),
             R8y: signature.R8[1],
             S: signature.S,
-            M: msg});
+            M: msg}, true);
 
         await circuit.checkConstraints(w);
     });

@@ -25,13 +25,13 @@ describe("Escalarmul test", function () {
 
         await circuit.checkConstraints(w);
 
-        await circuit.assertOut(w, {out: [0,1]});
+        await circuit.assertOut(w, {out: [0,1]}, true);
 
     });
 
     it("Should generate Same escalar mul", async () => {
 
-        const w = await circuit.calculateWitness({"e": 1});
+        const w = await circuit.calculateWitness({"e": 1}, true);
 
         await circuit.checkConstraints(w);
 
@@ -47,7 +47,7 @@ describe("Escalarmul test", function () {
             bigInt("16950150798460657717958625567821834550301663161624707787222815936182638968203")
         ];
 
-        const w = await circuit.calculateWitness({"e": s});
+        const w = await circuit.calculateWitness({"e": s}, true);
 
         await circuit.checkConstraints(w);
 
@@ -67,7 +67,7 @@ describe("Escalarmul test", function () {
         for (let i=0; i<50; i++) {
             const s = bigInt(i);
 
-            const w = await circuit.calculateWitness({"e": s});
+            const w = await circuit.calculateWitness({"e": s}, true);
 
             await circuit.checkConstraints(w);
 
@@ -79,7 +79,7 @@ describe("Escalarmul test", function () {
 
     it("If multiply by order should return 0", async () => {
 
-        const w = await circuit.calculateWitness({"e": babyjub.subOrder });
+        const w = await circuit.calculateWitness({"e": babyjub.subOrder }, true);
 
         await circuit.checkConstraints(w);
 

@@ -11,12 +11,12 @@ describe("Point 2 bits test", function() {
         circuit = await tester(path.join(__dirname, "circuits", "pointbits_loopback.circom"));
     });
     it("Should do the both convertions for 8Base", async () => {
-        const w = await circuit.calculateWitness({ in: babyJub.Base8});
+        const w = await circuit.calculateWitness({ in: babyJub.Base8}, true);
 
         await circuit.checkConstraints(w);
     });
     it("Should do the both convertions for Zero point", async () => {
-        const w = await circuit.calculateWitness({ in: [0, 1]});
+        const w = await circuit.calculateWitness({ in: [0, 1]}, true);
 
         await circuit.checkConstraints(w);
     });

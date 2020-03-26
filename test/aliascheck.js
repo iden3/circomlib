@@ -1,6 +1,5 @@
 const chai = require("chai");
 const path = require("path");
-const compiler = require("circom");
 
 const assert = chai.assert;
 
@@ -37,23 +36,23 @@ describe("Aliascheck test", function () {
 
     it("Satisfy the aliastest 0", async () => {
         const inp = getBits(bigInt.zero, 254);
-        await cir.calculateWitness({in: inp});
+        await cir.calculateWitness({in: inp}, true);
     });
 
     it("Satisfy the aliastest 3", async () => {
         const inp = getBits(bigInt(3), 254);
-        await cir.calculateWitness({in: inp});
+        await cir.calculateWitness({in: inp}, true);
     });
 
     it("Satisfy the aliastest q-1", async () => {
         const inp = getBits(q.minus(bigInt.one), 254);
-        await cir.calculateWitness({in: inp});
+        await cir.calculateWitness({in: inp}, true);
     });
 
     it("Should not satisfy an input of q", async () => {
         const inp = getBits(q, 254);
         try {
-            await cir.calculateWitness({in: inp});
+            await cir.calculateWitness({in: inp}, true);
             assert(false);
         } catch(err) {
             assert(/Constraint\sdoesn't\smatch(.*)1\s!=\s0/.test(err.message) );
@@ -64,7 +63,7 @@ describe("Aliascheck test", function () {
 
         const inp = getBits(bigInt(1).shiftLeft(254).minus(bigInt.one), 254);
         try {
-            await cir.calculateWitness({in: inp});
+            await cir.calculateWitness({in: inp}, true);
             assert(false);
         } catch(err) {
             assert(/Constraint\sdoesn't\smatch(.*)1\s!=\s0/.test(err.message) );

@@ -35,7 +35,7 @@ describe("EdDSA MiMC test", function () {
             R8x: signature.R8[0],
             R8y: signature.R8[1],
             S: signature.S,
-            M: msg});
+            M: msg}, true);
 
 
         await circuit.checkConstraints(w);
@@ -61,7 +61,7 @@ describe("EdDSA MiMC test", function () {
                 R8x: signature.R8[0].add(bigInt(1)),
                 R8y: signature.R8[1],
                 S: signature.S,
-                M: msg});
+                M: msg}, true);
             assert(false);
         } catch(err) {
             assert(/Constraint\sdoesn't\smatch(.*)1\s!=\s0/.test(err.message) );
@@ -88,7 +88,7 @@ describe("EdDSA MiMC test", function () {
             R8x: signature.R8[0].add(bigInt(1)),
             R8y: signature.R8[1],
             S: signature.S,
-            M: msg});
+            M: msg}, true);
 
         await circuit.checkConstraints(w);
 

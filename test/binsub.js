@@ -12,7 +12,7 @@ async function checkSub(_a,_b, circuit) {
     let b=bigInt(_b);
     if (a.lesser(bigInt.zero)) a = a.add(bigInt.one.shiftLeft(16));
     if (b.lesser(bigInt.zero)) b = b.add(bigInt.one.shiftLeft(16));
-    const w = await circuit.calculateWitness({a: a, b: b});
+    const w = await circuit.calculateWitness({a: a, b: b}, true);
 
     let res = a.minus(b);
     if (res.lesser(bigInt.zero)) res = res.add(bigInt.one.shiftLeft(16));

@@ -46,13 +46,13 @@ describe("SHA256 test", function () {
         const a = buffer2bitArray(b);
         const b2 = bitArray2buffer(a);
 
-        assert.equal(b.toString("hex"), b2.toString("hex"));
+        assert.equal(b.toString("hex"), b2.toString("hex"), true);
     });
 
     it("Should calculate a hash of 1 compressor", async () => {
         const cir = await tester(path.join(__dirname, "circuits", "sha256_2_test.circom"));
 
-        const witness = await cir.calculateWitness({ "a": "1", "b": "2" });
+        const witness = await cir.calculateWitness({ "a": "1", "b": "2" }, true);
 
         const b = new Buffer.alloc(54);
         b[26] = 1;
@@ -83,7 +83,7 @@ describe("SHA256 test", function () {
             .digest("hex");
 
         const arrIn = buffer2bitArray(b);
-        const witness = await cir.calculateWitness({ "in": arrIn });
+        const witness = await cir.calculateWitness({ "in": arrIn }, true);
 
         const arrOut = witness.slice(1, 257);
         const hash2 = bitArray2buffer(arrOut).toString("hex");
@@ -104,7 +104,7 @@ describe("SHA256 test", function () {
 
         const arrIn = buffer2bitArray(b);
 
-        const witness = await cir.calculateWitness({ "in": arrIn });
+        const witness = await cir.calculateWitness({ "in": arrIn }, true);
 
         const arrOut = witness.slice(1, 257);
         const hash2 = bitArray2buffer(arrOut).toString("hex");

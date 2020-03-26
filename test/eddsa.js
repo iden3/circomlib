@@ -60,7 +60,7 @@ describe("EdDSA test", function () {
         const sBits = buffer2bits(pSignature.slice(32, 64));
         const aBits = buffer2bits(pPubKey);
 
-        const w = await circuit.calculateWitness({A: aBits, R8: r8Bits, S: sBits, msg: msgBits});
+        const w = await circuit.calculateWitness({A: aBits, R8: r8Bits, S: sBits, msg: msgBits}, true);
 
         await circuit.checkConstraints(w);
     });

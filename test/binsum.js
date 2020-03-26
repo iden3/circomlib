@@ -15,9 +15,10 @@ describe("Binary sum test", function () {
         const circuit = await tester(path.join(__dirname, "circuits", "constants_test.circom"));
         await circuit.loadConstraints();
 
-        assert.equal(circuit.nWires, 2);
+        assert.equal(circuit.nVars, 2);
+        assert.equal(circuit.constraints.length, 1);
 
-        const witness = await circuit.calculateWitness({ "in": bigInt("d807aa98", 16)});
+        const witness = await circuit.calculateWitness({ "in": bigInt("d807aa98", 16)}, true);
 
         assert(witness[0].equals(bigInt(1)));
         assert(witness[1].equals(bigInt("d807aa98", 16)));
@@ -26,9 +27,9 @@ describe("Binary sum test", function () {
         const circuit = await tester(path.join(__dirname, "circuits", "sum_test.circom"));
         await circuit.loadConstraints();
 
-        assert.equal(circuit.nWires, 97);  // 32 (in1) + 32(in2) + 32(out) + 1 (carry)
+        assert.equal(circuit.constraints.length, 97);  // 32 (in1) + 32(in2) + 32(out) + 1 (carry)
 
-        const witness = await circuit.calculateWitness({ "a": "111", "b": "222" });
+        const witness = await circuit.calculateWitness({ "a": "111", "b": "222" }, true);
 
         assert(witness[0].equals(bigInt(1)));
         assert(witness[1].equals(bigInt("333")));

@@ -18,7 +18,7 @@ describe("Pedersen test", function() {
 
         let w;
 
-        w = await circuit.calculateWitness({ in: 0});
+        w = await circuit.calculateWitness({ in: 0}, true);
 
         const b = Buffer.alloc(32);
 
@@ -34,7 +34,7 @@ describe("Pedersen test", function() {
 
         const n = bigInt.one.shiftLeft(253).minus(bigInt.one);
 
-        w = await circuit.calculateWitness({ in: n});
+        w = await circuit.calculateWitness({ in: n}, true);
 
         const b = Buffer.alloc(32);
         for (let i=0; i<31; i++) b[i] = 0xFF;
