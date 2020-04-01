@@ -2,16 +2,16 @@
 
 ## Description
 
-This template converts a binary number `in[n]` of `n` bits to its
+This template converts a field element (i.e. is there a max of bits)? `in` to its binary representation `out[254]`.
 integer representation STRICT
 
 ## Schema
 
 ```
-             _____________________     
-            |                     |
-in[n] ----> |     Num2Bits(n)     | ----> out
-            |_____________________|     
+          _____________________     
+         |                     |
+in ----> |  Num2Bits_strict()  | ----> out[254]
+         |_____________________|     
 ```
 
 
@@ -19,19 +19,20 @@ in[n] ----> |     Num2Bits(n)     | ----> out
 
 ```
 include "../../aliascheck/aliascheck.circom";
-include "../bits2num/bits2num.circom";
+include "../num2bits/num2bits.circom"```
 ```
 
 ## Inputs
 
- signal input in;
-    signal output out[n];
+signal input in;
+signal output out[254];
 
 The input `in` is a .
 
 ## Outputs
 
-The output `out` is an integer TODO: (a field element?).
+The output `out[254]` is an array of 254 binary numbers.
+<!--- TODO: Add the order of the representation, i.e. out[0] vs. out[253] -->
 
 ## Benchmarks 
 

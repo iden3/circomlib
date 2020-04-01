@@ -2,32 +2,26 @@
 
 ## Description
 
-This template converts a binary number `in[n]` of `n` bits to its
-integer representation STRICT
+This template converts a ...
 
 ## Schema
 
 ```
-             _____________________     
-            |                     |
-in[n] ----> |     Num2Bits(n)     | ----> out
-            |_____________________|     
+          ____________________     
+         |                    |
+in ----> |   Num2BitsNeg(n)   | ----> out[n]
+         |____________________|     
 ```
-
 
 ## Dependencies
 
 ```
-include "../../aliascheck/aliascheck.circom";
-include "../bits2num/bits2num.circom";
+include "../../comparators/iszero/iszero.circom";
 ```
 
 ## Inputs
 
- signal input in;
-    signal output out[n];
-
-The input `in` is a .
+...
 
 ## Outputs
 
