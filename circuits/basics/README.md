@@ -4,10 +4,10 @@ This folder contains the templates to do basic arithmetic operations.
 
 ## Structure of the Folder
 
-- [`aliascheck`](circuits/basics/aliascheck)
-- [`binary_arithmetic`](circuits/basics/binary_arithmetic)
-    - [`binsub`](circuits/basics/binary_arithmetic/binsub)
-    - [`binsum`](circuits/basics/binary_arithmetic/binsum)
+- [`aliascheck`](aliascheck)
+- [`binary_arithmetic`](binary_arithmetic)
+    - [`binsub`](binary_arithmetic/binsub)
+    - [`binsum`](binary_arithmetic/binsum)
 - [`bitify`](circuits/basics/bitify)
     - [`bits2num`](circuits/basics/bitify/bits2num)
     - [`bits2num_strict`](circuits/basics/bitify/bits2num_strict)
