@@ -6,6 +6,6 @@ This folder contains the templates to talkdfjlasjdf. Each folder contains a test
 
 ## Structure
 
-- [`decoder`](circuits/basics/multiplexer/decoder)
-- [`multiplexer`](circuits/basics/multiplexer/multiplexer)
-- [`scalarproduct`](circuits/basics/multiplexer/scalarproduct)
+- [`decoder`](decoder)
+- [`multiplexer`](multiplexer)
+- [`scalarproduct`](scalarproduct)

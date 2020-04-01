@@ -6,8 +6,8 @@ This folder contains the templates to perform conversions of numbers to binary a
 
 ## Structure
 
-- [`bits2num`](circuits/basics/bitify/bits2num)
-- [`bits2num_strict`](circuits/basics/bitify/bits2num_strict)
-- [`num2bits`](circuits/basics/bitify/num2bits)
-- [`num2bits_strict`](circuits/basics/bitify/num2bits_strict)
-- [`num2bitsneg`](circuits/basics/bitify/num2bitsneg)
+- [`bits2num`](bits2num)
+- [`bits2num_strict`](bits2num_strict)
+- [`num2bits`](num2bits)
+- [`num2bits_strict`](num2bits_strict)
+- [`num2bitsneg`](num2bitsneg)

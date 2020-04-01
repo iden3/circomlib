@@ -6,10 +6,10 @@ This folder contains the templates to perform logic gates operations. Each folde
 
 ## Structure
 
-- [`and`](circuits/basics/logic_gates/and)
-- [`multiand`](circuits/basics/logic_gates/multiand)
-- [`nand`](circuits/basics/logic_gates/nand)
-- [`nor`](circuits/basics/logic_gates/nor)
-- [`not`](circuits/basics/logic_gates/not)
-- [`or`](circuits/basics/logic_gates/or)
-- [`xor`](circuits/basics/logic_gates/xor)
+- [`and`](and)
+- [`multiand`](multiand)
+- [`nand`](nand)
+- [`nor`](nor)
+- [`not`](not)
+- [`or`](or)
+- [`xor`](xor)

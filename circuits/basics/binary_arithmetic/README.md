@@ -6,5 +6,5 @@ This folder contains the templates to perform sums (`binsum.circom`) and substra
 
 ## Structure
 
-- [`binsub`](circuits/basics/binary_arithmetic/binsub)
-- [`binsum`](circuits/basics/binary_arithmetic/binsum)
+- [`binsub`](binsub)
+- [`binsum`](binsum)

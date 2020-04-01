@@ -4,17 +4,17 @@ This folder contains templates to compute hash functions in a circtom circuit.
 
 ## Structure of the Folder
 
-- [`mimc`](doc/cryptography/hash_functions/mimc)
-    - [`mimc7`](doc/cryptography/hash_functions/mimc/mimc7)
-    - [`mimcfeistel`](doc/cryptography/hash_functions/mimc/mimcfeistel)
-    - [`mimcsponge`](doc/cryptography/hash_functions/mimc/mimcsponge)
-    - [`multimimc7`](doc/cryptography/hash_functions/mimc/multimimc7)
-- [`pedersen`](doc/cryptography/hash_functions/pedersen)
-    - [`segment`](doc/cryptography/hash_functions/pedersen/segment)
-    - [`window3`](doc/cryptography/hash_functions/pedersen/window3)
-    - [`window4`](doc/cryptography/hash_functions/pedersen/window4)
-- [`poseidon`](doc/cryptography/hash_functions/poseidon)
-- [`sha256`](doc/cryptography/hash_functions/sha256)
+- [`mimc`](mimc)
+    - [`mimc7`](mimc/mimc7)
+    - [`mimcfeistel`](mimc/mimcfeistel)
+    - [`mimcsponge`](mimc/mimcsponge)
+    - [`multimimc7`](mimc/multimimc7)
+- [`pedersen`](pedersen)
+    - [`segment`](pedersen/segment)
+    - [`window3`](pedersen/window3)
+    - [`window4`](pedersen/window4)
+- [`poseidon`](poseidon)
+- [`sha256`](sha256)
 
 ## Background on Hash Functions
 

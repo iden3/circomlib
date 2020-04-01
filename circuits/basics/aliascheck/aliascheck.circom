@@ -17,8 +17,7 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "compconstant.circom";
-
+include "../compconstant/compconstant.circom";
 
 template AliasCheck() {
 
