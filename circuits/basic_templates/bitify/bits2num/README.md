@@ -11,12 +11,11 @@ out = sum_{k=0}^{n-1} (in[k] * 2^k).
 ## Schema
 
 ```
-             ______________________     
-            |                      |
-in[n] ----> |      Bits2Num(n)     | ----> out
-            |______________________|     
+             _______________     
+            |               |
+in[n] ----> |  Bits2Num(n)  | ----> out
+            |_______________|     
 ```
-
 
 ## Dependencies
 
@@ -24,11 +23,15 @@ None.
 
 ## Inputs
 
-The input `in[n]` is an array of `n` binary numbers.
+| Input              | Type                                               |
+| -------------      | -------------                                  | 
+| `in[n]`            | Binary array of `n` bits  |
 
 ## Outputs
 
-The output `out` is an integer TODO: (a field element?).
+| Output           | Type               | Description               |
+| -------------    | ------------- | ----------      | 
+| `out`            | Field element | Field representation of the binary number `in[n]`  |
 
 ## Benchmarks 
 

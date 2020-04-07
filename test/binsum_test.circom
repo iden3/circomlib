@@ -1,5 +1,6 @@
-include "../../circuits/bitify.circom"
-include "../../circuits/binsum.circom"
+include "../circuits/basic_templates/bitify/num2bits/num2bits.circom"
+include "../circuits/basic_templates/bitify/bits2num/bits2num.circom"
+include "../circuits/basic_templates/binary_arithmetic/binsum/binsum.circom"
 
 template A() {
     signal private input a;

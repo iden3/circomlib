@@ -2,7 +2,7 @@
 
 ## Description
 
-This folder contains the templates to perform sums (`binsum.circom`) and substractions (`binsub.circom`) of binary numbers. Each folder contains a test and README file specifying the template details.
+This folder contains the templates to perform additions (`binsum.circom`) and substractions (`binsub.circom`) of binary numbers. Each folder contains the template, a test and a README file specifying the template details.
 
 ## Structure
 

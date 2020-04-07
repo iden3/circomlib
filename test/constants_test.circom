@@ -1,4 +1,4 @@
-include "../../circuits/sha256/constants.circom"
+include "constants.circom"
 
 template A() {
     signal input in;

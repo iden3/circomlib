@@ -25,7 +25,7 @@ describe("BinSub test", function () {
 
     let circuit;
     before( async() => {
-        circuit = await tester(path.join(__dirname, "circuits", "binsub_test.circom"));
+        circuit = await tester(path.join(__dirname, "binsub_test.circom"));
     });
 
     it("Should check variuos ege cases", async () => {

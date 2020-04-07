@@ -2,6 +2,10 @@
 
 This folder contains the templates to do basic arithmetic operations. 
 
+## TODO
+
+https://docs.google.com/spreadsheets/d/1HBseSTTFRPF0rmDSY5RayzNtBZ9oCwjPUi5frpFl5Fs/edit?usp=sharing
+
 ## Structure of the Folder
 
 - [`aliascheck`](aliascheck)
