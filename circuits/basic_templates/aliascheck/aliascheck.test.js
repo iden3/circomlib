@@ -31,7 +31,7 @@ describe("Aliascheck test", function () {
     let cir;
     before( async() => {
 
-        cir = await tester(path.join(__dirname, "circuits", "aliascheck_test.circom"));
+        cir = await tester(path.join(__dirname, "aliascheck_test.circom"));
     });
 
     it("Satisfy the aliastest 0", async () => {

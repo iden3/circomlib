@@ -25,7 +25,7 @@ describe("Sign test", function() {
     this.timeout(100000);
 
     before( async() => {
-        circuit = await tester(path.join(__dirname, "circuits", "sign_test.circom"));
+        circuit = await tester(path.join(__dirname, "sign_test.circom"));
     });
 
     it("Sign of 0", async () => {

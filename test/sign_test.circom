@@ -1,3 +1,3 @@
-include "../../circuits/sign.circom";
+include "../circuits/basic_templates/sign/sign.circom";
 
 component main = Sign();

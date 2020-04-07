@@ -1,4 +1,4 @@
-# `basics`
+# `basic_templates`
 
 This folder contains the templates to do basic arithmetic operations. 
 

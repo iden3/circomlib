@@ -1,4 +1,4 @@
-# `cryptography`
+# `crypto_templates`
 
 This folder contains the templates to compute cryptographic functions, such as hash functions and signatures. 
 
