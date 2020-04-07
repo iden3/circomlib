@@ -1,8 +1,5 @@
 # `BinSub(n)`
 
-Link to template:
-https://github.com/iden3/circomlib/tree/master/circuits/basics/binary_arithmetic/binsub/binsub.circom
-
 **TODO / Comments**
 
 Similar to binsum: something wired with aux: text spec =/= constraints and computation (check!).
@@ -57,7 +54,8 @@ None.
 
 | Output           | Type               | Description               |
 | -------------    | -------------                | ----------      | 
-| `out[n]`      | Binary array of `n` bits  | Binary substraction of `in[0][n] - in[0][1]` |
+| `out[n]`      | Binary array of `n` bits  | Binary substraction of the `n` bit arrays `in[0] - in[1]` |
+
 ## Benchmarks 
 
 ## Test

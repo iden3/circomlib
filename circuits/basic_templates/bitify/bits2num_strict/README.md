@@ -26,12 +26,18 @@ include "../bits2num/bits2num.circom";
 
 ## Inputs
 
-The input `in[n]` is an array of `n` binary numbers.
+
+## Inputs
+
+| Input           | Type                        |
+| -------------   | -------------               | 
+| `in[n]`         | Binary array of `n` bits    |
 
 ## Outputs
 
-The output `out` is an integer (a field element?).
-<!--- TODO: an integer as a field element? -->
+| Output           | Type          | Description     |
+| -------------    | ------------- | ----------      | 
+| `out`            | Field element | Field representation of the binary number `in[n]`  |
 
 ## Benchmarks 
 

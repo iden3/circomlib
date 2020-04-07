@@ -29,7 +29,7 @@ None.
 
 ## Outputs
 
-| Output           | Type               | Description               |
+| Output           | Type          | Description               |
 | -------------    | ------------- | ----------      | 
 | `out`            | Field element | Field representation of the binary number `in[n]`  |
 
