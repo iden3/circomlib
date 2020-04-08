@@ -22,17 +22,18 @@ include "../../aliascheck/aliascheck.circom";
 include "../num2bits/num2bits.circom"```
 ```
 
+
 ## Inputs
 
-signal input in;
-signal output out[254];
-
-The input `in` is a .
+| Input           | Type           |
+| -------------   | -------------  | 
+| `in`            | Field element  |
 
 ## Outputs
 
-The output `out[254]` is an array of 254 binary numbers.
-<!--- TODO: Add the order of the representation, i.e. out[0] vs. out[253] -->
+| Output           | Type                     | Description     |
+| -------------    | -------------            | ----------      | 
+| `out[254]`         | Binary array of `254` bits | Binary representation of the field element `in`. The encoding is done using the [LSB 0 bit numbering](https://en.wikipedia.org/wiki/Bit_numbering#LSB_0_bit_numbering) scheme. |
 
 ## Benchmarks 
 

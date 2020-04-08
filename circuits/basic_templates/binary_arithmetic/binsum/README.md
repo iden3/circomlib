@@ -55,13 +55,13 @@ None.
 
 | Input              | Type                                               |
 | -------------      | -------------                                  | 
-| `in[ops][n]`       | An array of `ops` binary arrays of `n` bits each  |
+| `in[ops][n]`       | An array of `ops` binary arrays of `n` bits each.  |
 
 ## Outputs
 
 | Output           | Type               | Description               |
 | -------------    | -------------                | ----------      | 
-| `out[nout]`      | Binary array of `nout` bits  | Binary sum of all the `n`-bit operands in `in[ops]` |
+| `out[nout]`      | Binary array of `nout` bits  | Binary sum of all the `n`-bit operands in `in[ops]`. |
 
 ## Benchmarks 
 

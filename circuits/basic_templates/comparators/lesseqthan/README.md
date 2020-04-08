@@ -1,9 +1,5 @@
 # `LessEqThan(n)` 
 
-PATH HERE: ~/CircomLib/Circuits/... 
-
-## Background
-
 ## Description
 
 This template compares two inputs (field elements?) and returns 0 if the first is less or equal than the second and 1 otherwise.

@@ -26,18 +26,15 @@ include "../bits2num/bits2num.circom";
 
 ## Inputs
 
-
-## Inputs
-
-| Input           | Type                        |
-| -------------   | -------------               | 
-| `in[n]`         | Binary array of `n` bits    |
+| Input              | Type                      | Representation             |
+| -------------      | -------------             | -------------      | 
+| `in[n]`            | Binary array of `n` bits  |  The encoding is considered to be done following the [LSB 0 bit numbering](https://en.wikipedia.org/wiki/Bit_numbering#LSB_0_bit_numbering). |
 
 ## Outputs
 
 | Output           | Type          | Description     |
 | -------------    | ------------- | ----------      | 
-| `out`            | Field element | Field representation of the binary number `in[n]`  |
+| `out`            | Field element | Integer representation of the binary number `in[n]`.  |
 
 ## Benchmarks 
 

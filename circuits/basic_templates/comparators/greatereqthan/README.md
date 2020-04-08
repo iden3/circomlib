@@ -21,15 +21,23 @@ in[2] ----> |  GreaterEqThan(n)  | ----> out
 include "../lessthan/lessthan.circom";
 ```
 
+// n is the number of bits of the input.
+// The MSF is the sign bit.
+
 ## Inputs
 
 -  `in[2]`: an array of 2 inputs? of `n` bits each.
 
+| Input           | Type           |
+| -------------   | -------------  | 
+| `in[2]`         | Array of 2 field elements? |
+
+
 ## Outputs
 
-A boolean `out`:
-- `out = 0` if `in[0]` is greater or equal than `in[1]`.
-- `out = 1` if `in[0]` is less than `in[1]`.
+| Output        | Type           | Description     |
+| ------------- | -------------  | ----------      | 
+| `out`         | Boolean | `out = 0` if `in[0]` is greater or equal than `in[1]` and `out = 1` otherwise.|
 
 ## Benchmarks 
 

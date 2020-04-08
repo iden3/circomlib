@@ -25,6 +25,9 @@ in[2] ----> |  ForceEqualIfEnabled()  | ----> out
 include "../iszero/iszero.circom";
 ```
 
+    signal input enabled;
+    signal input in[2];
+    
 ## Inputs
 
 - Add signal input enabled;

@@ -17,18 +17,19 @@ in ----> |     Num2Bits(n)     | ----> out[n]
 
 None.
 
+
 ## Inputs
 
- signal input in;
-    signal output out[n];
-
-The input `in` is a (field element?) of ? bits.
-    signal output out[n];
+| Input           | Type           |
+| -------------   | -------------  | 
+| `in`            | Field element  |
 
 ## Outputs
 
-The output `out[n]` is an array of `n` binary numbers representing a binary number.
-<!--- TODO: Add the order of the representation, i.e. out0] vs. out[n-1] -->
+| Output           | Type                     | Description     |
+| -------------    | -------------            | ----------      | 
+| `out[n]`         | Binary array of `n` bits | Binary representation of the field element `in`. The encoding is done using the [LSB 0 bit numbering](https://en.wikipedia.org/wiki/Bit_numbering#LSB_0_bit_numbering) scheme. |
+
 ## Benchmarks 
 
 ## Test

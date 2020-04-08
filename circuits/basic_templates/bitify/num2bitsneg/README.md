@@ -2,7 +2,7 @@
 
 ## Description
 
-This template converts a ...
+TODO: This template converts a ... 
 
 ## Schema
 
@@ -19,13 +19,20 @@ in ----> |   Num2BitsNeg(n)   | ----> out[n]
 include "../../comparators/iszero/iszero.circom";
 ```
 
+    signal input in;
+    signal output out[n];
+
 ## Inputs
 
-...
+| Input           | Type           |
+| -------------   | -------------  | 
+| `in`            | Field element  |
 
 ## Outputs
 
-The output `out` is an integer TODO: (a field element?).
+| Output           | Type                     | Description     |
+| -------------    | -------------            | ----------      | 
+| `out[n]`         | Binary array of `n` bits | Binary representation of the field element `in`. The encoding is done using the [LSB 0 bit numbering](https://en.wikipedia.org/wiki/Bit_numbering#LSB_0_bit_numbering) scheme. TODO: ADD THE NEG PART. |
 
 ## Benchmarks 
 
