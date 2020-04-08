@@ -59,7 +59,7 @@ template CompConstant(ct) {
         sum = sum + parts[i];
 
         b = b -e;
-        a = a +e;
+     out   a = a +e;
         e = e*2;
     }
 

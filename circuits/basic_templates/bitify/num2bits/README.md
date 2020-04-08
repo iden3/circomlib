@@ -28,7 +28,7 @@ None.
 
 | Output           | Type                     | Description     |
 | -------------    | -------------            | ----------      | 
-| `out[n]`         | Binary array of `n` bits | Binary representation of the field element `in`. The encoding is done using the [LSB 0 bit numbering](https://en.wikipedia.org/wiki/Bit_numbering#LSB_0_bit_numbering) scheme. |
+| `out[n]`         | Binary array of `n` bits | Binary representation of the field element `in`. The encoding used is the [LSB 0 bit numbering](https://en.wikipedia.org/wiki/Bit_numbering#LSB_0_bit_numbering) scheme. |
 
 ## Benchmarks 
 

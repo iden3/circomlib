@@ -44,11 +44,12 @@ describe("Sign test", function() {
 
     it("Sign of q/2", async () => {
         const inp = getBits(q.shiftRight(bigInt.one), 254);
+        // console.log(inp);
         const w = await circuit.calculateWitness({in: inp}, true);
 
         await circuit.assertOut(w, {sign: 0});
     });
-
+    
     it("Sign of q/2+1", async () => {
         const inp = getBits(q.shiftRight(bigInt.one).add(bigInt.one), 254);
         const w = await circuit.calculateWitness({in: inp}, true);

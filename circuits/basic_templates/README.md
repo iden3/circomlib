@@ -30,6 +30,8 @@ https://docs.google.com/spreadsheets/d/1HBseSTTFRPF0rmDSY5RayzNtBZ9oCwjPUi5frpFl
 - [`logic_gates`](logic_gates)
     - [`and`](logic_gates/and)
     - [`multiand`](logic_gates/multiand)
+    - [`multior`](logic_gates/multior)
+    - [`multixor`](logic_gates/multixor)
     - [`nand`](logic_gates/nand)
     - [`nor`](logic_gates/nor)
     - [`not`](logic_gates/not)

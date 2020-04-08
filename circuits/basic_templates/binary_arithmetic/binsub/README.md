@@ -54,7 +54,7 @@ None.
 
 | Output           | Type               | Description               |
 | -------------    | -------------                | ----------      | 
-| `out[n]`      | Binary array of `n` bits  | Binary substraction of the `n` bit arrays `in[0] - in[1]`. |
+| `out[n]`      | Binary array of `n` bits  | Binary substraction of the `n`-bit arrays `in[0] - in[1]`. |
 
 ## Benchmarks 
 
