@@ -17,10 +17,10 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "bitify.circom";
-include "escalarmulfix.circom";
-Num2Bits
-escalarmulfix
+include "../../../../basic_templates/bitify/num2bits/num2bits.circom";
+//TODO: Change dependency path:
+include "escalarmulfix.circom"; 
+
 
 // Extracts the public key from private key
 template BabyPbk() {

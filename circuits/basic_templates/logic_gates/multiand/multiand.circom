@@ -17,6 +17,31 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
+include "../../comparators/iszero/iszero.circom";
+
+template MultiAND(n) {
+    signal input in[n];
+    signal output out;
+    var sum = 0;
+
+    for(var i=0; i<n; i++) {
+        sum = sum + in[i];
+    }
+
+    component isz = IsZero();
+
+    sum - n ==> isz.in; 
+    
+    isz.out ==> out;
+}
+
+/*
+
+ALTERNATIVELY, MultiAND can be implemented recursively:
+(Although then it takes n-1 constraints)
+
+-----
+
 include "../and/and.circom";
 
 template MultiAND(n) {
@@ -45,45 +70,4 @@ template MultiAND(n) {
     }
 }
 
-/* TODO: Simplify this function!
-
-    De fet, només cal multiplicar-los tots. 
-    Tot i que va millor així perquè es pot fer en 
-    paral·lel, si és multiplicant és seqüencial.
-
-    L'actual tempalte té (n-1) constraints, però 
-    hi ha una manera de fer-lo sempre amb únicament
-    3 constraints -> Com fer-lo: sum(s_i)_{i=1}^{n} = n.
-
-*/
-
-/*
-    template MultiAND(n) {
-        signal input in[n];
-        signal output out;
-
-        var sum = 0;
-
-        for(var i=0; i<n; i++) {
-            sum = sum + in[i];
-        }
-
-        sum - n === 0; //iszero aquí!
-
-        // falta el tema out
-    }
-*/
-
-// Multior?? -> El mateix, però la suma ha de ser diferent de 0.
-
-/* Alternatively, it can be done like this (exemple de template 
-    generada recursivament).
-    Deixar aquest com a exemple de multiand fet recursivament, 
-    però implementar l'altre.
-*/
-
-/*
-    Implementar la MultiXOR(n) -> només un nombre parell 
-    d'uns. Si hi ha un nombre parell -> 0, i si hi ha un 
-    nombre senar -> 1.
 */

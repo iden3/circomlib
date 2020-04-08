@@ -9,7 +9,6 @@ This folder contains the templates to perform logic gates operations. Each folde
 - [`and`](and)
 - [`multiand`](multiand)
 - [`multior`](multior)
-- [`multixor`](multixor)
 - [`nand`](nand)
 - [`nor`](nor)
 - [`not`](not)
