@@ -18,8 +18,8 @@
 */
 
 include "../../elliptic_curves/baby_jubjub/edwards/babyadd/babyadd.circom"
-include "segment/segment.circom";
-include "window4/window4.circom";
+include "segment3/segment3.circom";
+include "window3/window3.circom";
 
 template Pedersen(n) {
     signal input in[n];

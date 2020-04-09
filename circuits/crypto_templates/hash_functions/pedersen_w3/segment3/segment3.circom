@@ -22,7 +22,7 @@ include "../../../elliptic_curves/baby_jubjub/edwards2montgomery/edwards2montgom
 include "../../../elliptic_curves/baby_jubjub/montgomery/montgomerydouble/montgomerydouble.circom"
 include "../window3/window3.circom";
 
-template Segment(nWindows) {
+template Segment3(nWindows) {
     signal input in[nWindows*3];
     signal input base[2];
     signal output out[2];
