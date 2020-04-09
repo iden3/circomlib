@@ -20,5 +20,3 @@ This folder contains the templates to do operations on [Baby Jubjub](https://git
     - [`montgomerydouble`](montgomery/montgomerydouble)
 - [`montgomery2edwards`](montgomery2edwards)
 - [`point2bits`](point2bits)
-
-## Background on Baby Jubjub

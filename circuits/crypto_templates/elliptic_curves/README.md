@@ -21,5 +21,3 @@ This folder contains the templates to do operations on different elliptic curves
         - [`montgomerydouble`](baby_jubjub/montgomery/montgomerydouble)
     - [`montgomery2edwards`](baby_jubjub/montgomery2edwards)
     - [`point2bits`](baby_jubjub/point2bits)
-
-## Background on Elliptic Curves

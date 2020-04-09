@@ -1,25 +1,25 @@
-include "../../circuits/pedersen_old.circom";
-include "../../circuits/bitify.circom";
-
+include "../pedersen/pedersen.circom";
+include "../basic_templates/bitify/num2bits/num2bits.circom";
 
 template Main() {
-    signal input in[2];
+    signal input in;
     signal output out[2];
 
-    component pedersen = Pedersen(250*2);
+    component pedersen = Pedersen(256);
 
-    component n2b[2];
-    n2b[0] = Num2Bits(250);
-    n2b[1] = Num2Bits(250);
+    component n2b;
+    n2b = Num2Bits(253);
 
     var i;
 
-    in[0] ==> n2b[0].in;
-    in[1] ==> n2b[1].in;
+    in ==> n2b.in;
 
-    for  (i=0; i<250; i++) {
-        n2b[0].out[i] ==> pedersen.in[i];
-        n2b[1].out[i] ==> pedersen.in[250+i];
+    for  (i=0; i<253; i++) {
+        pedersen.in[i] <== n2b.out[i];
+    }
+
+    for (i=253; i<256; i++) {
+        pedersen.in[i] <== 0;
     }
 
     pedersen.out[0] ==> out[0];
@@ -27,3 +27,5 @@ template Main() {
 }
 
 component main = Main();
+
+

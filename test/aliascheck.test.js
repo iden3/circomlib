@@ -2,7 +2,6 @@ const chai = require("chai");
 const path = require("path");
 
 const assert = chai.assert;
-
 const bigInt = require("big-integer");
 
 const tester = require("circom").tester;
@@ -26,11 +25,11 @@ function getBits(v, n) {
 const q = bigInt("21888242871839275222246405745257275088548364400416034343698204186575808495617");
 
 describe("Aliascheck test", function () {
+    
     this.timeout(100000);
 
     let cir;
     before( async() => {
-
         cir = await tester(path.join(__dirname, "aliascheck_test.circom"));
     });
 
@@ -44,6 +43,7 @@ describe("Aliascheck test", function () {
         await cir.calculateWitness({in: inp}, true);
     });
 
+    //(q-1)/2?
     it("Satisfy the aliastest q-1", async () => {
         const inp = getBits(q.minus(bigInt.one), 254);
         await cir.calculateWitness({in: inp}, true);
