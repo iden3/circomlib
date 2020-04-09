@@ -17,7 +17,7 @@ in[n] ----> |  MultiAND(n)  | ----> out
 ## Dependencies
 
 ```
-include "../and/and.circom";
+include "../../comparators/iszero/iszero.circom";
 ```
 
 ## Inputs

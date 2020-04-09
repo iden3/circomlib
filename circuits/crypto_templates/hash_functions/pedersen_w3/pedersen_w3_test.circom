@@ -1,5 +1,8 @@
-include "../pedersen/pedersen.circom";
-include "../basic_templates/bitify/num2bits/num2bits.circom";
+// include "../circuits/crypto_templates/hash_functions/pedersen_w4/pedersen.circom";
+// include "../circuits/basic_templates/bitify/num2bits/num2bits.circom";
+
+include "pedersen_w4_.circom";
+include "../../../basic_templates/bitify/num2bits/num2bits.circom";
 
 template Main() {
     signal input in;

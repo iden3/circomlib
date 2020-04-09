@@ -19,7 +19,6 @@ describe("Pedersen test", function() {
         let w;
 
         w = await circuit.calculateWitness({ in: 0}, true);
-
         const b = Buffer.alloc(32);
 
         const h = pedersen.hash(b);

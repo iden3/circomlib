@@ -1,17 +1,17 @@
-# `MultiOR(n)`
+# `MultiXOR(n)`
 
 ## Description
 
-This template performs an `n`-input [OR gate](https://en.wikipedia.org/wiki/OR_gate). 
-<!-- Out is true if and only if at least one of the operands is true -->
+This template performs an `n`-input [XOR gate](https://en.wikipedia.org/wiki/XOR_gate). 
+<!-- Output true if and only if an odd number of inputs are true -->
 
 ## Schema
 
 ```
-             ______________     
-            |              |
-in[n] ----> |  MultiOR(n)  | ----> out
-            |______________|     
+             _______________     
+            |               |
+in[n] ----> |  MultiXOR(n)  | ----> out
+            |_______________|     
 ```
 
 ## Dependencies

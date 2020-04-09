@@ -19,3 +19,9 @@ This respository contains 5 folders:
 A description of the specific circuit templates for the `circuit` folder will be soon updated.
 
 ## Structure of the Library
+
+* mimc - SNARK-friendly hash Minimal Multiplicative Complexity.
+  * https://eprint.iacr.org/2016/492.pdf
+  * zcash/zcash#2233
+* smt - Sparse Merkle Tree
+  * https://ethresear.ch/t/optimizing-sparse-merkle-trees/3751
