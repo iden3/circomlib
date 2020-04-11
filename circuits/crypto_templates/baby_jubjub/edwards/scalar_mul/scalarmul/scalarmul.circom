@@ -85,7 +85,7 @@
 
  */
 
-include "scalarmulwindow/scalamulwindow.circom";
+include "scalarmulwindow/scalarmulwindow.circom";
 
 template ScalarMul(n, base) {
     signal input in[n];
