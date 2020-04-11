@@ -17,7 +17,7 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "../../elliptic_curves/baby_jubjub/edwards/babyadd/babyadd.circom"
+include "../../baby_jubjub/edwards/babyadd/babyadd.circom"
 include "segment/segment.circom";
 include "window4/window4.circom";
 

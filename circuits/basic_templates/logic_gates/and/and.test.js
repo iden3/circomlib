@@ -3,8 +3,6 @@ const path = require("path");
 
 const tester = require("circom").tester;
 
-const bigInt = require("big-integer");
-
 const assert = chai.assert;
 
 describe("AND test", function () {

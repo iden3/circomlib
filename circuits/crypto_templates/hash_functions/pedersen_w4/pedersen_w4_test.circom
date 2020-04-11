@@ -1,7 +1,7 @@
 // include "../circuits/crypto_templates/hash_functions/pedersen_w4/pedersen.circom";
 // include "../circuits/basic_templates/bitify/num2bits/num2bits.circom";
 
-include "pedersen_w4_.circom";
+include "pedersen_w4.circom";
 include "../../../basic_templates/bitify/num2bits/num2bits.circom";
 
 template Main() {

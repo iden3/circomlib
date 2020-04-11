@@ -6,13 +6,12 @@ const tester = require("circom").tester;
 const babyJub = require("../../../../src/babyjub.js");
 const pedersen = require("../../../../src/pedersenHash.js");
 
-
 describe("Pedersen test", function() {
     let circuit;
     this.timeout(100000);
     before( async() => {
 
-        circuit = await tester(path.join(__dirname, "pedersen_test.circom"));
+        circuit = await tester(path.join(__dirname, "pedersen_w4_test.circom"));
     });
     it("Should pedersen at zero", async () => {
 

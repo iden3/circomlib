@@ -17,9 +17,9 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "../../../elliptic_curves/baby_jubjub/montgomery2edwards/montgomery2edwards.circom"
-include "../../../elliptic_curves/baby_jubjub/edwards2montgomery/edwards2montgomery.circom"
-include "../../../elliptic_curves/baby_jubjub/montgomery/montgomerydouble/montgomerydouble.circom"
+include "../../../baby_jubjub/montgomery2edwards/montgomery2edwards.circom"
+include "../../../baby_jubjub/edwards2montgomery/edwards2montgomery.circom"
+include "../../../baby_jubjub/montgomery/montgomerydouble/montgomerydouble.circom"
 include "../window4/window4.circom";
 
 template Segment(nWindows) {

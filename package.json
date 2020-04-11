@@ -3,11 +3,8 @@
   "version": "0.1.1",
   "description": "Basic circuits library for Circom",
   "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
-    "test": "mocha --max-old-space-size=4000"
+    "test": "npx --max-old-space-size=4000 mocha **/*.test.js"
   },
   "keywords": [
     "pedersen",

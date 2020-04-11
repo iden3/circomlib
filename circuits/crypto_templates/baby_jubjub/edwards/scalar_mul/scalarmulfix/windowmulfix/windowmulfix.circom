@@ -17,13 +17,35 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "../../../baby_jubjub/montgomery/montgomeryadd/montgomeryadd.circom"
-include "../../../baby_jubjub/montgomery/montgomerydouble/montgomerydouble.circom"
-include "../../../../basic_templates/mux/multimux3/multimux3.circom";
+include "../../../../montgomery/montgomeryadd/montgomeryadd.circom";
+include "../../../../montgomery/montgomerydouble/montgomerydouble.circom";
+include "../../../../../../basic_templates/mux/multimux3/multimux3.circom";
 
+/*
+    Window of 3 elements, it calculates
+        out = base + base*in[0] + 2*base*in[1] + 4*base*in[2]
+        out4 = 4*base
 
-template Window4() {
-    signal input in[4];
+    The result should be compensated.
+ */
+
+/*
+    The scalar is s = a0 + a1*2^3 + a2*2^6 + ...... + a81*2^243
+    First We calculate Q = B + 2^3*B + 2^6*B + ......... + 2^246*B
+
+    Then we calculate S1 = 2*2^246*B + (1 + a0)*B + (2^3 + a1)*B + .....+ (2^243 + a81)*B
+
+    And Finaly we compute the result: RES = SQ - Q
+
+    As you can see the input of the adders cannot be equal nor zero, except for the last
+    substraction that it's done in montgomery.
+
+    A good way to see it is that the accumulator input of the adder >= 2^247*B and the other input
+    is the output of the windows that it's going to be <= 2^246*B
+ */
+
+template WindowMulFix() {
+    signal input in[3];
     signal input base[2];
     signal output out[2];
     signal output out8[2];   // Returns 8*Base (To be linked)
@@ -105,5 +127,5 @@ template Window4() {
     out8[1] <== adr8.out[1];
 
     out[0] <== mux.out[0];
-    out[1] <== - mux.out[1]*2*in[3] + mux.out[1];  // Negate it if in[3] is one
+    out[1] <== mux.out[1];
 }
