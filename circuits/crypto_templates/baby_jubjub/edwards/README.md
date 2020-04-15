@@ -2,6 +2,8 @@
 
 This folder contains the templates to do operations on [Baby Jubjub elliptic curve](https://github.com/barryWhiteHat/baby_jubjub) in twisted Edwards form.
 
+See: https://github.com/iden3/research/blob/master/documentation/Arithmetic.md
+
 ## Structure of the Folder
 
 - [`edwards`](edwards)

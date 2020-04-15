@@ -1,10 +1,8 @@
 # `MontgomeryAdd()`
 
-PATH HERE: ~/CircomLib/Circuits/... 
-
 ## Background
 
-The arithmetic performed here is based on wikipedia webpage on [Montgomery elliptic curves](https://en.wikipedia.org/wiki/Montgomery_curve).
+The arithmetic performed here is based on wikipedia webpage on [Montgomery elliptic curves](https://en.wikipedia.org/wiki/Montgomery_curve). (TODO: Add link to arithmetic on research-notes).
 
 <!--               1 + y       1 + y
     [u, v] = [ -------  , ---------- ]
