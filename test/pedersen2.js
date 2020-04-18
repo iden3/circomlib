@@ -1,6 +1,6 @@
 const path = require("path");
 
-const bigInt = require("big-integer");
+const Fr = require("ffjavascript").bn128.Fr;
 const tester = require("circom").tester;
 
 const babyJub = require("../src/babyjub.js");
@@ -32,7 +32,7 @@ describe("Pedersen test", function() {
 
         let w;
 
-        const n = bigInt.one.shiftLeft(253).minus(bigInt.one);
+        const n = Fr.sub(Fr.shl(Fr.one, Fr.e(253)), Fr.one);
 
         w = await circuit.calculateWitness({ in: n}, true);
 

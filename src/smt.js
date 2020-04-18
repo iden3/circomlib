@@ -1,7 +1,6 @@
-const bigInt = require("big-integer");
-
+const Scalar = require("ffjavascript").Scalar;
 const SMTMemDB = require("./smt_memdb");
-const {hash0, hash1} = require("./smt_hashes_poseidon");
+const {hash0, hash1, F} = require("./smt_hashes_poseidon");
 
 class SMT {
 
@@ -11,18 +10,7 @@ class SMT {
     }
 
     _splitBits(_key) {
-
-        let k = bigInt(_key);
-        const res = [];
-
-        while (!k.isZero()) {
-            if (k.isOdd()) {
-                res.push(true);
-            } else {
-                res.push(false);
-            }
-            k = k.shiftRight(1);
-        }
+        const res = Scalar.bits(_key);
 
         while (res.length<256) res.push(false);
 
@@ -30,8 +18,8 @@ class SMT {
     }
 
     async update(_key, _newValue) {
-        const key = bigInt(_key);
-        const newValue = bigInt(_newValue);
+        const key = Scalar.e(_key);
+        const newValue = F.e(_newValue);
 
 
         const resFind = await this.find(key);
@@ -79,7 +67,7 @@ class SMT {
     }
 
     async delete(_key) {
-        const key = bigInt(_key);
+        const key = Scalar.e(_key);
 
         const resFind = await this.find(key);
         if (!resFind.found) throw new Error("Key does not exists");
@@ -99,7 +87,7 @@ class SMT {
         let mixed;
         if (resFind.siblings.length > 0) {
             const record = await this.db.get(resFind.siblings[resFind.siblings.length - 1]);
-            if ((record.length == 3)&&(record[0].equals(bigInt.one))) {
+            if ((record.length == 3)&&(F.eq(record[0], F.one))) {
                 mixed = false;
                 res.oldKey = record[1];
                 res.oldValue = record[2];
@@ -108,16 +96,16 @@ class SMT {
             } else if (record.length == 2) {
                 mixed = true;
                 res.oldKey = key;
-                res.oldValue = bigInt(0);
+                res.oldValue = F.zero;
                 res.isOld0 = true;
-                rtNew = bigInt.zero;
+                rtNew = F.zero;
             } else {
                 throw new Error("Invalid node. Database corrupted");
             }
         } else {
-            rtNew = bigInt.zero;
+            rtNew = F.zero;
             res.oldKey = key;
-            res.oldValue = bigInt(0);
+            res.oldValue = F.zero;
             res.isOld0 = true;
         }
 
@@ -126,7 +114,7 @@ class SMT {
         for (let level = resFind.siblings.length-1; level >=0; level--) {
             let newSibling = resFind.siblings[level];
             if ((level == resFind.siblings.length-1)&&(!res.isOld0)) {
-                newSibling = bigInt.zero;
+                newSibling = F.zero;
             }
             const oldSibling = resFind.siblings[level];
             if (keyBits[level]) {
@@ -135,7 +123,7 @@ class SMT {
                 rtOld = hash0(rtOld, oldSibling);
             }
             dels.push(rtOld);
-            if (!newSibling.isZero()) {
+            if (!F.isZero(newSibling)) {
                 mixed = true;
             }
 
@@ -164,8 +152,8 @@ class SMT {
     }
 
     async insert(_key, _value) {
-        const key = bigInt(_key);
-        const value = bigInt(_value);
+        const key = Scalar.e(_key);
+        const value = F.e(_value);
         let addedOne = false;
         const res = {};
         res.oldRoot = this.root;
@@ -183,7 +171,7 @@ class SMT {
         if (!resFind.isOld0) {
             const oldKeyits = this._splitBits(resFind.notFoundKey);
             for (let i= res.siblings.length; oldKeyits[i] == newKeyBits[i]; i++) {
-                res.siblings.push(bigInt.zero);
+                res.siblings.push(F.zero);
             }
             rtOld = hash1(resFind.notFoundKey, resFind.notFoundValue);
             res.siblings.push(rtOld);
@@ -191,7 +179,7 @@ class SMT {
             mixed = false;
         } else if (res.siblings.length >0) {
             mixed = true;
-            rtOld = bigInt.zero;
+            rtOld = F.zero;
         }
 
         const inserts = [];
@@ -201,7 +189,7 @@ class SMT {
         inserts.push([rt,[1, key, value]] );
 
         for (let i=res.siblings.length-1; i>=0; i--) {
-            if ((i<res.siblings.length-1)&&(!res.siblings[i].isZero())) {
+            if ((i<res.siblings.length-1)&&(!F.isZero(res.siblings[i]))) {
                 mixed = true;
             }
             if (mixed) {
@@ -227,7 +215,7 @@ class SMT {
         }
 
         if (addedOne) res.siblings.pop();
-        while ((res.siblings.length>0) && (res.siblings[res.siblings.length-1].isZero())) {
+        while ((res.siblings.length>0) && (F.isZero(res.siblings[res.siblings.length-1]))) {
             res.siblings.pop();
         }
         res.oldKey = resFind.notFoundKey;
@@ -253,12 +241,12 @@ class SMT {
         if (typeof root === "undefined") root = this.root;
 
         let res;
-        if (root.isZero()) {
+        if (F.isZero(root)) {
             res = {
                 found: false,
                 siblings: [],
                 notFoundKey: key,
-                notFoundValue: bigInt.zero,
+                notFoundValue: F.zero,
                 isOld0: true
             };
             return res;
@@ -266,8 +254,8 @@ class SMT {
 
         const record = await this.db.get(root);
 
-        if ((record.length==3)&&(record[0].equals(bigInt.one))) {
-            if (record[1].equals(key)) {
+        if ((record.length==3)&&(F.eq(record[0],F.one))) {
+            if (F.eq(record[1],key)) {
                 res = {
                     found: true,
                     siblings: [],

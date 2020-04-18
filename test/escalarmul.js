@@ -1,8 +1,9 @@
 const chai = require("chai");
 const path = require("path");
-const bigInt = require("big-integer");
 const tester = require("circom").tester;
 const babyJub = require("../src/babyjub.js");
+const Fr = require("ffjavascript").bn128.Fr;
+
 
 const assert = chai.assert;
 
@@ -23,11 +24,11 @@ describe("Exponentioation test", function () {
         await circuit.checkConstraints(w);
 
         let g = [
-            bigInt("5299619240641551281634865583518297030282874472190772894086521144482721001553"),
-            bigInt("16950150798460657717958625567821834550301663161624707787222815936182638968203")
+            Fr.e("5299619240641551281634865583518297030282874472190772894086521144482721001553"),
+            Fr.e("16950150798460657717958625567821834550301663161624707787222815936182638968203")
         ];
 
-        let dbl= [bigInt("0"), bigInt("1")];
+        let dbl= [Fr.e("0"), Fr.e("1")];
 
         const expectedOut = [];
 
@@ -50,15 +51,15 @@ describe("Exponentioation test", function () {
         await circuit.checkConstraints(w);
 
         let g = [
-            bigInt("5299619240641551281634865583518297030282874472190772894086521144482721001553"),
-            bigInt("16950150798460657717958625567821834550301663161624707787222815936182638968203")
+            Fr.e("5299619240641551281634865583518297030282874472190772894086521144482721001553"),
+            Fr.e("16950150798460657717958625567821834550301663161624707787222815936182638968203")
         ];
 
         for (let i=0; i<12;i++) {
             g = babyJub.addPoint(g,g);
         }
 
-        let dbl= [bigInt("0"), bigInt("1")];
+        let dbl= [Fr.e("0"), Fr.e("1")];
 
         const expectedOut = [];
 
@@ -81,11 +82,11 @@ describe("Exponentioation test", function () {
         await circuit.checkConstraints(w);
 
         let g = [
-            bigInt("5299619240641551281634865583518297030282874472190772894086521144482721001553"),
-            bigInt("16950150798460657717958625567821834550301663161624707787222815936182638968203")
+            Fr.e("5299619240641551281634865583518297030282874472190772894086521144482721001553"),
+            Fr.e("16950150798460657717958625567821834550301663161624707787222815936182638968203")
         ];
 
-        let c = [bigInt(0), bigInt(1)];
+        let c = [Fr.e(0), Fr.e(1)];
 
         for (let i=0; i<31;i++) {
             c = babyJub.addPoint(c,g);
@@ -93,7 +94,7 @@ describe("Exponentioation test", function () {
 
         await circuit.assertOut(w, {out: c});
 
-        const w2 = await circuit.calculateWitness({"in": bigInt(1).shiftLeft(252).add(bigInt.one)});
+        const w2 = await circuit.calculateWitness({"in": Fr.add(Fr.shl(Fr.e(1), Fr.e(252)),Fr.one)});
 
         c = [g[0], g[1]];
         for (let i=0; i<252;i++) {

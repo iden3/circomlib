@@ -1,10 +1,11 @@
-const bigInt = require("big-integer");
+const Scalar = require("ffjavascript").Scalar;
 const blake2b = require("blake2b");
 const assert = require("assert");
 const ZqField = require("ffjavascript").ZqField;
-const utils = require("./utils");
+const utils = require("ffjavascript").utils;
 
-const F = new ZqField(bigInt("21888242871839275222246405745257275088548364400416034343698204186575808495617"));
+const F = new ZqField(Scalar.fromString("21888242871839275222246405745257275088548364400416034343698204186575808495617"));
+exports.F = F;
 
 const SEED = "poseidon";
 const NROUNDSF = 8;
@@ -16,7 +17,7 @@ function getPseudoRandom(seed, n) {
     let input = Buffer.from(seed);
     let h = blake2b(32).update(input).digest();
     while (res.length<n) {
-        const n = F.normalize(utils.leBuff2int(h));
+        const n = F.normalize(utils.leBuff2int(Buffer.from(h)));
         res.push(n);
         h = blake2b(32).update(h).digest();
     }
@@ -26,9 +27,9 @@ function getPseudoRandom(seed, n) {
 
 function allDifferent(v) {
     for (let i=0; i<v.length; i++) {
-        if (v[i].isZero()) return false;
+        if (F.isZero(v[i])) return false;
         for (let j=i+1; j<v.length; j++) {
-            if (v[i].equals(v[j])) return false;
+            if (F.eq(v[i],v[j])) return false;
         }
     }
     return true;
@@ -101,7 +102,7 @@ exports.createHash = (t, nRoundsF, nRoundsP, seed) => {
         let state = [];
         assert(inputs.length <= t);
         assert(inputs.length > 0);
-        for (let i=0; i<inputs.length; i++) state[i] = bigInt(inputs[i]);
+        for (let i=0; i<inputs.length; i++) state[i] = F.e(inputs[i]);
         for (let i=inputs.length; i<t; i++) state[i] = F.zero;
 
         for (let i=0; i< nRoundsF + nRoundsP; i++) {

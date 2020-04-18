@@ -1,9 +1,11 @@
-const bigInt = require("big-integer");
+
+const F = require("./poseidon.js").F;
+const Scalar = require("ffjavascript").Scalar;
 
 class SMTMemDb {
     constructor() {
         this.nodes = {};
-        this.root = bigInt(0);
+        this.root = F.zero;
     }
 
     async getRoot() {
@@ -12,13 +14,13 @@ class SMTMemDb {
 
     _key2str(k) {
         // const keyS = bigInt(key).leInt2Buff(32).toString("hex");
-        const keyS = bigInt(k).toString();
+        const keyS = Scalar.e(k);
         return keyS;
     }
 
     _normalize(n) {
         for (let i=0; i<n.length; i++) {
-            n[i] = bigInt(n[i]);
+            n[i] = F.e(n[i]);
         }
     }
 

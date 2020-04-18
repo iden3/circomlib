@@ -3,7 +3,7 @@ const path = require("path");
 
 const tester = require("circom").tester;
 
-const bigInt = require("big-integer");
+const Fr = require("ffjavascript").bn128.Fr;
 
 const assert = chai.assert;
 
@@ -18,10 +18,10 @@ describe("Binary sum test", function () {
         assert.equal(circuit.nVars, 2);
         assert.equal(circuit.constraints.length, 1);
 
-        const witness = await circuit.calculateWitness({ "in": bigInt("d807aa98", 16)}, true);
+        const witness = await circuit.calculateWitness({ "in": Fr.e("d807aa98", 16)}, true);
 
-        assert(witness[0].equals(bigInt(1)));
-        assert(witness[1].equals(bigInt("d807aa98", 16)));
+        assert(Fr.eq(witness[0],Fr.e(1)));
+        assert(Fr.eq(witness[1],Fr.e("d807aa98", 16)));
     });
     it("Should create a sum circuit", async () => {
         const circuit = await tester(path.join(__dirname, "circuits", "sum_test.circom"));
@@ -31,7 +31,7 @@ describe("Binary sum test", function () {
 
         const witness = await circuit.calculateWitness({ "a": "111", "b": "222" }, true);
 
-        assert(witness[0].equals(bigInt(1)));
-        assert(witness[1].equals(bigInt("333")));
+        assert(Fr.eq(witness[0],Fr.e(1)));
+        assert(Fr.eq(witness[1],Fr.e("333")));
     });
 });

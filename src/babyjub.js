@@ -1,6 +1,6 @@
-const bigInt = require("big-integer");
-const ZqField = require("ffjavascript").ZqField;
-const utils = require("./utils.js");
+const F1Field = require("ffjavascript").F1Field;
+const Scalar = require("ffjavascript").Scalar;
+const utils = require("ffjavascript").utils;
 
 exports.addPoint = addPoint;
 exports.mulPointEscalar = mulPointEscalar;
@@ -8,23 +8,27 @@ exports.inCurve = inCurve;
 exports.inSubgroup = inSubgroup;
 exports.packPoint = packPoint;
 exports.unpackPoint = unpackPoint;
+
+
+exports.p = Scalar.fromString("21888242871839275222246405745257275088548364400416034343698204186575808495617");
+const F = new F1Field(exports.p);
+exports.F = F;
+
 exports.Generator = [
-    bigInt("995203441582195749578291179787384436505546430278305826713579947235728471134"),
-    bigInt("5472060717959818805561601436314318772137091100104008585924551046643952123905")
+    F.e("995203441582195749578291179787384436505546430278305826713579947235728471134"),
+    F.e("5472060717959818805561601436314318772137091100104008585924551046643952123905")
 ];
 exports.Base8 = [
-    bigInt("5299619240641551281634865583518297030282874472190772894086521144482721001553"),
-    bigInt("16950150798460657717958625567821834550301663161624707787222815936182638968203")
+    F.e("5299619240641551281634865583518297030282874472190772894086521144482721001553"),
+    F.e("16950150798460657717958625567821834550301663161624707787222815936182638968203")
 ];
-exports.order = bigInt("21888242871839275222246405745257275088614511777268538073601725287587578984328");
-exports.subOrder = exports.order.shiftRight(3);
-exports.p = bigInt("21888242871839275222246405745257275088548364400416034343698204186575808495617");
-exports.A = bigInt("168700");
-exports.D = bigInt("168696");
+exports.order = Scalar.fromString("21888242871839275222246405745257275088614511777268538073601725287587578984328");
+exports.subOrder = Scalar.shiftRight(exports.order, 3);
+exports.A = F.e("168700");
+exports.D = F.e("168696");
 
 
 function addPoint(a,b) {
-    const F = new ZqField(exports.p);
 
     const res = [];
 
@@ -44,28 +48,28 @@ function addPoint(a,b) {
 
     res[0] = F.div(
         F.add(beta, gamma),
-        F.add(bigInt.one, dtau)
+        F.add(F.one, dtau)
     );
 
     res[1] = F.div(
         F.add(delta, F.sub(F.mul(exports.A,beta), gamma)),
-        F.sub(bigInt.one, dtau)
+        F.sub(F.one, dtau)
     );
 
     return res;
 }
 
 function mulPointEscalar(base, e) {
-    let res = [bigInt("0"),bigInt("1")];
-    let rem = bigInt(e);
+    let res = [F.e("0"),F.e("1")];
+    let rem = e;
     let exp = base;
 
-    while (! rem.isZero()) {
-        if (rem.isOdd()) {
+    while (! Scalar.isZero(rem)) {
+        if (Scalar.isOdd(rem)) {
             res = addPoint(res, exp);
         }
         exp = addPoint(exp, exp);
-        rem = rem.shiftRight(1);
+        rem = Scalar.shiftRight(rem, 1);
     }
 
     return res;
@@ -74,11 +78,10 @@ function mulPointEscalar(base, e) {
 function inSubgroup(P) {
     if (!inCurve(P)) return false;
     const res= mulPointEscalar(P, exports.subOrder);
-    return (res[0].equals(bigInt(0))) && (res[1].equals(bigInt(1)));
+    return (F.isZero(res[0]) && F.eq(res[1], F.one));
 }
 
 function inCurve(P) {
-    const F = new ZqField(exports.p);
 
     const x2 = F.square(P[0]);
     const y2 = F.square(P[1]);
@@ -92,15 +95,13 @@ function inCurve(P) {
 
 function packPoint(P) {
     const buff = utils.leInt2Buff(P[1], 32);
-    if (P[0].greater(exports.p.shiftRight(1))) {
+    if (F.lt(P[0], F.zero)) {
         buff[31] = buff[31] | 0x80;
     }
     return buff;
 }
 
 function unpackPoint(_buff) {
-    const F = new ZqField(exports.p);
-
     const buff = Buffer.from(_buff);
     let sign = false;
     const P = new Array(2);
@@ -109,7 +110,7 @@ function unpackPoint(_buff) {
         buff[31] = buff[31] & 0x7F;
     }
     P[1] = utils.leBuff2int(buff);
-    if (P[1].greaterOrEquals(exports.p)) return null;
+    if (Scalar.gt(P[1], exports.p)) return null;
 
     const y2 = F.square(P[1]);
 

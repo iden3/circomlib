@@ -4,7 +4,6 @@
 
 const Contract = require("./evmasm");
 const G2 = require("snarkjs").bn128.G2;
-const bigInt = require("snarkjs").bigInt;
 
 
 function toHex256(a) {
@@ -539,7 +538,7 @@ function createCode(P, w) {
     function storeVals() {
         C.push(VAR_POINTS);                 // p
         for (let i=0; i<NPOINTS; i++) {
-            const MP = G2.affine(G2.mulScalar(P, bigInt(i)));
+            const MP = G2.affine(G2.mulScalar(P, i));
             for (let j=0; j<2; j++) {
                 for (let k=0; k<2; k++) {
                     C.push(toHex256(MP[j][k]));     // MP[0][0] p

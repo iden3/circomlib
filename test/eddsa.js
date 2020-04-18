@@ -2,7 +2,7 @@ const chai = require("chai");
 const path = require("path");
 
 const tester = require("circom").tester;
-const bigInt = require("big-integer");
+const Fr = require("ffjavascript").bn128.Fr;
 
 const eddsa = require("../src/eddsa.js");
 const babyJub = require("../src/babyjub.js");
@@ -18,9 +18,9 @@ function buffer2bits(buff) {
     for (let i=0; i<buff.length; i++) {
         for (let j=0; j<8; j++) {
             if ((buff[i]>>j)&1) {
-                res.push(bigInt.one);
+                res.push(Fr.one);
             } else {
-                res.push(bigInt.zero);
+                res.push(Fr.zero);
             }
         }
     }

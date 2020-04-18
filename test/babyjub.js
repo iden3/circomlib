@@ -1,14 +1,15 @@
 const chai = require("chai");
 const path = require("path");
 
-const createBlakeHash = require("blake-hash");
+const blake2b = require("blake2b");
 const eddsa = require("../src/eddsa.js");
+const F = require("../src/babyjub.js").F;
 
 const assert = chai.assert;
 
-const bigInt = require("big-integer");
 const tester = require("circom").tester;
-const utils = require("../src/utils.js");
+const utils = require("ffjavascript").utils;
+const Scalar = require("ffjavascript").Scalar;
 
 describe("Baby Jub test", function () {
     let circuitAdd;
@@ -28,31 +29,31 @@ describe("Baby Jub test", function () {
     it("Should add point (0,1) and (0,1)", async () => {
 
         const input={
-            x1: bigInt(0),
-            y1: bigInt(1),
-            x2: bigInt(0),
-            y2: bigInt(1)
+            x1: F.e(0),
+            y1: F.e(1),
+            x2: F.e(0),
+            y2: F.e(1)
         };
 
         const w = await circuitAdd.calculateWitness(input, true);
 
-        await circuitAdd.assertOut(w, {xout: bigInt(0), yout: bigInt(1)});
+        await circuitAdd.assertOut(w, {xout: F.e(0), yout: F.e(1)});
     });
 
     it("Should add 2 same numbers", async () => {
 
         const input={
-            x1: bigInt("17777552123799933955779906779655732241715742912184938656739573121738514868268"),
-            y1: bigInt("2626589144620713026669568689430873010625803728049924121243784502389097019475"),
-            x2: bigInt("17777552123799933955779906779655732241715742912184938656739573121738514868268"),
-            y2: bigInt("2626589144620713026669568689430873010625803728049924121243784502389097019475")
+            x1: F.e("17777552123799933955779906779655732241715742912184938656739573121738514868268"),
+            y1: F.e("2626589144620713026669568689430873010625803728049924121243784502389097019475"),
+            x2: F.e("17777552123799933955779906779655732241715742912184938656739573121738514868268"),
+            y2: F.e("2626589144620713026669568689430873010625803728049924121243784502389097019475")
         };
 
         const w = await circuitAdd.calculateWitness(input, true);
 
         await circuitAdd.assertOut(w, {
-            xout: bigInt("6890855772600357754907169075114257697580319025794532037257385534741338397365"),
-            yout: bigInt("4338620300185947561074059802482547481416142213883829469920100239455078257889")
+            xout: F.e("6890855772600357754907169075114257697580319025794532037257385534741338397365"),
+            yout: F.e("4338620300185947561074059802482547481416142213883829469920100239455078257889")
         });
 
     });
@@ -60,17 +61,17 @@ describe("Baby Jub test", function () {
     it("Should add 2 different numbers", async () => {
 
         const input={
-            x1: bigInt("17777552123799933955779906779655732241715742912184938656739573121738514868268"),
-            y1: bigInt("2626589144620713026669568689430873010625803728049924121243784502389097019475"),
-            x2: bigInt("16540640123574156134436876038791482806971768689494387082833631921987005038935"),
-            y2: bigInt("20819045374670962167435360035096875258406992893633759881276124905556507972311")
+            x1: F.e("17777552123799933955779906779655732241715742912184938656739573121738514868268"),
+            y1: F.e("2626589144620713026669568689430873010625803728049924121243784502389097019475"),
+            x2: F.e("16540640123574156134436876038791482806971768689494387082833631921987005038935"),
+            y2: F.e("20819045374670962167435360035096875258406992893633759881276124905556507972311")
         };
 
         const w = await circuitAdd.calculateWitness(input, true);
 
         await circuitAdd.assertOut(w, {
-            xout: bigInt("7916061937171219682591368294088513039687205273691143098332585753343424131937"),
-            yout: bigInt("14035240266687799601661095864649209771790948434046947201833777492504781204499")
+            xout: F.e("7916061937171219682591368294088513039687205273691143098332585753343424131937"),
+            yout: F.e("14035240266687799601661095864649209771790948434046947201833777492504781204499")
         });
 
     });
@@ -93,8 +94,8 @@ describe("Baby Jub test", function () {
     it("Should extract the public key from the private one", async () => {
 
         const rawpvk = Buffer.from("0001020304050607080900010203040506070809000102030405060708090021", "hex");
-        const pvk    = eddsa.pruneBuffer(createBlakeHash("blake512").update(rawpvk).digest().slice(0,32));
-        const S      = utils.leBuff2int(pvk).shiftRight(3);
+        const pvk    = eddsa.pruneBuffer(Buffer.from(blake2b(64).update(rawpvk).digest().slice(0,32)));
+        const S      = Scalar.shr(utils.leBuff2int(pvk), 3);
 
         const A      = eddsa.prv2pub(rawpvk);
 

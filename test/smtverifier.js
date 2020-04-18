@@ -1,6 +1,6 @@
 const chai = require("chai");
 const path = require("path");
-const bigInt = require("big-integer");
+const Fr = require("ffjavascript").bn128.Fr;
 const tester = require("circom").tester;
 
 const smt = require("../src/smt.js");
@@ -17,7 +17,7 @@ async function testInclusion(tree, key, circuit) {
 
     assert(res.found);
     let siblings = res.siblings;
-    while (siblings.length<10) siblings.push(bigInt(0));
+    while (siblings.length<10) siblings.push(Fr.e(0));
 
     const w = await circuit.calculateWitness({
         enabled: 1,
@@ -40,7 +40,7 @@ async function testExclusion(tree, key, circuit) {
 
     assert(!res.found);
     let siblings = res.siblings;
-    while (siblings.length<10) siblings.push(bigInt(0));
+    while (siblings.length<10) siblings.push(Fr.e(0));
 
     const w = await circuit.calculateWitness({
         enabled: 1,
@@ -110,14 +110,14 @@ describe("SMT Verifier test", function () {
     });
 
     it("Check inclussion Adria case", async () => {
-        const e1_hi= bigInt("17124152697573569611556136390143205198134245887034837071647643529178599000839");
-        const e1_hv= bigInt("19650379996168153643111744440707177573540245771926102415571667548153444658179");
+        const e1_hi= Fr.e("17124152697573569611556136390143205198134245887034837071647643529178599000839");
+        const e1_hv= Fr.e("19650379996168153643111744440707177573540245771926102415571667548153444658179");
 
-        const e2ok_hi= bigInt("16498254692537945203721083102154618658340563351558973077349594629411025251262");
-        const e2ok_hv= bigInt("19650379996168153643111744440707177573540245771926102415571667548153444658179");
+        const e2ok_hi= Fr.e("16498254692537945203721083102154618658340563351558973077349594629411025251262");
+        const e2ok_hv= Fr.e("19650379996168153643111744440707177573540245771926102415571667548153444658179");
 
-        const e2fail_hi= bigInt("17195092312975762537892237130737365903429674363577646686847513978084990105579");
-        const e2fail_hv= bigInt("19650379996168153643111744440707177573540245771926102415571667548153444658179");
+        const e2fail_hi= Fr.e("17195092312975762537892237130737365903429674363577646686847513978084990105579");
+        const e2fail_hv= Fr.e("19650379996168153643111744440707177573540245771926102415571667548153444658179");
 
         const tree1 = await smt.newMemEmptyTrie();
         await tree1.insert(e1_hi,e1_hv);

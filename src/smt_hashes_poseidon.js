@@ -1,5 +1,4 @@
 const Poseidon = require("./poseidon");
-const bigInt = require("big-integer");
 
 const hash = Poseidon.createHash(6, 8, 57);
 
@@ -8,5 +7,7 @@ exports.hash0 = function (left, right) {
 };
 
 exports.hash1 = function(key, value) {
-    return hash([key, value, bigInt.one]);
+    return hash([key, value, Poseidon.F.one]);
 };
+
+exports.F = Poseidon.F;

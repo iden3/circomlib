@@ -3,7 +3,6 @@ const Web3 = require("web3");
 const chai = require("chai");
 const poseidonGenContract = require("../src/poseidon_gencontract.js");
 const Poseidon = require("../src/poseidon.js");
-const bigInt = require("snarkjs").bigInt;
 
 const assert = chai.assert;
 const log = (msg) => { if (process.env.MOCHA_VERBOSE) console.log(msg); };

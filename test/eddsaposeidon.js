@@ -1,7 +1,7 @@
 const chai = require("chai");
 const path = require("path");
-const bigInt = require("big-integer");
 const tester = require("circom").tester;
+const Fr = require("ffjavascript").bn128.Fr;
 
 const eddsa = require("../src/eddsa.js");
 
@@ -19,7 +19,7 @@ describe("EdDSA Poseidon test", function () {
     });
 
     it("Sign a single number", async () => {
-        const msg = bigInt(1234);
+        const msg = Fr.e(1234);
 
         const prvKey = Buffer.from("0001020304050607080900010203040506070809000102030405060708090001", "hex");
 
@@ -47,7 +47,7 @@ describe("EdDSA Poseidon test", function () {
     });
 
     it("Detect Invalid signature", async () => {
-        const msg = bigInt(1234);
+        const msg = Fr.e(1234);
 
         const prvKey = Buffer.from("0001020304050607080900010203040506070809000102030405060708090001", "hex");
 
@@ -62,7 +62,7 @@ describe("EdDSA Poseidon test", function () {
                 enabled: 1,
                 Ax: pubKey[0],
                 Ay: pubKey[1],
-                R8x: signature.R8[0].add(bigInt(1)),
+                R8x: Fr.add(signature.R8[0], Fr.e(1)),
                 R8y: signature.R8[1],
                 S: signature.S,
                 M: msg}, true);
@@ -74,7 +74,7 @@ describe("EdDSA Poseidon test", function () {
 
 
     it("Test a dissabled circuit with a bad signature", async () => {
-        const msg = bigInt(1234);
+        const msg = Fr.e(1234);
 
         const prvKey = Buffer.from("0001020304050607080900010203040506070809000102030405060708090001", "hex");
 
@@ -89,7 +89,7 @@ describe("EdDSA Poseidon test", function () {
             enabled: 0,
             Ax: pubKey[0],
             Ay: pubKey[1],
-            R8x: signature.R8[0].add(bigInt(1)),
+            R8x: Fr.add(signature.R8[0], Fr.e(1)),
             R8y: signature.R8[1],
             S: signature.S,
             M: msg}, true);

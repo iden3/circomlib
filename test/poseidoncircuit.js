@@ -1,7 +1,6 @@
 const chai = require("chai");
 const path = require("path");
 var blake2b = require("blake2b");
-const bigInt = require("big-integer");
 const tester = require("circom").tester;
 
 const poseidon = require("../src/poseidon.js");

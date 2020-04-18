@@ -5,8 +5,7 @@ const babyJub = require("../src/babyjub.js");
 
 const assert = chai.assert;
 
-const bigInt = require("big-integer");
-const utils = require("../src/utils.js");
+const utils = require("ffjavascript").utils;
 
 describe("EdDSA js test", function () {
 
@@ -23,24 +22,24 @@ describe("EdDSA js test", function () {
         const pubKey = eddsa.prv2pub(prvKey);
 
         assert.equal(pubKey[0].toString(),
-            "13277427435165878497778222415993513565335242147425444199013288855685581939618");
+            "17579234973106307986399040784563986669343100608865726413246909559198451825625");
         assert.equal(pubKey[1].toString(),
-            "13622229784656158136036771217484571176836296686641868549125388198837476602820");
+            "21581828029826859845363968476425861244058376747493285816141526544272562145486");
 
         const pPubKey = babyJub.packPoint(pubKey);
 
         const signature = eddsa.signMiMC(prvKey, msg);
         assert.equal(signature.R8[0].toString(),
-            "11384336176656855268977457483345535180380036354188103142384839473266348197733");
+            "12672422877531089818651367820728973438446851190471722610781936061829103362897");
         assert.equal(signature.R8[1].toString(),
-            "15383486972088797283337779941324724402501462225528836549661220478783371668959");
+            "12052234579439634484237590306927118446073354173341433290934144373261241958718");
         assert.equal(signature.S.toString(),
-            "2523202440825208709475937830811065542425109372212752003460238913256192595070");
+            "1582013862333331285840015273849085014739146294568319205499642618291614907374");
 
         const pSignature = eddsa.packSignature(signature);
         assert.equal(pSignature.toString("hex"), ""+
-            "dfedb4315d3f2eb4de2d3c510d7a987dcab67089c8ace06308827bf5bcbe02a2"+
-            "7ed40dab29bf993c928e789d007387998901a24913d44fddb64b1f21fc149405");
+            "3e417cd811f9c9c545a680b962e45d22ccb62b2284b4fe4bbc9fdb50b252a59a" +
+            "eefbebe2b895393fa0e9b5b31b19e65a63fee5d7b6261d8d5b6b847c5b637f03");
 
         const uSignature = eddsa.unpackSignature(pSignature);
         assert(eddsa.verifyMiMC(msg, uSignature, pubKey));
@@ -56,24 +55,24 @@ describe("EdDSA js test", function () {
         const pubKey = eddsa.prv2pub(prvKey);
 
         assert.equal(pubKey[0].toString(),
-            "13277427435165878497778222415993513565335242147425444199013288855685581939618");
+            "17579234973106307986399040784563986669343100608865726413246909559198451825625");
         assert.equal(pubKey[1].toString(),
-            "13622229784656158136036771217484571176836296686641868549125388198837476602820");
+            "21581828029826859845363968476425861244058376747493285816141526544272562145486");
 
         const pPubKey = babyJub.packPoint(pubKey);
 
         const signature = eddsa.signPoseidon(prvKey, msg);
         assert.equal(signature.R8[0].toString(),
-            "11384336176656855268977457483345535180380036354188103142384839473266348197733");
+            "12672422877531089818651367820728973438446851190471722610781936061829103362897");
         assert.equal(signature.R8[1].toString(),
-            "15383486972088797283337779941324724402501462225528836549661220478783371668959");
+            "12052234579439634484237590306927118446073354173341433290934144373261241958718");
         assert.equal(signature.S.toString(),
-            "248298168863866362217836334079793350221620631973732197668910946177382043688");
+            "2318334603430781860679872910160434499077270843466490702990199622594868564504");
 
         const pSignature = eddsa.packSignature(signature);
         assert.equal(pSignature.toString("hex"), ""+
-            "dfedb4315d3f2eb4de2d3c510d7a987dcab67089c8ace06308827bf5bcbe02a2"+
-            "28506bce274aa1b3f7e7c2fd7e4fe09bff8f9aa37a42def7994e98f322888c00");
+            "3e417cd811f9c9c545a680b962e45d22ccb62b2284b4fe4bbc9fdb50b252a59a" +
+            "1852c049fc6286138a0ddb57718049a09374fdf0390686c7ac5637b481212005");
 
         const uSignature = eddsa.unpackSignature(pSignature);
         assert(eddsa.verifyPoseidon(msg, uSignature, pubKey));

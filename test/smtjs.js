@@ -1,27 +1,10 @@
 const chai = require("chai");
 
-const bigInt = require("big-integer");
+const Fr = require("ffjavascript").bn128.Fr;
 
 const smt = require("../src/smt.js");
 
 const assert = chai.assert;
-
-
-function stringifyBigInts(o) {
-    if ((typeof(o) == "bigint") || (o instanceof bigInt))  {
-        return o.toString(10);
-    } else if (Array.isArray(o)) {
-        return o.map(stringifyBigInts);
-    } else if (typeof o == "object") {
-        const res = {};
-        for (let k in o) {
-            res[k] = stringifyBigInts(o[k]);
-        }
-        return res;
-    } else {
-        return o;
-    }
-}
 
 describe("SMT Javascript test", function () {
     this.timeout(100000);
@@ -30,22 +13,22 @@ describe("SMT Javascript test", function () {
 
     it("Should insert 2 elements and empty them", async () => {
         const tree = await smt.newMemEmptyTrie();
-        const key1 = bigInt(111);
-        const value1 = bigInt(222);
-        const key2 = bigInt(333);
-        const value2 = bigInt(444);
+        const key1 = Fr.e(111);
+        const value1 = Fr.e(222);
+        const key2 = Fr.e(333);
+        const value2 = Fr.e(444);
 
         await tree.insert(key1,value1);
         await tree.insert(key2,value2);
         await tree.delete(key2);
         await tree.delete(key1);
 
-        assert(tree.root.isZero());
+        assert(Fr.isZero(tree.root));
     });
 
     it("Should insert 3 elements in dferent order and should be the same", async () => {
-        const keys = [bigInt(8), bigInt(9), bigInt(32)];
-        const values = [bigInt(88), bigInt(99), bigInt(3232)];
+        const keys = [Fr.e(8), Fr.e(9), Fr.e(32)];
+        const values = [Fr.e(88), Fr.e(99), Fr.e(3232)];
         const tree1 = await smt.newMemEmptyTrie();
         const tree2 = await smt.newMemEmptyTrie();
         const tree3 = await smt.newMemEmptyTrie();
@@ -77,11 +60,11 @@ describe("SMT Javascript test", function () {
         await tree6.insert(keys[1],values[1]);
         await tree6.insert(keys[0],values[0]);
 
-        assert(tree1.root.equals(tree2.root));
-        assert(tree2.root.equals(tree3.root));
-        assert(tree3.root.equals(tree4.root));
-        assert(tree4.root.equals(tree5.root));
-        assert(tree5.root.equals(tree6.root));
+        assert(Fr.eq(tree1.root, tree2.root));
+        assert(Fr.eq(tree2.root, tree3.root));
+        assert(Fr.eq(tree3.root, tree4.root));
+        assert(Fr.eq(tree4.root, tree5.root));
+        assert(Fr.eq(tree5.root, tree6.root));
 
         assert.equal(Object.keys(tree1.db.nodes).length,  Object.keys(tree2.db.nodes).length);
         assert.equal(Object.keys(tree2.db.nodes).length,  Object.keys(tree3.db.nodes).length);
@@ -93,19 +76,19 @@ describe("SMT Javascript test", function () {
         await tree1.delete(keys[1]);
         await tree2.delete(keys[1]);
         await tree2.delete(keys[0]);
-        assert(tree1.root.equals(tree2.root));
+        assert(Fr.eq(tree1.root, tree2.root));
 
         await tree3.delete(keys[0]);
         await tree3.delete(keys[2]);
         await tree4.delete(keys[2]);
         await tree4.delete(keys[0]);
-        assert(tree3.root.equals(tree4.root));
+        assert(Fr.eq(tree3.root, tree4.root));
 
         await tree5.delete(keys[1]);
         await tree5.delete(keys[2]);
         await tree6.delete(keys[2]);
         await tree6.delete(keys[1]);
-        assert(tree5.root.equals(tree6.root));
+        assert(Fr.eq(tree5.root, tree6.root));
 
         await tree1.delete(keys[2]);
         await tree2.delete(keys[2]);
@@ -114,12 +97,12 @@ describe("SMT Javascript test", function () {
         await tree5.delete(keys[0]);
         await tree6.delete(keys[0]);
 
-        assert(tree1.root.isZero());
-        assert(tree2.root.isZero());
-        assert(tree3.root.isZero());
-        assert(tree4.root.isZero());
-        assert(tree5.root.isZero());
-        assert(tree6.root.isZero());
+        assert(Fr.isZero(tree1.root));
+        assert(Fr.isZero(tree2.root));
+        assert(Fr.isZero(tree3.root));
+        assert(Fr.isZero(tree4.root));
+        assert(Fr.isZero(tree5.root));
+        assert(Fr.isZero(tree6.root));
 
         assert.equal(Object.keys(tree1.db.nodes).length, 0);
         assert.equal(Object.keys(tree2.db.nodes).length, 0);
@@ -144,7 +127,7 @@ describe("SMT Javascript test", function () {
         const arr = [];
         const N = 100;
         for (let i=0; i<N; i++) {
-            arr.push(bigInt(i));
+            arr.push(Fr.e(i));
         }
         const insArr = perm(arr);
         for (let i=0; i<N; i++) {
@@ -155,7 +138,7 @@ describe("SMT Javascript test", function () {
             await tree.delete(delArr[i]);
         }
 
-        assert(tree.root.isZero());
+        assert(Fr.isZero(tree.root));
         assert.equal(Object.keys(tree.db.nodes).length, 0);
     });
 
@@ -175,7 +158,7 @@ describe("SMT Javascript test", function () {
         await tree1.update(9, 999);
         await tree1.update(32, 323232);
 
-        assert(tree1.root.equals(tree2.root));
+        assert(Fr.eq(tree1.root, tree2.root));
     });
 
 });

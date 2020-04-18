@@ -1,6 +1,7 @@
 const path = require("path");
 
-const bigInt = require("big-integer");
+const Fr = require("ffjavascript").bn128.Fr;
+const Scalar = require("ffjavascript").Scalar;
 const tester = require("circom").tester;
 
 function print(circuit, w, s) {
@@ -8,15 +9,16 @@ function print(circuit, w, s) {
 }
 
 async function checkSub(_a,_b, circuit) {
-    let a=bigInt(_a);
-    let b=bigInt(_b);
-    if (a.lesser(bigInt.zero)) a = a.add(bigInt.one.shiftLeft(16));
-    if (b.lesser(bigInt.zero)) b = b.add(bigInt.one.shiftLeft(16));
+    let a=Scalar.e(_a);
+    let b=Scalar.e(_b);
+    if (Scalar.lt(a, 0)) a = Scalar.add(a, Scalar.shl(1, 16));
+    if (Scalar.lt(b, 0)) b = Scalar.add(b, Scalar.shl(1, 16));
     const w = await circuit.calculateWitness({a: a, b: b}, true);
 
-    let res = a.minus(b);
-    if (res.lesser(bigInt.zero)) res = res.add(bigInt.one.shiftLeft(16));
-    await circuit.assertOut(w, {out: bigInt(res)});
+    let res = Scalar.sub(a, b);
+    if (Scalar.lt(res, 0)) res = Scalar.add(res, Scalar.shl(1, 16));
+
+    await circuit.assertOut(w, {out: res});
 }
 
 describe("BinSub test", function () {

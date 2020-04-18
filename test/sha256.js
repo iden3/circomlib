@@ -1,7 +1,7 @@
 const chai = require("chai");
 const path = require("path");
-const snarkjs = require("snarkjs");
 const crypto = require("crypto");
+const Fr = require("ffjavascript").bn128.Fr;
 
 const assert = chai.assert;
 
@@ -67,7 +67,7 @@ describe("SHA256 test", function () {
 
         assert.equal(hash, hash2);
 
-        assert(witness[1].equals(snarkjs.bigInt(r)));
+        assert(Fr.eq(witness[1], Fr.e(r)));
     }).timeout(1000000);
 
     it("Should calculate a hash of 2 compressor", async () => {

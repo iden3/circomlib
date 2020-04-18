@@ -1,5 +1,6 @@
 const path = require("path");
-const bigInt = require("big-integer");
+const Fr = require("ffjavascript").bn128.Fr;
+const Scalar = require("ffjavascript").Scalar;
 const tester = require("circom").tester;
 
 function print(circuit, w, s) {
@@ -9,16 +10,16 @@ function print(circuit, w, s) {
 function getBits(v, n) {
     const res = [];
     for (let i=0; i<n; i++) {
-        if (v.shiftRight(i).isOdd()) {
-            res.push(bigInt.one);
+        if (Scalar.isOdd(Scalar.shr(v, i))) {
+            res.push(Fr.one);
         } else {
-            res.push(bigInt.zero);
+            res.push(Fr.zero);
         }
     }
     return res;
 }
 
-const q = bigInt("21888242871839275222246405745257275088548364400416034343698204186575808495617");
+const q = Scalar.fromString("21888242871839275222246405745257275088548364400416034343698204186575808495617");
 
 describe("Sign test", function() {
     let circuit;
@@ -29,35 +30,35 @@ describe("Sign test", function() {
     });
 
     it("Sign of 0", async () => {
-        const inp = getBits(bigInt.zero, 254);
+        const inp = getBits(Scalar.e(0), 254);
         const w = await circuit.calculateWitness({in: inp}, true);
 
         await circuit.assertOut(w, {sign: 0});
     });
 
     it("Sign of 3", async () => {
-        const inp = getBits(bigInt(3), 254);
+        const inp = getBits(Scalar.e(3), 254);
         const w = await circuit.calculateWitness({in: inp}, true);
 
         await circuit.assertOut(w, {sign: 0});
     });
 
     it("Sign of q/2", async () => {
-        const inp = getBits(q.shiftRight(bigInt.one), 254);
+        const inp = getBits(Scalar.shr(q, 1), 254);
         const w = await circuit.calculateWitness({in: inp}, true);
 
         await circuit.assertOut(w, {sign: 0});
     });
 
     it("Sign of q/2+1", async () => {
-        const inp = getBits(q.shiftRight(bigInt.one).add(bigInt.one), 254);
+        const inp = getBits(Scalar.add(Scalar.shr(q, 1), 1) , 254);
         const w = await circuit.calculateWitness({in: inp}, true);
 
         await circuit.assertOut(w, {sign: 1});
     });
 
     it("Sign of q-1", async () => {
-        const inp = getBits(q.minus(bigInt.one), 254);
+        const inp = getBits(Scalar.sub(q, 1), 254);
         const w = await circuit.calculateWitness({in: inp}, true);
 
         await circuit.assertOut(w, {sign: 1});
@@ -71,7 +72,7 @@ describe("Sign test", function() {
     });
 
     it("Sign of all ones", async () => {
-        const inp = getBits(bigInt(1).shiftLeft(254).minus(bigInt(1)), 254);
+        const inp = getBits(Scalar.sub(Scalar.shl(1,254),1), 254);
         const w = await circuit.calculateWitness({in: inp}, true);
 
         await circuit.assertOut(w, {sign: 1});

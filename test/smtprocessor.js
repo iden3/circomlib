@@ -1,7 +1,7 @@
 const chai = require("chai");
 const path = require("path");
-const bigInt = require("big-integer");
 const tester = require("circom").tester;
+const Fr = require("ffjavascript").bn128.Fr;
 
 const smt = require("../src/smt.js");
 
@@ -15,7 +15,7 @@ async function testInsert(tree, key, value, circuit ) {
 
     const res = await tree.insert(key,value);
     let siblings = res.siblings;
-    while (siblings.length<10) siblings.push(bigInt(0));
+    while (siblings.length<10) siblings.push(Fr.e(0));
 
     const w = await circuit.calculateWitness({
         fnc: [1,0],
@@ -37,7 +37,7 @@ async function testInsert(tree, key, value, circuit ) {
 async function testDelete(tree, key, circuit) {
     const res = await tree.delete(key);
     let siblings = res.siblings;
-    while (siblings.length<10) siblings.push(bigInt(0));
+    while (siblings.length<10) siblings.push(Fr.e(0));
 
     const w = await circuit.calculateWitness({
         fnc: [1,1],
@@ -58,7 +58,7 @@ async function testDelete(tree, key, circuit) {
 async function testUpdate(tree, key, newValue, circuit) {
     const res = await tree.update(key, newValue);
     let siblings = res.siblings;
-    while (siblings.length<10) siblings.push(bigInt(0));
+    while (siblings.length<10) siblings.push(Fr.e(0));
 
     const w = await circuit.calculateWitness({
         fnc: [0,1],
@@ -91,15 +91,15 @@ describe("SMT Processor test", function () {
     });
 
     it("Should verify an insert to an empty tree", async () => {
-        const key = bigInt(111);
-        const value = bigInt(222);
+        const key = Fr.e(111);
+        const value = Fr.e(222);
 
         await testInsert(tree, key, value, circuit);
     });
 
     it("It should add another element", async () => {
-        const key = bigInt(333);
-        const value = bigInt(444);
+        const key = Fr.e(333);
+        const value = Fr.e(444);
 
         await testInsert(tree, key, value, circuit);
     });
@@ -110,8 +110,8 @@ describe("SMT Processor test", function () {
     });
 
     it("Should test convination of adding and removing 3 elements", async () => {
-        const keys = [bigInt(8), bigInt(9), bigInt(32)];
-        const values = [bigInt(88), bigInt(99), bigInt(3232)];
+        const keys = [Fr.e(8), Fr.e(9), Fr.e(32)];
+        const values = [Fr.e(88), Fr.e(99), Fr.e(3232)];
         const tree1 = await smt.newMemEmptyTrie();
         const tree2 = await smt.newMemEmptyTrie();
         const tree3 = await smt.newMemEmptyTrie();
@@ -170,7 +170,7 @@ describe("SMT Processor test", function () {
 
     it("Should match a NOp with random vals", async () => {
         let siblings = [];
-        while (siblings.length<10) siblings.push(bigInt(88));
+        while (siblings.length<10) siblings.push(Fr.e(88));
         const w = await circuit.calculateWitness({
             fnc: [0,0],
             oldRoot: 11,
@@ -187,7 +187,7 @@ describe("SMT Processor test", function () {
 
         await circuit.checkConstraints(w);
 
-        assert(root1.equals(root2));
+        assert(Fr.eq(root1, root2));
     });
     it("Should update an element", async () => {
         const tree1 = await smt.newMemEmptyTrie();

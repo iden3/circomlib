@@ -1,8 +1,8 @@
 const chai = require("chai");
 const path = require("path");
-const bigInt = require("big-integer");
 const tester = require("circom").tester;
 const babyJub = require("../src/babyjub.js");
+const Fr = require("ffjavascript").bn128.Fr;
 
 const assert = chai.assert;
 
@@ -13,8 +13,8 @@ describe("Montgomery test", function () {
     let circuitMDouble;
 
     let g = [
-        bigInt("5299619240641551281634865583518297030282874472190772894086521144482721001553"),
-        bigInt("16950150798460657717958625567821834550301663161624707787222815936182638968203")
+        Fr.e("5299619240641551281634865583518297030282874472190772894086521144482721001553"),
+        Fr.e("16950150798460657717958625567821834550301663161624707787222815936182638968203")
     ];
 
     let mg, mg2, g2, g3, mg3;
@@ -45,8 +45,8 @@ describe("Montgomery test", function () {
         xout = w[circuitM2E.symbols["main.out[0]"].varIdx];
         yout = w[circuitM2E.symbols["main.out[1]"].varIdx];
 
-        assert(xout.equals(g[0]));
-        assert(yout.equals(g[1]));
+        assert(Fr.eq(xout, g[0]));
+        assert(Fr.eq(yout, g[1]));
     });
     it("Should double a point", async () => {
         let w, xout, yout;
@@ -65,8 +65,9 @@ describe("Montgomery test", function () {
         xout = w[circuitM2E.symbols["main.out[0]"].varIdx];
         yout = w[circuitM2E.symbols["main.out[1]"].varIdx];
 
-        assert(xout.equals(g2[0]));
-        assert(yout.equals(g2[1]));
+
+        assert(Fr.eq(xout, g2[0]));
+        assert(Fr.eq(yout, g2[1]));
     });
     it("Should add a point", async () => {
         let w, xout, yout;
@@ -85,7 +86,7 @@ describe("Montgomery test", function () {
         xout = w[circuitM2E.symbols["main.out[0]"].varIdx];
         yout = w[circuitM2E.symbols["main.out[1]"].varIdx];
 
-        assert(xout.equals(g3[0]));
-        assert(yout.equals(g3[1]));
+        assert(Fr.eq(xout, g3[0]));
+        assert(Fr.eq(yout, g3[1]));
     });
 });

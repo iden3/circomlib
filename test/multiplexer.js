@@ -1,6 +1,6 @@
 const path = require("path");
-const bigInt = require("big-integer");
 const tester = require("circom").tester;
+const Fr = require("ffjavascript").bn128.Fr;
 
 describe("Mux4 test", function() {
     this.timeout(100000);
@@ -9,22 +9,22 @@ describe("Mux4 test", function() {
         const circuit = await tester(path.join(__dirname, "circuits", "mux4_1.circom"));
 
         const ct16 = [
-            bigInt("123"),
-            bigInt("456"),
-            bigInt("789"),
-            bigInt("012"),
-            bigInt("111"),
-            bigInt("222"),
-            bigInt("333"),
-            bigInt("4546"),
-            bigInt("134523"),
-            bigInt("44356"),
-            bigInt("15623"),
-            bigInt("4566"),
-            bigInt("1223"),
-            bigInt("4546"),
-            bigInt("4256"),
-            bigInt("4456")
+            Fr.e("123"),
+            Fr.e("456"),
+            Fr.e("789"),
+            Fr.e("012"),
+            Fr.e("111"),
+            Fr.e("222"),
+            Fr.e("333"),
+            Fr.e("4546"),
+            Fr.e("134523"),
+            Fr.e("44356"),
+            Fr.e("15623"),
+            Fr.e("4566"),
+            Fr.e("1223"),
+            Fr.e("4546"),
+            Fr.e("4256"),
+            Fr.e("4456")
         ];
 
         for (let i=0; i<16; i++) {
@@ -41,14 +41,14 @@ describe("Mux4 test", function() {
         const circuit = await tester(path.join(__dirname, "circuits", "mux3_1.circom"));
 
         const ct8 = [
-            bigInt("37"),
-            bigInt("47"),
-            bigInt("53"),
-            bigInt("71"),
-            bigInt("89"),
-            bigInt("107"),
-            bigInt("163"),
-            bigInt("191")
+            Fr.e("37"),
+            Fr.e("47"),
+            Fr.e("53"),
+            Fr.e("71"),
+            Fr.e("89"),
+            Fr.e("107"),
+            Fr.e("163"),
+            Fr.e("191")
         ];
 
         for (let i=0; i<8; i++) {
@@ -64,10 +64,10 @@ describe("Mux4 test", function() {
         const circuit = await tester(path.join(__dirname, "circuits", "mux2_1.circom"));
 
         const ct4 = [
-            bigInt("37"),
-            bigInt("47"),
-            bigInt("53"),
-            bigInt("71"),
+            Fr.e("37"),
+            Fr.e("47"),
+            Fr.e("53"),
+            Fr.e("71"),
         ];
 
         for (let i=0; i<4; i++) {
@@ -83,8 +83,8 @@ describe("Mux4 test", function() {
         const circuit = await tester(path.join(__dirname, "circuits", "mux1_1.circom"));
 
         const ct2 = [
-            bigInt("37"),
-            bigInt("47"),
+            Fr.e("37"),
+            Fr.e("47"),
         ];
 
         for (let i=0; i<2; i++) {
