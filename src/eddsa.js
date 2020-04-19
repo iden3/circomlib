@@ -1,4 +1,4 @@
-const blake2b = require("blake2b");
+const createBlakeHash = require("blake-hash");
 const Scalar = require("ffjavascript").Scalar;
 const F1Field = require("ffjavascript").F1Field;
 const babyJub = require("./babyjub");
@@ -32,19 +32,19 @@ function pruneBuffer(_buff) {
 }
 
 function prv2pub(prv) {
-    const sBuff = pruneBuffer(blake2b(64).update(prv).digest().slice(0,32));
+    const sBuff = pruneBuffer(createBlakeHash("blake512").update(prv).digest().slice(0,32));
     let s = utils.leBuff2int(sBuff);
     const A = babyJub.mulPointEscalar(babyJub.Base8, Scalar.shr(s,3));
     return A;
 }
 
 function sign(prv, msg) {
-    const h1 = Buffer.from(blake2b(64).update(prv).digest());
+    const h1 = createBlakeHash("blake512").update(prv).digest();
     const sBuff = pruneBuffer(h1.slice(0,32));
     const s = utils.leBuff2int(sBuff);
     const A = babyJub.mulPointEscalar(babyJub.Base8, Scalar.shr(s, 3));
 
-    const rBuff = Buffer.from(blake2b(64).update(Buffer.concat([h1.slice(32,64), msg])).digest());
+    const rBuff = createBlakeHash("blake512").update(Buffer.concat([h1.slice(32,64), msg])).digest();
     let r = utils.leBuff2int(rBuff);
     const Fr = new F1Field(babyJub.subOrder);
     r = Fr.e(r);
@@ -61,13 +61,13 @@ function sign(prv, msg) {
 }
 
 function signMiMC(prv, msg) {
-    const h1 = Buffer.from(blake2b(64).update(prv).digest());
+    const h1 = createBlakeHash("blake512").update(prv).digest();
     const sBuff = pruneBuffer(h1.slice(0,32));
     const s = utils.leBuff2int(sBuff);
     const A = babyJub.mulPointEscalar(babyJub.Base8, Scalar.shr(s, 3));
 
     const msgBuff = utils.leInt2Buff(msg, 32);
-    const rBuff = Buffer.from(blake2b(64).update(Buffer.concat([h1.slice(32,64), msgBuff])).digest());
+    const rBuff = createBlakeHash("blake512").update(Buffer.concat([h1.slice(32,64), msgBuff])).digest();
     let r = utils.leBuff2int(rBuff);
     const Fr = new F1Field(babyJub.subOrder);
     r = Fr.e(r);
@@ -81,13 +81,13 @@ function signMiMC(prv, msg) {
 }
 
 function signMiMCSponge(prv, msg) {
-    const h1 = Buffer.from(blake2b(64).update(prv).digest());
+    const h1 = createBlakeHash("blake512").update(prv).digest();
     const sBuff = pruneBuffer(h1.slice(0,32));
     const s = utils.leBuff2int(sBuff);
     const A = babyJub.mulPointEscalar(babyJub.Base8, Scalar.shr(s, 3));
 
     const msgBuff = utils.leInt2Buff(msg, 32);
-    const rBuff = Buffer.from(blake2b(64).update(Buffer.concat([h1.slice(32,64), msgBuff])).digest());
+    const rBuff = createBlakeHash("blake512").update(Buffer.concat([h1.slice(32,64), msgBuff])).digest();
     let r = utils.leBuff2int(rBuff);
     const Fr = new F1Field(babyJub.subOrder);
     r = Fr.e(r);
@@ -101,13 +101,13 @@ function signMiMCSponge(prv, msg) {
 }
 
 function signPoseidon(prv, msg) {
-    const h1 = Buffer.from(blake2b(64).update(prv).digest());
+    const h1 = createBlakeHash("blake512").update(prv).digest();
     const sBuff = pruneBuffer(h1.slice(0,32));
     const s = utils.leBuff2int(sBuff);
     const A = babyJub.mulPointEscalar(babyJub.Base8, Scalar.shr(s, 3));
 
     const msgBuff = utils.leInt2Buff(msg, 32);
-    const rBuff = Buffer.from(blake2b(64).update(Buffer.concat([h1.slice(32,64), msgBuff])).digest());
+    const rBuff = createBlakeHash("blake512").update(Buffer.concat([h1.slice(32,64), msgBuff])).digest();
     let r = utils.leBuff2int(rBuff);
     const Fr = new F1Field(babyJub.subOrder);
     r = Fr.e(r);

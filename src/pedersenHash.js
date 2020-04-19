@@ -1,4 +1,5 @@
 const babyJub = require("./babyjub");
+const createBlakeHash = require("blake-hash");
 const blake2b = require("blake2b");
 const Scalar = require("ffjavascript").Scalar;
 
@@ -9,7 +10,17 @@ const nWindowsPerSegment = 50;
 exports.hash = pedersenHash;
 exports.getBasePoint = getBasePoint;
 
-function pedersenHash(msg) {
+function baseHash(type, S) {
+    if (type == "blake") {
+        return createBlakeHash("blake256").update(S).digest();
+    } else if (type == "blake2b") {
+        return Buffer.from(blake2b(32).update(Buffer.from(S)).digest());
+    }
+}
+
+function pedersenHash(msg, options) {
+    options = options || {};
+    options.baseHash = options.baseHash || "blake";
     const bitsPerSegment = windowSize*nWindowsPerSegment;
     const bits = buffer2bits(msg);
 
@@ -49,7 +60,7 @@ function pedersenHash(msg) {
             escalar = Scalar.add( escalar, babyJub.subOrder);
         }
 
-        accP = babyJub.addPoint(accP, babyJub.mulPointEscalar(getBasePoint(s), escalar));
+        accP = babyJub.addPoint(accP, babyJub.mulPointEscalar(getBasePoint(options.baseHash, s), escalar));
     }
 
     return babyJub.packPoint(accP);
@@ -57,13 +68,13 @@ function pedersenHash(msg) {
 
 let bases = [];
 
-function getBasePoint(pointIdx) {
+function getBasePoint(baseHashType, pointIdx) {
     if (pointIdx<bases.length) return bases[pointIdx];
     let p= null;
     let tryIdx = 0;
     while (p==null) {
         const S = GENPOINT_PREFIX + "_" + padLeftZeros(pointIdx, 32) + "_" + padLeftZeros(tryIdx, 32);
-        const h = Buffer.from(blake2b(32).update(Buffer.from(S)).digest());
+        const h = baseHash(baseHashType, S);
         h[31] = h[31] & 0xBF;  // Set 255th bit to 0 (256th is the signal and 254th is the last possible bit to 1)
         p = babyJub.unpackPoint(h);
         tryIdx++;
