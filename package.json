@@ -26,7 +26,7 @@
   "dependencies": {
     "blake-hash": "^1.1.0",
     "blake2b": "^2.1.3",
-    "circom": "0.5.9",
+    "circom": "0.5.10",
     "ffjavascript": "0.1.0",
     "web3": "^1.2.6"
   },

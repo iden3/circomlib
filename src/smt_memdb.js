@@ -1,6 +1,7 @@
 
 const F = require("./poseidon.js").F;
 const Scalar = require("ffjavascript").Scalar;
+const utils = require("ffjavascript").utils;
 
 class SMTMemDb {
     constructor() {
@@ -14,7 +15,7 @@ class SMTMemDb {
 
     _key2str(k) {
         // const keyS = bigInt(key).leInt2Buff(32).toString("hex");
-        const keyS = Scalar.e(k);
+        const keyS = k.toString();
         return keyS;
     }
 
