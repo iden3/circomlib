@@ -1,6 +1,5 @@
-include "../../circuits/mux1.circom";
-include "../../circuits/bitify.circom";
-
+include "../mux1.circom";
+include "../../../bitify/num2bits/num2bits.circom";
 
 template Constants() {
     var i;

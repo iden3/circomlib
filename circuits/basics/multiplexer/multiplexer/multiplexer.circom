@@ -17,8 +17,8 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include ".src/decoder.circom";
-include ".src/scalarproduct.circom";
+include "_decoder.circom";
+include "_scalar_product.circom";
 
 template Multiplexer(wIn, nIn) {
     signal input inp[nIn][wIn];

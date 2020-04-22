@@ -17,17 +17,7 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-template MultiMux1(n) {
-    signal input c[n][2];  // Constants
-    signal input s;   // Selector
-    signal output out[n];
-
-    for (var i=0; i<n; i++) {
-
-        out[i] <== (c[i][1] - c[i][0])*s + c[i][0];
-
-    }
-}
+include "../multi_mux1/multi_mux1.circom"
 
 template Mux1() {
     var i;

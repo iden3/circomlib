@@ -17,23 +17,14 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "../multi_mux2/multi_mux2.circom"
+template MultiMux1(n) {
+    signal input c[n][2];  // Constants
+    signal input s;   // Selector
+    signal output out[n];
 
-template Mux2() {
-    var i;
-    signal input c[4];  // Constants
-    signal input s[2];   // Selector
-    signal output out;
+    for (var i=0; i<n; i++) {
 
-    component mux = MultiMux2(1);
+        out[i] <== (c[i][1] - c[i][0])*s + c[i][0];
 
-    for (i=0; i<4; i++) {
-        mux.c[0][i] <== c[i];
     }
-
-    for (i=0; i<2; i++) {
-      s[i] ==> mux.s[i];
-    }
-
-    mux.out[0] ==> out;
 }

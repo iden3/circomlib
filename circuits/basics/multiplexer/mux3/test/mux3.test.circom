@@ -1,5 +1,5 @@
-include "../../circuits/mux3.circom";
-include "../../circuits/bitify.circom";
+include "../mux3.circom";
+include "../../../bitify/num2bits/num2bits.circom";
 
 
 template Constants() {
