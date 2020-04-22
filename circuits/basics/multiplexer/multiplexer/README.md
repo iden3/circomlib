@@ -1,15 +1,40 @@
-# `multiplexer`
-
-TODO: Change it to Multiplexer description!
-
 # `Multiplexer(wIn, nIn)`
 
 ## Description
 
-This folder contains the templates to talkdfjlasjdf. Each folder contains a test and README file specifying the template details.
+This template ... .
 
-It uses blabla
+It makes use of two (internal?) sub?templates/routines? :
+- [`_decoder`](decoder)
+- [`_scalarproduct`](scalarproduct)
 
-- [`decoder`](decoder)
-- [`multiplexer`](multiplexer)
-- [`scalarproduct`](scalarproduct)
+## Schema
+
+```
+                     _________________________     
+          sel ----> |                         |
+                    |  Multiplexer(wIn, nIn)  | ----> out[wIn]
+inp[nIn][wIn] ----> |_________________________|     
+```
+
+## Dependencies
+
+None.
+
+## Inputs
+
+| Input           | Type           |
+| -------------   | -------------  | 
+| `sel`           | (Selector)     |
+| `inp[nIn][wIn]` |                |
+
+
+## Outputs
+
+| Output        | Type           | Description     |
+| ------------- | -------------  | ----------      | 
+| `out[wIn]`    |                |          |
+
+## Benchmarks 
+
+## Test
