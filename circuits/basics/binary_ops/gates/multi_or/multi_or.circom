@@ -17,7 +17,7 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "../../comparators/iszero/iszero.circom";
+include "../../../comparators/is_zero/is_zero.circom";
 
 template MultiOR(n) {
     signal input in[n];

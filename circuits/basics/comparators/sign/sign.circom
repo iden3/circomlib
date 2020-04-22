@@ -17,7 +17,7 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "../compconstant/compconstant.circom";
+include "../comp_constant/comp_constant.circom";
 
 template Sign() {
     signal input in[254];

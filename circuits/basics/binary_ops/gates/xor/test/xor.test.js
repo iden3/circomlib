@@ -13,25 +13,25 @@ describe("XOR test", function () {
 
     let circuit;
     before( async() => {
-        circuit = await tester(path.join(__dirname, "xor_test.circom"));
+        circuit = await tester(path.join(__dirname, "xor.test.circom"));
     });
 
-    it("1 XOR 1 = 0", async () => {
+    it("Should 1 XOR 1 = 0", async () => {
         const witness = await circuit.calculateWitness({ "a": "1", "b": "1" }, true);
         await circuit.assertOut(witness, {out: 0});
     });
 
-    it("1 XOR 0 = 1", async () => {
+    it("Should 1 XOR 0 = 1", async () => {
         const witness = await circuit.calculateWitness({ "a": "1", "b": "0" }, true);
         await circuit.assertOut(witness, {out: 1});
     });
 
-    it("0 XOR 1 = 1", async () => {
+    it("Should 0 XOR 1 = 1", async () => {
         const witness = await circuit.calculateWitness({ "a": "0", "b": "1" }, true);
         await circuit.assertOut(witness, {out: 1});
     });
 
-    it("0 XOR 0 = 0", async () => {
+    it("Should 0 XOR 0 = 0", async () => {
         const witness = await circuit.calculateWitness({ "a": "0", "b": "0" }, true);
         await circuit.assertOut(witness, {out: 0});
     });

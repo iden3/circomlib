@@ -13,25 +13,25 @@ describe("NAND test", function () {
 
     let circuit;
     before( async() => {
-        circuit = await tester(path.join(__dirname, "nand_test.circom"));
+        circuit = await tester(path.join(__dirname, "nand.test.circom"));
     });
 
-    it("NOT(1 AND 1) = 0", async () => {
+    it("Should NOT(1 AND 1) = 0", async () => {
         const witness = await circuit.calculateWitness({ "a": "1", "b": "1" }, true);
         await circuit.assertOut(witness, {out: 0});
     });
 
-    it("NOT(1 AND 0) = 1", async () => {
+    it("Should NOT(1 AND 0) = 1", async () => {
         const witness = await circuit.calculateWitness({ "a": "1", "b": "0" }, true);
         await circuit.assertOut(witness, {out: 1});
     });
 
-    it("NOT(0 AND 1) = 0", async () => {
+    it("Should NOT(0 AND 1) = 0", async () => {
         const witness = await circuit.calculateWitness({ "a": "0", "b": "1" }, true);
         await circuit.assertOut(witness, {out: 1});
     });
 
-    it("NOT(0 AND 0) = 1", async () => {
+    it("Shoudl NOT(0 AND 0) = 1", async () => {
         const witness = await circuit.calculateWitness({ "a": "0", "b": "0" }, true);
         await circuit.assertOut(witness, {out: 1});
     });

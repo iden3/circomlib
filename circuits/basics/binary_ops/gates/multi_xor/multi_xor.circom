@@ -17,9 +17,11 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "../../bitify/num2bits/num2bits.circom";
+include "../../../bitify/num2bits/num2bits.circom";
 
 // Output true if and only if an odd number of inputs are true
+
+// TODO: Add log function
 
 template MultiXOR(n) {
     signal input in[n];

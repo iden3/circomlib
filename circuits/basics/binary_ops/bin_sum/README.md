@@ -32,7 +32,7 @@ To waranty binary outputs:
     out[1]     * (out[0] - 1) === 0
     .
     .
-    .
+    .../
     out[n+e-1] * (out[n+e-1] - 1) == 0
  -->
 
@@ -51,16 +51,16 @@ in[ops][n] ----> |  BinSum(n, ops)  | ----> out[nout]
 
 None. 
 
-## Inputs
+## Expected Inputs
 
 | Input              | Type                                               |
-| -------------      | -------------                                  | 
+| -------------      | -------------                                      | 
 | `in[ops][n]`       | An array of `ops` binary arrays of `n` bits each.  |
 
 ## Outputs
 
-| Output           | Type               | Description               |
-| -------------    | -------------                | ----------      | 
+| Output           | Type                         | Description                                          |
+| -------------    | -------------                | ----------                                           | 
 | `out[nout]`      | Binary array of `nout` bits  | Binary sum of all the `n`-bit operands in `in[ops]`. |
 
 ## Benchmarks 

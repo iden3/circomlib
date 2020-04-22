@@ -1,6 +1,6 @@
-include "../../bitify/num2bits/num2bits.circom"
-include "../../bitify/bits2num/bits2num.circom"
-include "binsub.circom"
+include "../../../bitify/num2bits/num2bits.circom"
+include "../../../bitify/bits2num/bits2num.circom"
+include "../bin_sub.circom"
 
 template A() {
     signal private input a;

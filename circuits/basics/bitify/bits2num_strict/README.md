@@ -20,15 +20,15 @@ in[n] ----> |  Bits2Num_strict()  | ----> out
 ## Dependencies
 
 ```
-include "../../aliascheck/aliascheck.circom";
+include "../../comparators/alias_check/alias_check.circom";
 include "../bits2num/bits2num.circom";
 ```
 
-## Inputs
+## Expected Inputs
 
 | Input              | Type                      | Representation             |
 | -------------      | -------------             | -------------      | 
-| `in[n]`            | Binary array of `n` bits  |  The encoding is considered with the [LSB 0 bit numbering](https://en.wikipedia.org/wiki/Bit_numbering#LSB_0_bit_numbering). |
+| `in[n]`            | Binary array of `n` bits  |  The encoding is expected in the [LSB 0 bit numbering](https://en.wikipedia.org/wiki/Bit_numbering#LSB_0_bit_numbering). |
 
 ## Outputs
 

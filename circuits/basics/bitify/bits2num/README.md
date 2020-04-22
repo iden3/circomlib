@@ -23,11 +23,11 @@ in[n] ----> |  Bits2Num(n)  | ----> out
 
 None.
 
-## Inputs
+## Expected Inputs
 
 | Input              | Type                      | Representation             |
 | -------------      | -------------             | -------------      | 
-| `in[n]`            | Binary array of `n` bits  | The encoding is considered with the [LSB 0 bit numbering](https://en.wikipedia.org/wiki/Bit_numbering#LSB_0_bit_numbering). |
+| `in[n]`            | Binary array of `n` bits  | The encoding is expected in the [LSB 0 bit numbering](https://en.wikipedia.org/wiki/Bit_numbering#LSB_0_bit_numbering). |
 
 ## Outputs
 

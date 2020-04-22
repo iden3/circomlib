@@ -2,7 +2,7 @@
 
 ## Description
 
-This folder contains the templates to perform conversions of numbers to binary and the other way round. Each folder contains the particular template, a test and a README file specifying the template details.
+This folder contains the templates to perform conversions of field elements to its binary representation and viceversa.
 
 ## Structure
 

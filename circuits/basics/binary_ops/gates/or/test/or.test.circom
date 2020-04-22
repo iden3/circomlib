@@ -1,3 +1,3 @@
-include "or.circom";
+include "../or.circom";
 
 component main = OR()

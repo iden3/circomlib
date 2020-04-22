@@ -1,3 +1,3 @@
-include "nand.circom";
+include "../nand.circom";
 
 component main = NAND()

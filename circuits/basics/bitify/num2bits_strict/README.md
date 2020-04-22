@@ -23,7 +23,7 @@ include "../num2bits/num2bits.circom"```
 ```
 
 
-## Inputs
+## Expected Inputs
 
 | Input           | Type           |
 | -------------   | -------------  | 
@@ -33,7 +33,7 @@ include "../num2bits/num2bits.circom"```
 
 | Output           | Type                     | Description     |
 | -------------    | -------------            | ----------      | 
-| `out[254]`         | Binary array of `254` bits | Binary representation of the field element `in`. The encoding used is the [LSB 0 bit numbering](https://en.wikipedia.org/wiki/Bit_numbering#LSB_0_bit_numbering) scheme. |
+| `out[254]`         | Binary array of `254` bits | Binary representation of the field element `in` using the [LSB 0 bit numbering](https://en.wikipedia.org/wiki/Bit_numbering#LSB_0_bit_numbering) encoding. |
 
 ## Benchmarks 
 

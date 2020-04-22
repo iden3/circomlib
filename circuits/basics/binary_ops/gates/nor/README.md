@@ -18,7 +18,7 @@ b ----> |_________|
 
 None.
 
-## Inputs
+## Expected Inputs
 
 | Input  | Type    |
 | -----  | -----   | 

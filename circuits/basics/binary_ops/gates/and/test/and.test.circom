@@ -1,3 +1,3 @@
-include "and.circom";
+include "../and.circom";
 
 component main = AND()

@@ -18,7 +18,7 @@ b ----> |_________|
 
 None.
 
-## Inputs
+## Expected Inputs
 
 | Input  | Type    |
 | -----  | -----   | 
@@ -27,8 +27,8 @@ None.
 
 ## Outputs
 
-| Output  | Type     | Description               |
-| ------  | ------   | ----------      | 
+| Output  | Type     | Description    |
+| ------  | ------   | ----------     | 
 | `out`   | Boolean  | `out = a ∧ b`. |
 
 ## Benchmarks 

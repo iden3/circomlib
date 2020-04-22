@@ -17,10 +17,10 @@ in[n] ----> |  MultiOR(n)  | ----> out
 ## Dependencies
 
 ```
-include "../../comparators/iszero/iszero.circom";
+include "../../../comparators/is_zero/is_zero.circom";
 ```
 
-## Inputs
+## Expected Inputs
 
 | Input      | Type                  |
 | -----      | -----                 | 

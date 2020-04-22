@@ -11,25 +11,25 @@ describe("AND test", function () {
 
     let circuit;
     before( async() => {
-        circuit = await tester(path.join(__dirname, "and_test.circom"));
+        circuit = await tester(path.join(__dirname, "and.test.circom"));
     });
 
-    it("1 AND 1 = 1", async () => {
+    it("Should 1 AND 1 = 1", async () => {
         const witness = await circuit.calculateWitness({ "a": "1", "b": "1" }, true);
         await circuit.assertOut(witness, {out: 1});
     });
 
-    it("1 AND 0 = 0", async () => {
+    it("Should 1 AND 0 = 0", async () => {
         const witness = await circuit.calculateWitness({ "a": "1", "b": "0" }, true);
         await circuit.assertOut(witness, {out: 0});
     });
 
-    it("0 AND 1 = 1", async () => {
+    it("Should 0 AND 1 = 1", async () => {
         const witness = await circuit.calculateWitness({ "a": "0", "b": "1" }, true);
         await circuit.assertOut(witness, {out: 0});
     });
 
-    it("0 AND 0 = 0", async () => {
+    it("Should 0 AND 0 = 0", async () => {
         const witness = await circuit.calculateWitness({ "a": "0", "b": "0" }, true);
         await circuit.assertOut(witness, {out: 0});
     });

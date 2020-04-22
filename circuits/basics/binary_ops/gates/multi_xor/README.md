@@ -17,10 +17,10 @@ in[n] ----> |  MultiXOR(n)  | ----> out
 ## Dependencies
 
 ```
-include "../../comparators/iszero/iszero.circom";
+include "../../../bitify/num2bits/num2bits.circom";
 ```
 
-## Inputs
+## Expected Inputs
 
 | Input      | Type                  |
 | -----      | -----                 | 

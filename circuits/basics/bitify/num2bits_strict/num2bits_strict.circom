@@ -17,7 +17,7 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "../../aliascheck/aliascheck.circom";
+include "../../comparators/alias_check/alias_check.circom";
 include "../num2bits/num2bits.circom"
 
 template Num2Bits_strict() {

@@ -18,7 +18,7 @@ in ----> |  NOT()  | ----> out
 
 None.
 
-## Inputs
+## Expected Inputs
 
 | Input   | Type    |
 | -----   | -----   | 
