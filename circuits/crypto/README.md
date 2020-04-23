@@ -4,7 +4,8 @@ This folder contains the templates to compute cryptographic functions, such as h
 
 ## Structure of the folder
 
-TODO: ADD!!
-License
-
-Circom is part of the iden3 project copyright 2018 0KIMS association and published with GPL-3 license. Please check the COPYING file for more details.
+* mimc - SNARK-friendly hash Minimal Multiplicative Complexity.
+  * https://eprint.iacr.org/2016/492.pdf
+  * zcash/zcash#2233
+* smt - Sparse Merkle Tree
+  * https://ethresear.ch/t/optimizing-sparse-merkle-trees/3751
