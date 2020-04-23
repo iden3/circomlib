@@ -17,7 +17,7 @@ c[16] ----> |__________|
 
 None.
 
-## Inputs
+## Expected Inputs
 
 | Input           | Type           |
 | -------------   | -------------  | 

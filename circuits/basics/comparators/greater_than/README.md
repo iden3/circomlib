@@ -21,7 +21,7 @@ in[2] ----> |  GreaterThan(n)  | ----> out
 include "../less_than/less_than.circom";
 ```
 
-## Inputs
+## Expected Inputs
 
 -  `in[2]`: an array of 2 inputs? of `n` bits each.
 

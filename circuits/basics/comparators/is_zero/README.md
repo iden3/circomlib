@@ -18,7 +18,7 @@ in ----> |  IsZero()  | ----> out
 
 None.
 
-## Inputs
+## Expected Inputs
 
 -  `in`: a field element??.
 

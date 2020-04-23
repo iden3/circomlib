@@ -19,7 +19,7 @@ in[2] ----> |  LessEqThan(n)  | ----> out
 include "../lessthan/lessthan.circom";
 ``` 
 
-## Inputs
+## Expected Inputs
 
 -  `in[2]`: an array of 2 inputs? of `n` bits each.
 

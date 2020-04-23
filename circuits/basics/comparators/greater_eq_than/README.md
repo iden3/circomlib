@@ -24,7 +24,7 @@ include "../less_than/less_than.circom";
 // n is the number of bits of the input.
 // The MSF is the sign bit.
 
-## Inputs
+## Expected Inputs
 
 -  `in[2]`: an array of 2 inputs? of `n` bits each.
 

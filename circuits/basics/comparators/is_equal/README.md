@@ -19,7 +19,7 @@ in[2] ----> |  IsEqual()  | ----> out
 include "../is_zero/is_zero.circom";
 ```
 
-## Inputs
+## Expected Inputs
 
 -  `in[2]`: an array of 2 inputs? of `n` bits each (n is nowhere)??? field elements?
 

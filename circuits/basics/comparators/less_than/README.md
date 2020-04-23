@@ -20,7 +20,7 @@ in[2] ----> |  LessThan(n)  | ----> out
 include "../../bitify/num2bits/num2bits.circom";
 ``` 
 
-## Inputs
+## Expected Inputs
 
 -  `in[2]`: an array of 2 inputs? of `n` bits each.
 

@@ -19,7 +19,7 @@ in[254] ----> |  CompConstant(ct)  | ----> out
 include "../../bitify/num2bits/num2bits.circom";
 ```
 
-## Inputs
+## Expected Inputs
 
     signal input in[254];
 

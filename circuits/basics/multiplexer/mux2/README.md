@@ -17,7 +17,7 @@ c[4] ----> |__________|
 
 None.
 
-## Inputs
+## Expected Inputs
 
 | Input           | Type           |
 | -------------   | -------------  | 

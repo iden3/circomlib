@@ -21,7 +21,7 @@ inp[nIn][wIn] ----> |_________________________|
 
 None.
 
-## Inputs
+## Expected Inputs
 
 | Input           | Type           |
 | -------------   | -------------  | 

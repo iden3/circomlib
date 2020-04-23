@@ -28,7 +28,7 @@ include "../is_zero/is_zero.circom";
     signal input enabled;
     signal input in[2];
     
-## Inputs
+## Expected Inputs
 
 - Add signal input enabled;
 - in[2]

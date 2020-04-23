@@ -26,7 +26,7 @@ input in[254] ---->|  AliasCheck()  |
 include "../compconstant/compconstant.circom";
 ```
 
-## Inputs
+## Expected Inputs
 
 | Input              | Type                         |
 | -------------      | -------------                | 

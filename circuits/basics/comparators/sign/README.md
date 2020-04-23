@@ -25,7 +25,7 @@ in[254] ----> |  Sign()  | ----> sign
 include "../compconstant/compconstant.circom";
 ```
 
-## Inputs
+## Expected Inputs
 
 | Input             | Type           |
 | -------------     | -------------  | 

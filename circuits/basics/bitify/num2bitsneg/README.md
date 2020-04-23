@@ -22,7 +22,7 @@ include "../../comparators/is_zero/is_zero.circom";
     signal input in;
     signal output out[n];
 
-## Inputs
+## Expected Inputs
 
 | Input           | Type           |
 | -------------   | -------------  | 

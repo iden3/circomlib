@@ -19,9 +19,10 @@ sel ----> |  Switcher()  |
 include "../compconstant/compconstant.circom";
 ```
 
-## Inputs
+## Expected Inputs
 
 | Input         | Type           |
+
 | ------------- | -------------  | 
 | `sel`         | Boolean      |
 | `R`           | TODO: ?      |
