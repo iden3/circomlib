@@ -1,39 +1,25 @@
-const chai = require("chai");
 const path = require("path");
-
 const tester = require("circom").tester;
 
-const bigInt = require("big-integer");
-
-const assert = chai.assert;
+async function checkOr( a, b, circuit, out) {
+    const w = await circuit.calculateWitness({a: a, b: b}, true);
+    await circuit.assertOut(w, {out: out});
+}
 
 describe("OR test", function () {
 
-    this.timeout(100000000);
+    this.timeout(100000);
 
     let circuit;
     before( async() => {
         circuit = await tester(path.join(__dirname, "or.test.circom"));
     });
 
-    it("Should 1 OR 1 = 1", async () => {
-        const witness = await circuit.calculateWitness({ "a": "1", "b": "1" }, true);
-        await circuit.assertOut(witness, {out: 1});
+    it("Should check truth table", async () => {
+        await checkOr(1,1, circuit, 1);
+        await checkOr(1,0, circuit, 1);
+        await checkOr(0,1, circuit, 1);
+        await checkOr(0,0, circuit, 0);
     });
-
-    it("Should 1 OR 0 = 0", async () => {
-        const witness = await circuit.calculateWitness({ "a": "1", "b": "0" }, true);
-        await circuit.assertOut(witness, {out: 1});
-    });
-
-    it("Should 0 OR 1 = 1", async () => {
-        const witness = await circuit.calculateWitness({ "a": "0", "b": "1" }, true);
-        await circuit.assertOut(witness, {out: 1});
-    });
-
-    it("Should 0 OR 0 = 0", async () => {
-        const witness = await circuit.calculateWitness({ "a": "0", "b": "0" }, true);
-        await circuit.assertOut(witness, {out: 0});
-    });
-
+    
 });

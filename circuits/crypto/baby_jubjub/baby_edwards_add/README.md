@@ -28,7 +28,7 @@ input y2 ---->  |____________________|
 
 None.
 
-## Inputs
+## Expected Inputs
 
 | Input         | Representation | Description         |                                             |
 | ------------- | -------------  | -------------       | -------------                               |

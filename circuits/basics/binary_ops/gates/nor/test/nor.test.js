@@ -1,33 +1,25 @@
 const path = require("path");
 const tester = require("circom").tester;
 
+async function checkNor( a, b, circuit, out) {
+    const w = await circuit.calculateWitness({a: a, b: b}, true);
+    await circuit.assertOut(w, {out: out});
+}
+
 describe("NOR test", function () {
 
-    this.timeout(100000000);
+    this.timeout(100000);
 
     let circuit;
     before( async() => {
         circuit = await tester(path.join(__dirname, "nor.test.circom"));
     });
 
-    it("Should NOT(1 OR 1) = 0", async () => {
-        const witness = await circuit.calculateWitness({ "a": "1", "b": "1" }, true);
-        await circuit.assertOut(witness, {out: 0});
+    it("Should check truth table", async () => {
+        await checkNor(1,1, circuit, 0);
+        await checkNor(1,0, circuit, 0);
+        await checkNor(0,1, circuit, 0);
+        await checkNor(0,0, circuit, 1);
     });
-
-    it("Should NOT(1 OR 0) = 0", async () => {
-        const witness = await circuit.calculateWitness({ "a": "1", "b": "0" }, true);
-        await circuit.assertOut(witness, {out: 0});
-    });
-
-    it("Should NOT(0 AND 1) = 0", async () => {
-        const witness = await circuit.calculateWitness({ "a": "0", "b": "1" }, true);
-        await circuit.assertOut(witness, {out: 0});
-    });
-
-    it("Should NOT(0 AND 0) = 1", async () => {
-        const witness = await circuit.calculateWitness({ "a": "0", "b": "0" }, true);
-        await circuit.assertOut(witness, {out: 1});
-    });
-
+    
 });

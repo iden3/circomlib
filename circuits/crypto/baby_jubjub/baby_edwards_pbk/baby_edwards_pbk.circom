@@ -17,9 +17,8 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "../../../../basic_templates/bitify/num2bits/num2bits.circom";
-//TODO: Change dependency path:
-include "escalarmulfix.circom"; 
+include "../../../basics/bitify/num2bits/num2bits.circom";
+include "baby_edwards_scalar_mul_fix/baby_edwards_scalar_mul_fix.circom"; 
 
 
 // Extracts thebabyadd public key from private key

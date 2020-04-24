@@ -110,4 +110,4 @@ Blabla
 
 ## License
 
-The `circomlib` repository is part of the iden3 project. All files are copyrighted under 2018 0KIMS association and published with GPL-3 license. Please check the [`LICENSE`](/LICENSE) file for more details.
+This repository is part of the iden3 project. All files are copyrighted under 2018 0KIMS association and published with GPL-3 license. Please check the [`LICENSE`](/LICENSE) file for more details.

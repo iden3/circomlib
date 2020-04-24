@@ -1,16 +1,10 @@
-/*
-
-const chai = require("chai");
 const path = require("path");
 
 const createBlakeHash = require("blake-hash");
-const eddsa = require("../src/eddsa.js");
+const eddsa = require("../../../../../src/eddsa.js");
 
-const assert = chai.assert;
-
-const bigInt = require("big-integer");
 const tester = require("circom").tester;
-const utils = require("../src/utils.js");
+const utils = require("../../../../../src/utils.js");
 
 describe("Baby Jubjub twisted Edwards public key extraction test", function () {
 
@@ -18,7 +12,7 @@ describe("Baby Jubjub twisted Edwards public key extraction test", function () {
 
     let circuit;
     before( async() => {
-        circuit = await tester(path.join(__dirname, "babypbk_test.circom"));
+        circuit = await tester(path.join(__dirname, "baby_edwards_pbk.test.circom"));
     });
 
     it("It should extract the public key from the private one", async () => {
@@ -41,5 +35,3 @@ describe("Baby Jubjub twisted Edwards public key extraction test", function () {
     });
 
 });
-
-*/
