@@ -10,8 +10,6 @@ template Sha256(nBits) {
     var i;
     var k;
     var nBlocks;
-    var bitsLastBlock;
-
 
     nBlocks = ((nBits + 64)\512)+1;
 
