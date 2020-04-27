@@ -17,11 +17,12 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "../../../../montgomery/montgomeryadd/montgomeryadd.circom";
-include "../../../../montgomery/montgomerydouble/montgomerydouble.circom";
-include "../../../../edwards2montgomery/edwards2montgomery.circom";
-include "../../../../montgomery2edwards/montgomery2edwards.circom";
-include "../../../babyadd/babyadd.circom";
+include "../baby_montgomery_add/baby_montgomery_add.circom";
+include "../baby_montgomery_dbl/baby_montgomery_dbl.circom";
+include "../baby_edwards2montgomery/baby_edwards2montgomery.circom";
+include "../baby_montgomery2edwards/baby_montgomery2edwards.circom";
+include "../baby_edwards_add/baby_edwards_add.circom";
+include "../../../basics/multiplexer/multi_mux3/multi_mux3.circom";
 include "_window_mul_fix.circom";
 
 /*
@@ -44,7 +45,7 @@ template SegmentMulFix(nWindows) {
 
     // Convert the base to montgomery
 
-    component e2m = Edwards2Montgomery();
+    component e2m = BabyEdwards2Montgomery();
     e2m.in[0] <== base[0];
     e2m.in[1] <== base[1];
 
@@ -53,11 +54,11 @@ template SegmentMulFix(nWindows) {
     component cadders[nWindows];
 
     // In the last step we add an extra doubler so that numbers do not match.
-    component dblLast = MontgomeryDouble();
+    component dblLast = BabyMontgomeryDbl();
 
     for (i=0; i<nWindows; i++) {
         windows[i] = WindowMulFix();
-        cadders[i] = MontgomeryAdd();
+        cadders[i] = BabyMontgomeryAdd();
         if (i==0) {
             windows[i].base[0] <== e2m.out[0];
             windows[i].base[1] <== e2m.out[1];
@@ -84,7 +85,7 @@ template SegmentMulFix(nWindows) {
     }
 
     for (i=0; i<nWindows; i++) {
-        adders[i] = MontgomeryAdd();
+        adders[i] = BabyMontgomeryAdd();
         if (i==0) {
             adders[i].in1[0] <== dblLast.out[0];
             adders[i].in1[1] <== dblLast.out[1];
@@ -96,15 +97,15 @@ template SegmentMulFix(nWindows) {
         adders[i].in2[1] <== windows[i].out[1];
     }
 
-    component m2e = Montgomery2Edwards();
-    component cm2e = Montgomery2Edwards();
+    component m2e = BabyMontgomery2Edwards();
+    component cm2e = BabyMontgomery2Edwards();
 
     m2e.in[0] <== adders[nWindows-1].out[0];
     m2e.in[1] <== adders[nWindows-1].out[1];
     cm2e.in[0] <== cadders[nWindows-1].out[0];
     cm2e.in[1] <== cadders[nWindows-1].out[1];
 
-    component cAdd = BabyAdd();
+    component cAdd = BabyEdwardsAdd();
     cAdd.x1 <== m2e.out[0];
     cAdd.y1 <== m2e.out[1];
     cAdd.x2 <== -cm2e.out[0];

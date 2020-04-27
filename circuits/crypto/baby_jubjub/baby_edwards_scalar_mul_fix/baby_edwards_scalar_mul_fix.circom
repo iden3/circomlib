@@ -64,8 +64,8 @@ template BabyEdwardsScalarMulFix(n, BASE) {
             segments[s].base[0] <== BASE[0];
             segments[s].base[1] <== BASE[1];
         } else {
-            m2e[s-1] = Montgomery2Edwards();
-            adders[s-1] = BabyAdd();
+            m2e[s-1] = BabyMontgomery2Edwards();
+            adders[s-1] = BabyEdwardsAdd();
 
             segments[s-1].dbl[0] ==> m2e[s-1].in[0];
             segments[s-1].dbl[1] ==> m2e[s-1].in[1];
