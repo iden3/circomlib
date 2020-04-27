@@ -15,7 +15,7 @@ describe("Baby Jubjub twisted Edwards public key extraction test", function () {
         circuit = await tester(path.join(__dirname, "baby_edwards_pbk.test.circom"));
     });
 
-    it("It should extract the public key from the private one", async () => {
+    it("Should extract the public key from the private one", async () => {
 
         const rawpvk = Buffer.from("0001020304050607080900010203040506070809000102030405060708090021", "hex");
         const pvk    = eddsa.pruneBuffer(createBlakeHash("blake512").update(rawpvk).digest().slice(0,32));

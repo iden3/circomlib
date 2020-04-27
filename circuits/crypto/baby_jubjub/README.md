@@ -2,7 +2,7 @@
 
 This folder contains the templates to do operations on [Baby Jubjub](https://github.com/ethereum/EIPs/pull/2494) elliptic curve.
 
-Add description of the curve?
+TODO: Add description of the curve
 
 ## Structure of the folder
 

@@ -17,8 +17,36 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-template BabyEdwardsPoint2Bits() {
+include "../../../basics/bitify/num2bits/num2bits.circom";
+include "../../../basics/comparators/alias_check/alias_check.circom";
+include "../../../basics/comparators/comp_constant/comp_constant.circom";
+
+template BabyEdwardsPoint2Bits_Strict() {
     signal input in[2];
     signal output out[256];
 
+    var i;
+
+    component n2bX = Num2Bits(254);
+    n2bX.in <== in[0];
+    component n2bY = Num2Bits(254);
+    n2bY.in <== in[1];
+
+    component aliasCheckX = AliasCheck();
+    component aliasCheckY = AliasCheck();
+    for (i=0; i<254; i++) {
+        aliasCheckX.in[i] <== n2bX.out[i];
+        aliasCheckY.in[i] <== n2bY.out[i];
+    }
+
+    component signCalc = CompConstant(10944121435919637611123202872628637544274182200208017171849102093287904247808);
+    for (i=0; i<254; i++) {
+        signCalc.in[i] <== n2bX.out[i];
+    }
+
+    for (i=0; i<254; i++) {
+        out[i] <== n2bY.out[i];
+    }
+    out[254] <== 0;
+    out[255] <== signCalc.out;
 }

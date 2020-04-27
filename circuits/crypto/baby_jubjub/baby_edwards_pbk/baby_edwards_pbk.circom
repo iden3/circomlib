@@ -20,8 +20,7 @@
 include "../../../basics/bitify/num2bits/num2bits.circom";
 include "baby_edwards_scalar_mul_fix/baby_edwards_scalar_mul_fix.circom"; 
 
-
-// Extracts thebabyadd public key from private key
+// Extracts the Baby Jubjub public key from a given private key
 template BabyEdwardsPbk() {
     signal private input  in;
     signal         output Ax;
