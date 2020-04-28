@@ -1,4 +1,3 @@
-const chai = require("chai");
 const path = require("path");
 const bigInt = require("big-integer");
 const tester = require("circom").tester;
@@ -7,7 +6,7 @@ function print(circuit, w, s) {
     console.log(s + ": " + w[circuit.getSignalIdx(s)]);
 }
 
-describe("Scalarmulany test", function () {
+describe("Scalar_mul_any test", function () {
     let circuitEMulAny;
 
     this.timeout(100000);
@@ -18,10 +17,10 @@ describe("Scalarmulany test", function () {
     ];
 
     before( async() => {
-        circuitEMulAny = await tester(path.join(__dirname, "scalarmulany_test.circom"));
+        circuitEMulAny = await tester(path.join(__dirname, "baby_edwards_scalar_mul_any.test.circom"));
     });
 
-    it("Should generate Same escalar mul", async () => {
+    it("Should generate same scalar mul", async () => {
 
         const w = await circuitEMulAny.calculateWitness({"e": 1, "p": g});
 

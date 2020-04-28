@@ -7,7 +7,7 @@ function print(circuit, w, s) {
     console.log(s + ": " + w[circuit.getSignalIdx(s)]);
 }
 
-describe("Scalarmulfix test", function () {
+describe("Scalar_mul_fix test", function () {
     let circuit;
 
     this.timeout(100000);

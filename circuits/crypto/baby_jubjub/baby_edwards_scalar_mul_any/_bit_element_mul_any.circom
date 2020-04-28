@@ -17,9 +17,11 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "../../../../montgomery/montgomeryadd/montgomeryadd.circom";
-include "../../../../montgomery/montgomerydouble/montgomerydouble.circom";
-include "../multiplexor2/multiplexor2.circom";
+
+
+include "_multiplexor2.circom";
+include "../baby_montgomery_add/baby_montgomery_add.circom";
+include "../baby_montgomery_dbl/baby_montgomery_dbl.circom";
 
 template BitElementMulAny() {
     signal input sel;
@@ -28,8 +30,8 @@ template BitElementMulAny() {
     signal output dblOut[2];
     signal output addOut[2];
 
-    component doubler = MontgomeryDouble();
-    component adder = MontgomeryAdd();
+    component doubler = BabyMontgomeryDbl();
+    component adder = BabyMontgomeryAdd();
     component selector = Multiplexor2();
 
 

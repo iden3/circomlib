@@ -18,7 +18,7 @@
 */
 
 include "../../../basics/bitify/num2bits/num2bits.circom";
-include "baby_edwards_scalar_mul_fix/baby_edwards_scalar_mul_fix.circom"; 
+include "../baby_edwards_scalar_mul_fix/baby_edwards_scalar_mul_fix.circom"; 
 
 // Extracts the Baby Jubjub public key from a given private key
 template BabyEdwardsPbk() {
@@ -34,7 +34,7 @@ template BabyEdwardsPbk() {
     component pvkBits = Num2Bits(253);
     pvkBits.in <== in;
 
-    component mulFix = EscalarMulFix(253, BASE8);
+    component mulFix = BabyEdwardsScalarMulFix(253, BASE8);
 
     var i;
     for (i=0; i<253; i++) {

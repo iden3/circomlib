@@ -17,15 +17,15 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "../../babyadd/babyadd.circom";
-include "../../../montgomery2edwards/montgomery2edwards.circom";
-include "../../../montgomery/montgomerydouble/montgomerydouble.circom";
-include "segmentmulany/segmentmulany.circom";
-include "../../../../../basic_templates/comparators/iszero/iszero.circom";
+include "_segment_mul_any.circom";
+include "../baby_edwards_add/baby_edwards_add.circom";
+include "../baby_montgomery2edwards/baby_montgomery2edwards.circom";
+include "../baby_montgomery_dbl/baby_montgomery_dbl.circom";
+include "../../../basics/comparators/is_zero/is_zero.circom";
 
 // This function assumes that p is in the subgroup and it is different to 0.
 
-template ScalarMulAny(n) {
+template BabyEdwardsScalarMulAny(n) {
     signal input e[n];              // Input in binary format
     signal input p[2];              // Point (Twisted format)
     signal output out[2];           // Point (Twisted format)
@@ -59,9 +59,9 @@ template ScalarMulAny(n) {
             segments[s].p[0] <== p[0] + (5299619240641551281634865583518297030282874472190772894086521144482721001553 - p[0])*zeropoint.out;
             segments[s].p[1] <== p[1] + (16950150798460657717958625567821834550301663161624707787222815936182638968203 - p[1])*zeropoint.out;
         } else {
-            doublers[s-1] = MontgomeryDouble();
-            m2e[s-1] = Montgomery2Edwards();
-            adders[s-1] = BabyAdd();
+            doublers[s-1] = BabyMontgomeryDbl();
+            m2e[s-1] = BabyMontgomery2Edwards();
+            adders[s-1] = BabyEdwardsAdd();
 
             segments[s-1].dbl[0] ==> doublers[s-1].in[0];
             segments[s-1].dbl[1] ==> doublers[s-1].in[1];

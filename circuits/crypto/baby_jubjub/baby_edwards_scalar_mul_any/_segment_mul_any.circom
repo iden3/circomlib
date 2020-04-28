@@ -17,11 +17,11 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "../../../babyadd/babyadd.circom";
-include "../../../../edwards2montgomery/edwards2montgomery.circom";
-include "../../../../montgomery2edwards/montgomery2edwards.circom";
-include "../bitelementmulany/bitelementmulany.circom";
-include "../multiplexor2/multiplexor2.circom";
+include "../baby_edwards_add/baby_edwards_add.circom";
+include "../baby_montgomery2edwards/baby_montgomery2edwards.circom";
+include "../baby_edwards2montgomery/baby_edwards2montgomery.circom";
+include "_multiplexor2.circom";
+include "_bit_element_mul_any.circom";
 
 // p is montgomery point
 // n must be <= 248
@@ -36,7 +36,7 @@ template SegmentMulAny(n) {
 
     component bits[n-1];
 
-    component e2m = Edwards2Montgomery();
+    component e2m = BabyEdwards2Montgomery();
 
     p[0] ==> e2m.in[0];
     p[1] ==> e2m.in[1];
@@ -63,12 +63,12 @@ template SegmentMulAny(n) {
     bits[n-2].dblOut[0] ==> dbl[0];
     bits[n-2].dblOut[1] ==> dbl[1];
 
-    component m2e = Montgomery2Edwards();
+    component m2e = BabyMontgomery2Edwards();
 
     bits[n-2].addOut[0] ==> m2e.in[0];
     bits[n-2].addOut[1] ==> m2e.in[1];
 
-    component eadder = BabyAdd();
+    component eadder = BabyEdwardsAdd();
 
     m2e.out[0] ==> eadder.x1;
     m2e.out[1] ==> eadder.y1;
