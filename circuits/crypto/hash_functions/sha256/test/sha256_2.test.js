@@ -1,3 +1,5 @@
+/*
+
 const chai = require("chai");
 const path = require("path");
 const snarkjs = require("snarkjs");
@@ -69,3 +71,5 @@ describe("SHA256_2 test", function () {
     }).timeout(1000000);
 
 });
+
+*/

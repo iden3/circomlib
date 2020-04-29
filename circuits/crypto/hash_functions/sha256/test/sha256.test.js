@@ -1,3 +1,4 @@
+/*
 const chai = require("chai");
 const path = require("path");
 const crypto = require("crypto");
@@ -89,3 +90,5 @@ describe("SHA256 test", function () {
     });
 
 });
+
+*/

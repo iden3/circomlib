@@ -1,18 +1,82 @@
-# Name of Template
+# Sparse Merkle Trees
 
-PATH HERE: ~/CircomLib/Circuits/... 
+Blabla about sparse Merkle trees ... .
 
-## Background
+
+Files but these two description:
+
+- `SMTProcessor(nLevels)`
+- `SMTVerifier(nLevels)`
+
+# `SMTProcessor(nLevels)`
 
 ## Description
 
+This template ... 
+
 ## Schema
+
+```
+                 _________________________     
+input x1 ---->  |                         |
+input y1 ---->  |  SMTProcessor(nLevels)  | ----> output xout
+input y2 ---->  |_________________________|     
+```
 
 ## Dependencies
 
-## Inputs
+None.
+
+## Expected Inputs
+
+| Input         | Representation | Description         |                                             |
+| ------------- | -------------  | -------------       | -------------                               |
+| `x1`          | Bigint         | Field element of Fp | First coordinate of a point (x1, y1) on E.  |
+| `y1`          | Bigint         | Field element of Fp | Second coordinate of a point (x1, y1) on E. |
 
 ## Outputs
+
+| Output          | Representation | Description         |           
+| -------------   | -------------  | -------------       | 
+| `xout`          | Bigint         | Field element of Fp | 
+
+
+## Benchmarks 
+
+## Test
+
+# `SMTVerifier(nLevels)`
+
+## Description
+
+This template ... 
+
+## Schema
+
+```
+                 _________________________     
+input x1 ---->  |                         |
+input y1 ---->  |  SMTProcessor(nLevels)  | ----> output xout
+input y2 ---->  |_________________________|     
+```
+
+## Dependencies
+
+None.
+
+## Expected Inputs
+
+| Input         | Representation | Description         |                                             |
+| ------------- | -------------  | -------------       | -------------                               |
+| `x1`          | Bigint         | Field element of Fp | First coordinate of a point (x1, y1) on E.  |
+| `y1`          | Bigint         | Field element of Fp | Second coordinate of a point (x1, y1) on E. |
+
+## Outputs
+
+| Output          | Representation | Description         |           
+| -------------   | -------------  | -------------       | 
+| `xout`          | Bigint         | Field element of Fp | 
+
 
 ## Benchmarks 
 
