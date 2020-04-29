@@ -17,30 +17,31 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "../binsum.circom"
-include "sigma.circom"
+include "../../../basics/binary_ops/bin_sum/bin_sum.circom";
+include "_sigma.circom";
+include "_maj.circom"
 
-template SigmaPlus() {
-    signal input in2[32];
-    signal input in7[32];
-    signal input in15[32];
-    signal input in16[32];
+template T2() {
+    signal input a[32];
+    signal input b[32];
+    signal input c[32];
     signal output out[32];
     var k;
 
-    component sigma1 = SmallSigma(17,19,10);
-    component sigma0 = SmallSigma(7, 18, 3);
+    component bigsigma0 = BigSigma(2, 13, 22);
+    component maj = Maj(32);
     for (k=0; k<32; k++) {
-        sigma1.in[k] <== in2[k];
-        sigma0.in[k] <== in15[k];
+        bigsigma0.in[k] <== a[k];
+        maj.a[k] <== a[k];
+        maj.b[k] <== b[k];
+        maj.c[k] <== c[k];
     }
 
-    component sum = BinSum(32, 4);
+    component sum = BinSum(32, 2);
+
     for (k=0; k<32; k++) {
-        sum.in[0][k] <== sigma1.out[k];
-        sum.in[1][k] <== in7[k];
-        sum.in[2][k] <== sigma0.out[k];
-        sum.in[3][k] <== in16[k];
+        sum.in[0][k] <== bigsigma0.out[k];
+        sum.in[1][k] <== maj.out[k];
     }
 
     for (k=0; k<32; k++) {

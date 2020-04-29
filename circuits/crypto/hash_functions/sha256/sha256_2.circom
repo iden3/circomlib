@@ -17,9 +17,10 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "constants.circom";
-include "sha256compression.circom";
-include "../bitify.circom"
+include "_constants.circom";
+include "_sha256compression.circom";
+include "../../../basics/bitify/bits2num/bits2num.circom"
+include "../../../basics/bitify/num2bits/num2bits.circom"
 
 template Sha256_2() {
     signal input a;

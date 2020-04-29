@@ -1,3 +1,5 @@
+/*
+
 const path = require("path");
 
 const bigInt = require("big-integer");
@@ -45,3 +47,5 @@ describe("Pedersen test", function() {
 
     });
 });
+
+*/

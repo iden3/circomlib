@@ -17,9 +17,9 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "xor3.circom";
-include "rotate.circom";
-include "shift.circom";
+include "_xor3.circom";
+include "_rotate.circom";
+include "_shift.circom";
 
 template SmallSigma(ra, rb, rc) {
     signal input in[32];

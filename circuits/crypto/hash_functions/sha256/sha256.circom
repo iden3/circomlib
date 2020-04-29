@@ -1,7 +1,24 @@
+/*
+    Copyright 2018 0KIMS association.
 
+    This file is part of circom (Zero Knowledge Circuit Compiler).
 
-include "constants.circom";
-include "sha256compression.circom";
+    circom is a free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    circom is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+    or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public
+    License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with circom. If not, see <https://www.gnu.org/licenses/>.
+*/
+
+include "_constants.circom";
+include "_sha256compression.circom";
 
 template Sha256(nBits) {
     signal input in[nBits];

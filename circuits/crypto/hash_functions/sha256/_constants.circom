@@ -17,6 +17,7 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
+// Page 3 - http://www.iwar.org.uk/comsec/resources/cipher/sha256-384-512.pdf
 template H(x) {
     signal output out[32];
     var c[8] = [0x6a09e667,
@@ -33,6 +34,7 @@ template H(x) {
     }
 }
 
+// Page 7 - http://www.iwar.org.uk/comsec/resources/cipher/sha256-384-512.pdf
 template K(x) {
     signal output out[32];
     var c[64] = [

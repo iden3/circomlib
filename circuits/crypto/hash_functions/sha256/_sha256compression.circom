@@ -17,11 +17,11 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "constants.circom";
-include "t1.circom";
-include "t2.circom";
-include "../binsum.circom";
-include "sigmaplus.circom";
+include "../../../basics/binary_ops/bin_sum/bin_sum.circom";
+include "_constants.circom";
+include "_t1.circom";
+include "_t2.circom";
+include "_sigma_plus.circom";
 
 template Sha256compression() {
     signal input hin[256];

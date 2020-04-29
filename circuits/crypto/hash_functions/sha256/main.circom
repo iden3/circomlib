@@ -17,6 +17,8 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
+// TODO: When do we use this Main??
+
 include "sha256_2.jaz";
 
 template Main() {

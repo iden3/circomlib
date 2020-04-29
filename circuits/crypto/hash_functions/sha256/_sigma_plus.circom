@@ -17,41 +17,33 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "../binsum.circom";
-include "sigma.circom";
-include "ch.circom";
+include "../../../basics/binary_ops/bin_sum/bin_sum.circom";
+include "_sigma.circom"
 
-template T1() {
-    signal input h[32];
-    signal input e[32];
-    signal input f[32];
-    signal input g[32];
-    signal input k[32];
-    signal input w[32];
+template SigmaPlus() {
+    signal input in2[32];
+    signal input in7[32];
+    signal input in15[32];
+    signal input in16[32];
     signal output out[32];
+    var k;
 
-    var ki;
-
-    component ch = Ch(32);
-    component bigsigma1 = BigSigma(6, 11, 25);
-
-    for (ki=0; ki<32; ki++) {
-        bigsigma1.in[ki] <== e[ki];
-        ch.a[ki] <== e[ki];
-        ch.b[ki] <== f[ki];
-        ch.c[ki] <== g[ki];
+    component sigma1 = SmallSigma(17,19,10);
+    component sigma0 = SmallSigma(7, 18, 3);
+    for (k=0; k<32; k++) {
+        sigma1.in[k] <== in2[k];
+        sigma0.in[k] <== in15[k];
     }
 
-    component sum = BinSum(32, 5);
-    for (ki=0; ki<32; ki++) {
-        sum.in[0][ki] <== h[ki];
-        sum.in[1][ki] <== bigsigma1.out[ki];
-        sum.in[2][ki] <== ch.out[ki];
-        sum.in[3][ki] <== k[ki];
-        sum.in[4][ki] <== w[ki];
+    component sum = BinSum(32, 4);
+    for (k=0; k<32; k++) {
+        sum.in[0][k] <== sigma1.out[k];
+        sum.in[1][k] <== in7[k];
+        sum.in[2][k] <== sigma0.out[k];
+        sum.in[3][k] <== in16[k];
     }
 
-    for (ki=0; ki<32; ki++) {
-        out[ki] <== sum.out[ki];
+    for (k=0; k<32; k++) {
+        out[k] <== sum.out[k];
     }
 }
