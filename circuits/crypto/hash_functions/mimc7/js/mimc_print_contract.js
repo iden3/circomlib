@@ -1,4 +1,4 @@
-const mimcGenContract = require("./mimc_gencontract");
+const mimcGenContract = require("./mimc_gen_contract");
 
 const SEED = "mimc";
 

@@ -1,4 +1,4 @@
-const Poseidon = require("./poseidon");
+const Poseidon = require("../../hash_functions/poseidon/js/poseidon");
 const bigInt = require("big-integer");
 
 const hash = Poseidon.createHash(6, 8, 57);

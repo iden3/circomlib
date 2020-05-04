@@ -4,7 +4,7 @@
 
 const Web3Utils = require("web3-utils");
 
-const Contract = require("./evmasm");
+const Contract = require("../../../../../src/evmasm");
 
 function createCode(seed, n) {
 

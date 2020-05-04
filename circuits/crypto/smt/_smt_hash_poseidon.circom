@@ -17,7 +17,7 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "../poseidon.circom";
+include "../hash_functions/poseidon/poseidon.circom";
 
 
 /*

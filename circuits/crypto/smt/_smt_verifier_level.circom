@@ -37,6 +37,8 @@ H' is the Hash function with the inputs shifted acordingly.
 
 *****/
 
+include "../../basics/multiplexer/switcher/switcher.circom"
+include "_smt_hash_poseidon.circom"
 
 template SMTVerifierLevel() {
     signal input st_top;

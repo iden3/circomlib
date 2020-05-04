@@ -1,4 +1,4 @@
-const pedersenHash = require("./pedersenHash.js");
+const pedersenHash = require("pedersen_hash.js");
 
 let nBases;
 if (typeof process.argv[2] != "undefined") {

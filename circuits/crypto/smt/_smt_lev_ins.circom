@@ -73,6 +73,8 @@ a parent with a sibling != 0.
 
  */
 
+include "../../basics/comparators/is_zero/is_zero.circom"
+
 template SMTLevIns(nLevels) {
     signal input enabled;
     signal input siblings[nLevels];

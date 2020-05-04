@@ -27,15 +27,15 @@ fnc:  0 -> VERIFY INCLUSION
 
  */
 
+include "../../basics/binary_ops/gates/multi_and/multi_and.circom"
+include "../../basics/bitify/num2bits_strict/num2bits_strict.circom"
+include "../../basics/comparators/force_equal_if_enabled/force_equal_if_enabled.circom"
+include "../../basics/comparators/is_equal/is_equal.circom"
 
-include "../gates.circom";
-include "../bitify.circom";
-include "../comparators.circom";
-include "../switcher.circom";
-include "smtlevins.circom";
-include "smtverifierlevel.circom";
-include "smtverifiersm.circom";
-include "smthash_poseidon.circom";
+include "_smt_hash_poseidon.circom"
+include "_smt_lev_ins.circom"
+include "_smt_verifier_level.circom"
+include "_smt_verifier_sm.circom"
 
 template SMTVerifier(nLevels) {
     signal input enabled;

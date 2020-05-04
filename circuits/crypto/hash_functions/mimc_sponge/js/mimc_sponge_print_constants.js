@@ -1,4 +1,4 @@
-const mimcsponge = require("./mimcsponge.js");
+const mimcsponge = require("./mimc_sponge.js");
 
 const nRounds = 220;
 let S = "[\n";

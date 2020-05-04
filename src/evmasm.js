@@ -2,7 +2,6 @@
 // License: LGPL-3.0+
 //
 
-
 const Web3Utils = require("web3-utils");
 
 class Contract {

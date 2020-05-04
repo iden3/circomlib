@@ -1,7 +1,7 @@
 const ganache = require("ganache-cli");
 const Web3 = require("web3");
 const chai = require("chai");
-const mimcGenContract = require("../../../../../src/mimcsponge_gencontract");
+const mimcGenContract = require("../js/mimc_sponge_gen_contract");
 const mimcjs = require("../js/mimc_sponge.js");
 
 
