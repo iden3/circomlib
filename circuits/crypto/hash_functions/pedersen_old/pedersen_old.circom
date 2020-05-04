@@ -17,7 +17,7 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "escalarmul.circom";
+include "../../baby_jubjub/baby_edwards_scalar_mul/baby_edwards_scalar_mul.circom";
 
 template Pedersen(n) {
     signal input in[n];
@@ -26,7 +26,7 @@ template Pedersen(n) {
     var nexps = ((n-1) \ 250) + 1;
     var nlastbits = n - (nexps-1)*250;
 
-    component escalarMuls[nexps];
+    component scalarMuls[nexps];
 
     var PBASE[10][2] = [
         [10457101036533406547632367118273992217979173478358440826365724437999023779287,19824078218392094440610104313265183977899662750282163392862422243483260492317],
@@ -46,21 +46,21 @@ template Pedersen(n) {
     var nexpbits;
     for (i=0; i<nexps; i++) {
         nexpbits = (i == nexps-1) ? nlastbits : 250;
-        escalarMuls[i] = EscalarMul(nexpbits, PBASE[i]);
+        scalarMuls[i] = BabyEdwardsScalarMul(nexpbits, PBASE[i]);
 
         for (j=0; j<nexpbits; j++) {
-            escalarMuls[i].in[j] <== in[250*i + j];
+            scalarMuls[i].in[j] <== in[250*i + j];
         }
 
         if (i==0) {
-            escalarMuls[i].inp[0] <== 0;
-            escalarMuls[i].inp[1] <== 1;
+            scalarMuls[i].inp[0] <== 0;
+            scalarMuls[i].inp[1] <== 1;
         } else {
-            escalarMuls[i].inp[0] <== escalarMuls[i-1].out[0];
-            escalarMuls[i].inp[1] <== escalarMuls[i-1].out[1];
+            scalarMuls[i].inp[0] <== scalarMuls[i-1].out[0];
+            scalarMuls[i].inp[1] <== scalarMuls[i-1].out[1];
         }
     }
 
-    escalarMuls[nexps-1].out[0] ==> out[0];
-    escalarMuls[nexps-1].out[1] ==> out[1];
+    scalarMuls[nexps-1].out[0] ==> out[0];
+    scalarMuls[nexps-1].out[1] ==> out[1];
 }

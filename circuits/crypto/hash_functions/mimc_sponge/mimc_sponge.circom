@@ -17,6 +17,8 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
+include "_mimc_feistel.circom"
+
 // implements MiMC-2n/n as hash using a sponge construction.
 // log_5(21888242871839275222246405745257275088548364400416034343698204186575808495617) ~= 110
 // => nRounds should be 220

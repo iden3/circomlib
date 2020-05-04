@@ -3,9 +3,9 @@ const bigInt = require("big-integer");
 const babyJub = require("../../baby_jubjub/js/baby_jubjub");
 const utils = require("../../../../src/utils");
 const pedersenHash = require("../../hash_functions/pedersen_w4/js/pedersen_hash").hash;
-const mimc7 = require("../../../../src/mimc7");
+const mimc7 = require("../../hash_functions/mimc7/js/mimc7");
 const poseidon = require("../../hash_functions/poseidon/js/poseidon");
-const mimcsponge = require("../../../../src/mimcsponge");
+const mimcsponge = require("../../hash_functions/mimc_sponge/js/mimc_sponge");
 
 exports.prv2pub= prv2pub;
 exports.sign = sign;

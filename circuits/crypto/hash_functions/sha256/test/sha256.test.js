@@ -9,7 +9,7 @@ const sha256 = require("../js/sha256");
 
 const tester = require("circom").tester;
 
-// const printSignal = require("./helpers/printsignal");
+// const printSignal = require("../js/print_signal");
 
 function buffer2bitArray(b) {
     const res = [];

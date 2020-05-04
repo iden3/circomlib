@@ -1,21 +1,21 @@
-/*
 const chai = require("chai");
 const path = require("path");
-const tester = require("circom").tester;
 const bigInt = require("big-integer");
+const tester = require("circom").tester;
 
-const eddsa = require("../../js/eddsa.js");
+const eddsa = require("../../js/eddsa");
 
 const assert = chai.assert;
 
-describe("EdDSA MiMC test", function () {
+describe("EdDSA Poseidon test", function () {
     let circuit;
 
     this.timeout(100000);
 
     before( async () => {
 
-        circuit = await tester(path.join(__dirname, "eddsa_mimc.test.circom"));
+        circuit = await tester(path.join(__dirname, "eddsa_poseidon.test.circom"));
+
     });
 
     it("Sign a single number", async () => {
@@ -25,22 +25,25 @@ describe("EdDSA MiMC test", function () {
 
         const pubKey = eddsa.prv2pub(prvKey);
 
-        const signature = eddsa.signMiMC(prvKey, msg);
+        const signature = eddsa.signPoseidon(prvKey, msg);
 
-        assert(eddsa.verifyMiMC(msg, signature, pubKey));
+        assert(eddsa.verifyPoseidon(msg, signature, pubKey));
 
-        const w = await circuit.calculateWitness({
+        const input = {
             enabled: 1,
             Ax: pubKey[0],
             Ay: pubKey[1],
             R8x: signature.R8[0],
             R8y: signature.R8[1],
             S: signature.S,
-            M: msg}, true);
+            M: msg
+        };
 
+        // console.log(JSON.stringify(utils.stringifyBigInts(input)));
+
+        const w = await circuit.calculateWitness(input, true);
 
         await circuit.checkConstraints(w);
-
     });
 
     it("Detect Invalid signature", async () => {
@@ -51,11 +54,11 @@ describe("EdDSA MiMC test", function () {
         const pubKey = eddsa.prv2pub(prvKey);
 
 
-        const signature = eddsa.signMiMC(prvKey, msg);
+        const signature = eddsa.signPoseidon(prvKey, msg);
 
-        assert(eddsa.verifyMiMC(msg, signature, pubKey));
+        assert(eddsa.verifyPoseidon(msg, signature, pubKey));
         try {
-            const w = await circuit.calculateWitness({
+            await circuit.calculateWitness({
                 enabled: 1,
                 Ax: pubKey[0],
                 Ay: pubKey[1],
@@ -78,11 +81,11 @@ describe("EdDSA MiMC test", function () {
         const pubKey = eddsa.prv2pub(prvKey);
 
 
-        const signature = eddsa.signMiMC(prvKey, msg);
+        const signature = eddsa.signPoseidon(prvKey, msg);
 
-        assert(eddsa.verifyMiMC(msg, signature, pubKey));
+        assert(eddsa.verifyPoseidon(msg, signature, pubKey));
 
-        const w = await  circuit.calculateWitness({
+        const w = await circuit.calculateWitness({
             enabled: 0,
             Ax: pubKey[0],
             Ay: pubKey[1],
@@ -92,7 +95,5 @@ describe("EdDSA MiMC test", function () {
             M: msg}, true);
 
         await circuit.checkConstraints(w);
-
     });
 });
-*/
