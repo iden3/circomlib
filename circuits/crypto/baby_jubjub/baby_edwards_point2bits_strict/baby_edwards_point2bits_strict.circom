@@ -21,7 +21,7 @@ include "../../../basics/bitify/num2bits/num2bits.circom";
 include "../../../basics/comparators/alias_check/alias_check.circom";
 include "../../../basics/comparators/comp_constant/comp_constant.circom";
 
-template BabyEdwardsPoint2Bits_Strict() {
+template BabyEdwardsPoint2Bits_strict() {
     signal input in[2];
     signal output out[256];
 

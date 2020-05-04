@@ -1,12 +1,11 @@
 const createBlakeHash = require("blake-hash");
 const bigInt = require("big-integer");
-const babyJub = require("./babyjub");
-const utils = require("./utils");
-const pedersenHash = require("./pedersenHash").hash;
-const mimc7 = require("./mimc7");
-const poseidon = require("./poseidon.js");
-const mimcsponge = require("./mimcsponge");
-
+const babyJub = require("../../baby_jubjub/js/baby_jubjub");
+const utils = require("../../../../src/utils");
+const pedersenHash = require("../../hash_functions/pedersen_w4/js/pedersen_hash").hash;
+const mimc7 = require("../../../../src/mimc7");
+const poseidon = require("../../hash_functions/poseidon/js/poseidon");
+const mimcsponge = require("../../../../src/mimcsponge");
 
 exports.prv2pub= prv2pub;
 exports.sign = sign;

@@ -68,7 +68,7 @@ function sqrt(n) {
     return r;
 }
 
-template BabyEdwardsBits2Point_Strict() {
+template BabyEdwardsBits2Point_strict() {
     signal input in[256];
     signal output out[2];
 

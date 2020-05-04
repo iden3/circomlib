@@ -6,8 +6,8 @@ template Main() {
 
     var i
 
-    component p2b = BabyEdwardsPoint2Bits_Strict();
-    component b2p = BabyEdwardsBits2Point_Strict();
+    component p2b = BabyEdwardsPoint2Bits_strict();
+    component b2p = BabyEdwardsBits2Point_strict();
 
     p2b.in[0] <== in[0];
     p2b.in[1] <== in[1];

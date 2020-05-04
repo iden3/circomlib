@@ -1,5 +1,3 @@
-/*
-
 const chai = require("chai");
 const path = require("path");
 
@@ -26,5 +24,3 @@ describe("Constants test", function () {
         assert(witness[1].equals(bigInt("d807aa98", 16)));
     });
 });
-
-*/

@@ -17,11 +17,14 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "compconstant.circom";
-include "pointbits.circom";
-include "pedersen.circom";
-include "escalarmulany.circom";
-include "escalarmulfix.circom";
+include "../../../basics/comparators/comp_constant/comp_constant.circom";
+include "../../../basics/comparators/is_zero/is_zero.circom";
+include "../../baby_jubjub/baby_edwards_bits2point_strict/baby_edwards_bits2point_strict.circom";
+include "../../baby_jubjub/baby_edwards_point2bits_strict/baby_edwards_point2bits_strict.circom";
+include "../../baby_jubjub/baby_edwards_dbl/baby_edwards_dbl.circom";
+include "../../baby_jubjub/baby_edwards_scalar_mul_any/baby_edwards_scalar_mul_any.circom";
+include "../../baby_jubjub/baby_edwards_scalar_mul_fix/baby_edwards_scalar_mul_fix.circom";
+include "../../hash_functions/pedersen_w4/pedersen_w4.circom";
 
 template EdDSAVerifier(n) {
     signal input msg[n];
@@ -51,7 +54,7 @@ template EdDSAVerifier(n) {
 
 // Convert A to Field elements (And verify A)
 
-    component bits2pointA = Bits2Point_Strict();
+    component bits2pointA = BabyEdwardsBits2Point_strict();
 
     for (i=0; i<256; i++) {
         bits2pointA.in[i] <== A[i];
@@ -61,7 +64,7 @@ template EdDSAVerifier(n) {
 
 // Convert R8 to Field elements (And verify R8)
 
-    component bits2pointR8 = Bits2Point_Strict();
+    component bits2pointR8 = BabyEdwardsBits2Point_strict();
 
     for (i=0; i<256; i++) {
         bits2pointR8.in[i] <== R8[i];
@@ -81,7 +84,7 @@ template EdDSAVerifier(n) {
         hash.in[512+i] <== msg[i];
     }
 
-    component point2bitsH = Point2Bits_Strict();
+    component point2bitsH = BabyEdwardsPoint2Bits_strict();
     point2bitsH.in[0] <== hash.out[0];
     point2bitsH.in[1] <== hash.out[1];
 
@@ -89,13 +92,13 @@ template EdDSAVerifier(n) {
 
     // Multiply by 8 by adding it 3 times.  This also ensure that the result is in
     // the subgroup.
-    component dbl1 = BabyDbl();
+    component dbl1 = BabyEdwardsDbl();
     dbl1.x <== Ax;
     dbl1.y <== Ay;
-    component dbl2 = BabyDbl();
+    component dbl2 = BabyEdwardsDbl();
     dbl2.x <== dbl1.xout;
     dbl2.y <== dbl1.yout;
-    component dbl3 = BabyDbl();
+    component dbl3 = BabyEdwardsDbl();
     dbl3.x <== dbl2.xout;
     dbl3.y <== dbl2.yout;
 
@@ -104,7 +107,7 @@ template EdDSAVerifier(n) {
     isZero.in <== dbl3.x;
     isZero.out === 0;
 
-    component mulAny = EscalarMulAny(256);
+    component mulAny = BabyEdwardsScalarMulAny(256);
     for (i=0; i<256; i++) {
         mulAny.e[i] <== point2bitsH.out[i];
     }
@@ -114,7 +117,7 @@ template EdDSAVerifier(n) {
 
 // Compute the right side: right =  R8 + right2
 
-    component addRight = BabyAdd();
+    component addRight = BabyEdwardsAdd();
     addRight.x1 <== R8x;
     addRight.y1 <== R8y;
     addRight.x2 <== mulAny.out[0];
@@ -126,7 +129,7 @@ template EdDSAVerifier(n) {
         5299619240641551281634865583518297030282874472190772894086521144482721001553,
         16950150798460657717958625567821834550301663161624707787222815936182638968203
     ];
-    component mulFix = EscalarMulFix(256, BASE8);
+    component mulFix = BabyEdwardsScalarMulFix(256, BASE8);
     for (i=0; i<256; i++) {
         mulFix.e[i] <== S[i];
     }

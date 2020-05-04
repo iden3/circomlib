@@ -90,5 +90,4 @@ describe("SHA256 test", function () {
     });
 
 });
-
 */
