@@ -4,6 +4,8 @@ This folder contains the templates to generate signatures.
 
 ## Structure of the Folder
 
-- [`eddsa`](doc/cryptography/signatures/eddsa)
-
-## Background on Signatures
+- [`eddsa`](eddsa)
+- [`eddsa_mimc`](eddsa_mimc)
+- [`eddsa_mimc_sponge`](eddsa_mimc_sponge)
+- [`eddsa_poseidon`](eddsa_poseidon)
+- [`js`](js)

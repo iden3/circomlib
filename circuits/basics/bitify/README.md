@@ -10,4 +10,4 @@ This folder contains the templates to perform conversions of field elements to i
 - [`bits2num_strict`](bits2num_strict)
 - [`num2bits`](num2bits)
 - [`num2bits_strict`](num2bits_strict)
-- [`num2bitsneg`](num2bitsneg)
+- [`num2bits_neg`](num2bits_neg)

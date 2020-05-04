@@ -22,7 +22,7 @@ This folder contains various templates to do binary operations, conversions from
     - [`bits2num_strict`](bitify/bits2num_strict)
     - [`num2bits`](bitify/num2bits)
     - [`num2bits_strict`](bitify/num2bits_strict)
-    - [`num2bitsneg`](bitify/num2bitsneg)
+    - [`num2bits_neg`](bitify/num2bits_neg)
 - [`comparators`](comparators)
     - [`alias_check`](comparators/alias_check)
     - [`comp_constant`](comparators/comp_constant)
