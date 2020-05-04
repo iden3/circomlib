@@ -2,7 +2,7 @@ const chai = require("chai");
 const path = require("path");
 const bigInt = require("big-integer");
 const tester = require("circom").tester;
-const babyJub = require("../../../../../src/babyjub");
+const babyJub = require("../../js/baby_jubjub");
 
 const assert = chai.assert;
 
@@ -16,7 +16,7 @@ describe("Scalarmulw4table (exponentiation) test", function () {
 
     it("Should generate the Exponentiation table for k=0", async () => {
 
-        const circuit = await tester(path.join(__dirname, "scalarmulw4table_test.circom"));
+        const circuit = await tester(path.join(__dirname, "_baby_edwards_scalar_mul_w4table_1.test.circom"));
 
         const w = await circuit.calculateWitness({in: 1});
 
@@ -43,7 +43,7 @@ describe("Scalarmulw4table (exponentiation) test", function () {
 
     it("Should generate the Exponentiation table for k=3", async () => {
 
-        const circuit = await tester(path.join(__dirname, "scalarmulw4table_test3.circom"));
+        const circuit = await tester(path.join(__dirname, "_baby_edwards_scalar_mul_w4table_3.test.circom"));
 
         const w = await circuit.calculateWitness({in: 1});
 
@@ -72,5 +72,5 @@ describe("Scalarmulw4table (exponentiation) test", function () {
 
     });
 
-//    TODO: Add last test.
+//    TODO: Add last test. (for k = 2?)
 });

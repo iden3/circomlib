@@ -1,9 +1,9 @@
 const path = require("path");
 const tester = require("circom").tester;
 
-const babyJub = require("../../../../../src/babyjub.js");
+const babyJub = require("../../js/baby_jubjub.js");
 
-describe("Bits 2 point test", function() {
+describe("Bits 2 point_strict test", function() {
 
     let circuit;
     

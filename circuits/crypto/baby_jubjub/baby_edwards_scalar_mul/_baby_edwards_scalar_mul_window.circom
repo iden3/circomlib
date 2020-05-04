@@ -17,11 +17,11 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "../../../../../../basic_templates/mux/multimux4/multimux4.circom";
-include "../../../babyadd/babyadd.circom";
-include "../scalarmulw4table/scalarmulw4table.circom";
+include "../../../basics/multiplexer/multi_mux4/multi_mux4.circom";
+include "../baby_edwards_add/baby_edwards_add.circom";
+include "_baby_edwards_scalar_mul_w4table.circom";
 
-template ScalarMulWindow(base, k) {
+template BabyEdwardsScalarMulWindow(base, k) {
 
     signal input in[2];
     signal input sel[4];
@@ -33,9 +33,9 @@ template ScalarMulWindow(base, k) {
 
     var i;
 
-    table = ScalarMulW4Table(base, k);
+    table = BabyEdwardsScalarMulW4Table(base, k);
     mux = MultiMux4(2);
-    adder = BabyAdd();
+    adder = BabyEdwardsAdd();
 
     for (i=0; i<4; i++) {
         sel[i] ==> mux.s[i];

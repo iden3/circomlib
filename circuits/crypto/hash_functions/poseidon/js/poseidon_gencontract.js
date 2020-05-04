@@ -4,7 +4,7 @@
 
 const Poseidon = require("./poseidon.js");
 
-const Contract = require("./evmasm");
+const Contract = require("../../../../../src/evmasm");
 
 const SEED = "poseidon";
 const NROUNDSF = 8;

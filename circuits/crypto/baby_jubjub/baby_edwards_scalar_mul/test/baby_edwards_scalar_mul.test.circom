@@ -1,5 +1,5 @@
-include "scalarmul.circom";
-include "../../../../../basic_templates/bitify/num2bits/num2bits.circom";
+include "../baby_edwards_scalar_mul.circom";
+include "../../../../basics/bitify/num2bits/num2bits.circom";
 
 template Main() {
     signal input in;
@@ -10,7 +10,7 @@ template Main() {
 
 
     component n2b = Num2Bits(253);
-    component scalarMul = ScalarMul(253, base);
+    component scalarMul = BabyEdwardsScalarMul(253, base);
 
     scalarMul.inp[0] <== 0;
     scalarMul.inp[1] <== 1;

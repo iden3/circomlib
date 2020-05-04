@@ -1,12 +1,10 @@
-/*
-
 const path = require("path");
 
 const bigInt = require("big-integer");
 const tester = require("circom").tester;
 
-const babyJub = require("../../../../src/babyjub.js");
-const pedersen = require("../../../../src/pedersenHash.js");
+const babyJub = require("../../../baby_jubjub/js/baby_jubjub");
+const pedersen = require("../js/pedersenHash.js");
 
 describe("Pedersen test", function() {
     let circuit;
@@ -47,5 +45,3 @@ describe("Pedersen test", function() {
 
     });
 });
-
-*/

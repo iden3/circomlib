@@ -1,5 +1,5 @@
 const bigInt = require("big-integer");
-const babyJub = require("./babyjub");
+const babyJub = require("../../../baby_jubjub/js/baby_jubjub");
 const createBlakeHash = require("blake-hash");
 
 const GENPOINT_PREFIX = "PedersenGenerator";

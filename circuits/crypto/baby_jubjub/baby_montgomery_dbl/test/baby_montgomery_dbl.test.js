@@ -3,7 +3,7 @@ const chai = require("chai");
 const path = require("path");
 const bigInt = require("big-integer");
 const tester = require("circom").tester;
-const babyJub = require("../src/babyjub.js");
+const babyJub = require("../../js/baby_jubjub.js");
 
 const assert = chai.assert;
 

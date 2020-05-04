@@ -2,7 +2,7 @@
 
 const chai = require("chai");
 const bigInt = require("big-integer");
-const babyjub = require("../src/babyjub.js");
+const babyjub = require("js/baby_jubjub.js");
 
 const assert = chai.assert;
 

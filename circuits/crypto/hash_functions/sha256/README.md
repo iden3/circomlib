@@ -17,9 +17,9 @@ This is a general overview of how SHA-256 hash function works given any input me
     The function `C` is called the SHA-256 compression function and `+` is the word-wise `mod 232` addition. 
 4. The hash of `M` is `H_N`.
 
-## Files structure 
+## Implementation 
 
-The template `sha256.circom` has been implemented following the SHA-256 hash function [description](https://web.archive.org/web/20130526224224/http://csrc.nist.gov/groups/STM/cavp/documents/shs/sha256-384-512.pdf) from NIST. In the document, one can find all technicalities of SHA-256 (page 5) and specifics of the following internal templates:
+The template `sha256.circom` has been implemented following the description from the NIST of [SHA-256](https://web.archive.org/web/20130526224224/http://csrc.nist.gov/groups/STM/cavp/documents/shs/sha256-384-512.pdf). In this document, one can find all technicalities of SHA-256 hash function (page 5) and specifics of the following internal templates:
 
 - `_ch` : logical function `Ch` (page 6).
 - `_constants` : initial hash value `H_0` (page 3) and sequence of constant words `K_0,...,K_63` (page 7).

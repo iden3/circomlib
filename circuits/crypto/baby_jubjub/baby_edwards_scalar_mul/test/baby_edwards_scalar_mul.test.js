@@ -2,7 +2,7 @@ const chai = require("chai");
 const path = require("path");
 const bigInt = require("big-integer");
 const tester = require("circom").tester;
-const babyJub = require("../../../../src/babyjub");
+const babyJub = require("../../js/baby_jubjub");
 
 const assert = chai.assert;
 
@@ -14,7 +14,7 @@ describe("Scalarmul (exponentiation) test", function () {
 
     it("Should exponentiate g^31", async () => {
 
-        const circuit = await tester(path.join(__dirname, "scalarmul_test.circom"));
+        const circuit = await tester(path.join(__dirname, "baby_edwards_scalar_mul.test.circom"));
 
         const w = await circuit.calculateWitness({"in": 31});
 
@@ -47,7 +47,7 @@ describe("Scalarmul (exponentiation) test", function () {
 
     it("Number of constraints for 256 bits", async () => {
 
-        const circuit = await tester(path.join(__dirname, "scalarmul_test_min.circom"));
+        const circuit = await tester(path.join(__dirname, "baby_edwards_scalar_mul.test.circom"));
 
     }).timeout(10000000);
 

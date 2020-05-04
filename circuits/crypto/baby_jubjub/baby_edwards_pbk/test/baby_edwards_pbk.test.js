@@ -1,3 +1,5 @@
+/*
+
 const path = require("path");
 
 const createBlakeHash = require("blake-hash");
@@ -35,3 +37,5 @@ describe("Baby Jubjub twisted Edwards public key extraction test", function () {
     });
 
 });
+
+*/

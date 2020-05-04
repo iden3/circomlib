@@ -18,8 +18,8 @@
 */
 
 include "../../baby_jubjub/edwards/babyadd/babyadd.circom"
-include "segment/segment.circom";
-include "window4/window4.circom";
+include "_segment/segment.circom";
+include "_window4/window4.circom";
 
 template Pedersen(n) {
     signal input in[n];

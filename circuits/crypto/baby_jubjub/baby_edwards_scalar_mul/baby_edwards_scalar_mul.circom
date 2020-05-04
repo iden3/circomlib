@@ -85,9 +85,9 @@
 
  */
 
-include "scalarmulwindow/scalarmulwindow.circom";
+include "_baby_edwards_scalar_mul_window.circom";
 
-template ScalarMul(n, base) {
+template BabyEdwardsScalarMul(n, base) {
     signal input in[n];
     signal input inp[2];   // Point input to be added
     signal output out[2];
@@ -100,7 +100,7 @@ template ScalarMul(n, base) {
 
     // Construct the windows
     for (i=0; i<nBlocks; i++) {
-      windows[i] = ScalarMulWindow(base, i);
+      windows[i] = BabyEdwardsScalarMulWindow(base, i);
     }
 
     // Connect the selectors

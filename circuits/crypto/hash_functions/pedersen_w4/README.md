@@ -4,6 +4,10 @@
 
 This template returns the [Pedersen hash](https://github.com/iden3/research/blob/master/documentation/PedersenHash.md) of a given sequence of bits. 
 
+<!--
+    The Zcash designers introduced a new 256-bit hash functioncalled Pedersen hash [28, p.134], which is effectively a vectorized Pedersen com-mitment in elliptic curve groups with short vector elements. For the claimed128-bit security level, it utilizes 869 constraints per 516-bit message chunks,thus having 1.7 constraints per bit, whereas ourPoseidoninstances use from0.2 to 0.45 constraints per bit, depending on the underlying prime field. [Poseidon]
+-->
+
 ## Schema
 
 ```

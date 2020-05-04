@@ -4,6 +4,12 @@ This folder contains the templates to do operations on [Baby Jubjub](https://git
 
 TODO: Add description of the curve
 
+## TODO:
+
+- baby_edwards_pbk  - test
+- change tests of operations so that it also checks js? (see Jordi's old tests)
+- TODO: see Jordi!!! - babyjub.js vs babyjub_js.js in tests folder!!!!
+
 ## Structure of the folder
 
 - [`baby_edwards2montgomery`](baby_edwards2montgomery)

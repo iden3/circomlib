@@ -1,6 +1,6 @@
 const bigInt = require("big-integer");
 const ZqField = require("ffjavascript").ZqField;
-const utils = require("./utils.js");
+const utils = require("../../../../src/utils");
 
 exports.addPoint = addPoint;
 exports.mulPointEscalar = mulPointEscalar;

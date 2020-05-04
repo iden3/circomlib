@@ -2,7 +2,7 @@ const bigInt = require("big-integer");
 const blake2b = require("blake2b");
 const assert = require("assert");
 const ZqField = require("ffjavascript").ZqField;
-const utils = require("./utils");
+const utils = require("../../../../../src/utils");
 
 const F = new ZqField(bigInt("21888242871839275222246405745257275088548364400416034343698204186575808495617"));
 

@@ -1,7 +1,7 @@
 const path = require("path");
 const bigInt = require("big-integer");
 const tester = require("circom").tester;
-const babyjub = require("../../../../../src/babyjub");
+const babyjub = require("../../js/baby_jubjub");
 
 function print(circuit, w, s) {
     console.log(s + ": " + w[circuit.getSignalIdx(s)]);
