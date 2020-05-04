@@ -17,9 +17,9 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "../../../baby_jubjub/montgomery/montgomeryadd/montgomeryadd.circom"
-include "../../../baby_jubjub/montgomery/montgomerydouble/montgomerydouble.circom"
-include "../../../../basic_templates/mux/multimux3/multimux3.circom";
+include "../../baby_jubjub/baby_montgomery_add/baby_montgomery_add.circom"
+include "../../baby_jubjub/baby_montgomery_dbl/baby_montgomery_dbl.circom"
+include "../../../basics/multiplexer/multi_mux3/multi_mux3.circom";
 
 
 template Window4() {
@@ -34,13 +34,13 @@ template Window4() {
     mux.s[1] <== in[1];
     mux.s[2] <== in[2];
 
-    component dbl2 = MontgomeryDouble();
-    component adr3 = MontgomeryAdd();
-    component adr4 = MontgomeryAdd();
-    component adr5 = MontgomeryAdd();
-    component adr6 = MontgomeryAdd();
-    component adr7 = MontgomeryAdd();
-    component adr8 = MontgomeryAdd();
+    component dbl2 = BabyMontgomeryDbl();
+    component adr3 = BabyMontgomeryAdd();
+    component adr4 = BabyMontgomeryAdd();
+    component adr5 = BabyMontgomeryAdd();
+    component adr6 = BabyMontgomeryAdd();
+    component adr7 = BabyMontgomeryAdd();
+    component adr8 = BabyMontgomeryAdd();
 
 // in[0]  -> 1*BASE
 

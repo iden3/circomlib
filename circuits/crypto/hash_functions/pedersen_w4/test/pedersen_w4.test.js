@@ -4,14 +4,14 @@ const bigInt = require("big-integer");
 const tester = require("circom").tester;
 
 const babyJub = require("../../../baby_jubjub/js/baby_jubjub");
-const pedersen = require("../js/pedersenHash.js");
+const pedersen = require("../js/pedersen_hash.js");
 
 describe("Pedersen test", function() {
     let circuit;
     this.timeout(100000);
     before( async() => {
 
-        circuit = await tester(path.join(__dirname, "pedersen_w4_test.circom"));
+        circuit = await tester(path.join(__dirname, "pedersen_w4.test.circom"));
     });
     it("Should pedersen at zero", async () => {
 

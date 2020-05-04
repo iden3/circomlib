@@ -2,7 +2,7 @@
 
 ## Description
 
-This template returns the [Pedersen hash](https://github.com/iden3/research/blob/master/documentation/PedersenHash.md) of a given sequence of bits. 
+This template returns the [Pedersen hash](https://github.com/iden3/circomlib/tree/organization/doc/pedersen_hash.md) of a given sequence of bits. 
 
 ## Schema
 

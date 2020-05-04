@@ -17,9 +17,9 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "../../baby_jubjub/edwards/babyadd/babyadd.circom"
-include "_segment/segment.circom";
-include "_window4/window4.circom";
+include "../../baby_jubjub/baby_edwards_add/baby_edwards_add.circom"
+include "_segment.circom";
+include "_window4.circom";
 
 template Pedersen(n) {
     signal input in[n];
@@ -64,7 +64,7 @@ template Pedersen(n) {
     component adders[nSegments-1];
 
     for (i=0; i<nSegments-1; i++) {
-        adders[i] = BabyAdd();
+        adders[i] = BabyEdwardsAdd();
         if (i==0) {
             adders[i].x1 <== segments[0].out[0];
             adders[i].y1 <== segments[0].out[1];

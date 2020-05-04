@@ -1,7 +1,7 @@
 const bn128 = require("snarkjs").bn128;
 const bigInt = require("snarkjs").bigInt;
 const createBlakeHash = require("blake-hash");
-const babyJub = require("../src/babyjub");
+const babyJub = require("../../../baby_jubjub/js/baby_jubjub");
 
 function getPoint(S) {
     const F = bn128.Fr;

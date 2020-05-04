@@ -17,10 +17,10 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "../../../baby_jubjub/montgomery2edwards/montgomery2edwards.circom"
-include "../../../baby_jubjub/edwards2montgomery/edwards2montgomery.circom"
-include "../../../baby_jubjub/montgomery/montgomerydouble/montgomerydouble.circom"
-include "../window4/window4.circom";
+include "../../baby_jubjub/baby_montgomery2edwards/baby_montgomery2edwards.circom"
+include "../../baby_jubjub/baby_edwards2montgomery/baby_edwards2montgomery.circom"
+include "../../baby_jubjub/baby_montgomery_dbl/baby_montgomery_dbl.circom"
+include "_window4.circom";
 
 template Segment(nWindows) {
     signal input in[nWindows*4];
@@ -32,7 +32,7 @@ template Segment(nWindows) {
 
     // Convert the base to montgomery
 
-    component e2m = Edwards2Montgomery();
+    component e2m = BabyEdwards2Montgomery();
     e2m.in[0] <== base[0];
     e2m.in[1] <== base[1];
 
@@ -49,8 +49,8 @@ template Segment(nWindows) {
             windows[i].base[0] <== e2m.out[0];
             windows[i].base[1] <== e2m.out[1];
         } else {
-            doublers1[i-1] = MontgomeryDouble();
-            doublers2[i-1] = MontgomeryDouble();
+            doublers1[i-1] = BabyMontgomeryDbl();
+            doublers2[i-1] = BabyMontgomeryDbl();
             doublers1[i-1].in[0] <== windows[i-1].out8[0];
             doublers1[i-1].in[1] <== windows[i-1].out8[1];
             doublers2[i-1].in[0] <== doublers1[i-1].out[0];
@@ -59,7 +59,7 @@ template Segment(nWindows) {
             windows[i].base[0] <== doublers2[i-1].out[0];
             windows[i].base[1] <== doublers2[i-1].out[1];
 
-            adders[i-1] = MontgomeryAdd();
+            adders[i-1] = BabyMontgomeryAdd();
             if (i==1) {
                 adders[i-1].in1[0] <== windows[0].out[0];
                 adders[i-1].in1[1] <== windows[0].out[1];
@@ -72,7 +72,7 @@ template Segment(nWindows) {
         }
     }
 
-    component m2e = Montgomery2Edwards();
+    component m2e = BabyMontgomery2Edwards();
 
     if (nWindows > 1) {
         m2e.in[0] <== adders[nWindows-2].out[0];
