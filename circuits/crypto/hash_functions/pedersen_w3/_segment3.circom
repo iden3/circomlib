@@ -31,6 +31,7 @@ template Segment3(nWindows) {
     var j;
 
     // Convert the base to montgomery
+    // A la window se li ha de passar tot en Montgomery
 
     component e2m = BabyEdwards2Montgomery();
     e2m.in[0] <== base[0];
@@ -52,6 +53,10 @@ template Segment3(nWindows) {
             windows[i].base[0] <== e2m.out[0];
             windows[i].base[1] <== e2m.out[1];
         } else {
+            
+            doublers1[i-1] = BabyMontgomeryDbl();
+            doublers2[i-1] = BabyMontgomeryDbl();
+            
             // window[1]: 2^4 P_i
             // window[2]: 2^8 P_i
             // window[3]: 2^8 P_i
@@ -59,17 +64,21 @@ template Segment3(nWindows) {
             // ...
             // window[k_i]: 2^(4*k_i) P_i
             // with k_i <= 62
-            doublers1[i-1] = BabyMontgomeryDbl();
-            doublers2[i-1] = BabyMontgomeryDbl();
+            
+            // El out4 és 2^2 P_i = 4*P_i
             doublers1[i-1].in[0] <== windows[i-1].out4[0];
             doublers1[i-1].in[1] <== windows[i-1].out4[1];
+            // Ho dobla
             doublers2[i-1].in[0] <== doublers1[i-1].out[0];
             doublers2[i-1].in[1] <== doublers1[i-1].out[1];
             
+            // Ho torna a doblar
+            // This should be ok! 2^4 P_i = 16*P_i
             windows[i].base[0] <== doublers2[i-1].out[0];
             windows[i].base[1] <== doublers2[i-1].out[1];
 
             adders[i-1] = BabyMontgomeryAdd();
+            
             if (i==1) {
                 adders[i-1].in1[0] <== windows[0].out[0];
                 adders[i-1].in1[1] <== windows[0].out[1];

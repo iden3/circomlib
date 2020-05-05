@@ -69,7 +69,7 @@ const g = [
 
 // Sanity check
 if (!babyJub.inCurve(g)) {
-    throw new Error("Generator not In curve -> Some thing goes wrong...");
+    throw new Error("Generator not in curve -> Something is wrong...");
 }
 
 for (let i=0; i<25; i++) {
