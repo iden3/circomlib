@@ -17,9 +17,9 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "../../elliptic_curves/baby_jubjub/edwards/babyadd/babyadd.circom"
-include "segment3/segment3.circom";
-include "window3/window3.circom";
+include "../../baby_jubjub/baby_edwards_add/baby_edwards_add.circom"
+include "_segment3.circom";
+include "_window3.circom";
 
 template Pedersen(n) {
     signal input in[n];
@@ -38,7 +38,7 @@ template Pedersen(n) {
         [18597552580465440374022635246985743886550544261632147935254624835147509493269,6753322320275422086923032033899357299485124665258735666995435957890214041481]
     ]
 
-    var nSegments = ((n-1)\200)+1;
+    var nSegments = ((n-1)\186)+1;
 
     component segments[nSegments];
 
@@ -47,16 +47,16 @@ template Pedersen(n) {
     var nBits;
     var nWindows;
     for (i=0; i<nSegments; i++) {
-        nBits = (i == (nSegments-1)) ? n - (nSegments-1)*200 : 200;
-        nWindows = ((nBits - 1)\4)+1;
-        segments[i] = Segment(nWindows);
+        nBits = (i == (nSegments-1)) ? n - (nSegments-1)*186 : 186;
+        nWindows = ((nBits - 1)\3)+1;
+        segments[i] = Segment3(nWindows);
         segments[i].base[0] <== BASE[i][0];
         segments[i].base[1] <== BASE[i][1];
         for (j = 0; j<nBits; j++) {
-            segments[i].in[j] <== in[i*200+j];
+            segments[i].in[j] <== in[i*186+j];
         }
         // Fill padding bits
-        for (j = nBits; j < nWindows*4; j++) {
+        for (j = nBits; j < nWindows*3; j++) {
             segments[i].in[j] <== 0;
         }
     }
@@ -64,7 +64,7 @@ template Pedersen(n) {
     component adders[nSegments-1];
 
     for (i=0; i<nSegments-1; i++) {
-        adders[i] = BabyAdd();
+        adders[i] = BabyEdwardsAdd();
         if (i==0) {
             adders[i].x1 <== segments[0].out[0];
             adders[i].y1 <== segments[0].out[1];
@@ -101,4 +101,3 @@ template Pedersen(n) {
         out[1] <== segments[0].out[1];
     }
 }
-

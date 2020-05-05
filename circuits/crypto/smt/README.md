@@ -2,8 +2,7 @@
 
 Blabla about sparse Merkle trees ... .
 
-
-Files but these two description:
+Files but these two descriptions:
 
 - `SMTProcessor(nLevels)`
 - `SMTVerifier(nLevels)`
@@ -12,7 +11,7 @@ Files but these two description:
 
 ## Description
 
-This template ... 
+This template ...
 
 ## Schema
 

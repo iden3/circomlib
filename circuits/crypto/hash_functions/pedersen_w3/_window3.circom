@@ -17,9 +17,9 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-include "../../../elliptic_curves/baby_jubjub/montgomery/montgomeryadd/montgomeryadd.circom"
-include "../../../elliptic_curves/baby_jubjub/montgomery/montgomerydouble/montgomerydouble.circom"
-include "../../../../basic_templates/mux/multimux2/multimux2.circom";
+include "../../baby_jubjub/baby_montgomery_add/baby_montgomery_add.circom"
+include "../../baby_jubjub/baby_montgomery_dbl/baby_montgomery_dbl.circom"
+include "../../../basics/multiplexer/multi_mux2/multi_mux2.circom";
 
 template Window3() {
     signal input in[3];
@@ -32,9 +32,9 @@ template Window3() {
     mux.s[0] <== in[0];
     mux.s[1] <== in[1];
 
-    component dbl2 = MontgomeryDouble();
-    component adr3 = MontgomeryAdd();
-    component adr4 = MontgomeryAdd();
+    component dbl2 = BabyMontgomeryDbl();
+    component adr3 = BabyMontgomeryAdd();
+    component adr4 = BabyMontgomeryAdd();
 
 // in[0]  -> 1*BASE
 
