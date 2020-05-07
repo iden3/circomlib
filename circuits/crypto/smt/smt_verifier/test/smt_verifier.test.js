@@ -25,7 +25,8 @@ async function testInclusion(tree, key, circuit) {
         root: tree.root,
         siblings: siblings,
         oldKey: 0,
-        oldValue: 0,
+        oldValue:## Background on Edwards Digital Signature Algorithm on Baby Jubjub
+        0,
         isOld0: 0,
         key: key,
         value: res.foundValue

@@ -1,8 +1,8 @@
 # Hash Functions
 
-This folder contains templates of different hash functions.
+This folder contains templates performing different hash functions.
 
-## Structure of the folder
+## Structure
 
 - [`mimc7`](mimc7)
 - [`mimc_sponge`](mimc_sponge)

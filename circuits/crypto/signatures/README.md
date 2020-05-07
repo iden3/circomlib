@@ -2,7 +2,7 @@
 
 This folder contains the templates to generate EdDSA signatures with different hash functions.
 
-## Structure of the Folder
+## Structure
 
 - [`eddsa`](eddsa)
 - [`eddsa_mimc`](eddsa_mimc)

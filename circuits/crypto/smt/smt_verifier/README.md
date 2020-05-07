@@ -10,8 +10,6 @@ Files but these two descriptions:
 - `SMTProcessor(nLevels)`
 - `SMTVerifier(nLevels)`
 
-Talk about js and test.
-
 # `SMTProcessor(nLevels)`
 
 ## Description

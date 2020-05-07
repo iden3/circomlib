@@ -2,7 +2,7 @@
 
 This folder contains a set of [`circom`](https://github.com/iden3/circom) circuit templates to perform different kinds of operations. From more basic ones, like comparing two numbers or doing binary arithmetic, to more complex functions, such as elliptic curve operations, validating digital signatures or hashing.
 
-## Table of Contents
+## Structure
 
 - [`basics`](basics)
     - [`binary_ops`](basics/binary_ops)

@@ -2,7 +2,7 @@
 
 This folder contains the implementation of several multiplexer circuits. 
 
-## Structure of the Folder
+## Structure
 
 - [`multi_mux1`](basics/multiplexer/multi_mux1)
 - [`multi_mux2`](multi_mux2)
