@@ -1,30 +1,56 @@
 # Baby Jubjub
 
-[Baby Jubjub](https://github.com/ethereum/EIPs/pull/2494) is an elliptic curve defined over the field `F_r`, where `r` is the prime order of alt_bn128 elliptic curve (also referred as BN254), which is the curve currently used to generate and verify zk-SNARK proofs in Ethereum. 
+[Baby Jubjub](https://github.com/ethereum/EIPs/pull/2494) is an elliptic curve defined over the field `F_r`, where `r` is the prime order of alt_bn128 elliptic curve (also referred as BN256), which is the curve currently used to generate and verify zk-SNARK proofs in Ethereum. 
 
 With Baby Jubjub, one can implement complex crytpographic functions, which make use of elliptic curves, inside a zk-SNARK circuit. For instance, we have implemented the [Pedersen hash](https://github.com/iden3/circomlib/tree/organization/circuits/crypto/hash_functions/pedersen_w4) and the [Edwards Digial Signature Algorithm (EdDSA)](https://github.com/iden3/circomlib/tree/organization/circuits/crypto/signatures/eddsa) as a zk-SNARK circuit using Baby Jubjub.
 
-## Definition
+In this document, we briefly describe the curve and how its arithmetic is implemented. For details more details about the curve, please read [EIP-2494](https://github.com/ethereum/EIPs/pull/2494).
 
-Let `F_r` be the prime finite field with `r` elements, where
-```
-r = 21888242871839275222246405745257275088548364400416034343698204186575808495617
-``` 
+- **Ground field**
 
-Let `E` be the twisted Edwards elliptic curve defined over `F_r` described by equation
-```
-ax^2 + y^2 = 1 + dx^2y^2
-``` 
-with parameters
-```
-a = 168700
-d = 168696
-```
-We call **Baby Jubjub** the curve `E(F_r)`, that is, the subgroup of `F_r`-rational points of `E`.
+	Baby Jubjub is an elliptic curve whose point coordinates live in the field `F_r`, where `r` is the prime number 
+	```
+	r = 21888242871839275222246405745257275088548364400416034343698204186575808495617
+	``` 
+	This means that the coordinates `x,y` of any point `P = (x,y)` in the curve must be numbers between `0` and `r-1`.
 
-Details on 
-Reference to EIP
+- **Order**
 
+	Baby Jubjub has order 
+	```
+	n = 21888242871839275222246405745257275088614511777268538073601725287587578984328
+	```
+	which factors in `n = h x l`, where
+	```
+	h = 8
+	l = 2736030358979909402780800718157159386076813972158567259200215660948447373041
+	```
+	The parameter `h` is called *cofactor* and `l` is a prime number of 251 bits. 
+
+- **Equation**
+
+	The equation describing the curve depends on the form of the curve. We mainly consider two forms: twisted Edwards and Montgomery. These two forms are birationally equivalent, which means that there is a map that easily transforms points from one form to the other. 
+
+	| Form         | Equation 	    | Parameters |
+	| ------------ | -------------  | -------------       |
+	| Twisted Edwards | `ax^2 + y^2 = 1 + dx^2y^2` | `a = 168700` , `d = 168696` |
+	| Montgomery | `By^2 = x^3 + Ax^2 + x` | `A = 168698` , `B = 1` |
+
+- **Generator and base points**
+
+	There are two important points in the curve: the generator and the base point. The generator generates all `n` points of the curve.
+
+	| Form         | Generator point `G = (x,y)`	    | 
+	| ------------ | -------------  			|
+	| Twisted Edwards | `(995203441582195749578291179787384436505546430278305826713579947235728471134,  5472060717959818805561601436314318772137091100104008585924551046643952123905)` |
+	| Montgomery | `(7, 4258727773875940690362607550498304598101071202821725296872974770776423442226)` |
+
+	The base point is a point in the curve that generates all points of prime order `l`.
+
+	| Form         | Base point `B = (x,y)`	    | 
+	| ------------ | -------------  			|
+	| Twisted Edwards | `(5299619240641551281634865583518297030282874472190772894086521144482721001553, 16950150798460657717958625567821834550301663161624707787222815936182638968203)` |
+	| Montgomery | `(7117928050407583618111176421555214756675765419608405867398403713213306743542, 14577268218881899420966779687690205425227431577728659819975198491127179315626)` |
 
 ## Arithmetic in Baby Jubjub
 
