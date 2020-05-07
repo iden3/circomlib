@@ -1,6 +1,5 @@
 // Copyright (c) 2018 Jordi Baylina
 // License: LGPL-3.0+
-//
 
 const Contract = require("./evmasm");
 const G2 = require("snarkjs").bn128.G2;

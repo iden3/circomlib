@@ -1,10 +1,34 @@
 # Baby Jubjub
 
+[Baby Jubjub](https://github.com/ethereum/EIPs/pull/2494) is an elliptic curve defined over the field `F_r`, where `r` is the prime order of alt_bn128 elliptic curve (also referred as BN254), which is the curve currently used to generate and verify zk-SNARK proofs in Ethereum. 
+
+With Baby Jubjub, one can implement complex crytpographic functions, which make use of elliptic curves, inside a zk-SNARK circuit. For instance, we have implemented the [Pedersen hash](https://github.com/iden3/circomlib/tree/organization/circuits/crypto/hash_functions/pedersen_w4) and the [Edwards Digial Signature Algorithm (EdDSA)](https://github.com/iden3/circomlib/tree/organization/circuits/crypto/signatures/eddsa) as a zk-SNARK circuit using Baby Jubjub.
+
+## Definition
+
+Let `F_r` be the prime finite field with `r` elements, where
+```
+r = 21888242871839275222246405745257275088548364400416034343698204186575808495617
+``` 
+
+Let `E` be the twisted Edwards elliptic curve defined over `F_r` described by equation
+```
+ax^2 + y^2 = 1 + dx^2y^2
+``` 
+with parameters
+```
+a = 168700
+d = 168696
+```
+We call **Baby Jubjub** the curve `E(F_r)`, that is, the subgroup of `F_r`-rational points of `E`.
+
+Details on 
 Reference to EIP
 
-# Arithmetic in Baby Jubjub
 
-## Addition of Points
+## Arithmetic in Baby Jubjub
+
+### Addition of Points
 
 When adding points of elliptic curves in Montgomery form, one has to be careful if the points being added are equal (doubling) or not (adding) and if one of the points is the point at infinity [[1]](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.559.7774&rep=rep1&type=pdf). 
 
@@ -44,7 +68,7 @@ see [[2]-](https://eprint.iacr.org/2008/013.pdf)[[3]](https://www.hyperelliptic.
 		y3 = Λ(x1 − x3) − y1
 		```
 
-## Multiplication by a Scalar (mul, fix, any)
+### Multiplication by a Scalar (mul, fix, any)
 
 Let `P!=O` be a point of the twisted Edwards curve $E$ of order strictly greater than 8 (i.e. a point `P` in the large prime subgroup `G`) and let `k` a binary number representing an element of the finite field `F_p`. We describe the circuit used to compute the point `k·P`.
 	 	
@@ -101,7 +125,7 @@ Let `P!=O` be a point of the twisted Edwards curve $E$ of order strictly greater
 
     ![](https://i.imgur.com/y6VSKpo.png)
     
-## References
+### References
 
 [[1]](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.559.7774&rep=rep1&type=pdf) Katsuyuki Okeya,  Hiroyuki Kurumatani and Kouichi Sakurai. _Elliptic Curves with the Montgomery-Form and Their Cryptographic Applications_. Jan 2000.
 

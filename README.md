@@ -2,28 +2,31 @@
 
 This is the library of templates of [`circom`](https://github.com/iden3/circom), a circuit compiler for zero-knowledge circuits. 
 
-<!-- 
-## Organisation (old)
-
-This respository contains 5 folders:
-- `circuits`: it contains the implementation of different cryptographic primitives in circom language.
-- `calcpedersenbases`: set of functions in JavaScript used to find a set of points in [Baby Jubjub](https://github.com/barryWhiteHat/baby_jubjub) elliptic curve that serve as basis for the [Pedersen Hash](https://github.com/zcash/zcash/issues/2234).
-- `doc`: it contains some circuit schemes in ASCII (must be opened with Monodraw, an ASCII art editor for Mac).
-
-A description of the specific circuit templates for the `circuit` folder will be soon updated.
--->
-
 ## Table of Contents
 
-- [`circuits`](circuits)
-- [`doc`](doc)
+- [`circuits`](circuits) : it contains several circom circuit templates to perform different kinds of operations, from more basic ones, for example comparison of two numbers or conversions from numbers to its binary representation, to more complex functions, such as elliptic curve operations, hash functions or digital signatures.
+- [`doc`](doc) : documentation about some of the more complicated circuits. There are markdown files and some circuit schemes in ASCII, the latter must be opened with Monodraw, an ASCII art editor for Mac.
+- [`src`](src) : utils written in JavaScript for deploying contracts. These files are used in some tests.
+
+Auxiliary files:
+- [.eslintrc.js](.eslintrc.js)
+- [.gitignore](.gitignore)
 - [`node_modules`](node_modules)
-- [`src`](src)
-- ....
+- [index.js](index.js)
+- [package.json](package.json)
+- [package-lock.json](package-lock.json)
+- [LICENSE](LICENSE)
+- [README.md](README.md)
 
 ## Contribute to this Repository
 
-Blabla
+Anyone is welcome to contribute with code, tests, documentation, bugs spotting or any small fix! If you would like to contribute, check out first if there are already any open [issues](/issues) related to your contribution and if not, please [open a new issue](/issues/new) or submit a [pull request](/pulls).
+
+Thank you for your help!
+
+## Disclaimer
+
+This repository is still under development and **not ready for production**.  
 
 ## License
 

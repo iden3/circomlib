@@ -1,6 +1,5 @@
 // Copyright (c) 2018 Jordi Baylina
 // License: LGPL-3.0+
-//
 
 const Web3Utils = require("web3-utils");
 
