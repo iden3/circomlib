@@ -1,4 +1,4 @@
-# `signatures`
+# Digital Signatures
 
 This folder contains the templates to generate EdDSA signatures with different hash functions.
 

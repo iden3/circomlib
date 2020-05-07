@@ -1,4 +1,4 @@
-# `gates`
+# Logic Gates
 
 ## Description
 

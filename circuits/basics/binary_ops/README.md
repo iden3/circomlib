@@ -1,4 +1,4 @@
-# `binary_ops`
+# Binary Operations
 
 ## Description
 

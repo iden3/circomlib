@@ -1,4 +1,4 @@
-# `basics`
+# Basics
 
 This folder contains various templates to do binary operations, conversions from field element representations to binary form and viceversa, a set of comparator functions and multiple multiplexer circuits. 
 

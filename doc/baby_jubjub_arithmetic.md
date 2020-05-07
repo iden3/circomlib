@@ -6,6 +6,20 @@ With Baby Jubjub, one can implement complex crytpographic functions, which make 
 
 In this document, we briefly describe the curve and how its arithmetic is implemented. For details more details about the curve, please read [EIP-2494](https://github.com/ethereum/EIPs/pull/2494).
 
+## Table of Contents
+
+TODO: All together or per folder?
+
+- Description of Baby Jubjub
+- Birational Maps
+- Arithmetic on Baby Jubjub
+	- Addition of Points
+	- Multiplication of a Point by a Scalar
+- Bits to Point and Point to Bits Maps
+- Public Key Extraction
+
+## Description of Baby Jubjub
+
 - **Ground field**
 
 	Baby Jubjub is an elliptic curve whose point coordinates live in the field `F_r`, where `r` is the prime number 
@@ -52,7 +66,7 @@ In this document, we briefly describe the curve and how its arithmetic is implem
 	| Twisted Edwards | `(5299619240641551281634865583518297030282874472190772894086521144482721001553, 16950150798460657717958625567821834550301663161624707787222815936182638968203)` |
 	| Montgomery | `(7117928050407583618111176421555214756675765419608405867398403713213306743542, 14577268218881899420966779687690205425227431577728659819975198491127179315626)` |
 
-## Arithmetic in Baby Jubjub
+## Arithmetic on Baby Jubjub
 
 ### Addition of Points
 
@@ -94,8 +108,99 @@ see [[2]-](https://eprint.iacr.org/2008/013.pdf)[[3]](https://www.hyperelliptic.
 		y3 = Λ(x1 − x3) − y1
 		```
 
-### Multiplication by a Scalar (mul, fix, any)
+### Multiplication by a Scalar 
 
+TODO: Here or in each specific folder?
+
+We explain how we implemented the operation `n*P` where `n` is any integer in the range `0...r-1` and `P` is a point in the twisted Edwards curve. We distinguish two cases: 
+- when `P` is fixed (circuit tal) and 
+- when `P` is any arbitrary point on the curve (circuit pasqual). 
+
+The idea: both circuits share the same first part, but in one case we will use look-up tables and in the other, we will have to explicity construct those tables per given point.
+
+- **BabyEdwardsScalarMulW4Table(base, k)**
+- **BabyEdwardsScalarMulAny(n)**
+
+
+## BabyEdwardsScalarMulFix(n, BASE)
+
+Consider a fix point `BASE` of the twisted Edwards Baby Jubjub curve `E` of order strictly greater than 8 (i.e. a point `BASE` in the large prime subgroup of `E`) different from the origin `O`. This template outputs the point resulting of the scalar multiplication 
+```
+e · BASE
+```
+where `e` is a binary number of `n` bits. 
+
+We describe the circuit used to compute this operation. 
+	 	
+- First, we divide `e` into chunks of 248 bits. If `n` is not a multiple of 248, we take `j` segments of 248 bits and leave a last chunk with the remaining bits. More precisly, write 
+	``` 
+	e = e_0 e_1...e_j
+	```
+	with
+	```
+	e_i = b^i_0 b^i_1 ... b^i_{247}	
+	``` 
+	for `i = 0, ..., j-1` (the first `j` chunks) and
+    
+	```
+	e_j = b^j_0 b^j_1 ... b^j_s 
+	```
+	with `s <= 247` for the last chunk. Then,  
+	```
+	e·BASE = e_0·BASE + e_1·2^{248}·BASE + ... + e_j·2^{248j}·BASE
+	```
+    
+    This sum is done using the following circuit.
+	
+	![](https://i.imgur.com/bpy9M0L.png)
+
+	The terms of the sum are calculated separately inside the `SegmentMulFix` boxes and then added together. 
+
+
+- Each `SegmentMulFix` box takes a point of `E` of the from `B_i = 2^{248*i}·BASE` for `i=0,...,j-1` and outputs two points:
+	- `2^{248} · B_i` 
+	- `\sum_{n = 0}^{247} (b_n · 2^{n} · B_i)`. 
+
+    The first point is the input of the next `(i+1)`-th `SegmentMulFix` box (note that `2^{248} · B_i = B_{i+1}` whereas the second output is the computation of the `i`-th term in the above expression of `e·BASE`. The precise circuit is depicted in next two figures `SegmentMulFix` and `WindowMulFix`.
+	
+    ![](https://i.imgur.com/J4U55ij.png)
+    ![](https://i.imgur.com/y9mWrn9.png)
+
+
+
+    
+- The idea of the circuit is to first compute
+    ```
+    Q = B_i + b_1·(2·B_i) + b_2·(4·B_i) + b_3·(8·B_i) +...+ b_{247}·(2^{247}·B_i)
+    ```
+    and output the point
+	```
+    Q - b_0·B_i
+    ```
+	This permits the computation of `Q` using the Montgomery form of Baby Jubjub and only use twisted Edwards for the second calculation. The reason to change forms is that, in the calculation of the output, we may get a sum with input the point at infinity if `b_0 = 0`. 
+	
+	Still, we have to ensure that none of the points being doubled or added when working in the Montgomery form of the curve is the point at infinity and that we never add the same two points. 
+	
+    - By assumption, `BASE != O` and `ord(BASE)>8`. Hence, by Lagrange theorem [[4, Corollary 4.12]](http://poincare.matf.bg.ac.rs/~zarkom/Book_Shaums_Group_theory.pdf), `BASE` must have order `r`, `2r`, `4r` or `8r`. For this reason, none of the points in `E_M` being doubled or added in the circuit is the point at infinity, because for any integer `m`,  `2^m` is never a multiple of `r`, even when `2^m` is larger than `r`, as `r` is a prime number. Hence, `2^m · P != O` for any integer number `m`.
+    - Looking closely at the two inputs of the sum, it is easy to realize that they have different parity, one is an even multiple of `P_i` and the other an odd multiple of `P_i`, so they must be different points. Hence, the sum in `E_M` is done correctly.
+	
+-  The last term of the expression of `k·P` is computed in a very similar manner. The difference is that the number of bits composing `k_j` may be shorter and that there is no need to compute `P_{j+1}`, as there is no other `SEQ` box after this one. So, there is only output, the point `k_j · P_j = k_j·2^{248j}·P`. This circuit is named `SEQ'`.
+
+    ![](https://i.imgur.com/y6VSKpo.png)
+
+
+### References
+
+[[1]](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.559.7774&rep=rep1&type=pdf) Katsuyuki Okeya,  Hiroyuki Kurumatani and Kouichi Sakurai. _Elliptic Curves with the Montgomery-Form and Their Cryptographic Applications_. Jan 2000.
+
+[[2]](https://eprint.iacr.org/2008/013.pdf) Daniel J. Bernstein, Peter Birkner, Marc Joye, Tanja Lange and Christiane Peters. _Twisted Edwards Curves_. Cryptology ePrint Archive, Report 2008/013. 
+
+[[3]](https://www.hyperelliptic.org/EFD/) Daniel J. Bernstein, Tanja Lange et al. _Explicit-Formulas Database_.
+
+[[4]](http://poincare.matf.bg.ac.rs/~zarkom/Book_Shaums_Group_theory.pdf) B. Baumslag and B. Chandler. _Schaum’s outline of Theory and Problems of Group Theory_. Schaum’s outline series. McGraw-Hill Book Company, New York, 1968.
+
+
+<!--
 Let `P!=O` be a point of the twisted Edwards curve $E$ of order strictly greater than 8 (i.e. a point `P` in the large prime subgroup `G`) and let `k` a binary number representing an element of the finite field `F_p`. We describe the circuit used to compute the point `k·P`.
 	 	
 - First, we divide `k` into chunks of 248 bits. If `k` is not a multiple of 248, we take `j` segments of 248 bits and leave a last chunk with the remaining bits. More precisly, write 
@@ -150,13 +255,4 @@ Let `P!=O` be a point of the twisted Edwards curve $E$ of order strictly greater
 -  The last term of the expression of `k·P` is computed in a very similar manner. The difference is that the number of bits composing `k_j` may be shorter and that there is no need to compute `P_{j+1}`, as there is no other `SEQ` box after this one. So, there is only output, the point `k_j · P_j = k_j·2^{248j}·P`. This circuit is named `SEQ'`.
 
     ![](https://i.imgur.com/y6VSKpo.png)
-    
-### References
-
-[[1]](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.559.7774&rep=rep1&type=pdf) Katsuyuki Okeya,  Hiroyuki Kurumatani and Kouichi Sakurai. _Elliptic Curves with the Montgomery-Form and Their Cryptographic Applications_. Jan 2000.
-
-[[2]](https://eprint.iacr.org/2008/013.pdf) Daniel J. Bernstein, Peter Birkner, Marc Joye, Tanja Lange and Christiane Peters. _Twisted Edwards Curves_. Cryptology ePrint Archive, Report 2008/013. 
-
-[[3]](https://www.hyperelliptic.org/EFD/) Daniel J. Bernstein, Tanja Lange et al. _Explicit-Formulas Database_.
-
-[[4]](http://poincare.matf.bg.ac.rs/~zarkom/Book_Shaums_Group_theory.pdf) B. Baumslag and B. Chandler. _Schaum’s outline of Theory and Problems of Group Theory_. Schaum’s outline series. McGraw-Hill Book Company, New York, 1968.
+>   

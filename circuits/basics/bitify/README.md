@@ -1,4 +1,4 @@
-# `bitify`
+# Bitify
 
 ## Description
 

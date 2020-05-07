@@ -1,4 +1,4 @@
-# `comparators`
+# Comparators
 
 ## Description
 

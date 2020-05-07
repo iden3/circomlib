@@ -1,4 +1,4 @@
-# `crypto`
+# Cryptographic Primitives
 
 This folder contains the templates to compute cryptographic functions, such as hash functions and signatures. 
 
@@ -8,7 +8,7 @@ This folder contains the templates to compute cryptographic functions, such as h
 * smt - Sparse Merkle Tree
   * https://ethresear.ch/t/optimizing-sparse-merkle-trees/3751
 
-## Structure of the folder
+## Structure of the Folder
 
 - [`baby_jubjub`](baby_jubjub)
     - [`baby_edwards2montgomery`](baby_jubjub/baby_edwards2montgomery)
