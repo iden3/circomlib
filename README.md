@@ -2,28 +2,31 @@
 
 This is the library of templates of [`circom`](https://github.com/iden3/circom), a circuit compiler for zero-knowledge circuits. 
 
-<!-- 
-## Organisation (old)
-
-This respository contains 5 folders:
-- `circuits`: it contains the implementation of different cryptographic primitives in circom language.
-- `calcpedersenbases`: set of functions in JavaScript used to find a set of points in [Baby Jubjub](https://github.com/barryWhiteHat/baby_jubjub) elliptic curve that serve as basis for the [Pedersen Hash](https://github.com/zcash/zcash/issues/2234).
-- `doc`: it contains some circuit schemes in ASCII (must be opened with Monodraw, an ASCII art editor for Mac).
-
-A description of the specific circuit templates for the `circuit` folder will be soon updated.
--->
-
 ## Table of Contents
 
-- [`circuits`](circuits)
-- [`doc`](doc)
+- [`circuits`](circuits) : it contains several circom circuit templates to perform different kinds of operations. From more basic ones, like comparing two numbers or doing binary arithmetic, to more complex functions, such as elliptic curve operations, validating digital signatures or hashing.
+- [`doc`](doc) : documentation about some of the more complicated circuits. It contains some Markdown files and some circuit schemes in ASCII. The latter must be opened with Monodraw, an ASCII art editor for Mac.
+- [`src`](src) : utils written in JavaScript for deploying contracts. These files are used in some tests.
+
+
+Auxiliary files:
+- [.eslintrc.js](.eslintrc.js)
+- [.gitignore](.gitignore)
 - [`node_modules`](node_modules)
-- [`src`](src)
-- ....
+- [index.js](index.js)
+- [package.json](package.json)
+- [package-lock.json](package-lock.json)
+- [README](README.md)
+- [LICENSE](LICENSE)
 
 ## Contribute to this Repository
 
-Blabla
+This repository is still under development and **not ready for production**.  
+
+Anyone is welcome to contribute with code, tests, documentation or bugs spotting. 
+If you would like to do so, check first if there are already any open [issues](https://github.com/iden3/circomlib/issues) related to your contribution and if not, please [open a new issue](https://github.com/iden3/circomlib/issues/new) or submit a [pull request](https://github.com/iden3/circomlib/pulls).
+
+Thank you for your help!
 
 ## License
 
