@@ -1,3 +1,3 @@
 include "../bits2num.circom";
 
-component main = Bits2Num(3);
+component main = Bits2Num(254);

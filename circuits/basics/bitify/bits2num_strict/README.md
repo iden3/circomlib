@@ -6,6 +6,7 @@ This template converts a binary number `in[n]` of `n` bits to its
 integer representation STRICT 
 
 <!--- TODO: Add strict description. -->
+TODO: Shouldn't `n` be always 254??
 
 ## Schema
 
