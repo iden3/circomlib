@@ -3,7 +3,6 @@
 ## Description
 
 This template performs the [NOT gate](https://en.wikipedia.org/wiki/NOT_gate) (or logical negation). 
-<!-- Output false if and only if the input is true -->
 
 ## Schema
 

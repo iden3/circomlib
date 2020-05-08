@@ -19,6 +19,7 @@
 
 include "../../../comparators/is_zero/is_zero.circom";
 
+// Out true iff at least one operand is true.
 template MultiOR(n) {
     signal input in[n];
     signal output out;

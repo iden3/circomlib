@@ -3,7 +3,6 @@
 ## Description
 
 This template performs an `n`-input [OR gate](https://en.wikipedia.org/wiki/OR_gate). 
-<!-- Out is true if and only if at least one of the operands is true -->
 
 ## Schema
 

@@ -3,7 +3,6 @@
 ## Description
 
 This template performs the [NAND gate](https://en.wikipedia.org/wiki/NAND_gate). 
-<!-- Output which is false if and only if all its inputs are true -->
 
 ## Schema
 

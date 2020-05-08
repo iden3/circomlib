@@ -3,7 +3,7 @@ const path = require("path");
 const bigInt = require("big-integer");
 const tester = require("circom").tester;
 
-const smt = require("../js/smt.js");
+const smt = require("../../js/smt.js");
 
 const assert = chai.assert;
 
@@ -25,8 +25,7 @@ async function testInclusion(tree, key, circuit) {
         root: tree.root,
         siblings: siblings,
         oldKey: 0,
-        oldValue:## Background on Edwards Digital Signature Algorithm on Baby Jubjub
-        0,
+        oldValue: 0,
         isOld0: 0,
         key: key,
         value: res.foundValue

@@ -17,6 +17,28 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
+/*
+
+Main Constraint:
+
+  (in[0][0] * 2^0  +  in[0][1] * 2^1  + ..... + in[0][n-1] * 2^(n-1))
++  2^n
+- (in[1][0] * 2^0  +  in[1][1] * 2^1  + ..... + in[1][n-1] * 2^(n-1))
+===================================================================== 
+   out[0] * 2^0  + out[1] * 2^1 +   + out[n-1] *2^(n-1) + aux
+
+To ensure the output is binary:
+
+   out[0]     * (out[0] - 1) === 0
+   out[1]     * (out[0] - 1) === 0
+   .
+   .
+   .
+   out[n-1]   * (out[n-1] - 1) === 0
+   aux * (aux-1) == 0
+
+*/
+
 template BinSub(n) {
     signal input in[2][n];
     signal output out[n];
@@ -46,6 +68,6 @@ template BinSub(n) {
     aux*(aux-1) === 0;
     lout = lout + aux*(2**n);
 
-    // Ensure the sum;
+    // Ensure the sum
     lin === lout;
 }

@@ -17,6 +17,7 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
+// Ouputs true iff at least one input is true.
 template OR() {
     signal input a;
     signal input b;

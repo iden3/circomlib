@@ -3,7 +3,6 @@
 ## Description
 
 This template performs the [OR gate](https://en.wikipedia.org/wiki/OR_gate) (or logical disjunction). 
-<!-- Out is true if and only if at least one of its operands is true -->
 
 ## Schema
 
@@ -27,8 +26,8 @@ None.
 
 ## Outputs
 
-| Output  | Type     | Description               |
-| ------  | ------   | ----------      | 
+| Output  | Type     | Description    |
+| ------  | ------   | ----------     | 
 | `out`   | Boolean  | `out = a v b`. |
 
 ## Benchmarks 

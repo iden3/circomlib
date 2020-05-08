@@ -4,12 +4,10 @@
 
 This template returns the hash Poseidon of an input of arbitrary length. 
 
-    signal input inputs[nInputs];
-    signal output out;
-
 https://eprint.iacr.org/2019/458.pdf
+https://www.poseidon-hash.info/
 
-Why ARK and not ARC (AddRoundConstants)??
+TODO: Why ARK and not ARC (AddRoundConstants)??
 
 ## Schema
 
@@ -32,15 +30,15 @@ include "_ark.circom"
 
 ## Expected Inputs
 
-| Input               | Type                          |
-| -------------       | -------------                 | 
-| `inputs[nInputs]`   | ...  | 
+| Input               | Type                               |
+| -------------       | -------------                      | 
+| `inputs[nInputs]`   | Array of `nInputs` field elements TODO: ? | 
 
 ## Outputs
 
 | Output         | Type           | Description         |
 | -------------  | -------------  | -------------       |
-| `out`          | ...            | ..... |
+| `out`          | ...            | Pedersen hash of ...  |
 
 ## Benchmarks 
 

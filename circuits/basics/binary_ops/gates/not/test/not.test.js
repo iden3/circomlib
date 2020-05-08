@@ -1,6 +1,11 @@
 const path = require("path");
 const tester = require("circom").tester;
 
+async function checkNot(a, circuit, out) {
+    const w = await circuit.calculateWitness({in: a}, true);
+    await circuit.assertOut(w, {out: out});
+}
+
 describe("NOT test", function () {
 
     this.timeout(100000000);
@@ -10,14 +15,9 @@ describe("NOT test", function () {
         circuit = await tester(path.join(__dirname, "not.test.circom"));
     });
 
-    it("Should NOT 1 = 0", async () => {
-        const witness = await circuit.calculateWitness({ "in": "1"}, true);
-        await circuit.assertOut(witness, {out: 0});
-    });
-
-    it("Should NOT 0 = 1", async () => {
-        const witness = await circuit.calculateWitness({ "in": "0"}, true);
-        await circuit.assertOut(witness, {out: 1});
+    it("Should check truth table", async () => {
+        await checkNot(0, circuit, 1);
+        await checkNot(1, circuit, 0);
     });
 
 });

@@ -19,6 +19,7 @@
 
 include "../../../comparators/is_zero/is_zero.circom";
 
+// Out true iff all of its operands are true.
 template MultiAND(n) {
     signal input in[n];
     signal output out;

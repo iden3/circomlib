@@ -17,6 +17,7 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
+// Outputs true iff both inputs are false.
 template NOR() {
     signal input a;
     signal input b;

@@ -3,7 +3,7 @@ const path = require("path");
 const bigInt = require("big-integer");
 const tester = require("circom").tester;
 
-const smt = require("../js/smt.js");
+const smt = require("../../js/smt");
 
 const assert = chai.assert;
 

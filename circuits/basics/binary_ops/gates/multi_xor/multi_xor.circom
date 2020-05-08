@@ -19,10 +19,7 @@
 
 include "../../../bitify/num2bits/num2bits.circom";
 
-// Output true if and only if an odd number of inputs are true
-
-// TODO: Add log function
-
+// Output true iff an odd number of inputs are true.
 template MultiXOR(n) {
     signal input in[n];
     signal output out;
@@ -33,7 +30,7 @@ template MultiXOR(n) {
         sum = sum + in[i];
     }
 
-    component n2b = Num2Bits(n); //This n is not n, it should be calculated...
+    component n2b = Num2Bits(n); //This should not be n but log_2(n). 
 
     n2b.in <== sum;
 

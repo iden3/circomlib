@@ -17,6 +17,7 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
+// Outputs false iff all inputs are true.
 template NAND() {
     signal input a;
     signal input b;

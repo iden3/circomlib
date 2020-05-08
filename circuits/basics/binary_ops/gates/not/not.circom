@@ -17,6 +17,7 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
+//Outputs false iff the input is true.
 template NOT() {
     signal input in;
     signal output out;

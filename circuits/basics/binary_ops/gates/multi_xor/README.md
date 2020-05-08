@@ -3,7 +3,6 @@
 ## Description
 
 This template performs an `n`-input [XOR gate](https://en.wikipedia.org/wiki/XOR_gate). 
-<!-- Output true if and only if an odd number of inputs are true -->
 
 ## Schema
 

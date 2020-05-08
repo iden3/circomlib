@@ -17,8 +17,8 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
-// This function calculates the number of extra bits in the output to do the full sum.
+// This function calculates the number of extra bits needed in the 
+// output to do the full sum.
 function nbits(a) {
     var n = 1;
     var r = 0;
@@ -29,8 +29,31 @@ function nbits(a) {
     return r;
 }
 
+/*
+Main Constraint:
+
+  in[0][0]     * 2^0  +  in[0][1]     * 2^1  + ..... + in[0][n-1]    * 2^(n-1)
++ in[1][0]     * 2^0  +  in[1][1]     * 2^1  + ..... + in[1][n-1]    * 2^(n-1)  
++ ...
++ in[ops-1][0] * 2^0  +  in[ops-1][1] * 2^1  + ..... + in[ops-1][n-1] * 2^(n-1) 
+======================================================================= 
+  out[0] * 2^0  + out[1] * 2^1 + ...  + out[n+e-1] * 2^(n-1+e)
+
+-> e is the number of carries (it depends on the number of operands in the input).
+
+To ensure the output is binary:
+
+  out[0] * (out[0] - 1) === 0
+  out[1] * (out[0] - 1) === 0
+  .
+  .
+  .
+  out[n+e-1] * (out[n+e-1] - 1) == 0
+  
+ */
 
 template BinSum(n, ops) {
+    
     var nout = nbits((2**n -1)*ops);
     signal input in[ops][n];
     signal output out[nout];

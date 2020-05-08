@@ -17,6 +17,7 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
+// Out true iff all of its operands are true.
 template AND() {
     signal input a;
     signal input b;

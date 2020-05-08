@@ -2,7 +2,7 @@
 
 ## Description
 
-This folder contains the templates to perform binary artithmetic and logic operations of binary inputs. 
+This folder contains the templates to perform binary artithmetic and logic operations on binary inputs. 
 
 ## Structure
 

@@ -39,8 +39,8 @@ H' is the Hash function with the inputs shifted acordingly.
 
 *****/
 
-include "../../basics/multiplexer/switcher/switcher.circom"
-include "_smt_hash_poseidon.circom"
+include "../../../../basics/multiplexer/switcher/switcher.circom"
+include "../_smt_hash_poseidon.circom"
 
 template SMTProcessorLevel() {
     signal input st_top;

@@ -3,7 +3,6 @@
 ## Description
 
 This template performs the [NOR gate](https://en.wikipedia.org/wiki/NOR_gate) (or logical nor). 
-<!-- Output true if and only if both inputs are false -->
 
 ## Schema
 
