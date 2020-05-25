@@ -35,3 +35,5 @@ template Bits2Num_strict() {
 
     b2n.out ==> out;
 }
+
+// TODO: The test fails...

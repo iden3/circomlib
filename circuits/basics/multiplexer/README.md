@@ -1,6 +1,7 @@
 # Multiplexers
 
 This folder contains the implementation of several multiplexer circuits. 
+<!-- multiplexor = data selector : device that selects between several analog or digital input signals and forwards it to a single output line -->
 
 ## Structure
 
