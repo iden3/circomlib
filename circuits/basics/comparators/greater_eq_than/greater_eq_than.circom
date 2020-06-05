@@ -19,7 +19,7 @@
 
 include "../less_than/less_than.circom";
 
-// n is the number of bits of the input.
+// n is the number of bits of the inputs.
 // The MSF is the sign bit.
 template GreaterEqThan(n) {
     signal input in[2];

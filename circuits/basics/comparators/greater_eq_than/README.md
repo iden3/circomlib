@@ -4,7 +4,7 @@ TODO: The MSF is the sign bit.
 
 ## Description
 
-This template compares two inputs (field elements?) and returns 0 if the first is greater or equal than the second and 1 otherwise.
+This template compares two inputs (TODO: field elements?) and returns 0 if the first is greater or equal than the second and 1 otherwise.
 
 ## Schema
 
@@ -30,7 +30,7 @@ include "../less_than/less_than.circom";
 
 | Input           | Type           |
 | -------------   | -------------  | 
-| `in[2]`         | Array of 2 field elements? |
+| `in[2]`         | TODO: Array of 2 field elements? |
 
 
 ## Outputs

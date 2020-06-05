@@ -1,7 +1,5 @@
 # `BinSum(n, ops)`
 
-TODO: similar to binsum - something wired with aux: text spec =/= constraints and computation (check!).
-
 ## Description
 
 This tempalte performs a binary sum of any amount of binary numbers of `n` bits each. It template makes use

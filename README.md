@@ -82,15 +82,16 @@ This is the library of templates of [`circom`](https://github.com/iden3/circom),
 - [`doc`](doc) : documentation about some of the more complicated circuits. It contains some Markdown files and some circuit schemes in ASCII. The latter must be opened with Monodraw, an ASCII art editor for Mac.
 - [`src`](src) : utils written in JavaScript for deploying contracts. These files are used in some tests.
 
-Auxiliary files:
-- [.eslintrc.js](.eslintrc.js)
-- [.gitignore](.gitignore)
-- [`node_modules`](node_modules)
-- [index.js](index.js)
-- [package.json](package.json)
-- [package-lock.json](package-lock.json)
-- [README.md](README.md)
-- [LICENSE](LICENSE)
+<!-- Auxiliary files:
+    - [.eslintrc.js](.eslintrc.js)
+    - [.gitignore](.gitignore)
+    - [`node_modules`](node_modules)
+    - [index.js](index.js)
+    - [package.json](package.json)
+    - [package-lock.json](package-lock.json)
+    - [README.md](README.md)
+    - [LICENSE](LICENSE)
+-->
 
 ## Contribute to this Repository
 

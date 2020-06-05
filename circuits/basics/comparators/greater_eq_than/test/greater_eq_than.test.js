@@ -47,4 +47,6 @@ describe("Greater or Equal Than test", function ()  {
         assert(witness[0].equals(bigInt(1)));
         assert(witness[1].equals(bigInt(1)));
     });
+
+    // TODO: Add test comparing a negative/positive value and overflow.
 });

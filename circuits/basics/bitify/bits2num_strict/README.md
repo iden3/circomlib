@@ -3,10 +3,7 @@
 ## Description
 
 This template converts a binary number `in[n]` of `n` bits to its
-integer representation STRICT 
-
-<!--- TODO: Add strict description. -->
-TODO: Shouldn't `n` be always 254??
+integer representation STRICT <!--- TODO: Add strict description. -->
 
 ## Schema
 
@@ -29,13 +26,13 @@ include "../bits2num/bits2num.circom";
 
 | Input              | Type                      | Representation             |
 | -------------      | -------------             | -------------      | 
-| `in[n]`            | Binary array of `n` bits  |  The encoding is expected in the [LSB 0 bit numbering](https://en.wikipedia.org/wiki/Bit_numbering#LSB_0_bit_numbering). |
+| `in[254]`            | Binary array of `254` bits  |  The encoding is expected in the [LSB 0 bit numbering](https://en.wikipedia.org/wiki/Bit_numbering#LSB_0_bit_numbering). |
 
 ## Outputs
 
 | Output           | Type          | Description     |
 | -------------    | ------------- | ----------      | 
-| `out`            | Field element | Integer representation of the binary number `in[n]`.  |
+| `out`            | Field element | Integer representation of the binary number `in`.  |
 
 ## Benchmarks 
 

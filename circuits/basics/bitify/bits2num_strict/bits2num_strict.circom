@@ -21,8 +21,7 @@ include "../../comparators/alias_check/alias_check.circom";
 include "../bits2num/bits2num.circom"
 
 template Bits2Num_strict() {
-    // TODO: shouldn't it be 254??
-    signal input in[n];
+    signal input in[254];
     signal output out;
 
     component aliasCheck = AliasCheck();
@@ -35,5 +34,3 @@ template Bits2Num_strict() {
 
     b2n.out ==> out;
 }
-
-// TODO: The test fails...

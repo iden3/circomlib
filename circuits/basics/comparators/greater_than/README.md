@@ -23,13 +23,16 @@ include "../less_than/less_than.circom";
 
 ## Expected Inputs
 
--  `in[2]`: an array of 2 inputs? of `n` bits each.
+| Input           | Type           |
+| -------------   | -------------  | 
+| `in[2]`         | TODO: Array of 2 field elements? of `n` bits each? |
+
 
 ## Outputs
 
-A boolean `out`:
-- `out = 0` if `in[0]` is greater than `in[1]`.
-- `out = 1` if `in[0]` is less or equal than `in[1]`.
+| Output        | Type           | Description     |
+| ------------- | -------------  | ----------      | 
+| `out`         | Boolean | `out = 0` if `in[0]` is greater than `in[1]` and `out = 1` otherwise.|
 
 ## Benchmarks 
 

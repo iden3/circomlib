@@ -1,15 +1,9 @@
 # `AliasCheck()`
 
-**TODO / Comments**
-1. There is **no output**!
-2. Adds an equality constraint on the output signal of a component template.
-3. Since does not return anythig has === without assignment.
-4. Needs an assert to say input signals are binary?
-5. Why do you consider overflow `in` <= -1 ?
-
 ## Description
 
-The template checks if an input expanded to binary array overflowed its 254 bits (<= -1).
+The template checks if an input of 254 bits overflowed the prime number `r`. 
+TODO: Add link or copy the prime `r`.
 
 ## Schema
 
@@ -34,9 +28,7 @@ include "../compconstant/compconstant.circom";
 
 ## Outputs
 
-| Output                     |                |
-| -------------              | -------------  | 
-| ** There is no output!? ** |                |             
+There is no output.
 
 ## Benchmarks 
 

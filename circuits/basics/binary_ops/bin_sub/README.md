@@ -1,7 +1,5 @@
 # `BinSub(n)`
 
-TODO: Similar to binsum: something wired with aux: text spec =/= constraints and computation (check!).
-
 ## Description
 
 This template performs a binary substraction of any two binary numbers of `n` bits. 

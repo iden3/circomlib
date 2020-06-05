@@ -17,6 +17,10 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
+// This template checks if `in` is zero or not by
+// checking if `in` has inverse (the only element
+// with no inverse in F_r is the zero).
+
 template IsZero() {
     signal input in;
     signal output out;
