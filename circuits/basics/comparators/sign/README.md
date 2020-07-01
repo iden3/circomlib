@@ -36,7 +36,7 @@ include "../compconstant/compconstant.circom";
 
 | Output        | Type           | Description     |
 | ------------- | -------------  | ----------      | 
-| `sign`        | Boolean        | `sign = 0` if `in` is positive and `sign = 1` otherwise. |
+| `sign`        | Boolean        | `sign = 0` if `in` is positive and `sign = 1` otherwise. TODO: Sure? |
 
 ## Benchmarks 
 

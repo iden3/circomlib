@@ -1,5 +1,7 @@
 # Comparators
 
+<!-- TODO: Field elements: how do we compare? Sign? (zB: is p-1 > 1?) -->
+
 ## Description
 
 This folder contains the templates to perform comparations of binary numbers and field elements.

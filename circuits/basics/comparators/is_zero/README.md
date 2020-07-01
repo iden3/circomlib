@@ -2,7 +2,7 @@
 
 ## Description
 
-This template checks if the input `in` is the zero element. 
+This template checks if the input `in` is the field element zero. 
 
 ## Schema
 
@@ -28,7 +28,7 @@ None.
 
 | Output        | Type           | Description     |
 | ------------- | -------------  | ----------      | 
-| `out`         | Boolean        | `out = 0` if `in != 0` and `out = 1` if `in = 0`.|
+| `out`         | Boolean        | `out = 1` if `in = 0` and `out = 0` if `in != 0`.|
 
 ## Benchmarks 
 

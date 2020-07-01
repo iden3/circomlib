@@ -2,8 +2,8 @@
 
 ## Description
 
-This template compares two inputs (field elements?) and returns 0 if the first is less than the second and 1 otherwise.
-It converts the inputs to binary and compares the bits.
+This template compares two field elements and returns `1` if the first is less than the second and `0` otherwise. 
+<!-- It does so by converting the inputs to binary and comparing the bits. -->
 
 ## Schema
 
@@ -22,13 +22,17 @@ include "../../bitify/num2bits/num2bits.circom";
 
 ## Expected Inputs
 
--  `in[2]`: an array of 2 inputs? of `n` bits each.
+| Input           | Type           |
+| -------------   | -------------  | 
+| `in[2]`         | Array of 2 field elements of `n` bits each |
+
+<!-- TODO: // The MSF is the sign bit. -->
 
 ## Outputs
 
-A boolean `out`:
-- `out = 0` if `in[0]` is less or equal than `in[1]`.
-- `out = 1` if `in[0]` is greater than `in[1]`.
+| Output        | Type           | Description     |
+| ------------- | -------------  | ----------      | 
+| `out`         | Boolean        | `out = 1` if `in[0] < in[1]` and `out = 0` otherwise.|
 
 ## Benchmarks 
 

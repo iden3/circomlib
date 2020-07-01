@@ -25,13 +25,13 @@ template LessThan(n) {
 
     component n2b = Num2Bits(n*2+1);
 
-    n2b.in <== in[0]+ (1<<n) - in[1];
+    n2b.in <== in[0] + (1<<n) - in[1];
 
     out <== 1-n2b.out[n];
 }
 
 /*
-// N is the number of bits the input  have.
+// `n` is the number of bits the input has.
 // The MSF is the sign bit.
 template LessThan(n) {
     signal input in[2];

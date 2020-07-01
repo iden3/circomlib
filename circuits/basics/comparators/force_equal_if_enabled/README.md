@@ -2,18 +2,7 @@
 
 ## Description
 
-TODO: This template ... .
-
-template ForceEqualIfEnabled() {
-    signal input enabled;
-    signal input in[2];
-
-    component isz = IsZero();
-
-    in[1] - in[0] ==> isz.in;
-
-    (1 - isz.out)*enabled === 0;
-}
+If the input signal `enabled` is different than 0, this template imposes a constraint to ensure that two field elements are equal. If `enabled = 0`, then the constraint is always satisfied, regardless of whether the other two inputs are equal or not.
 
 ## Schema
 
@@ -32,10 +21,10 @@ include "../is_zero/is_zero.circom";
 
 ## Expected Inputs
 
-| Input             | Type           |
-| -------------     | -------------  | 
-| `enabled`         | TODO: Fill      |
-| `in[2]`           | TODO: Fill      |
+| Input             | Type                        |
+| -------------     | -------------               | 
+| `enabled`         | Boolean                     | <!-- Although it does work with any number -->
+| `in[2]`           | Array of two field elements |
 
 ## Outputs
 
