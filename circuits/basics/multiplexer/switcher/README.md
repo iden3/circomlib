@@ -2,7 +2,7 @@
 
 ## Description
 
-This template receives two inputs `L` and `R` and returns the the same two values but switched or not, depending on a third boolean input `sel`. 
+This template receives two inputs `L` and `R` and, depending on a third boolean input `sel`, it returns the same two values but either in the same channel or switched.  
 
 ## Schema
 

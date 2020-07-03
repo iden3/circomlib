@@ -1,42 +1,26 @@
-/*
 const path = require("path");
-const tester = require("circom").tester;
+sconst tester = require("circom").tester;
+const bigInt = require("big-integer");
 
-async function checkAnd( a, b, circuit, out) {
-    const w = await circuit.calculateWitness({a: a, b: b}, true);
-    await circuit.assertOut(w, {out: out});
-}
+describe("Switcher test", function () {
 
-describe("switcher test", function () {
+    this.timeout(100000000);
 
-    this.timeout(100000);
+    L = bigInt("5299619240641551281634865583518297030282874472190772894086521144482721001553");
+    R = bigInt("16950150798460657717958625567821834550301663161624707787222815936182638968203");
 
     let circuit;
     before( async() => {
         circuit = await tester(path.join(__dirname, "switcher.test.circom"));
     });
 
-    it("Should check truth table", async () => {
-        await checkAnd(1,1, circuit, 1);
-        await checkAnd(1,0, circuit, 0);
-        await checkAnd(0,1, circuit, 0);
-        await checkAnd(0,0, circuit, 0);
+    it("Should not switch the inputs if sel = 0", async () => {
+        const witness = await circuit.calculateWitness({L: L, R: R, sel: 0}, true);
+        await circuit.assertOut(witness, {outL: L, outR: R});
     });
     
+    it("Should switch the inputs if sel = 1", async () => {
+        const witness = await circuit.calculateWitness({L: L, R: R, sel: 1}, true);
+        await circuit.assertOut(witness, {outL: R, outR: L});
+    });
 });
-
-template Switcher() {
-    signal input sel;
-    signal input L;
-    signal input R;
-    signal output outL;
-    signal output outR;
-
-    signal aux;
-
-    aux <== (R-L)*sel;    // We create aux in order to have only one multiplication
-    outL <==  aux + L;
-    outR <== -aux + R;
-}
-
-*/
