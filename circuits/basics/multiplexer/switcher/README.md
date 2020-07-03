@@ -29,8 +29,8 @@ None.
 
 | Output        | Type           | Description     |
 | ------------- | -------------  | ----------      | 
-| `outR`        | <p> If `sel == 0`, then `outR` has the same type as input `R`. <br> If `sel == 1`, then `outR` has the same type as input `L` </p> | </p> If `sel == 0`, then `outR = R`. <br> If `sel == 1`, then `outR = L`. </p> |
-| `outL`        | </p> If `sel == 0`, then `outL` has the same type as input `L`. <br> If `sel == 1`, then `outL` has the same type as input `R` </p> | </p> If `sel == 0`, then `outL = L`. <br> If `sel == 1`, then `outL = R`. </p> |
+| `outR`        | <p>If `sel == 0`, then `outR` has the same type as input `R`<br>If `sel == 1`, then `outR` has the same type as input `L` </p> | </p>If `sel == 0`, then `outR = R`. <br> If `sel == 1`, then `outR = L`.</p> |
+| `outL`        | </p>If `sel == 0`, then `outL` has the same type as input `L`<br>If `sel == 1`, then `outL` has the same type as input `R`</p> | </p>If `sel == 0`, then `outL = L`.<br>If `sel == 1`, then `outL = R`. </p> |
 
 ## Benchmarks 
 
