@@ -20,8 +20,8 @@
 /*
     Assume sel is binary.
 
-    If sel == 0 then outL = L and outR=R
-    If sel == 1 then outL = R and outR=L
+    If sel == 0 then outL = L and outR = R
+    If sel == 1 then outL = R and outR = L
 
  */
 

@@ -25,15 +25,20 @@ include "../compconstant/compconstant.circom";
 
 | ------------- | -------------  | 
 | `sel`         | Boolean      |
-| `R`           | TODO: ?      |
-| `L`           | TODO: ?      |
+| `R`           | Field element (any representation: binary, decimal...) |
+| `L`           | Field element (any representation: binary, decimal...) |
 
 ## Outputs
 
 | Output        | Type           | Description     |
 | ------------- | -------------  | ----------      | 
-| `outR`        | TODO: ?         | `outR = R` if `sel == 0` and `outR = L` if `sel == 1`. |
-| `outL`        | TODO: ?         | `outL = L` if `sel == 0` and `outL = R` if `sel == 1`. |
+| `outR`        | If `sel == 0`, then `outR` has the same type as input `R`. If `sel == 1`, then `outR` has the same type as input `L` | If `sel == 0`, then `outR = R`. If `sel == 1`, then `outR = L`. |
+| `outL`        | If `sel == 0`, then `outL` has the same type as input `L`. If `sel == 1`, then `outL` has the same type as input `R` | If `sel == 0`, then `outL = L`. If `sel == 1`, then `outL = R`. |
+
+| column 1 | column 2 |
+|------------|----------|
+| value | <ul><li>value 1</li><li>value 2</li></ul> |
+| value | <ul><li>value 1</li><li>value 2</li></ul> |
 
 ## Benchmarks 
 
