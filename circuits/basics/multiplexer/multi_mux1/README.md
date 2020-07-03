@@ -29,7 +29,7 @@ None.
 
 | Output        | Type           | Description     |
 | ------------- | -------------  | ----------      | 
-| `out[n]`      | Array of `n` (TODO: bits?) | If `s=0`, then `out[i]=c[i][0]` and if `s=1`, `out[i]=c[i][1]` for all `i=1...n`.           |
+| `out[n]`      | Array of `n` (TODO: bits?) | </p>If `s=0`, then `out[i] = c[i][0]` for all `i=1...n`.<br>If `s=1`, then `out[i] = c[i][1]` for all `i=1...n`.</p>           |
 
 ## Benchmarks 
 
