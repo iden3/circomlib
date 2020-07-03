@@ -30,7 +30,7 @@ include "../is_zero/is_zero.circom";
 
 | Output        | Type           | Description     |
 | ------------- | -------------  | ----------      | 
-| `out`         | Boolean        | `out = 1` if `in[0] = in[1]` and `out = 0` if `in[0] != in[1]`.|
+| `out`         | Boolean        | </p>If `in[0] = in[1]`, then `out = 1`.<br>If `in[0] != in[1]`, then  `out = 0`.</p>|
 
 ## Benchmarks 
 

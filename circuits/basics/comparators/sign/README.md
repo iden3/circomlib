@@ -35,7 +35,7 @@ include "../compconstant/compconstant.circom";
 
 | Output        | Type           | Description     |
 | ------------- | -------------  | ----------      | 
-| `sign`        | Boolean        | `sign = 0` if `in` is positive (i.e. less or equal than `(q-1)/2`), and `sign = 1` otherwise. |
+| `sign`        | Boolean        | </p>If `in` is positive (i.e. `in` less or equal than `(q-1)/2`), then `sign = 0`.<br>Otherwise, `sign = 1`.</p> |
 
 ## Benchmarks 
 
