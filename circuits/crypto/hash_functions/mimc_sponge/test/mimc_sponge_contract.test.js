@@ -32,7 +32,7 @@ describe("MiMC Sponge Smart contract test", () => {
         });
     });
 
-    it("Shold calculate the mimc correctly", async () => {
+    it("Should calculate the mimc correctly", async () => {
         const res = await mimc.methods.MiMCSponge(1,2,3).call();
         const res2 = await mimcjs.hash(1,2,3);
 

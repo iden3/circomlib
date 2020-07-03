@@ -15,7 +15,7 @@ describe("XOR test", function () {
         circuit = await tester(path.join(__dirname, "xor.test.circom"));
     });
 
-    it("Should check truth table", async () => {
+    it("Should satisfy truth table", async () => {
         await checkXor(1,1, circuit, 0);
         await checkXor(1,0, circuit, 1);
         await checkXor(0,1, circuit, 1);

@@ -15,7 +15,7 @@ describe("OR test", function () {
         circuit = await tester(path.join(__dirname, "or.test.circom"));
     });
 
-    it("Should check truth table", async () => {
+    it("Should satisfy truth table", async () => {
         await checkOr(1,1, circuit, 1);
         await checkOr(1,0, circuit, 1);
         await checkOr(0,1, circuit, 1);

@@ -2,7 +2,7 @@
 
 ## Description
 
-This template compares two field elements and returns `1` if the first is greater than the second and `0` otherwise.
+This template compares two field elements and returns `1` if the first is greater than the second, and `0` otherwise.
 
 ## Schema
 
@@ -31,7 +31,7 @@ include "../less_than/less_than.circom";
 
 | Output        | Type           | Description     |
 | ------------- | -------------  | ----------      | 
-| `out`         | Boolean | `out = 1` if `in[0]` is greater than `in[1]` and `out = 0` otherwise.|
+| `out`         | Boolean | `out = 1` if `in[0]` is greater than `in[1]`, and `out = 0` otherwise.|
 
 ## Benchmarks 
 

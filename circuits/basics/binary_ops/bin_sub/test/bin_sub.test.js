@@ -28,7 +28,7 @@ describe("BinSub test", function () {
         circuit = await tester(path.join(__dirname, "bin_sub.test.circom"));
     });
 
-    it("Should check variuos ege cases", async () => {
+    it("Should check various edge cases", async () => {
         await checkSub(0,0, circuit);
         await checkSub(1,0, circuit);
         await checkSub(-1,0, circuit);

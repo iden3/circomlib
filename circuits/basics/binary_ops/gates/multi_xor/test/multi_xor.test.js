@@ -16,12 +16,12 @@ describe("MultiXOR test", function () {
         circuit = await tester(path.join(__dirname, "multi_xor.test.circom"));
     });
 
-    it("Should even amount of inputs 1 output FALSE", async () => {
+    it("Should satisfy even amount of inputs 1 output 0", async () => {
         const witness = await circuit.calculateWitness({"in": [1,1,0,0,0]}, true);
         await circuit.assertOut(witness, {out: 0});
     });
 
-    it("Should odd amount of inputs 1 output TRUE", async () => {
+    it("Should satisfy odd amount of inputs 1 output 1", async () => {
         const witness = await circuit.calculateWitness({"in": [0,1,1,0,1]}, true);
         await circuit.assertOut(witness, {out: 1});
     });

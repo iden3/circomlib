@@ -16,17 +16,17 @@ describe("MultiAND test", function () {
         circuit = await tester(path.join(__dirname, "multi_and.test.circom"));
     });
 
-    it("Should all inputs 1 output 1", async () => {
+    it("Should satisfy all inputs 1 output 1", async () => {
         const witness = await circuit.calculateWitness({"in": [1,1,1,1,1]}, true);
         await circuit.assertOut(witness, {out: 1});
     });
 
-    it("Should one input 0 output 0", async () => {
+    it("Should satisfy one input 0 output 0", async () => {
         const witness = await circuit.calculateWitness({"in": [1,0,1,1,1]}, true);
         await circuit.assertOut(witness, {out: 0});
     });
 
-    it("Should some input 0s output 0", async () => {
+    it("Should satisfy some inputs 0s output 0", async () => {
         const witness = await circuit.calculateWitness({"in": [0,1,0,0,1]}, true);
         await circuit.assertOut(witness, {out: 0});
     });

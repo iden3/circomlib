@@ -37,7 +37,7 @@ describe("Baby Jubjub Edwards to Montgomery test", function () {
 
     });
 
-    it("Convert the generator point of Edwards to Montgomery", async () => {
+    it("Should convert the generator point of Edwards to Montgomery", async () => {
         let w, xout, yout;
 
         w = await circuitE2M.calculateWitness({ in: g}, true);
@@ -49,7 +49,7 @@ describe("Baby Jubjub Edwards to Montgomery test", function () {
         assert(yout.equals(mg[1]));
     });
 
-    it("Convert an arbitrary point in Edwards to Montgomery", async () => {
+    it("Should convert an arbitrary point in Edwards to Montgomery", async () => {
         let w, xout, yout;
 
         w = await circuitE2M.calculateWitness({ in: p}, true);

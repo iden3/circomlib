@@ -27,19 +27,19 @@ describe("CompConstant test", function () {
         circuit = await tester(path.join(__dirname, "comp_constant.test.circom"));
     });
 
-    it("0 > ct is FALSE", async () => {
+    it("Should check 0 > ct is FALSE", async () => {
         const inp = getBits(bigInt.zero, 254);
         witness = await circuit.calculateWitness({"in": inp}, true);
         await circuit.assertOut(witness, {out: 0});
     });
 
-    it("(q-1) > ct is TRUE", async () => {
+    it("Should check (q-1) > ct is TRUE", async () => {
         const inp = getBits(q.minus(bigInt.one), 254);
         witness = await circuit.calculateWitness({"in": inp}, true);
         await circuit.assertOut(witness, {out: 1});
     });
 
-    it("ct > ct is FALSE", async () => {
+    it("Should check ct > ct is FALSE", async () => {
         const inp = getBits(ct, 254);
         witness = await circuit.calculateWitness({"in": inp}, true);
         await circuit.assertOut(witness, {out: 0});

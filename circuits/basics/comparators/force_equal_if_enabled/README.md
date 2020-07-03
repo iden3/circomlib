@@ -2,7 +2,7 @@
 
 ## Description
 
-If the input signal `enabled` is different than 0, this template imposes a constraint to ensure that two field elements are equal. If `enabled = 0`, then the constraint is always satisfied, regardless of whether the other two inputs are equal or not.
+If the input signal `enabled` is different from `0`, this template imposes a constraint to ensure that two field elements are equal. If `enabled` is `0`, then the constraint is always satisfied, regardless of whether the other two inputs are equal or not.
 
 ## Schema
 

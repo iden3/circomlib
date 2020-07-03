@@ -20,6 +20,9 @@ function getBits(v, n) {
 
 const q = bigInt("21888242871839275222246405745257275088548364400416034343698204186575808495617");
 
+// mid = (q-1)/2
+const mid = bigInt("10944121435919637611123202872628637544274182200208017171849102093287904247808");
+
 describe("Sign test", function() {
     let circuit;
     this.timeout(100000);
@@ -52,6 +55,20 @@ describe("Sign test", function() {
     
     it("Sign of q/2+1", async () => {
         const inp = getBits(q.shiftRight(bigInt.one).add(bigInt.one), 254);
+        const w = await circuit.calculateWitness({in: inp}, true);
+
+        await circuit.assertOut(w, {sign: 1});
+    });
+
+    it("Sign of (q-1)/2", async () => {
+        const inp = getBits(mid, 254);
+        const w = await circuit.calculateWitness({in: inp}, true);
+
+        await circuit.assertOut(w, {sign: 0});
+    });
+
+    it("Sign of (q-1)/2 + 1", async () => {
+        const inp = getBits(mid.add(bigInt.one), 254);
         const w = await circuit.calculateWitness({in: inp}, true);
 
         await circuit.assertOut(w, {sign: 1});

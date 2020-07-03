@@ -3,12 +3,12 @@
 ## Description
 
 This template returns the sign of an input. 
-A number is considered to be positive if and only if it is TODO: less or equal? than `(q-1)/2` with
+A number is considered to be **positive** if and only if it is less or equal than `(q-1)/2`, where 
 ```
 q = 21888242871839275222246405745257275088548364400416034343698204186575808495617
 ```
-the prime order of altbn128, the curve used to verify zk-SNARK proofs in Ethereum.
-TODO: Add link to the curve and so on.
+is the prime order of `altbn128`, the pairing-friendly elliptic curve used to verify zk-SNARK proofs in Ethereum. 
+<!-- TODO: Add REF to curve altbn128-->
 
 ## Schema
 
@@ -29,14 +29,13 @@ include "../compconstant/compconstant.circom";
 
 | Input             | Type           |
 | -------------     | -------------  | 
-| `in[254]`         | TODO:Fill      |
-
+| `in[254]`         | Field element of 254 bits |
 
 ## Outputs
 
 | Output        | Type           | Description     |
 | ------------- | -------------  | ----------      | 
-| `sign`        | Boolean        | `sign = 0` if `in` is positive and `sign = 1` otherwise. TODO: Sure? |
+| `sign`        | Boolean        | `sign = 0` if `in` is positive (i.e. less or equal than `(q-1)/2`), and `sign = 1` otherwise. |
 
 ## Benchmarks 
 

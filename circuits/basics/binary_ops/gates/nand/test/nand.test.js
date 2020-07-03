@@ -15,7 +15,7 @@ describe("NAND test", function () {
         circuit = await tester(path.join(__dirname, "nand.test.circom"));
     });
 
-    it("Should check truth table", async () => {
+    it("Should satisfy truth table", async () => {
         await checkNand(1,1, circuit, 0);
         await checkNand(1,0, circuit, 1);
         await checkNand(0,1, circuit, 1);

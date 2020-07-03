@@ -15,7 +15,7 @@ describe("NOR test", function () {
         circuit = await tester(path.join(__dirname, "nor.test.circom"));
     });
 
-    it("Should check truth table", async () => {
+    it("Should satisfy truth table", async () => {
         await checkNor(1,1, circuit, 0);
         await checkNor(1,0, circuit, 0);
         await checkNor(0,1, circuit, 0);

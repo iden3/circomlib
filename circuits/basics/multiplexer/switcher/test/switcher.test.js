@@ -1,3 +1,4 @@
+/*
 const path = require("path");
 const tester = require("circom").tester;
 
@@ -6,16 +7,16 @@ async function checkAnd( a, b, circuit, out) {
     await circuit.assertOut(w, {out: out});
 }
 
-describe("AND test", function () {
+describe("switcher test", function () {
 
     this.timeout(100000);
 
     let circuit;
     before( async() => {
-        circuit = await tester(path.join(__dirname, "and.test.circom"));
+        circuit = await tester(path.join(__dirname, "switcher.test.circom"));
     });
 
-    it("Should satisfy truth table", async () => {
+    it("Should check truth table", async () => {
         await checkAnd(1,1, circuit, 1);
         await checkAnd(1,0, circuit, 0);
         await checkAnd(0,1, circuit, 0);
@@ -23,3 +24,19 @@ describe("AND test", function () {
     });
     
 });
+
+template Switcher() {
+    signal input sel;
+    signal input L;
+    signal input R;
+    signal output outL;
+    signal output outR;
+
+    signal aux;
+
+    aux <== (R-L)*sel;    // We create aux in order to have only one multiplication
+    outL <==  aux + L;
+    outR <== -aux + R;
+}
+
+*/

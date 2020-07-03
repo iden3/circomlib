@@ -15,7 +15,7 @@ describe("NOT test", function () {
         circuit = await tester(path.join(__dirname, "not.test.circom"));
     });
 
-    it("Should check truth table", async () => {
+    it("Should satisfy truth table", async () => {
         await checkNot(0, circuit, 1);
         await checkNot(1, circuit, 0);
     });

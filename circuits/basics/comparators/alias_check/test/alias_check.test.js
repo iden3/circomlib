@@ -33,23 +33,23 @@ describe("Aliascheck test", function () {
         cir = await tester(path.join(__dirname, "alias_check.test.circom"));
     });
 
-    it("Satisfy the aliastest 0", async () => {
+    it("Should satisfy the aliastest 0", async () => {
         const inp = getBits(bigInt.zero, 254);
         await cir.calculateWitness({in: inp}, true);
     });
 
-    it("Satisfy the aliastest 3", async () => {
+    it("Should satisfy the aliastest 3", async () => {
         const inp = getBits(bigInt(3), 254);
         await cir.calculateWitness({in: inp}, true);
     });
 
     //(q-1)/2?
-    it("Satisfy the aliastest q-1", async () => {
+    it("Should satisfy the aliastest q-1", async () => {
         const inp = getBits(q.minus(bigInt.one), 254);
         await cir.calculateWitness({in: inp}, true);
     });
 
-    it("Should not satisfy an input of q", async () => {
+    it("Should NOT satisfy an input of q", async () => {
         const inp = getBits(q, 254);
         try {
             await cir.calculateWitness({in: inp}, true);
@@ -59,7 +59,7 @@ describe("Aliascheck test", function () {
         }
     });
 
-    it("Should not satisfy all ones", async () => {
+    it("Should NOT satisfy all ones", async () => {
 
         const inp = getBits(bigInt(1).shiftLeft(254).minus(bigInt.one), 254);
         try {

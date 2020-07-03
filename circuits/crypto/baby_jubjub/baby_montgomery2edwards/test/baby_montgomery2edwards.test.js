@@ -37,7 +37,7 @@ describe("Baby Jubjub Montgomery to Edwards test", function () {
         await circuitM2E.loadSymbols();
     });
 
-    it("Convert the generator point of Montgomery to Edwards", async () => {
+    it("Should convert the generator point of Montgomery to Edwards", async () => {
         let w, xout, yout;
 
         w = await circuitM2E.calculateWitness({ in: g}, true);
@@ -50,7 +50,7 @@ describe("Baby Jubjub Montgomery to Edwards test", function () {
 
     });
 
-    it("Convert an arbitrary point in Montgomery to Edwards", async () => {
+    it("Should convert an arbitrary point in Montgomery to Edwards", async () => {
         let w, xout, yout;
 
         w = await circuitM2E.calculateWitness({ in: p}, true);

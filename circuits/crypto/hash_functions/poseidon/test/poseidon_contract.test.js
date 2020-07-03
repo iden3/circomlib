@@ -38,7 +38,7 @@ describe("Poseidon Smart contract test", function () {
         });
     });
 
-    it("Shold calculate the poseidon correctly t=6", async () => {
+    it("Should calculate the poseidon correctly t=6", async () => {
 
         const res = await poseidon6.methods.poseidon([1,2]).call();
 
@@ -51,7 +51,7 @@ describe("Poseidon Smart contract test", function () {
 
         assert.equal(res.toString(), res2.toString());
     });
-    it("Shold calculate the poseidon correctly t=3", async () => {
+    it("Should calculate the poseidon correctly t=3", async () => {
 
         const res = await poseidon3.methods.poseidon([1,2]).call();
 
