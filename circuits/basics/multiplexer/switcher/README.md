@@ -15,14 +15,11 @@ sel ----> |  Switcher()  |
 
 ## Dependencies
 
-```
-include "../compconstant/compconstant.circom";
-```
+None.
 
 ## Expected Inputs
 
 | Input         | Type           |
-
 | ------------- | -------------  | 
 | `sel`         | Boolean      |
 | `R`           | Field element (any representation: binary, decimal...) |
@@ -32,13 +29,8 @@ include "../compconstant/compconstant.circom";
 
 | Output        | Type           | Description     |
 | ------------- | -------------  | ----------      | 
-| `outR`        | If `sel == 0`, then `outR` has the same type as input `R`. If `sel == 1`, then `outR` has the same type as input `L` | If `sel == 0`, then `outR = R`. If `sel == 1`, then `outR = L`. |
-| `outL`        | If `sel == 0`, then `outL` has the same type as input `L`. If `sel == 1`, then `outL` has the same type as input `R` | If `sel == 0`, then `outL = L`. If `sel == 1`, then `outL = R`. |
-
-| column 1 | column 2 |
-|------------|----------|
-| value | <ul><li>value 1</li><li>value 2</li></ul> |
-| value | <ul><li>value 1</li><li>value 2</li></ul> |
+| `outR`        | <p> If `sel == 0`, then `outR` has the same type as input `R`. <br> If `sel == 1`, then `outR` has the same type as input `L` </p> | </p> If `sel == 0`, then `outR = R`. <br> If `sel == 1`, then `outR = L`. </p> |
+| `outL`        | </p> If `sel == 0`, then `outL` has the same type as input `L`. <br> If `sel == 1`, then `outL` has the same type as input `R` </p> | </p> If `sel == 0`, then `outL = L`. <br> If `sel == 1`, then `outL = R`. </p> |
 
 ## Benchmarks 
 
