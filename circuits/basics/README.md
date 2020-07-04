@@ -39,7 +39,6 @@ This folder contains various templates to do binary operations, conversions from
     - [`multi_mux2`](multiplexer/multi_mux2)
     - [`multi_mux3`](multiplexer/multi_mux3)
     - [`multi_mux4`](multiplexer/multi_mux4)
-    - [`multiplexer`](multiplexer/multiplexer)
     - [`mux1`](multiplexer/mux1)
     - [`mux2`](multiplexer/mux2)
     - [`mux3`](multiplexer/mux3)

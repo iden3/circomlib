@@ -4,8 +4,7 @@ This folder contains the templates to generate EdDSA signatures with different h
 
 ## Structure
 
-- [`eddsa`](eddsa)
-- [`eddsa_mimc`](eddsa_mimc)
+- [`eddsa_pedersen`](eddsa)
 - [`eddsa_mimc_sponge`](eddsa_mimc_sponge)
 - [`eddsa_poseidon`](eddsa_poseidon)
 - [`js`](js)
