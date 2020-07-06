@@ -1,4 +1,5 @@
 # `Mux1()`
+<!-- TODO: Fill in -->
 
 ## Description
 
@@ -21,8 +22,8 @@ None.
 
 | Input           | Type           |
 | -------------   | -------------  | 
-| `s`          | (Selector)     |
-| `c[2]`       |                |
+| `s`             | (Selector)     |
+| `c[2]`          |                |
 
 
 ## Outputs

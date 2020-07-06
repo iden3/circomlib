@@ -29,7 +29,7 @@ function sqrt(n) {
         return 0;
     }
 
-    // Test that have solution
+    // Test that the sqrt exists
     var res = n ** ((-1) >> 1);
 //        if (res!=1) assert(false, "SQRT does not exists");
     if (res!=1) return 0;

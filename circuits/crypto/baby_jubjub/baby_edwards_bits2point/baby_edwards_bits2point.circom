@@ -17,6 +17,8 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
+// TODO: implement it!
+
 template BabyEdwardsBits2Point() {
     signal input in[256];
     signal output out[2];
