@@ -1,62 +1,46 @@
-# `BabyDbl()`
-
-// Extracts the public key from private key
-template BabyPbk() {
-    signal private input  in;
-    signal         output Ax;
-    signal         output Ay;
-
-    var BASE8[2] = [
-        5299619240641551281634865583518297030282874472190772894086521144482721001553,
-        16950150798460657717958625567821834550301663161624707787222815936182638968203
-    ];
-
-    component pvkBits = Num2Bits(253);
-    pvkBits.in <== in;
-
-    component mulFix = EscalarMulFix(253, BASE8);
-
-    var i;
-    for (i=0; i<253; i++) {
-        mulFix.e[i] <== pvkBits.out[i];
-    }
-    Ax  <== mulFix.out[0];
-    Ay  <== mulFix.out[1];
-}
-
+# `BabyEdwardsPbk()`
 
 ## Description
 
-This templates extracte from a private key a public key on [Baby Jubjub curve](https://github.com/barryWhiteHat/baby_jubjub). More specifically, given an input `in`, it returns the point (`Ax`, `Ay`) = `in`*BASE8, where BASE8 is a base point, generator of .... . in twisted Edwards form!
+This templates extracts from a private key a public key on [Baby Jubjub curve](https://github.com/ethereum/EIPs/pull/2494). More specifically, given an input `in`, it returns the coordinates of the point 
+
+```
+(Ax, Ay) = in*BASE8
+``` 
+on Baby Jubjub twisted Edwards curve. The point `BASE8` is the generator of the large prime subgroup of Baby Jubjub twisted Edwards elliptic curve and has coordinates
+```
+BASE8_x = 5299619240641551281634865583518297030282874472190772894086521144482721001553
+BASE8_y = 16950150798460657717958625567821834550301663161624707787222815936182638968203
+``` 
 
 ## Schema
 
 ```
-               ________________________     
-              |                        | ----> output Ax
-input in ---->|       BabyPbk()        | 
-              |________________________| ----> output Ay
+         ____________________     
+        |                    | ----> Ax
+in ---->|  BabyEdwardsPbk()  | 
+        |____________________| ----> Ay
 ```
 
 ## Dependencies
 
 ```
-include "../babyadd/babyadd.circom";
+include "../../../basics/bitify/num2bits/num2bits.circom";
+include "../baby_edwards_scalar_mul_fix/baby_edwards_scalar_mul_fix.circom"; 
 ```
 
-## Inputs
+## Expected Inputs
 
-| Input         | Representation | Description         |                                             |
-| ------------- | -------------  | -------------       | -------------                               |
-| `x`          | Bigint         | Field element of Fp | First coordinate of a point (x, y) on E on twisted Edwards form.  |
-| `y`          | Bigint         | Field element of Fp | Second coordinate of a point (x, y) on E on twisted Edwards form. |
+| Input         | Type           | Description         |           
+| ------------- | -------------  | -------------       | 
+| `in`          | Field element  | Private key of a Baby Jubjub public key. |
 
 ## Outputs
 
-| Output         | Representation | Description         |                                             |
-| ------------- | -------------  | -------------       | -------------                               |
-| `xout`          | Bigint         | Field element of Fp | First coordinate of the doubling point (xout, yout) = 2(x, y).  |
-| `yout`          | Bigint         | Field element of Fp | Second coordinate of the doubling point (xout, yout) = 2(x, y). |
+| Output        | Type          | Description         |
+| ------------- | ------------- | -------------       |
+| `Ax`          | Field element | First coordinate of the Baby Jubjub public key corresponding to the private key `in`, which is  `(Ax, Ay) = in*BASE8`. |
+| `Ay`          | Field element | Second coordinate of the Baby Jubjub public key corresponding to the private key `in`, which is  `(Ax, Ay) = in*BASE8`. |
 
 
 ## Benchmarks 

@@ -12,10 +12,10 @@ This templates checks if a point with coordinates `(x,y)` is a point on the [Bab
 
 ```
 
-               _______________     
-input x ----> |               |
-              |  BabyCheck()  |
-input y ----> |_______________|   
+         _______________     
+x ----> |               |
+        |  BabyCheck()  |
+y ----> |_______________|   
 ```
 
 ## Dependencies

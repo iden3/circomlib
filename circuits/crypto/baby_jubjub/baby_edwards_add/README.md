@@ -6,7 +6,7 @@ The arithmetic performed here is based on this [article](https://eprint.iacr.org
 
 ## Description
 
-This template adds two points on the [Baby Jubjub curve](https://github.com/barryWhiteHat/baby_jubjub) in twisted Edwards form. More specifically, given two points P1 = (`x1`, `y1`) and P2 = (`x2`, `y2`) it returns a point P3 = (`xout`, `yout`)  such that
+This template adds two points on the [Baby Jubjub curve](https://github.com/ethereum/EIPs/pull/2494) in twisted Edwards form. More specifically, given two points P1 = (`x1`, `y1`) and P2 = (`x2`, `y2`) it returns a point P3 = (`xout`, `yout`)  such that
 
 (`xout`, `yout`) =  (`x1`,`y1`) + (`x2`,`y2`) 
         = ((`x1y2`+`y1x2`)/(1+`dx1x2y1y2`)),(`y1y2`-`ax1x2`)/(1-`dx1x2y1y2`))
@@ -14,14 +14,14 @@ This template adds two points on the [Baby Jubjub curve](https://github.com/barr
 ## Schema
 
 ```
-                   var a     var d
-                     |         |
-                     |         |
-                 ____v_________v_____     
-input x1 ---->  |                    |
-input y1 ---->  |  BabyEdwardsAdd()  | ----> output xout
-input x2 ---->  |                    | ----> output yout
-input y2 ---->  |____________________|     
+             var a     var d
+               |         |
+               |         |
+           ____v_________v_____     
+x1 ---->  |                    |
+y1 ---->  |  BabyEdwardsAdd()  | ----> xout
+x2 ---->  |                    | ----> yout
+y2 ---->  |____________________|     
 ```
 
 ## Dependencies
@@ -30,22 +30,22 @@ None.
 
 ## Expected Inputs
 
-| Input         | Representation | Description         |                                             |
-| ------------- | -------------  | -------------       | -------------                               |
-| `x1`          | Bigint         | Field element of Fp | First coordinate of a point (x1, y1) on E.  |
-| `y1`          | Bigint         | Field element of Fp | Second coordinate of a point (x1, y1) on E. |
-| `x2`          | Bigint         | Field element of Fp | First coordinate of a point (x2, y2) on E.  |
-| `y2`          | Bigint         | Field element of Fp | Second coordinate of a point (x2, y2) on E. |
+| Input         | Type           | Description         |                                            
+| ------------- | -------------  | -------------       | 
+| `x1`          | Field element  | First coordinate of a point `(x1, y1)` on twisted Edwards Baby Jubjub curve.  |
+| `y1`          | Field element  | Second coordinate of a point `(x1, y1)` on twisted Edwards Baby Jubjub curve.  |
+| `x2`          | Field element  | First coordinate of a point `(x2, y2)` on twisted Edwards Baby Jubjub curve.  |
+| `y2`          | Field element  | Second coordinate of a point `(x2, y2)` on twisted Edwards Baby Jubjub curve.  |
 
-Requirement: at least `x1`!=`x2` or `y1`!=`y2`.
+**Requirement**: at least `x1 != x2` or `y1 != y2`.
+
 
 ## Outputs
 
-| Output         | Representation | Description         |                                             |
-| ------------- | -------------  | -------------       | -------------                               |
-| `xout`          | Bigint         | Field element of Fp | First coordinate of the addition point (xout, yout) = (x1, y1) + (x2, y2).  |
-| `yout`          | Bigint         | Field element of Fp | Second coordinate of the addition point (xout, yout) = (x1, y1) + (x2, y2). |
-
+| Output        | Type           | Description     |
+| ------------- | -------------  | ----------      | 
+| `xout`        | Field element  | First coordinate of the addition point `(xout, yout) = (x1, y1) + (x2, y2)` on twisted Edwards Baby Jubjub curve. |
+| `yout`        | Field element  | Second coordinate of the doubling point `(xout, yout) = (x1, y1) + (x2, y2)` on twisted Edwards Baby Jubjub curve. |
 
 ## Benchmarks 
 

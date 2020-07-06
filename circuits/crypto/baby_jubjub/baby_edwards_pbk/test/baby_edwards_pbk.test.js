@@ -1,12 +1,10 @@
-/*
-
 const path = require("path");
 
 const createBlakeHash = require("blake-hash");
-const eddsa = require("../../../../../src/eddsa.js");
+const eddsa = require("../../../signatures/js/eddsa.js");
 
 const tester = require("circom").tester;
-const utils = require("../../../../../src/utils.js");
+const utils = require("../../../../../src/utils");
 
 describe("Baby Jubjub twisted Edwards public key extraction test", function () {
 
@@ -37,5 +35,3 @@ describe("Baby Jubjub twisted Edwards public key extraction test", function () {
     });
 
 });
-
-*/
