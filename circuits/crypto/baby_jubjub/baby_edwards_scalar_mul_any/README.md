@@ -1,48 +1,51 @@
-# `BabyEdwardsScalarMulAny()`
-
-## Background
-
-The arithmetic performed here is based on this [article](https://eprint.iacr.org/2008/013.pdf).
+# `BabyEdwardsScalarMulAny(n)`
 
 ## Description
 
-This template multiplies ... 
+This template... . 
+
+// This function assumes that p is in the subgroup and it is different to 0.
 
 ## Schema
 
 ```
-                   var a     var d
-                     |         |
-                     |         |
-                 ____v_________v_____     
-input x1 ---->  |                    |
-input y1 ---->  |  BabyEdwardsAdd()  | ----> output xout
-input x2 ---->  |                    | ----> output yout
-input y2 ---->  |____________________|     
+             ______________________________     
+e[n] ---->  |                              |
+            |  BabyEdwardsScalarMulAny(n)  | ----> out[2]
+p[2] ---->  |______________________________|
 ```
 
 ## Dependencies
 
-None.
+```
+include "_segment_mul_any.circom";
+include "../baby_edwards_add/baby_edwards_add.circom";
+include "../baby_montgomery2edwards/baby_montgomery2edwards.circom";
+include "../baby_montgomery_dbl/baby_montgomery_dbl.circom";
+include "../../../basics/comparators/is_zero/is_zero.circom";
+```
+Internally, it also requires
+```
+include "_multiplexor2.circom";
+include "_bit_element_mul_any.circom";
+include "../baby_edwards2montgomery/baby_edwards2montgomery.circom";
+include "../baby_montgomery_add/baby_montgomery_add.circom";
+```
 
 ## Expected Inputs
 
-| Input         | Representation | Description         |                                             |
-| ------------- | -------------  | -------------       | -------------                               |
-| `x1`          | Bigint         | Field element of Fp | First coordinate of a point (x1, y1) on E.  |
-| `y1`          | Bigint         | Field element of Fp | Second coordinate of a point (x1, y1) on E. |
-| `x2`          | Bigint         | Field element of Fp | First coordinate of a point (x2, y2) on E.  |
-| `y2`          | Bigint         | Field element of Fp | Second coordinate of a point (x2, y2) on E. |
+// This function assumes that p is in the subgroup and it is different from 0.
 
-Requirement: at least `x1`!=`x2` or `y1`!=`y2`.
+| Input         | Type           | Description         |                                            
+| ------------- | -------------  | -------------       | 
+| `e[n]`       | ...  | ...  |
+| `p[2]`      | ...  | ...  |
 
 ## Outputs
 
-| Output         | Representation | Description         |                                             |
-| ------------- | -------------  | -------------       | -------------                               |
-| `xout`          | Bigint         | Field element of Fp | First coordinate of the addition point (xout, yout) = (x1, y1) + (x2, y2).  |
-| `yout`          | Bigint         | Field element of Fp | Second coordinate of the addition point (xout, yout) = (x1, y1) + (x2, y2). |
-
+| Output        | Type           | Description     |
+| ------------- | -------------  | ----------      | 
+| `out[2]`      | Array of 2 field elements  | Coordinates `(x, y)` of the point ...  |
 
 ## Benchmarks 
 

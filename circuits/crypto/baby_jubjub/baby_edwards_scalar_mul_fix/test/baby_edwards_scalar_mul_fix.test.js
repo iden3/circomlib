@@ -7,7 +7,7 @@ function print(circuit, w, s) {
     console.log(s + ": " + w[circuit.getSignalIdx(s)]);
 }
 
-describe("Scalar_mul_fix test", function () {
+describe("BabyEdwardsScalarMulFix test", function () {
     let circuit;
 
     this.timeout(100000);
@@ -74,7 +74,7 @@ describe("Scalar_mul_fix test", function () {
         }
     });
 
-    it("If multiplied by order should return 0", async () => {
+    it("Should return 0 if multiplied by order", async () => {
 
         const w = await circuit.calculateWitness({"e": babyjub.subOrder }, true);
 

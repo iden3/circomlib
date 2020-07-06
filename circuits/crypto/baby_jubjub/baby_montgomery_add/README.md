@@ -20,38 +20,40 @@ This templates adds two points on the [Baby Jubjub curve](https://github.com/bar
 ## Schema
 
 ```
-                                var a     var d
-                                   |         |
-                                   |         |
-                             ______v_________v__     
-            input x1 ---->  |                   |
-            input y1 ---->  |  MontgomeryAdd()  | ----> output xout
-            input x2 ---->  |                   | ----> output yout
-            input y2 ---->  |___________________|     
+             var a    var d
+               |        |
+               |        |
+           ____v________v_____     
+x1 ---->  |                   |
+y1 ---->  |                   | ----> xout
+          |  MontgomeryAdd()  |
+x2 ---->  |                   | ----> yout
+y2 ---->  |___________________|     
 ```
 
 ## Dependencies
 
 None.
 
-## Inputs
+## Expected Inputs
 
-| Input         | Representation | Description         |                                             |
-| ------------- | -------------  | -------------       | -------------                               |
-| `x1`          | Bigint         | Field element of Fp | First coordinate of a point (x1, y1) on E.  |
-| `y1`          | Bigint         | Field element of Fp | Second coordinate of a point (x1, y1) on E. |
-| `x2`          | Bigint         | Field element of Fp | First coordinate of a point (x2, y2) on E.  |
-| `y2`          | Bigint         | Field element of Fp | Second coordinate of a point (x2, y2) on E. |
+| Input         | Type           | Description         |                                            
+| ------------- | -------------  | -------------       | 
+| `x1`          | Field element  | First coordinate of a point `(x1, y1)` on Montgomery Baby Jubjub curve.  |
+| `y1`          | Field element  | Second coordinate of a point `(x1, y1)` on Montgomery Baby Jubjub curve.  |
+| `x2`          | Field element  | First coordinate of a point `(x2, y2)` on Montgomery Baby Jubjub curve.  |
+| `y2`          | Field element  | Second coordinate of a point `(x2, y2)` on Montgomery Baby Jubjub curve.  |
 
-Requirement: at least `x1`!=`x2` or `y1`!=`y2`.
+**Requirement**: at least `x1 != x2` or `y1 != y2`.
+
+TODO: Also different from O?
 
 ## Outputs
 
-| Output         | Representation | Description         |                                             |
-| ------------- | -------------  | -------------       | -------------                               |
-| `xout`          | Bigint         | Field element of Fp | First coordinate of the addition point (xout, yout) = (x1, y1) + (x2, y2).  |
-| `yout`          | Bigint         | Field element of Fp | Second coordinate of the addition point (xout, yout) = (x1, y1) + (x2, y2). |
-
+| Output        | Type           | Description     |
+| ------------- | -------------  | ----------      | 
+| `xout`        | Field element  | First coordinate of the addition point `(xout, yout) = (x1, y1) + (x2, y2)` on Montgomery Baby Jubjub curve. |
+| `yout`        | Field element  | Second coordinate of the doubling point `(xout, yout) = (x1, y1) + (x2, y2)` on Montgomery Baby Jubjub curve. |
 
 ## Benchmarks 
 

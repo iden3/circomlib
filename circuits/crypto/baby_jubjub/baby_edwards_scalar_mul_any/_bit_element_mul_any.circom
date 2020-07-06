@@ -17,8 +17,6 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
-
 include "_multiplexor2.circom";
 include "../baby_montgomery_add/baby_montgomery_add.circom";
 include "../baby_montgomery_dbl/baby_montgomery_dbl.circom";

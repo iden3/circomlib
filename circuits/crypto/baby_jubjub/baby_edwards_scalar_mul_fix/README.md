@@ -1,48 +1,50 @@
-# `BabyEdwardsScalarMulFix()`
-
-## Background
-
-The arithmetic performed here is based on this [article](https://eprint.iacr.org/2008/013.pdf).
+# `BabyEdwardsScalarMulFix(n, BASE)`
 
 ## Description
 
-This template multiplies ... 
+This template... . 
 
 ## Schema
 
 ```
-                   var a     var d
-                     |         |
-                     |         |
-                 ____v_________v_____     
-input x1 ---->  |                    |
-input y1 ---->  |  BabyEdwardsAdd()  | ----> output xout
-input x2 ---->  |                    | ----> output yout
-input y2 ---->  |____________________|     
+            ____________________________________     
+           |                                    |
+e[n] ----> |  BabyEdwardsScalarMulFix(n, BASE)  | ----> out[2]
+           |____________________________________|
 ```
 
 ## Dependencies
 
-None.
+```
+include "_segment_mul_fix.circom";
+include "../baby_edwards_add/baby_edwards_add.circom";
+include "../baby_montgomery2edwards/baby_montgomery2edwards.circom";
+```
+Internally, it also requires
+```
+include "_window_mul_fix.circom";
+include "../baby_edwards2montgomery/baby_edwards2montgomery.circom";
+include "../baby_montgomery2edwards/baby_montgomery2edwards.circom";
+include "../baby_montgomery_add/baby_montgomery_add.circom";
+include "../baby_montgomery_dbl/baby_montgomery_dbl.circom";
+include "../../../basics/multiplexer/multi_mux3/multi_mux3.circom";
+include "../../../basics/multiplexer/multi_mux3/multi_mux3.circom";
+```
 
 ## Expected Inputs
 
-| Input         | Representation | Description         |                                             |
-| ------------- | -------------  | -------------       | -------------                               |
-| `x1`          | Bigint         | Field element of Fp | First coordinate of a point (x1, y1) on E.  |
-| `y1`          | Bigint         | Field element of Fp | Second coordinate of a point (x1, y1) on E. |
-| `x2`          | Bigint         | Field element of Fp | First coordinate of a point (x2, y2) on E.  |
-| `y2`          | Bigint         | Field element of Fp | Second coordinate of a point (x2, y2) on E. |
+  signal input e[n];        // Input in binary format
+  signal output out[2];     
 
-Requirement: at least `x1`!=`x2` or `y1`!=`y2`.
+| Input         | Type           | Description         |                                            
+| ------------- | -------------  | -------------       | 
+| `e[n]`       | ... (Binary format!)  | ...  |
 
 ## Outputs
 
-| Output         | Representation | Description         |                                             |
-| ------------- | -------------  | -------------       | -------------                               |
-| `xout`          | Bigint         | Field element of Fp | First coordinate of the addition point (xout, yout) = (x1, y1) + (x2, y2).  |
-| `yout`          | Bigint         | Field element of Fp | Second coordinate of the addition point (xout, yout) = (x1, y1) + (x2, y2). |
-
+| Output        | Type           | Description     |
+| ------------- | -------------  | ----------      | 
+| `out[2]`      | Array of 2 field elements  | Coordinates `(x, y)` of the point ...  |
 
 ## Benchmarks 
 

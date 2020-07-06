@@ -6,7 +6,7 @@ function print(circuit, w, s) {
     console.log(s + ": " + w[circuit.getSignalIdx(s)]);
 }
 
-describe("Scalar_mul_any test", function () {
+describe("BabyEdwardsScalarMulAny test", function () {
     let circuitEMulAny;
 
     this.timeout(100000);
@@ -30,7 +30,7 @@ describe("Scalar_mul_any test", function () {
 
     });
 
-    it("If multiply by order should return 0", async () => {
+    it("Should return 0 if multiplied by order", async () => {
 
         const r = bigInt("2736030358979909402780800718157159386076813972158567259200215660948447373041");
         const w = await circuitEMulAny.calculateWitness({"e": r, "p": g});
