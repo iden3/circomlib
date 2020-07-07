@@ -11,19 +11,15 @@ This folder contains templates to verify [EdDSA](https://en.wikipedia.org/wiki/E
 
 ## Background 
 
-The Edwards Digital Signature Algorithm (EdDSA) is a variant of Schnorr's signature system with (possibly twisted) Edwards curves that allows using smaller public keys and signatures, providing high performance on a variety of platforms [[1]](https://tools.ietf.org/html/rfc8032). 
-
-The EdDSA signature scheme needs to be instatiated with certain parameters and consists of two procedures: a **generation** and a **verification** algorithm.
-
-We describe below how EdDSA works on [Baby Jubjub](https://github.com/ethereum/EIPs/pull/2494/files) twisted Edwards elliptic curve.
+The Edwards Digital Signature Algorithm (EdDSA) is a variant of Schnorr's signature system with (possibly twisted) Edwards curves that allows using smaller public keys and signatures, providing high performance on a variety of platforms [[1]](https://tools.ietf.org/html/rfc8032). The EdDSA signature scheme needs to be instatiated with certain parameters and consists of two procedures: a **generation** and a **verification** algorithm. We describe below how EdDSA works on [Baby Jubjub](https://github.com/ethereum/EIPs/pull/2494/files) twisted Edwards elliptic curve.
 
 ### Parameters
 
-**Baby Jubjub**: Baby Jubjub is a twisted Edwards curve of TODO: order `l` TODO: name of the order??? and let `M` a message we wish to sign. 
+- **Baby Jubjub**: Baby Jubjub is a twisted Edwards curve of TODO: order `l` TODO: name of the order??? and let `M` a message we wish to sign. 
 
-**Public key**: Let `A = (Ax, Ay)` be a point on Baby Jubjub of order `l`.
+- **Public key**: Let `A = (Ax, Ay)` be a point on Baby Jubjub of order `l`.
 
-**Message**: Let `M` be a message we wish to sign.
+- **Message**: Let `M` be a message we wish to sign.
 
 ### Generation algorithm
 
