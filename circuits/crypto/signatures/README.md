@@ -11,80 +11,72 @@ This folder contains templates to verify [EdDSA](https://en.wikipedia.org/wiki/E
 
 ## Background 
 
-The Edwards Digital Signature Algorithm (EdDSA) is a variant of Schnorr's signature system with (possibly twisted) Edwards curves that allows using smaller public keys and signatures, providing high performance on a variety of platforms [[1]](https://tools.ietf.org/html/rfc8032). The EdDSA signature scheme needs to be instatiated with certain parameters and consists of two procedures: a **generation** and a **verification** algorithm. We describe below how EdDSA works on [Baby Jubjub](https://github.com/ethereum/EIPs/pull/2494/files) twisted Edwards elliptic curve.
+The Edwards Digital Signature Algorithm (EdDSA) is a variant of Schnorr's signature system with (possibly twisted) Edwards curves that allows using smaller public keys and signatures, providing high performance on a variety of platforms [[1]](https://tools.ietf.org/html/rfc8032). The EdDSA signature scheme needs to be instatiated with certain parameters and consists of two procedures: a **generation** and a **verification** algorithm. We describe below how verification on EdDSA works on [Baby Jubjub](https://github.com/ethereum/EIPs/pull/2494/files) twisted Edwards elliptic curve and how its logic can be implemented as an arithmetic circuit using circom.
+
+### EdDSA on Baby Jubjub
+
+- **Elliptic curve**: Let `E` the Baby Jubjub twisted Edwards curve. This curve is defined over the finite field `F_r` where `r` is the prime
+    ```
+    21888242871839275222246405745257275088548364400416034343698204186575808495617
+    ```
+    Baby Jubjub has order `8*l` where `l` is the prime
+    ```
+    2736030358979909402780800718157159386076813972158567259200215660948447373041
+    ```
+    The base point `B = (x, y)` with coordinates 
+    ```
+    (5299619240641551281634865583518297030282874472190772894086521144482721001553, 16950150798460657717958625567821834550301663161624707787222815936182638968203)
+    ```
+    is a generator of the large prime subgroup of `E` of order `l`.
+
+- **Public key**: Consider a public key `A = (Ax, Ay)` consisting on a point on Baby Jubjub of order `l`. 
+
+- **Message**: Let `M` be a message to sign.
+
+- **Signature**: The signature on `M` by `A` consists of a par `(R, S)` where:
+    - `R = (R_x, R_y)` is a point of order `l` of `E` 
+    - `S` is a number between 1 and `l-1` such that the relation
+        ```
+        8*S*B = 8*R + 8*H(R,A,M)*A
+        ```
+        holds. 
+
+- **Message**: Let `M` be a message we wish to sign.
 
 ### Parameters
 
-- **Baby Jubjub**: Baby Jubjub is a twisted Edwards curve of TODO: order `l` TODO: name of the order??? and let `M` a message we wish to sign. 
+- **Elliptic curve**: We consider `E` the Baby Jubjub twisted Edwards curve. This curve is defined over the finite field `F_p` where `p` is the prime
+    ```
+    ...
+    ```
+    Baby Jubjub has order `8*l` where `l` is the prime
+    ```
+    ...
+    ```
 
 - **Public key**: Let `A = (Ax, Ay)` be a point on Baby Jubjub of order `l`.
 
 - **Message**: Let `M` be a message we wish to sign.
 
-### Generation algorithm
+- **Hash function**: We have implemented EdDSA on Baby Jubjub with three different hash functions: MiMC, Pedersen and Poseidon. TODO: Add links!
 
-### Verification algorithm
+### Signature
+
+The signature on `M` by `A` consists of a par `(R, S)` where:
+- `R = (R_x, R_y)` is a point of order `l` of `E` 
+- `S` is a number between 1 and `l-1` such that the relation
+    ```
+    8*S*B = 8*R + 8*H(R,A,M)*A
+    ```
+    holds. 
+
+### Verification
+
+The verification of the signature consists on checking that the parameter `S` is on the range `(0,...,l)`, that the equation above is satisfied and that the right hand side and the two elements of the left hand side of the equation are points of Baby Jubjub of order `l`.
 
 ### Circuit implementation (verification)
 
-### EdDSA (generation) on Baby Jubjub
-
-
-
-
-on Baby Jubjub consists on two algorithms: a generation and a veritifaction algorithms.
-
-on a message `M` consists
-on a public key, ..., ... and .
-
-
-The description of this protocol is based in \cite{eddsa}:  	
-
-The signature on `M` by `A` consists of a par `(R, S)` where `R = (R_x, R_y)` is a point of order `l` of `E` and `S` is a number between 1 (TODO: ??)?? and `l-1` such that 
-```
-8*S*B = 8*R + 8*H(R,A,M)*A
-```
-
-The verification consists on checking that S is on range and 
-verifying this equation.
-
-### Sign
-
-The EdDSA signature of a message M under a private key k is defined
-as the PureEdDSA signature of PH(M).  In other words, EdDSA simply
-uses PureEdDSA to sign PH(M).
-
-The PureEdDSA signature of a message M under a private key k is the
-2*b-bit string ENC(R) || ENC(S).  R and S are derived as follows.
-First define r = H(h_b || ... || h_(2b-1) || M) interpreting 2*b-bit
-strings in little-endian form as integers in {0, 1, ..., 2^(2*b) -
-1}.  Let R = [r]B and S = (r + H(ENC(R) || ENC(A) || PH(M)) * s) mod
-L.  The s used here is from the previous section.
-
-### Verify
-
-To verify a PureEdDSA signature ENC(R) || ENC(S) on a message M under
-a public key ENC(A), proceed as follows.  Parse the inputs so that A
-and R are elements of E, and S is a member of the set {0, 1, ...,
-L-1}.  Compute h = H(ENC(R) || ENC(A) || M), and check the group
-equation [2^c * S] B = 2^c * R + [2^c * h] A in E.  The signature is
-rejected if parsing fails (including S being out of range) or if the
-group equation does not hold.
-
-EdDSA verification for a message M is defined as PureEdDSA
-verification for PH(M).
-
-Let a message M under a public key A, and compte
-
-h = H(R || A || M) and check that [2^c * S] B = 2^c * R + [2^c * h] A in E.
-
-The signature is rejected if parsing fails (including S being out of range) or if the
-group equation does not hold.
-
-All templates share a similar circuit (just substitue the HASH FUNCTION box
-by te specific hash function: pedersen (default), mimc-7,mimc-7 sponge, poseidon).
-
-### Circuit
+All templates share a similar circuit like the following.
 
 ![](https://i.imgur.com/Ejx9Kdd.png)
 
