@@ -43,19 +43,22 @@ Following [[2]](http://ed25519.cr.yp.to/eddsa-20150704.pdf), we describe below h
 
 The signature on `M` by `A` consists of a par `(R, S)` where:
 - `R = (R_x, R_y)` is a point of order `l` of `E` 
-- `S` is a number between `1` and `l-1` such that the relation
+- `S` is a number between `1` and `l-1` that satisfies the relation
     ```
     8*S*B = 8*R + 8*H(R,A,M)*A
     ```
-    holds. 
 
 ### Verification
 
-The verification of the signature consists on checking that the parameter `S` is on the range `[1,...,l-1]`, that the equation above is satisfied and that both sides result in a point of Baby Jubjub of order `l`.
+The verification of the signature `(R, S)` consists on checking that the parameter `S` is on the range `[1,...,l-1]`, that the equation 
+```
+8*S*B = 8*R + 8*H(R,A,M)*A
+```
+is satisfied and that both sides of the equation result in a point of Baby Jubjub of order `l`. 
 
 ### Circuit implementation
 
-All templates share a similar circuit:
+The circuit implementation of the templates [`eddsa_pedersen`](eddsa), [`eddsa_mimc_sponge`](eddsa_mimc_sponge), [`eddsa_poseidon`](eddsa_poseidon) that verify EdDSA signatures on Baby Jubjub (with Pedersen, MiMC and Posiedon hash functions, respectively) is depicted in the following figure.
 
 ![](https://i.imgur.com/Ejx9Kdd.png)
 
