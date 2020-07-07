@@ -1,6 +1,6 @@
 # Digital Signatures
 
-This folder contains the templates to generate EdDSA signatures with different hash functions.
+This folder contains templates to verify [EdDSA](https://en.wikipedia.org/wiki/EdDSA) signatures on Baby Jubjub with different hash functions.
 
 ## Structure
 
@@ -9,20 +9,40 @@ This folder contains the templates to generate EdDSA signatures with different h
 - [`eddsa_poseidon`](eddsa_poseidon)
 - [`js`](js)
 
-## Background on Edwards Digital Signature Algorithm on Baby Jubjub
+## Background 
 
-http://ed25519.cr.yp.to/eddsa-20150704.pdf
-https://tools.ietf.org/html/rfc8032
+The Edwards Digital Signature Algorithm (EdDSA) is a variant of Schnorr's signature system with (possibly twisted) Edwards curves that allows using smaller public keys and signatures, providing high performance on a variety of platforms [[1]](https://tools.ietf.org/html/rfc8032). 
 
-It is a variant of Schnorr's signature system with (possibly twisted) Edwards curves.
+The EdDSA signature scheme needs to be instatiated with certain parameters and consists of two procedures: a **generation** and a **verification** algorithm.
 
-An EdDSA (Edwards Digital Signature Algorithm) over Baby Jubjub on a message `M` consists
+We describe below how EdDSA works on [Baby Jubjub](https://github.com/ethereum/EIPs/pull/2494/files) twisted Edwards elliptic curve.
+
+### Parameters
+
+**Baby Jubjub**: Baby Jubjub is a twisted Edwards curve of TODO: order `l` TODO: name of the order??? and let `M` a message we wish to sign. 
+
+**Public key**: Let `A = (Ax, Ay)` be a point on Baby Jubjub of order `l`.
+
+**Message**: Let `M` be a message we wish to sign.
+
+### Generation algorithm
+
+### Verification algorithm
+
+### Circuit implementation (verification)
+
+### EdDSA (generation) on Baby Jubjub
+
+
+
+
+on Baby Jubjub consists on two algorithms: a generation and a veritifaction algorithms.
+
+on a message `M` consists
 on a public key, ..., ... and .
 
-The **verification** and also **generation** algorithm??
 
 The description of this protocol is based in \cite{eddsa}:  	
-Let the public key be a point `A = (Ax, Ay)` in baby Jubjub elliptic curve `E` of order `l` TODO: name of the order??? and let `M` a message we wish to sign. 
 
 The signature on `M` by `A` consists of a par `(R, S)` where `R = (R_x, R_y)` is a point of order `l` of `E` and `S` is a number between 1 (TODO: ??)?? and `l-1` such that 
 ```
@@ -71,3 +91,9 @@ by te specific hash function: pedersen (default), mimc-7,mimc-7 sponge, poseidon
 ### Circuit
 
 ![](https://i.imgur.com/Ejx9Kdd.png)
+
+## References
+
+[[1]](https://tools.ietf.org/html/rfc8032)  S. Josefsson and I. Liusvaara, *Edwards-Curve Digital Signature Algorithm (EdDSA)*. RFC 8032, January 2017.
+
+[[2]](http://ed25519.cr.yp.to/eddsa-20150704.pdf)  D.J. Bernstein, S. Josefsson, T. Lange, P. Schwabe and Bo-Yin Yang, *EdDSA for more curves*. July 2015.
