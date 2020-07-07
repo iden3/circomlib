@@ -1,4 +1,4 @@
-# `Pedersen(n)`
+# `Pedersen(n)` (Old Version)
 
 - `calcpedersenbases`: set of functions in JavaScript used to find a set of points in [Baby Jubjub](https://github.com/barryWhiteHat/baby_jubjub) elliptic curve that serve as basis for the [Pedersen Hash](https://github.com/zcash/zcash/issues/2234).
 

@@ -12,7 +12,7 @@ The arithmetic performed here is based on wikipedia webpage on [Montgomery ellip
 
 ## Description
 
-This templates adds two points on the [Baby Jubjub curve](https://github.com/barryWhiteHat/baby_jubjub) in Montgomery form. More specifically, given two **different** points P1 = (`x1`, `y1`) and P2 = (`x2`, `y2`) it returns a point P3 = (`xout`, `yout`)  such that (TODO: Change formula!)
+This templates adds two points on the [Baby Jubjub curve](https://github.com/ethereum/EIPs/pull/2494) in Montgomery form. More specifically, given two **different** points P1 = (`x1`, `y1`) and P2 = (`x2`, `y2`) it returns a point P3 = (`xout`, `yout`)  such that (TODO: Change formula!)
 
 (`xout`, `yout`) =  (`x1`,`y1`) + (`x2`,`y2`) 
         = ((`x1y2`+`y1x2`)/(1+`dx1x2y1y2`)),(`y1y2`-`ax1x2`)/(1-`dx1x2y1y2`))

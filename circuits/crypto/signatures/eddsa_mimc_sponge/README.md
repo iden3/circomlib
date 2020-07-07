@@ -1,4 +1,4 @@
-# `EdDSAVerifier(n)`
+# `EdDSAMiMCSpongeVerifier()`
 
 ## Description
 
@@ -15,12 +15,14 @@ https://tools.ietf.org/html/rfc8032
 TODO: Make the schema more explicit
 
 ```
-               ____________________     
- msg[n] ----> |                    |
- A[256] ----> |                    |
-              |  EdDSAVerifier(n)  |
-R8[256] ----> |                    |
- S[256] ----> |____________________|     
+               _____________________________     
+enabled ----> |                             |
+     Ax ----> |                             |
+     Ay ----> |                             |
+      S ----> |  EdDSAMiMCSpongeVerifier()  |
+    R8x ----> |                             |
+    R8y ----> |                             |
+      M ----> |_____________________________|
 ```
 
 ## Dependencies
@@ -40,10 +42,13 @@ include "../../../basics/comparators/is_zero/is_zero.circom";
 
 | Input         | Type                              | Description      |
 | ------------- | -------------                     | -------------    | 
-| `msg[n]`      | ...                               |  Message    |
-| `A[256]`      | ... encoding of the point, etc.   |  A = [s]B with B generation of large prime subgroup of E (put ref) here  |
-| `R8[256]`     | ...                               |  ...   |
-| `S[256]`      | ...                               |  EdDSA signature    |
+| `enabled`     | ...                               |  Message    |
+| `Ax`          | ... encoding of the point, etc.   |  A = [s]B with B generation of large prime subgroup of E (put ref) here  |
+| `Ay`          | ...                               |  ...   |
+| `S`           | ...                               |  EdDSA signature    |
+| `R8x`         | ...                               |  EdDSA signature    |
+| `R8y`         | ...                               |  EdDSA signature    |
+| `M`           | ...                               |  EdDSA signature    |
 
 ## Outputs
 
