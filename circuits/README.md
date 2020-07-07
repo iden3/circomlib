@@ -73,3 +73,5 @@ This folder contains a set of [`circom`](https://github.com/iden3/circom) circui
         - [`eddsa_mimc_sponge`](crypto/signatures/eddsa_mimc_sponge)
         - [`eddsa_poseidon`](crypto/signatures/eddsa_poseidon)
     - [`smt`](crypto/smt)
+        - [`smt_processor`](crypto/smt/smt_processor)
+        - [`smt_verifier`](crypto/smt/smt_verifier)

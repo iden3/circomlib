@@ -31,3 +31,5 @@ This folder contains the templates to compute cryptographic primitives such as h
     - [`eddsa_pedersen`](signatures/eddsa_pedersen)
     - [`eddsa_poseidon`](signatures/eddsa_poseidon)
 - [`smt`](smt)
+    - [`smt_processor`](smt/smt_processor)
+    - [`smt_verifier`](smt/smt_verifier)

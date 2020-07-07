@@ -1,11 +1,11 @@
 # Sparse Merkle Trees
 
-The templates of this folder contain the logic of sparse Merkle trees. More precisely, the template [`SMTProcessor(nLevels)`](smt_processor) allows to insert, update and delete elements of the tree, and the template `SMTVerifier(nLevels)`](smt_verifier) checks if an element is included or not in a tree.
+The templates of this folder contain the logic of sparse Merkle trees. More precisely, the template [`smt_processor`](smt_processor) allows to insert, update and delete elements of the tree, and the template [`smt_verifier`](smt_verifier) checks if an element is included or not in a tree.
 
 ## Structure
 
-- [`SMTProcessor(nLevels)`](smt_processor)
-- [`SMTVerifier(nLevels)`](smt_verifier)
+- [`smt_processor`](smt_processor)
+- [`smt_verifier`](smt_verifier)
 
 ## Background
 
@@ -43,8 +43,7 @@ Talk about js and test.
 
 If so.
 
-Insert to an empty leaf
-=======================
+### Insert to an empty leaf
 
 ```
 
@@ -85,8 +84,7 @@ Insert to an empty leaf
 ```
 
 
-Insert to a used leaf.
-=====================
+### Insert to a used leaf.
 
 ```
   STATE                 OLD STATE                                       NEW STATE
