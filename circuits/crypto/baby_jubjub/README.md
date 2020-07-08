@@ -1,10 +1,6 @@
 # Baby Jubjub
 
-[Baby Jubjub](https://github.com/ethereum/EIPs/pull/2494) is an elliptic curve defined over the field `F_r`, where `r` is the prime order of alt_bn128 elliptic curve (also referred as BN256), which is the curve currently used to generate and verify zk-SNARK proofs in Ethereum. 
-
-With Baby Jubjub, one can implement complex crytpographic functions, which make use of elliptic curves, inside a zk-SNARK circuit. For instance, we have implemented the [Pedersen hash](https://github.com/iden3/circomlib/tree/organization/circuits/crypto/hash_functions/pedersen_w4) and the [Edwards Digial Signature Algorithm (EdDSA)](https://github.com/iden3/circomlib/tree/organization/circuits/crypto/signatures/eddsa) as a zk-SNARK circuit using Baby Jubjub.
-
-This folder contains the templates to do operations on Baby Jubjub elliptic curve. In the section **Background**, we briefly describe the curve and how its arithmetic is implemented in the circuits. For more details about the curve, please read [EIP-2494](https://github.com/ethereum/EIPs/pull/2494).
+This folder contains the templates to do operations on Baby Jubjub elliptic curve. Below, we briefly describe the curve and how its arithmetic is implemented in the circuits. For more details about the curve, please read [EIP-2494](https://github.com/ethereum/EIPs/pull/2494).
 
 ## Structure
 
@@ -27,17 +23,11 @@ This folder contains the templates to do operations on Baby Jubjub elliptic curv
 
 ## Background
 
-TODO: All together or per folder?
+[Baby Jubjub](https://github.com/ethereum/EIPs/pull/2494) is an elliptic curve defined over the field `F_r`, where `r` is the prime order of alt_bn128 elliptic curve (also referred as BN256), which is the curve currently used to generate and verify zk-SNARK proofs in Ethereum. 
 
-- Description of Baby Jubjub
-- Birational Maps
-- Arithmetic on Baby Jubjub
-	- Addition of Points
-	- Multiplication of a Point by a Scalar
-- Bits to Point and Point to Bits Maps
-- Public Key Extraction
+With Baby Jubjub, one can implement complex crytpographic functions, which make use of elliptic curves, inside a zk-SNARK circuit. For instance, we have implemented the [Pedersen hash](https://github.com/iden3/circomlib/tree/organization/circuits/crypto/hash_functions/pedersen_w4) and the [Edwards Digial Signature Algorithm (EdDSA)](https://github.com/iden3/circomlib/tree/organization/circuits/crypto/signatures/eddsa) as a zk-SNARK circuit using Baby Jubjub.
 
-## Description of Baby Jubjub
+### Description of Baby Jubjub
 
 - **Ground field**
 
@@ -84,6 +74,12 @@ TODO: All together or per folder?
 	| ------------ | -------------  			|
 	| Twisted Edwards | `(5299619240641551281634865583518297030282874472190772894086521144482721001553, 16950150798460657717958625567821834550301663161624707787222815936182638968203)` |
 	| Montgomery | `(7117928050407583618111176421555214756675765419608405867398403713213306743542, 14577268218881899420966779687690205425227431577728659819975198491127179315626)` |
+
+- **Conversion maps**
+
+    It is possible to convert points from twisted Edwards to Montgomery form and viceversa using the following birational maps:
+
+
 
 ## Arithmetic on Baby Jubjub
 
@@ -206,6 +202,18 @@ We describe the circuit used to compute this operation.
 -  The last term of the expression of `k·P` is computed in a very similar manner. The difference is that the number of bits composing `k_j` may be shorter and that there is no need to compute `P_{j+1}`, as there is no other `SEQ` box after this one. So, there is only output, the point `k_j · P_j = k_j·2^{248j}·P`. This circuit is named `SEQ'`.
 
     ![](https://i.imgur.com/y6VSKpo.png)
+
+## Background
+
+TODO: All together or per folder?
+
+- Description of Baby Jubjub
+- Birational Maps
+- Arithmetic on Baby Jubjub
+	- Addition of Points
+	- Multiplication of a Point by a Scalar
+- Bits to Point and Point to Bits Maps
+- Public Key Extraction
 
 
 ### References
