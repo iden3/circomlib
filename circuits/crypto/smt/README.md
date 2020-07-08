@@ -9,6 +9,37 @@ The templates of this folder contain the logic of sparse Merkle trees. More prec
 
 ## Background
 
+A Merkle tree is an authenticated data structure where every leaf node of the tree contains the cryptographic hash of a data block and every non leaf node contains the concatenated hashes of its child nodes \cite{compact}. If the majority of the leaves are empty, then these trees are called sparse Merkle trees \cite{security-mt}. 
+
+These trees are very useful for storing pairs of key-value and 
+
+A Merkle tree is a data structure that Merkle trees give us a way to cryptographically commit to a set of data. We start by hashing each piece of data in the set, and then keep hashing our way up the tree until we get to the root node.
+
+These structures give us a way to link a set of data to a unique hash value, the root of the tree. 
+This way, 
+This is very useful, as it provides a secure and efficient verification of large data sets by storing only a little piece of data, the root of the tree, which is lik to the whole set of data. 
+
+### Terminology
+
+- The leaves of the Merkle tree consist of key-value pairs `(k,v)`. We distinguish three different 
+nodes:
+    - **Empty node**: A vertex that stores the key and value zero.
+    - **Leaf**: A vertex with both empty children.
+    - **Internal node**: A vertex with at least one non-empty child. The value is and the key such. 
+    It has the hash of its children.
+- A **Merkle audit path** for a leaf in a Merkle tree is the shortest list of additional nodes in the 
+tree required to compute the root hash for that tree.
+- If the root computed from the audit path matches the true root, then the audit path is a **proof 
+of membership** for that leaf in the tree.
+- Otherwise, it is a **proof of non-membership** for that leaf in the tree. 
+
+![](https://i.imgur.com/hD4RitU.png)
+
+Merkle trees allow to link a set of data to a unique has value, the root of the tree, 
+which is very optimal and useful, specially in blockchain technology, as it provides a secure and efficient verification of large data sets by storing only a little piece of data on-chain. 
+
+These structures are very useful to commit to a set of data, 
+(Sparse) Merkle trees allow to link a set of data to a unique has value, which is very optimal and useful, specially in blockchain technology, as it provides a secure and efficient verification of large data sets by storing only a little piece of data on-chain. 
 
 A sparse Merkle tree is like a standard Merkle tree, except the contained data is indexed, and each datapoint is placed at the leaf that corresponds to that datapoint’s index.
 
@@ -16,7 +47,6 @@ The root of this tree is just a hash — it tells us nothing about the contents 
 
 Sparse Merkle trees (SMT) are data structures useful for storing pairs of key-value.
 
-Merkle trees give us a way to cryptographically commit to a set of data. We start by hashing each piece of data in the set, and then keep hashing our way up the tree until we get to the root node.
 
 maps which works as follows.
 
@@ -35,6 +65,17 @@ Blabla about sparse Merkle trees ... .
 * https://blog.iden3.io/merkle-trees-visual-introduction.html
 
 Files but these two descriptions:
+
+### Actions on the leafs
+- Insert
+- Update
+- Delete
+
+### Proofs of membership
+- Proof of membership
+- Proof of non-membership
+
+
 
 
 Talk about js and test.
@@ -155,3 +196,13 @@ fnc[0]  fnc[1]
 [[1]](https://tools.ietf.org/html/rfc8032)  S. Josefsson and I. Liusvaara, *Edwards-Curve Digital Signature Algorithm (EdDSA)*. RFC 8032, January 2017.
 
 [[2]](http://ed25519.cr.yp.to/eddsa-20150704.pdf)  D.J. Bernstein, S. Josefsson, T. Lange, P. Schwabe and Bo-Yin Yang, *EdDSA for more curves*. July 2015.
+
+
+
+@misc{compact,
+	author = {Faraz Haider},
+	title = {Compact Sparse Merkle Trees},
+	howpublished = {Cryptology ePrint Archive, Report 2018/955},
+	year = {2018},
+	note = {\url{https://eprint.iacr.org/2018/955}},
+}
