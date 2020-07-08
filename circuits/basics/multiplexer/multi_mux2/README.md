@@ -30,7 +30,7 @@ None.
 
 | Output        | Type           | Description     |
 | ------------- | -------------  | ----------      | 
-| `out[n]`      |                |          |
+| `out[n]`      |                |                 |
 
 ## Benchmarks 
 

@@ -16,14 +16,16 @@ c[4] ----> |__________|
 
 ## Dependencies
 
-None.
+```
+include "../multi_mux2/multi_mux2.circom"
+```
 
 ## Expected Inputs
 
 | Input           | Type           |
 | -------------   | -------------  | 
 | `s[2]`          | (Selector)     |
-| `c[4]`       |                |
+| `c[4]`          |                |
 
 
 ## Outputs

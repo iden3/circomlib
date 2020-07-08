@@ -3,7 +3,8 @@
 
 ## Description
 
-This template ... .
+This template receives a boolean `s` and an array of 2 values. Depending on the selector `s`, the template outputs either the first or the second value of the array.
+<!-- multiplexor = data selector : device that selects between several analog or digital input signals and forwards it to a single output line -->
 
 ## Schema
 
@@ -16,13 +17,15 @@ c[2] ----> |__________|
 
 ## Dependencies
 
-None.
+```
+include "../multi_mux1/multi_mux1.circom"
+```
 
 ## Expected Inputs
 
 | Input           | Type           |
 | -------------   | -------------  | 
-| `s`             | (Selector)     |
+| `s`             | Boolean        |
 | `c[2]`          |                |
 
 
@@ -30,7 +33,7 @@ None.
 
 | Output        | Type           | Description     |
 | ------------- | -------------  | ----------      | 
-| `out`      |                |          |
+| `out`         |                | </p>If `s=0`, then `out = c[0]`.<br>If `s=1`, then `out = c[1]`.</p> |
 
 ## Benchmarks 
 

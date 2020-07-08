@@ -16,7 +16,9 @@ c[8] ----> |__________|
 
 ## Dependencies
 
-None.
+```
+include "../multi_mux3/multi_mux3.circom"
+```
 
 ## Expected Inputs
 
@@ -24,7 +26,6 @@ None.
 | -------------   | -------------  | 
 | `s[3]`          | (Selector)     |
 | `c[8]`       |                |
-
 
 ## Outputs
 

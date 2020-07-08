@@ -3,7 +3,7 @@
 
 ## Description
 
-This template receives a boolean `s` and an `n`-array of 2 values and outputs the first or the second value of all the elements of the array depending on the value of the selector `s`.
+This template receives a boolean `s` and a matrix `c[n][2]` of `n` rows and `2` columns. Depending on the value of the selector `s`, the template outputs either the first or the second column of the matrix.
 <!-- multiplexor = data selector : device that selects between several analog or digital input signals and forwards it to a single output line -->
 
 ## Schema
@@ -23,7 +23,7 @@ None.
 
 | Input           | Type           | Description |
 | -------------   | -------------  | ----------- |
-| `s`             | (Selector) TODO: 0 or 1?     | Selector    |
+| `s`             | Boolean        | Selector    |
 | `c[n][2]`       | `n` arrays of 2 TODO:bits??               | 
 
 ## Outputs
