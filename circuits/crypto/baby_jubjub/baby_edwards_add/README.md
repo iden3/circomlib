@@ -1,9 +1,5 @@
 # `BabyEdwardsAdd()`
 
-## Background
-
-The arithmetic performed here is based on this [article](https://eprint.iacr.org/2008/013.pdf).
-
 ## Description
 
 This template adds two points on the [Baby Jubjub curve](https://github.com/ethereum/EIPs/pull/2494) in twisted Edwards form. More specifically, given two points P1 = (`x1`, `y1`) and P2 = (`x2`, `y2`) it returns a point P3 = (`xout`, `yout`)  such that
@@ -19,7 +15,8 @@ This template adds two points on the [Baby Jubjub curve](https://github.com/ethe
                |         |
            ____v_________v_____     
 x1 ---->  |                    |
-y1 ---->  |  BabyEdwardsAdd()  | ----> xout
+y1 ---->  |                    | ----> xout
+          |  BabyEdwardsAdd()  |
 x2 ---->  |                    | ----> yout
 y2 ---->  |____________________|     
 ```

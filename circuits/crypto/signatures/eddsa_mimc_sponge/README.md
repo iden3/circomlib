@@ -2,13 +2,7 @@
 
 ## Description
 
-This template ... . (verifies an EdDSA signature S on a message msg on Baby Jubjub elliptic curve)
-
-## Background
-
-This is a general overview of how EdDSA works on Baby Jubjub:
-1. blabla
-https://tools.ietf.org/html/rfc8032
+This template verifies an [EdDSA](../) signature `S` on a message `msg` on Baby Jubjub elliptic curve using [MiMC-Sponge](../../hash_functions/mimc_sponge) hash function.
 
 ## Schema
 

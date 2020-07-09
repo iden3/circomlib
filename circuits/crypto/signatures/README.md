@@ -58,7 +58,7 @@ is satisfied and that both sides of the equation result in a point of Baby Jubju
 
 ### Circuit implementation
 
-The circuit implementation of the templates [`eddsa_pedersen`](eddsa), [`eddsa_mimc_sponge`](eddsa_mimc_sponge), [`eddsa_poseidon`](eddsa_poseidon) that verify EdDSA signatures on Baby Jubjub (with Pedersen, MiMC and Posiedon hash functions, respectively) is depicted in the following figure.
+The logic of the templates [`eddsa_pedersen`](eddsa), [`eddsa_mimc_sponge`](eddsa_mimc_sponge), [`eddsa_poseidon`](eddsa_poseidon) that verify EdDSA signatures on Baby Jubjub (with Pedersen, MiMC and Posiedon hash functions, respectively) is depicted in the following circuit.
 
 ![](https://i.imgur.com/Ejx9Kdd.png)
 
