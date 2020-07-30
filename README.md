@@ -2,6 +2,11 @@
 
 This is the library of templates of [`circom`](https://github.com/iden3/circom), a circuit compiler for zero-knowledge circuits. 
 
+
+<!-- BACKGROUND? / NOTATION? :
+For instance: Field elements vs. Binary 
+-->
+
 ## Structure
 
 - [`circuits`](circuits) : it contains several circom circuit templates to perform different kinds of operations. From more basic ones, like comparing two numbers or doing binary arithmetic, to more complex functions, such as elliptic curve operations, validating digital signatures or hashing.

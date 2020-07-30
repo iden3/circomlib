@@ -39,7 +39,7 @@ include "../../../basics/comparators/force_equal_if_enabled/force_equal_if_enabl
 | Input         | Type                              | Description      |
 | ------------- | -------------                     | -------------    | 
 | `enabled`     | ...                               |  Message    |
-| `Ax`          | ... encoding of the point, etc.   |  A = [s]B with B generation of large prime subgroup of E (put ref) here  |
+| `Ax`          | ... encoding of the point, etc.   |  A = [s]B with B generator of large prime subgroup of E (put ref) here  |
 | `Ay`          | ...                               |  ...   |
 | `S`           | ...                               |  EdDSA signature    |
 | `R8x`         | ...                               |  EdDSA signature    |

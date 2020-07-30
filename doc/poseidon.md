@@ -43,7 +43,6 @@ We generate the points $P_0,\dots,P_{{k}}$ in such a manner that it is difficult
   
 ## Circuit implementation
 
-
 In the circuit **PEDERSEN HASH** depicted in next figure, we described using high-level operation gates the circuit used to compute the Pedersen hash of a message `M`. 
 
 ![](https://i.imgur.com/8ccgWJ5.png)

@@ -19,7 +19,7 @@ in ----> |  Num2Bits(n)  | ----> out[n]
 None.
 
 
-## Expected Inputs
+## Expected Input
 
 | Input           | Type           |
 | -------------   | -------------  | 

@@ -18,7 +18,7 @@ template Main() {
     component n2b = Num2Bits(1);
     component cst = Constants();
 
-    selector ==> n2b.in;
+    selector ==> n2b.in; // TODO: why?
     n2b.out[0] ==> mux.s;
     for (i=0; i<2; i++) {
         cst.out[i] ==> mux.c[i];
