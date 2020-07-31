@@ -36,25 +36,20 @@ Following [[2]](http://ed25519.cr.yp.to/eddsa-20150704.pdf), we describe below h
 
 - **Message**: Let `M` be a message to sign.
 
-- **Hash function**: We present a hash function with the letter `H`. We have implemented EdDSA on Baby Jubjub with three different hash functions: [MiMC](https://eprint.iacr.org/2016/492.pdf), [Pedersen](https://github.com/zcash/zips/blob/master/protocol/sapling.pdf) and [Poseidon](https://www.poseidon-hash.info/).
-<!-- TODO: Add link to MiMC-7 & pedersen & poseidon, our doc explanation -->
+- **Hash function**: We represent the hash function with the letter `H`. We have implemented EdDSA on Baby Jubjub with three different hash functions: [MiMC](https://eprint.iacr.org/2016/492.pdf), [Pedersen](https://github.com/zcash/zips/blob/master/protocol/sapling.pdf) and [Poseidon](https://www.poseidon-hash.info/).
 
 ### Signature
 
 The signature on `M` by `A` consists of a par `(R, S)` where:
-- `R = (R_x, R_y)` is a point of order `l` of `E` 
-- `S` is a number between `1` and `l-1` that satisfies the relation
-    ```
-    8*S*B = 8*R + 8*H(R,A,M)*A
-    ```
+- `R = (R_x, R_y)` is a point of order `l` of `E`.
+- `S` is a number between `1` and `l-1` that satisfies the relation `8*S*B = 8*R + 8*H(R,A,M)*A`.
 
 ### Verification
 
-The verification of the signature `(R, S)` consists on checking that the parameter `S` is on the range `[1,...,l-1]`, that the equation 
-```
-8*S*B = 8*R + 8*H(R,A,M)*A
-```
-is satisfied and that both sides of the equation result in a point of Baby Jubjub of order `l`. 
+The verification of the signature `(R, S)` on `M` by `A` consists on three checks:
+- The parameter `S` is on the range `[1,...,l-1]`.
+- The equation `8*S*B = 8*R + 8*H(R,A,M)*A` is satisfied.
+- Both sides of the equation result in a point of Baby Jubjub of order `l`. 
 
 ### Circuit implementation
 
