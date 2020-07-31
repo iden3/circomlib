@@ -23,7 +23,6 @@ function buffer2bits(buff) {
     return res;
 }
 
-
 describe("EdDSA Pedersen test", function () {
     let circuit;
 

@@ -34,19 +34,19 @@ include "../../hash_functions/mimc_sponge/mimc_sponge.circom";
 
 ## Expected Inputs
 
-| Input         | Type                              | Description      |
-| ------------- | -------------                     | -------------    | 
-| `enabled`     | ...                               |  Message    |
-| `Ax`          | ... encoding of the point, etc.   |  A = [s]B with B generation of large prime subgroup of E (put ref) here  |
-| `Ay`          | ...                               |  ...   |
-| `S`           | ...                               |  EdDSA signature    |
-| `R8x`         | ...                               |  EdDSA signature    |
-| `R8y`         | ...                               |  EdDSA signature    |
-| `M`           | ...                               |  EdDSA signature    |
+| Input         | Type            | Description      |
+| ------------- | -------------   | -------------    | 
+| `enabled`     | Boolean         | If `enabled = 1`, then . Otherwise, no constraint is added.    |
+| `Ax`          | Field element   | `x`-coordinate of the Baby Jubjub public key `A`  |
+| `Ay`          | Field element   | `y`-coordinate of the Baby Jubjub public key `A`  |
+| `R8x`         | Field element   | `x`-coordinate of the point `8*R`, where `R` is the first element of the signature `(R, S)` |
+| `R8y`         | Field element   | `y`-coordinate of the point `8*R`, where `R` is the first element of the signature `(R, S)` |
+| `S`           | Field element   | Integer between `1` and `l-1` which is the second element of the signature `(R, S)`    |
+| `M`           | Field element   |  Message to be signed  |
 
 ## Outputs
 
-No output!!
+There is no output.
 
 ## Benchmarks 
 

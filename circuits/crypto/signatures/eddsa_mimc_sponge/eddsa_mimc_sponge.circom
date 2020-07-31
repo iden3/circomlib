@@ -41,7 +41,7 @@ template EdDSAMiMCSpongeVerifier() {
 
     var i;
 
-// Ensure S<Subgroup Order
+// Ensure S < subgroup order
 
     component snum2bits = Num2Bits(253);
     snum2bits.in <== S;
@@ -54,7 +54,7 @@ template EdDSAMiMCSpongeVerifier() {
     compConstant.in[253] <== 0;
     compConstant.out === 0;
 
-// Calculate the h = H(R,A, msg)
+// Calculate the h = H(R, A, msg)
 
     component hash = MiMCSponge(5, 220, 1);
     hash.ins[0] <== R8x;
@@ -69,8 +69,8 @@ template EdDSAMiMCSpongeVerifier() {
 
 // Calculate second part of the right side:  right2 = h*8*A
 
-    // Multiply by 8 by adding it 3 times.  This also ensure that the result is in
-    // the subgroup.
+    // Multiply by 8 by adding it 3 times and check != O. 
+    // This also ensures that the result is in the subgroup.
     component dbl1 = BabyEdwardsDbl();
     dbl1.x <== Ax;
     dbl1.y <== Ay;
