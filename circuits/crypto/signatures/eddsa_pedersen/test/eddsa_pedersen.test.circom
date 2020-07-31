@@ -1,3 +1,3 @@
 include "../eddsa_pedersen.circom";
 
-component main = EdDSAVerifier(80);
+component main = EdDSAPedersenVerifier(80);

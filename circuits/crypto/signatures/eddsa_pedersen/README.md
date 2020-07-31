@@ -1,4 +1,4 @@
-# `EdDSAVerifier(n)`
+# `EdDSAPedersenVerifier(n)`
 
 ## Description
 
@@ -6,15 +6,13 @@ This template verifies an [EdDSA](../) signature `S` on a message `msg` on Baby 
 
 ## Schema
 
-TODO: Make the schema more explicit
-
 ```
-               ____________________     
- msg[n] ----> |                    |
- A[256] ----> |                    |
-              |  EdDSAVerifier(n)  |
-R8[256] ----> |                    |
- S[256] ----> |____________________|     
+               ____________________________     
+ msg[n] ----> |                            |
+ A[256] ----> |                            |
+              |  EdDSAPedersenVerifier(n)  |
+R8[256] ----> |                            |
+ S[256] ----> |____________________________|     
 ```
 
 ## Dependencies

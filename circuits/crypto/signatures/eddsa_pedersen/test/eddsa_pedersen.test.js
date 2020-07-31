@@ -1,5 +1,3 @@
-/*
-
 const chai = require("chai");
 const path = require("path");
 
@@ -10,10 +8,6 @@ const eddsa = require("../../js/eddsa.js");
 const babyJub = require("../../../baby_jubjub/js/baby_jubjub");
 
 const assert = chai.assert;
-
-function print(circuit, w, s) {
-    console.log(s + ": " + w[circuit.getSignalIdx(s)]);
-}
 
 function buffer2bits(buff) {
     const res = [];
@@ -30,13 +24,13 @@ function buffer2bits(buff) {
 }
 
 
-describe("EdDSA test", function () {
+describe("EdDSA Pedersen test", function () {
     let circuit;
 
     this.timeout(100000);
 
     before( async () => {
-        circuit = await tester(path.join(__dirname, "eddsa.test.circom"));
+        circuit = await tester(path.join(__dirname, "eddsa_pedersen.test.circom"));
     });
 
     it("Sign a single 10 bytes from 0 to 9", async () => {
@@ -45,13 +39,9 @@ describe("EdDSA test", function () {
 //        const prvKey = crypto.randomBytes(32);
 
         const prvKey = Buffer.from("0001020304050607080900010203040506070809000102030405060708090001", "hex");
-
         const pubKey = eddsa.prv2pub(prvKey);
-
         const pPubKey = babyJub.packPoint(pubKey);
-
         const signature = eddsa.sign(prvKey, msg);
-
         const pSignature = eddsa.packSignature(signature);
         const uSignature = eddsa.unpackSignature(pSignature);
 
@@ -67,5 +57,3 @@ describe("EdDSA test", function () {
         await circuit.checkConstraints(w);
     });
 });
-
-*/

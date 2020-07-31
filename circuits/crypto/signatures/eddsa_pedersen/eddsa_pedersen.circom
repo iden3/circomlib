@@ -26,7 +26,7 @@ include "../../baby_jubjub/baby_edwards_scalar_mul_any/baby_edwards_scalar_mul_a
 include "../../baby_jubjub/baby_edwards_scalar_mul_fix/baby_edwards_scalar_mul_fix.circom";
 include "../../hash_functions/pedersen_w4/pedersen_w4.circom";
 
-template EdDSAVerifier(n) {
+template EdDSAPedersenVerifier(n) {
     signal input msg[n];
 
     signal input A[256];
