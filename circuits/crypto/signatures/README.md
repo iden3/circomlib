@@ -7,7 +7,6 @@ This folder contains templates to verify [EdDSA](https://en.wikipedia.org/wiki/E
 - [`eddsa_pedersen`](eddsa)
 - [`eddsa_mimc_sponge`](eddsa_mimc_sponge)
 - [`eddsa_poseidon`](eddsa_poseidon)
-- [`js`](js)
 
 ## EdDSA on Baby Jubjub 
 
