@@ -17,11 +17,11 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
+include "../baby_edwards_check/baby_edwards_check.circom"
 include "../../../basics/bitify/bits2num/bits2num.circom";
 include "../../../basics/bitify/num2bits/num2bits.circom";
 include "../../../basics/comparators/alias_check/alias_check.circom";
 include "../../../basics/comparators/comp_constant/comp_constant.circom";
-include "../baby_edwards_check/baby_edwards_check.circom"
 
 function sqrt(n) {
 

@@ -3,7 +3,7 @@ const tester = require("circom").tester;
 
 const babyJub = require("../../js/baby_jubjub.js");
 
-describe("Bits_2_point_strict test", function() {
+describe("Bits2point test", function() {
 
     let circuit;
     

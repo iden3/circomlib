@@ -21,8 +21,8 @@ include "_baby_edwards_scalar_mul_window.circom";
 Internally, it also requires
 ```
 include "_baby_edwards_scalar_mul_w4table.circom";
-include "../../../basics/multiplexer/multi_mux4/multi_mux4.circom";
 include "../baby_edwards_add/baby_edwards_add.circom";
+include "../../../basics/multiplexer/multi_mux4/multi_mux4.circom";
 ```
 
 ## Expected Inputs

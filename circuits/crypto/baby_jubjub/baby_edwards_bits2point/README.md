@@ -2,7 +2,7 @@
 
 ## Description
 
-This template ... .
+This template recieves a binary number of 256 bits (less than `r`)  and returns a point on twisted Edwards [Baby Jubjub curve](https://github.com/ethereum/EIPs/pull/2494).
 
 ## Schema
 
@@ -22,6 +22,11 @@ None.
 | Input         | Type                     |
 | ------------- | -------------            |
 | `in[256]`     | Binary array of 256 bits |
+
+**Requirement**: the binary number `in[256]` is expected to be be less than `r`, where
+```
+r = 21888242871839275222246405745257275088548364400416034343698204186575808495617
+```
 
 ## Outputs
 
