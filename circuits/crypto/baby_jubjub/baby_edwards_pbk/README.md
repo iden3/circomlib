@@ -16,17 +16,17 @@ BASE8_y = 1695015079846065771795862556782183455030166316162470778722281593618263
 ## Schema
 
 ```
-         ____________________     
-        |                    | ----> Ax
-in ---->|  BabyEdwardsPbk()  | 
-        |____________________| ----> Ay
+          ____________________     
+         |                    | ----> Ax
+in ----> |  BabyEdwardsPbk()  | 
+         |____________________| ----> Ay
 ```
 
 ## Dependencies
 
 ```
-include "../../../basics/bitify/num2bits/num2bits.circom";
 include "../baby_edwards_scalar_mul_fix/baby_edwards_scalar_mul_fix.circom"; 
+include "../../../basics/bitify/num2bits/num2bits.circom";
 ```
 
 ## Expected Inputs
@@ -34,6 +34,12 @@ include "../baby_edwards_scalar_mul_fix/baby_edwards_scalar_mul_fix.circom";
 | Input         | Type           | Description         |           
 | ------------- | -------------  | -------------       | 
 | `in`          | Field element  | Private key of a Baby Jubjub public key. |
+
+**Requirement**: The input `in` should be less than `l`, where
+```
+l = 2736030358979909402780800718157159386076813972158567259200215660948447373041
+```
+is the order of the large prime subgroup of Baby Jubjub.
 
 ## Outputs
 

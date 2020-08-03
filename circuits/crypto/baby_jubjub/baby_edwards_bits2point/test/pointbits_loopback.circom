@@ -4,7 +4,7 @@ include "../../baby_edwards_point2bits_strict/baby_edwards_point2bits_strict.cir
 template Main() {
     signal input in[2];
 
-    var i
+    var i;
 
     component p2b = BabyEdwardsPoint2Bits_strict();
     component b2p = BabyEdwardsBits2Point();
