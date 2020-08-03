@@ -2,7 +2,7 @@
 
 ## Description
 
-This template verifies an [EdDSA](../) signature `S` on a message `msg` on Baby Jubjub elliptic curve using [MiMC-Sponge](../../hash_functions/mimc_sponge) hash function.
+This template verifies an [EdDSA](../) signature `(R, S)` on a message `M` on Baby Jubjub elliptic curve using [MiMC-Sponge](../../hash_functions/mimc_sponge) hash function.
 
 ## Schema
 
@@ -36,13 +36,13 @@ include "../../hash_functions/mimc_sponge/mimc_sponge.circom";
 
 | Input         | Type            | Description      |
 | ------------- | -------------   | -------------    | 
-| `enabled`     | Boolean         | If `enabled = 1`, then . Otherwise, no constraint is added.    |
-| `Ax`          | Field element   | `x`-coordinate of the Baby Jubjub public key `A`  |
-| `Ay`          | Field element   | `y`-coordinate of the Baby Jubjub public key `A`  |
-| `R8x`         | Field element   | `x`-coordinate of the point `8*R`, where `R` is the first element of the signature `(R, S)` |
-| `R8y`         | Field element   | `y`-coordinate of the point `8*R`, where `R` is the first element of the signature `(R, S)` |
-| `S`           | Field element   | Integer between `1` and `l-1` which is the second element of the signature `(R, S)`    |
-| `M`           | Field element   |  Message to be signed  |
+| `enabled`     | Boolean         | </p>If `enabled = 1`, then the templated adds a constraint imposing that the signature is valid.</br>If `enabled = 0`, no constraint is added.</p> | <!-- More precisely: if enabled != 0, the constraint is added. -->
+| `Ax`          | Field element   | `x`-coordinate of the Baby Jubjub public key `A`.  |
+| `Ay`          | Field element   | `y`-coordinate of the Baby Jubjub public key `A`.  |
+| `R8x`         | Field element   | `x`-coordinate of the point `8*R`, where `R` is the first element of the signature `(R, S)`. |
+| `R8y`         | Field element   | `y`-coordinate of the point `8*R`, where `R` is the first element of the signature `(R, S)`. |
+| `S`           | Field element   | Integer between `1` and `l-1` which is the second element of the signature `(R, S)`.    |
+| `M`           | Field element   |  Message to be signed.  |
 
 ## Outputs
 
