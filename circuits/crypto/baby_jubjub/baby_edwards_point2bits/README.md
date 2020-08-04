@@ -15,7 +15,10 @@ in[2] ----> |  BabyEdwardsPoint2Bits()  | ----> out[256]
 
 ## Dependencies
 
-None.
+```
+include "../../../basics/bitify/num2bits/num2bits.circom";
+include "../../../basics/comparators/comp_constant/comp_constant.circom";
+```
 
 ## Expected Inputs
 
