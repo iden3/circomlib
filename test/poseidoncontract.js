@@ -2,7 +2,7 @@ const ganache = require("ganache-cli");
 const Web3 = require("web3");
 const chai = require("chai");
 const poseidonGenContract = require("../src/poseidon_gencontract.js");
-const Poseidon = require("../src/poseidon.js");
+const poseidon = require("../src/poseidon.js");
 
 const assert = chai.assert;
 const log = (msg) => { if (process.env.MOCHA_VERBOSE) console.log(msg); };
@@ -24,28 +24,26 @@ describe("Poseidon Smart contract test", function () {
         const C = new web3.eth.Contract(poseidonGenContract.abi);
 
         poseidon6 = await C.deploy({
-            data: poseidonGenContract.createCode(6)
+            data: poseidonGenContract.createCode(5)
         }).send({
-            gas: 2500000,
+            gas: 5000000,
             from: accounts[0]
         });
         poseidon3 = await C.deploy({
-            data: poseidonGenContract.createCode(3)
+            data: poseidonGenContract.createCode(2)
         }).send({
-            gas: 2500000,
+            gas: 5000000,
             from: accounts[0]
         });
     });
 
     it("Shold calculate the poseidon correctly t=6", async () => {
 
-        const res = await poseidon6.methods.poseidon([1,2]).call();
+        const res = await poseidon6.methods.poseidon([1,2, 0, 0, 0]).call();
 
         // console.log("Cir: " + bigInt(res.toString(16)).toString(16));
 
-        const hash = Poseidon.createHash(6, 8, 57);
-
-        const res2 = hash([1,2]);
+        const res2 = poseidon([1,2, 0, 0, 0]);
         // console.log("Ref: " + bigInt(res2).toString(16));
 
         assert.equal(res.toString(), res2.toString());
@@ -56,9 +54,7 @@ describe("Poseidon Smart contract test", function () {
 
         // console.log("Cir: " + bigInt(res.toString(16)).toString(16));
 
-        const hash = Poseidon.createHash(3, 8, 57);
-
-        const res2 = hash([1,2]);
+        const res2 = poseidon([1,2]);
         // console.log("Ref: " + bigInt(res2).toString(16));
 
         assert.equal(res.toString(), res2.toString());

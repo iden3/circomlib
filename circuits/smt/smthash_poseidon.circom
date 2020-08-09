@@ -29,7 +29,7 @@ template SMTHash1() {
     signal input value;
     signal output out;
 
-    component h = Poseidon(3, 6, 8, 57);   // Constant
+    component h = Poseidon(3);   // Constant
     h.inputs[0] <== key;
     h.inputs[1] <== value;
     h.inputs[2] <== 1;
@@ -48,7 +48,7 @@ template SMTHash2() {
     signal input R;
     signal output out;
 
-    component h = Poseidon(2, 6, 8, 57);   // Constant
+    component h = Poseidon(2);   // Constant
     h.inputs[0] <== L;
     h.inputs[1] <== R;
 

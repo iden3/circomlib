@@ -154,6 +154,17 @@ class Contract {
     }
 
     push(data) {
+        if (typeof data === "number") {
+            let isNeg;
+            if (data<0) {
+                isNeg = true;
+                data = -data;
+            }
+            data = data.toString(16);
+            if (data.length % 2 == 1) data = "0" + data;
+            data = "0x" + data;
+            if (isNeg) data = "-"+data;
+        }
         const d = Web3Utils.hexToBytes(Web3Utils.toHex(data));
         if (d.length == 0 || d.length > 32) {
             throw new Error("Assertion failed");

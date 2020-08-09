@@ -2,14 +2,13 @@
 // License: LGPL-3.0+
 //
 
-const Poseidon = require("./poseidon.js");
-
 const Contract = require("./evmasm");
+const { unstringifyBigInts } = require("ffjavascript").utils;
 
-const SEED = "poseidon";
-const NROUNDSF = 8;
-const NROUNDSP = 57;
-const T = 6;
+const { C:K, M } = unstringifyBigInts(require("./poseidon_constants.json"));
+
+const N_ROUNDS_F = 8;
+const N_ROUNDS_P = [56, 57, 56, 60, 60, 63, 64, 63];
 
 function toHex256(a) {
     let S = a.toString(16);
@@ -17,38 +16,38 @@ function toHex256(a) {
     return "0x" + S;
 }
 
-function createCode(t, nRoundsF, nRoundsP, seed) {
-    if (typeof seed === "undefined") seed = SEED;
-    if (typeof nRoundsF === "undefined") nRoundsF = NROUNDSF;
-    if (typeof nRoundsP === "undefined") nRoundsP = NROUNDSP;
-    if (typeof t === "undefined") t = T;
+function createCode(nInputs) {
 
-    const K = Poseidon.getConstants(t, seed, nRoundsP + nRoundsF);
-    const M = Poseidon.getMatrix(t, seed, nRoundsP + nRoundsF);
+    if (( nInputs<1) || (nInputs>8)) throw new Error("Invalid number of inputs. Must be 1<=nInputs<=8");
+    const t = nInputs + 1;
+    const nRoundsF = N_ROUNDS_F;
+    const nRoundsP = N_ROUNDS_P[t - 2];
+
+//    const nRoundsF = 2;
+//    const nRoundsP = 2;
+
 
     const C = new Contract();
 
     function saveM() {
         for (let i=0; i<t; i++) {
             for (let j=0; j<t; j++) {
-                C.push(toHex256(M[i][j]));
+                C.push(toHex256(M[t-2][j][i]));
                 C.push((1+i*t+j)*32);
                 C.mstore();
             }
         }
     }
 
-    function ark(r) {
-        C.push(toHex256(K[r])); // K, st, q
+    function ark(r) {   // st, q
         for (let i=0; i<t; i++) {
-            C.dup(1+t); // q, K, st, q
-            C.dup(1);   // K, q, K, st, q
-            C.dup(3+i); // st[i], K, q, K, st, q
-            C.addmod(); // newSt[i], K, st, q
-            C.swap(2 + i); // xx, K, st, q
+            C.dup(t); // q, st, q
+            C.push(toHex256(K[t-2][r*t+i]));  // K, q, st, q
+            C.dup(2+i); // st[i], K, q, st, q
+            C.addmod(); // newSt[i], st, q
+            C.swap(1 + i); // xx, st, q
             C.pop();
         }
-        C.pop();
     }
 
     function sigma(p) {
@@ -115,17 +114,17 @@ function createCode(t, nRoundsF, nRoundsP, seed) {
 
     C.push("0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f0000001");  // q
 
-    // Load 6 values from the call data.
+    // Load t values from the call data.
     // The function has a single array param param
     // [Selector (4)] [Pointer (32)][Length (32)] [data1 (32)] ....
-    // We ignore the pointer and the length and just load 6 values to the state
-    // (Stack positions 0-5) If the array is shorter, we just set zeros.
+    // We ignore the pointer and the length and just load t values to the state
+    // (Stack positions 0-{t-1}) If the array is shorter, we just set zeros.
     for (let i=0; i<t; i++) {
         C.push(0x44+(0x20*(t-1-i)));
         C.calldataload();
     }
 
-    for (let i=0; i<nRoundsF+nRoundsP; i++) {
+    for (let i=0; i<nRoundsF+nRoundsP-1; i++) {
         ark(i);
         if ((i<nRoundsF/2) || (i>=nRoundsP+nRoundsF/2)) {
             for (let j=0; j<t; j++) {
@@ -141,6 +140,13 @@ function createCode(t, nRoundsF, nRoundsP, seed) {
         C.jmp("mix");
         C.label(strLabel);
     }
+
+    C.push(toHex256(K[t-2][(nRoundsF+nRoundsP-1)*t]));  // K, st, q
+    C.dup(t+1); // q, K, st, q
+    C.swap(2);  // st[0], K, q, st\st[0]
+    C.addmod();  // st q
+
+    sigma(0);
 
     C.push("0x00");
     C.mstore();     // Save it to pos 0;

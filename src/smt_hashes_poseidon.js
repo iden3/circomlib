@@ -1,13 +1,18 @@
-const Poseidon = require("./poseidon");
 
-const hash = Poseidon.createHash(6, 8, 57);
+const ZqField = require("ffjavascript").ZqField;
+const Scalar = require("ffjavascript").Scalar;
+
+const poseidon = require("./poseidon");
+
+const F = new ZqField(Scalar.fromString("21888242871839275222246405745257275088548364400416034343698204186575808495617"));
+
 
 exports.hash0 = function (left, right) {
-    return hash([left, right]);
+    return poseidon([left, right]);
 };
 
 exports.hash1 = function(key, value) {
-    return hash([key, value, Poseidon.F.one]);
+    return poseidon([key, value, F.one]);
 };
 
-exports.F = Poseidon.F;
+exports.F = F;

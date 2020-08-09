@@ -49,7 +49,7 @@ Folder containing the circuit implementation of Sparse Merkle Trees.
     - OUTPUT
     - BENCHMARKS
     - EXAMPLE
-    
+
 ### babyjub
 
 Arithmetic on [Baby Jubjub elliptic curve](https://github.com/barryWhiteHat/baby_jubjub) in twisted Edwards form. (TODO: Expose here the characteristics of the curve?)
@@ -58,22 +58,22 @@ Arithmetic on [Baby Jubjub elliptic curve](https://github.com/barryWhiteHat/baby
 - `BabyAdd()`
 
     - DESCRIPTION
-    
+
       It adds two points on the Baby Jubjub curve. More specifically, given two points P1 = (`x1`, `y1`) and P2 = (`x2`, `y2`) it returns a point P3 = (`xout`, `yout`)  such that
 
-        (`xout`, `yout`) =  (`x1`,`y1`) + (`x2`,`y2`) 
+        (`xout`, `yout`) =  (`x1`,`y1`) + (`x2`,`y2`)
              = ((`x1y2`+`y1x2`)/(1+`dx1x2y1y2`)),(`y1y2`-`ax1x2`)/(1-`dx1x2y1y2`))
-    
+
     - SCHEMA
        ```
                                         var a     var d
                                           |         |
                                           |         |
-                                    ______v_________v_______     
+                                    ______v_________v_______
                    input x1 ---->  |                        |
                    input y1 ---->  |        BabyAdd()       | ----> output xout
                    input x2 ---->  |                        | ----> output yout
-                   input y2 ---->  |________________________|     
+                   input y2 ---->  |________________________|
        ```
 
     - INPUTS
@@ -84,16 +84,16 @@ Arithmetic on [Baby Jubjub elliptic curve](https://github.com/barryWhiteHat/baby
       | `y1`          | Bigint         | Field element of Fp | Second coordinate of a point (x1, y1) on E. |
       | `x2`          | Bigint         | Field element of Fp | First coordinate of a point (x2, y2) on E.  |
       | `y2`          | Bigint         | Field element of Fp | Second coordinate of a point (x2, y2) on E. |
-   
+
       Requirement: at least `x1`!=`x2` or `y1`!=`y2`.
 
     - OUTPUT
-        
+
       | Input         | Representation | Description         |                                             |
       | ------------- | -------------  | -------------       | -------------                               |
       | `xout`          | Bigint         | Field element of Fp | First coordinate of the addition point (xout, yout) = (x1, y1) + (x2, y2).  |
       | `yout`          | Bigint         | Field element of Fp | Second coordinate of the addition point (xout, yout) = (x1, y1) + (x2, y2). |
-        
+
     - BENCHMARKS (constraints)
 
     - EXAMPLE
@@ -108,7 +108,7 @@ Arithmetic on [Baby Jubjub elliptic curve](https://github.com/barryWhiteHat/baby
 
 - `BabyCheck()`
 
-    - DESCRIPTION : checks if a given point is in the curve. 
+    - DESCRIPTION : checks if a given point is in the curve.
     - SCHEMA
     - INPUT
     - OUTPUT
@@ -127,7 +127,7 @@ Arithmetic on [Baby Jubjub elliptic curve](https://github.com/barryWhiteHat/baby
 
 ### binsub
 
-- `BinSub(n)`    
+- `BinSub(n)`
 
     - DESCRIPTION: binary substraction.
     - SCHEMA
@@ -140,7 +140,7 @@ Arithmetic on [Baby Jubjub elliptic curve](https://github.com/barryWhiteHat/baby
 
 - `nbits(a)`
 
-    - DESCRIPTION : binary sum. 
+    - DESCRIPTION : binary sum.
     - SCHEMA
     - INPUT
     - OUTPUT
@@ -149,7 +149,7 @@ Arithmetic on [Baby Jubjub elliptic curve](https://github.com/barryWhiteHat/baby
 
 - `BinSum(n, ops)`
 
-    - DESCRIPTION 
+    - DESCRIPTION
     - SCHEMA
     - INPUT
     - OUTPUT
@@ -169,7 +169,7 @@ Arithmetic on [Baby Jubjub elliptic curve](https://github.com/barryWhiteHat/baby
 
 - `Num2Bits_strict()`
 
-    - DESCRIPTION 
+    - DESCRIPTION
     - SCHEMA
     - INPUT
     - OUTPUT
@@ -259,7 +259,7 @@ Arithmetic on [Baby Jubjub elliptic curve](https://github.com/barryWhiteHat/baby
     - BENCHMARKS
     - EXAMPLE
 
-### compconstant 
+### compconstant
 
 - `CompConstant(ct)`
 
@@ -688,7 +688,7 @@ Implementation of MiMC-7 hash in Fp being...  (link to description of the hash)
 
 ### pedersen_old
 
-Old version of the Pedersen hash (do not use any 
+Old version of the Pedersen hash (do not use any
 more?).
 
 ### pedersen
@@ -720,7 +720,7 @@ more?).
     - BENCHMARKS
     - EXAMPLE
 
-### pointbits  
+### pointbits
 
 - `sqrt(n)`
 
@@ -780,7 +780,7 @@ Implementation of Poseidon hash function (LINK)
     - BENCHMARKS
     - EXAMPLE
 
-- `Ark(t, C)`
+- `Ark(t, C, r)`
 
     - DESCRIPTION
     - SCHEMA
@@ -798,7 +798,7 @@ Implementation of Poseidon hash function (LINK)
     - BENCHMARKS
     - EXAMPLE
 
-- `Poseidon(nInputs, t, nRoundsF, nRoundsP)`
+- `Poseidon(nInputs)`
 
     - DESCRIPTION
     - SCHEMA
