@@ -780,7 +780,7 @@ Implementation of Poseidon hash function (LINK)
     - BENCHMARKS
     - EXAMPLE
 
-- `Ark(t, C)`
+- `Ark(t, C, r)`
 
     - DESCRIPTION
     - SCHEMA
@@ -798,7 +798,7 @@ Implementation of Poseidon hash function (LINK)
     - BENCHMARKS
     - EXAMPLE
 
-- `Poseidon(nInputs, t, nRoundsF, nRoundsP)`
+- `Poseidon(nInputs)`
 
     - DESCRIPTION
     - SCHEMA

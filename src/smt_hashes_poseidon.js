@@ -1,13 +1,11 @@
-const Poseidon = require("./poseidon");
-
-const hash = Poseidon.createHash(6, 8, 57);
+const poseidon = require("./poseidon");
 
 exports.hash0 = function (left, right) {
-    return hash([left, right]);
+    return poseidon([left, right]);
 };
 
 exports.hash1 = function(key, value) {
-    return hash([key, value, Poseidon.F.one]);
+    return poseidon([key, value, poseidon.F.one]);
 };
 
-exports.F = Poseidon.F;
+exports.F = poseidon.F;
