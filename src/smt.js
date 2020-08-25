@@ -58,10 +58,10 @@ class SMT {
 
         res.newRoot = rtNew;
 
+        await this.db.multiDel(dels);
         await this.db.multiIns(ins);
         await this.db.setRoot(rtNew);
         this.root = rtNew;
-        await this.db.multiDel(dels);
 
         return res;
     }
