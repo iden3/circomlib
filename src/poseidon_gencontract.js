@@ -23,10 +23,6 @@ function createCode(nInputs) {
     const nRoundsF = N_ROUNDS_F;
     const nRoundsP = N_ROUNDS_P[t - 2];
 
-//    const nRoundsF = 2;
-//    const nRoundsP = 2;
-
-
     const C = new Contract();
 
     function saveM() {
