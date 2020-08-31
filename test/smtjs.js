@@ -161,4 +161,13 @@ describe("SMT Javascript test", function () {
         assert(Fr.eq(tree1.root, tree2.root));
     });
 
+    it("Should test update with same key-value", async () => {
+        const tree1 = await smt.newMemEmptyTrie();
+
+        await tree1.insert(8,88);
+        await tree1.update(8,88);
+
+        const res = await tree1.db.get(tree1.root);
+        assert.notEqual(res, undefined);
+    });
 });
