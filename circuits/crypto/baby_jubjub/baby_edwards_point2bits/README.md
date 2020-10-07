@@ -32,6 +32,12 @@ include "../../../basics/comparators/comp_constant/comp_constant.circom";
 | ------------- | -------------            | -------------       | 
 | `out[256]`    | Binary array of 256 bits | Blabla              |
 
+
+<!--
+out[254] <== 0;
+out[255] <== signCalc.out;
+-->
+
 ## Benchmarks 
 
 ## Test

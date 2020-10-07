@@ -1,11 +1,6 @@
 # Library of Circom Templates
 
-This is the library of templates of [`circom`](https://github.com/iden3/circom), a circuit compiler for zero-knowledge circuits. 
-
-
-<!-- BACKGROUND? / NOTATION? :
-For instance: Field elements vs. Binary 
--->
+This is the library of templates of [`circom`](https://docs.circom.io/), a circuit compiler for zero-knowledge circuits. 
 
 ## Structure
 
