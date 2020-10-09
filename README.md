@@ -19,7 +19,13 @@ With `circom`, it is possible to create large circuits by combining smaller ones
 
 ## Structure
 
-- [`circuits`](circuits) : it contains several circom circuit templates to perform different kinds of operations. From more basic ones, like comparing two numbers or doing binary arithmetic, to more complex functions, such as elliptic curve operations, validating digital signatures or hashing.
+The `circuits` folder contains several circom circuit templates to perform different kinds of operations. From more basic ones, like comparing two numbers or doing binary arithmetic, to more complex functions, such as elliptic curve operations, validating digital signatures or hashing. 
+
+The documentation about some of the more complicated circuits is in the `doc` folder. It contains some Markdown files and some circuit schemes in ASCII. The latter must be opened with Monodraw, an ASCII art editor for Mac. 
+
+The `src` folder has utils written in JavaScript for deploying contracts. These files are also used in some tests.
+
+- [`circuits`](circuits)
     - [`basics`](circuits/basics)
         - [`binary_ops`](circuits/basics/binary_ops)
             - [`bin_sub`](circuits/basics/binary_ops/bin_sub)
@@ -91,8 +97,8 @@ With `circom`, it is possible to create large circuits by combining smaller ones
         - [`smt`](circuits/crypto/smt)
             - [`smt_processor`](circuits/crypto/smt/smt_processor)
             - [`smt_verifier`](circuits/crypto/smt/smt_verifier)
-- [`doc`](doc) : documentation about some of the more complicated circuits. It contains some Markdown files and some circuit schemes in ASCII. The latter must be opened with Monodraw, an ASCII art editor for Mac.
-- [`src`](src) : utils written in JavaScript for deploying contracts. These files are used in some tests.
+- [`doc`](doc) 
+- [`src`](src)
 
 <!-- Auxiliary files:
     - [.eslintrc.js](.eslintrc.js)
