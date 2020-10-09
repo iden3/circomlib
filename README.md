@@ -1,6 +1,21 @@
 # Library of Circom Templates
 
-This is the library of templates of [`circom`](https://docs.circom.io/), a circuit compiler for zero-knowledge circuits. 
+**This is the library of templates of [`circom`](https://github.com/iden3/circom), a circuit compiler for zero-knowledge circuits.**
+
+`Circom` is a circuit programming language and a compiler that allows programmers to design and create their own arithmetic circuits for zero-knowledge proofs. The aim of the `circom` language is two-folded. On the one hand, it allows to describe arithmetic circuits by means of quadratic constraints. On the other hand, it allows to describe how to efficiently compute the output and intermediate signals from a set of given inputs. 
+
+Essentially, a circom circuit consists of set of wires that carry values from the field `F_p` and connect them to addition and multiplication gates `modulo p`. It is important to keep in mind that:
+- The `circom` language is parametric to a certain prime number `p` (which can be changed without affecting the rest of the language (using `GLOBAL_FIELD_P`).
+- All the elements of circom circuits operate `modulo` this prime `p`.
+- Any number greater than `p` will overflow. 
+
+By default,
+
+```
+p = 21888242871839275222246405745257275088548364400416034343698204186575808495617
+```
+
+With `circom`, it is possible to create large circuits by combining smaller ones called `templates`. This repository is an open source library of `circom` templates that contains hundreds of circuits such as comparators, hash functions, digital signatures, binary and decimal convertors and many more. You can also create your custom templates, but before start coding, we recommend you to take a look at the circom documentation website: [https://docs.circom.io](https://docs.circom.io).
 
 ## Structure
 

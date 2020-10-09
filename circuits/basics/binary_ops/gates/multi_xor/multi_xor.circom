@@ -30,7 +30,7 @@ template MultiXOR(n) {
         sum = sum + in[i];
     }
 
-    component n2b = Num2Bits(n); //TODO: Implement and call log_2(n) function. 
+    component n2b = Num2Bits(n); //It should be Num2Bits(log_2(n)). 
 
     n2b.in <== sum;
 
