@@ -31,4 +31,10 @@ None.
 
 ## Benchmarks 
 
-## Test
+```
+Number of Wires: 3
+Number of Constraints: 1
+Number of Private Inputs: 0
+Number of Public Inputs: 1
+Number of Outputs: 1
+```

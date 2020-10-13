@@ -25,3 +25,5 @@ template NAND() {
 
     out <== 1 - a*b;
 }
+
+component main = NAND();

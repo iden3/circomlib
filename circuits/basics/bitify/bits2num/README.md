@@ -6,7 +6,7 @@ This template converts a binary number `in[n]` of `n` bits to its integer repres
 ```
 out = sum_{k=0}^{n-1} (in[k] * 2^k).
 ```
-The template does not check if the number overflows the field characteristic [`p`](../../../../README.md).
+The template does not check if the number overflows the field characteristic `p`. Read more about this number [here](../../../../README.md).
 
 ## Schema
 

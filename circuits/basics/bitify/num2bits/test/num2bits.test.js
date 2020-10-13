@@ -38,10 +38,6 @@ describe("Num2Bits test", function () {
     const s = bigInt("21888242871839275222246405745257275088548364400416034343698204186575808495622");
     const sout = getBits(bigInt("5"), 254); // s = r + 5 = 5  mod r    
 
-    // n = 254 ones = r + 7059779437489773633646340506914701874769131765994106666166191815402473914366
-    const n = bigInt.one.shiftLeft(254).minus(bigInt.one);
-    const nout = getBits(bigInt("7059779437489773633646340506914701874769131765994106666166191815402473914366"), 254);
-
     let circuit;
     
     before( async() => {
@@ -57,10 +53,6 @@ describe("Num2Bits test", function () {
     it("Should overflow when geq than r", async () => {
         await checkNum2Bits(r, circuit, rout);
         await checkNum2Bits(s, circuit, sout);
-    //TODO: Something wrong with the test below:
-    //    await checkNum2Bits(n, circuit, nout);
     });
 
 });
-
-// TODO: Try a test with more bits - like 300. Does it support it?

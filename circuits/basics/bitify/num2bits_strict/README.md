@@ -3,7 +3,7 @@
 ## Description
 
 This template converts a field element (i.e. is there a max of bits)? `in` to its binary representation `out[254]`.
-integer representation STRICT
+The template adds constraints to ensure that the number does not overflow the field characteristic `p`. Read more about this number [here](../../../../README.md).
 
 ## Schema
 
@@ -37,4 +37,10 @@ include "../num2bits/num2bits.circom"```
 
 ## Benchmarks 
 
-## Test
+```
+Number of Wires: 516
+Number of Constraints: 517
+Number of Private Inputs: 0
+Number of Public Inputs: 1
+Number of Outputs: 254
+```

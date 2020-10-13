@@ -38,7 +38,5 @@ template Num2BitsNeg(n) {
 
     in ==> isZero.in;
 
-
-
     lc1 + isZero.out * 2**n === 2**n - in;
 }

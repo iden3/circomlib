@@ -2,8 +2,11 @@
 
 ## Description
 
-This template converts a binary number `in[n]` of `n` bits to its
-integer representation STRICT <!--- TODO: Add strict description. -->
+This template converts a binary number `in[n]` of `n` bits to its integer representation by performing
+```
+out = sum_{k=0}^{n-1} (in[k] * 2^k).
+```
+The template adds constraints to ensure that the number does not overflow the field characteristic `p`. Read more about this number [here](../../../../README.md).
 
 ## Schema
 
@@ -36,4 +39,10 @@ include "../bits2num/bits2num.circom";
 
 ## Benchmarks 
 
-## Test
+```
+Number of Wires: 516
+Number of Constraints: 263
+Number of Private Inputs: 0
+Number of Public Inputs: 254
+Number of Outputs: 1
+```
