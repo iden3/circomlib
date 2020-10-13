@@ -35,6 +35,7 @@ None.
 
 ## Benchmarks 
 
+With `n = 254`:
 ```
 Number of Wires: 256
 Number of Constraints: 1

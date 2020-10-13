@@ -33,4 +33,20 @@ include "../../../bitify/num2bits/num2bits.circom";
 
 ## Benchmarks 
 
-## Test
+With `n = 5`:
+```
+Number of Wires: 10
+Number of Constraints: 5
+Number of Private Inputs: 0
+Number of Public Inputs: 5
+Number of Outputs: 1
+```
+
+With `n = 1024`:
+```
+Number of Wires: 2048
+Number of Constraints: 1024
+Number of Private Inputs: 0
+Number of Public Inputs: 1024
+Number of Outputs: 1
+```
