@@ -100,17 +100,6 @@ The `src` folder has utils written in JavaScript for deploying contracts. These 
 - [`doc`](doc) 
 - [`src`](src)
 
-<!-- Auxiliary files:
-    - [.eslintrc.js](.eslintrc.js)
-    - [.gitignore](.gitignore)
-    - [`node_modules`](node_modules)
-    - [index.js](index.js)
-    - [package.json](package.json)
-    - [package-lock.json](package-lock.json)
-    - [README.md](README.md)
-    - [LICENSE](LICENSE)
--->
-
 ## Contribute to this Repository
 
 Anyone is welcome to contribute with code, tests, documentation, bugs spotting or any small fix! If you would like to contribute, check first out if there are already any open [issues](https://github.com/iden3/circomlib/issues) related to your contribution and if not, please [open a new issue](https://github.com/iden3/circomlib/issues/new) or submit a [pull request](https://github.com/iden3/circomlib/pulls).
