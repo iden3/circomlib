@@ -36,4 +36,20 @@ include "../../comparators/is_zero/is_zero.circom";
 
 ## Benchmarks 
 
-## Test
+With `n = 32`:
+```
+Number of Wires: 35
+Number of Constraints: 34
+Number of Private Inputs: 0
+Number of Public Inputs: 1
+Number of Outputs: 32
+```
+
+With `n = 254`:
+```
+Number of Wires: 257
+Number of Constraints: 256
+Number of Private Inputs: 0
+Number of Public Inputs: 1
+Number of Outputs: 254
+```
