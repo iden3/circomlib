@@ -2,11 +2,11 @@
 
 ## Description
 
-The template checks if an input of 254 bits overflowed the prime number `r`, which is 
+The template checks if an input of 254 bits overflowed the prime number `p`, which is 
 ```
-r = 21888242871839275222246405745257275088548364400416034343698204186575808495617
+p = 21888242871839275222246405745257275088548364400416034343698204186575808495617
 ```
-This number is the order of BN-254 curve, used to generate and verify zk-SNARK proofs in Ethereum. As a result, any signal of a circuit must be in the field `F_r` (i.e. in between `0` and `r-1`). This template helps do this check.
+This number is the order of BN-254 curve, used to generate and verify zk-SNARK proofs in Ethereum. By default, any signal of a circuit must be in the field `F_p` (i.e. in between `0` and `p-1`). This template helps do this check.
 
 ## Schema
 
@@ -20,7 +20,7 @@ input in[254] ---->|  AliasCheck()  |
 ## Dependencies
 
 ```
-include "../compconstant/compconstant.circom";
+include "../comp_constant/comp_constant.circom";
 ```
 
 ## Expected Inputs
@@ -35,4 +35,10 @@ There is no output.
 
 ## Benchmarks 
 
-## Test
+```
+Number of Wires: 515
+Number of Constraints: 262
+Number of Private Inputs: 0
+Number of Public Inputs: 254
+Number of Outputs: 0
+```

@@ -2,7 +2,7 @@
 
 ## Description
 
-If the input signal `enabled` is different from `0`, this template imposes a constraint to ensure that two field elements are equal. If `enabled` is `0`, then the constraint is always satisfied, regardless of whether the other two inputs are equal or not.
+If the input signal `enabled` is different from `0`, this template imposes a constraint to ensure that two field elements are equal. If `enabled` is `0`, then the constraint is always satisfied, regardless of whether the other inputs are equal or not.
 
 ## Schema
 
@@ -32,4 +32,10 @@ There is no output.
 
 ## Benchmarks 
 
-## Test
+```
+Number of Wires: 6
+Number of Constraints: 3
+Number of Private Inputs: 0
+Number of Public Inputs: 3
+Number of Outputs: 0
+```

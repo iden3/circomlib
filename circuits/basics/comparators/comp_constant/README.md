@@ -2,7 +2,7 @@
 
 ## Description
 
-This template ... // Returns 1 if in (in binary) > ct
+This template checks if a binary input `in` is greater than a given constant `ct`.
 
 ## Schema
 
@@ -21,21 +21,23 @@ include "../../bitify/num2bits/num2bits.circom";
 
 ## Expected Inputs
 
-    signal input in[254];
-
 | Input             | Type           |
 | -------------     | -------------  | 
-| `in[254]`         | TODO:Fill      |
-
+| `in[254]`         | Binary array of `254` bits |
 
 ## Outputs
 
-    signal output out;
-
 | Output        | Type           | Description     |
 | ------------- | -------------  | ----------      | 
-| `out`         | TODO: Fill     | TODO: Fill |
+| `out`         | Boolean        | </p>If `in > ct`, then `out = 1`.<br>If `in =< ct`, then `out = 0`.</p> |
 
 ## Benchmarks 
 
-## Test
+With `ct = 12574899965841125748859665329478411236025236211254788521259648301247745896`:
+```
+Number of Wires: 516
+Number of Constraints: 262
+Number of Private Inputs: 0
+Number of Public Inputs: 254
+Number of Outputs: 1
+```

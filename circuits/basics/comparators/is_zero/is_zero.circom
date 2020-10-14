@@ -19,7 +19,7 @@
 
 // This template checks if `in` is zero or not by
 // checking if `in` has inverse (the only element
-// with no inverse in F_r is the zero).
+// of a field with no inverse is the zero element).
 
 template IsZero() {
     signal input in;

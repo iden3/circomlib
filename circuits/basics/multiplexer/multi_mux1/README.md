@@ -34,4 +34,20 @@ None.
 
 ## Benchmarks 
 
-## Test
+With `n = 32`:
+```
+Number of Wires: 98
+Number of Constraints: 32
+Number of Private Inputs: 0
+Number of Public Inputs: 65
+Number of Outputs: 32
+```
+
+With `n = 254`:
+```
+Number of Wires: 764
+Number of Constraints: 254
+Number of Private Inputs: 0
+Number of Public Inputs: 509
+Number of Outputs: 254
+```

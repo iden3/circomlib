@@ -25,8 +25,6 @@ include "../lessthan/lessthan.circom";
 | -------------   | -------------  | 
 | `in[2]`         | Array of 2 field elements of `n` bits each |
 
-<!-- TODO: // The MSF is the sign bit. -->
-
 ## Outputs
 
 | Output        | Type           | Description     |
@@ -35,4 +33,20 @@ include "../lessthan/lessthan.circom";
 
 ## Benchmarks
 
-## Test
+With `n = 32`:
+```
+Number of Wires: 67
+Number of Constraints: 65
+Number of Private Inputs: 0
+Number of Public Inputs: 2
+Number of Outputs: 1
+```
+
+With `n = 254`:
+```
+Number of Wires: 511
+Number of Constraints: 509
+Number of Private Inputs: 0
+Number of Public Inputs: 2
+Number of Outputs: 1
+```

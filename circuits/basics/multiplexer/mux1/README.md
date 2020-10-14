@@ -24,7 +24,7 @@ include "../multi_mux1/multi_mux1.circom"
 | Input           | Type           |
 | -------------   | -------------  | 
 | `s`             | Boolean        |
-| `c[2]`          | Field element  | <!-- TODO: Try with boolean -->
+| `c[2]`          | Array with 2 field elements  |
 
 
 ## Outputs
@@ -35,4 +35,10 @@ include "../multi_mux1/multi_mux1.circom"
 
 ## Benchmarks 
 
-## Test
+```
+Number of Wires: 5
+Number of Constraints: 1
+Number of Private Inputs: 0
+Number of Public Inputs: 3
+Number of Outputs: 1
+```

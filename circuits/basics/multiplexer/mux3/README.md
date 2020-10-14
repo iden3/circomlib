@@ -35,4 +35,10 @@ include "../multi_mux3/multi_mux3.circom"
 
 ## Benchmarks 
 
-## Test
+```
+Number of Wires: 20
+Number of Constraints: 8
+Number of Private Inputs: 0
+Number of Public Inputs: 11
+Number of Outputs: 1
+```

@@ -3,9 +3,9 @@
 ## Description
 
 This template returns the sign of an input. 
-A number is considered to be **positive** if and only if it is less or equal than `(q-1)/2`, where 
+A number is considered to be **positive** if and only if it is less or equal than `(p-1)/2`, where 
 ```
-q = 21888242871839275222246405745257275088548364400416034343698204186575808495617
+p = 21888242871839275222246405745257275088548364400416034343698204186575808495617
 ```
 is the prime order of `altbn128`, the pairing-friendly elliptic curve used to verify zk-SNARK proofs in Ethereum. 
 
@@ -21,7 +21,7 @@ in[254] ----> |  Sign()  | ----> sign
 ## Dependencies
 
 ```
-include "../compconstant/compconstant.circom";
+include "../comp_constant/comp_constant.circom";
 ```
 
 ## Expected Inputs
@@ -38,4 +38,10 @@ include "../compconstant/compconstant.circom";
 
 ## Benchmarks 
 
-## Test
+```
+Number of Wires: 516
+Number of Constraints: 262
+Number of Private Inputs: 0
+Number of Public Inputs: 254
+Number of Outputs: 1
+```

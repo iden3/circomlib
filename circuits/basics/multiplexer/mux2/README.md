@@ -24,8 +24,8 @@ include "../multi_mux2/multi_mux2.circom"
 
 | Input           | Type           |
 | -------------   | -------------  | 
-| `s[2]`          | (Selector)     |
-| `c[4]`          |                |
+| `s[2]`          |  |
+| `c[4]`          | Array with 4 field elements |
 
 
 ## Outputs
@@ -36,4 +36,10 @@ include "../multi_mux2/multi_mux2.circom"
 
 ## Benchmarks 
 
-## Test
+```
+Number of Wires: 11
+Number of Constraints: 4
+Number of Private Inputs: 0
+Number of Public Inputs: 6
+Number of Outputs: 1
+```
