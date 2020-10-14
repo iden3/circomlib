@@ -51,4 +51,10 @@ is the order of the large prime subgroup of Baby Jubjub.
 
 ## Benchmarks 
 
-## Test
+```
+Number of Wires: 777
+Number of Constraints: 776
+Number of Private Inputs: 1
+Number of Public Inputs: 0
+Number of Outputs: 2
+```

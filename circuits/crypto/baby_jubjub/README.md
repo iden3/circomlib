@@ -23,7 +23,7 @@ This folder contains the templates to do operations on Baby Jubjub elliptic curv
 
 ## Background
 
-[Baby Jubjub](https://github.com/ethereum/EIPs/pull/2494) is an elliptic curve defined over the field `F_r`, where `r` is the prime order of alt_bn128 elliptic curve (also referred as BN256), which is the curve currently used to generate and verify zk-SNARK proofs in Ethereum. 
+[Baby Jubjub](https://github.com/ethereum/EIPs/pull/2494) is an elliptic curve defined over the field `F_p`, where `p` is the prime order of alt_bn128 elliptic curve (also referred as BN256), which is the curve currently used to generate and verify zk-SNARK proofs in Ethereum. 
 
 With Baby Jubjub, one can implement complex crytpographic functions, which make use of elliptic curves, inside a zk-SNARK circuit. For instance, we have implemented the [Pedersen hash](https://github.com/iden3/circomlib/tree/organization/circuits/crypto/hash_functions/pedersen_w4) and the [Edwards Digial Signature Algorithm (EdDSA)](https://github.com/iden3/circomlib/tree/organization/circuits/crypto/signatures/eddsa) as a zk-SNARK circuit using Baby Jubjub.
 
@@ -31,11 +31,11 @@ With Baby Jubjub, one can implement complex crytpographic functions, which make 
 
 - **Ground field**
 
-	Baby Jubjub is an elliptic curve whose point coordinates live in the field `F_r`, where `r` is the prime number 
+	Baby Jubjub is an elliptic curve whose point coordinates live in the field `F_p`, where `p` is the prime number 
 	```
-	r = 21888242871839275222246405745257275088548364400416034343698204186575808495617
+	p = 21888242871839275222246405745257275088548364400416034343698204186575808495617
 	``` 
-	This means that the coordinates `x,y` of any point `P = (x,y)` in the curve must be numbers between `0` and `r-1`.
+	This means that the coordinates `x,y` of any point `P = (x,y)` in the curve must be numbers between `0` and `p-1`.
 
 - **Order**
 

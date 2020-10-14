@@ -38,4 +38,10 @@ include "../baby_edwards_add/baby_edwards_add.circom";
 
 ## Benchmarks 
 
-## Test
+```
+Number of Wires: 9
+Number of Constraints: 6
+Number of Private Inputs: 0
+Number of Public Inputs: 2
+Number of Outputs: 2
+```

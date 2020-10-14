@@ -57,4 +57,10 @@ TODO: Also different from O?
 
 ## Benchmarks 
 
-## Test
+```
+Number of Wires: 8
+Number of Constraints: 3
+Number of Private Inputs: 0
+Number of Public Inputs: 4
+Number of Outputs: 2
+```

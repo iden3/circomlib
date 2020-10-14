@@ -49,4 +49,10 @@ include "../baby_montgomery_add/baby_montgomery_add.circom";
 
 ## Benchmarks 
 
-## Test
+```
+Number of Wires: 2557
+Number of Constraints: 2301
+Number of Private Inputs: 0
+Number of Public Inputs: 255
+Number of Outputs: 2
+```

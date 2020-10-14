@@ -42,4 +42,10 @@ r = 2188824287183927522224640574525727508854836440041603434369820418657580849561
 
 ## Benchmarks 
 
-## Test
+```
+Number of Wires: 1034
+Number of Constraints: 783
+Number of Private Inputs: 0
+Number of Public Inputs: 256
+Number of Outputs: 2
+```

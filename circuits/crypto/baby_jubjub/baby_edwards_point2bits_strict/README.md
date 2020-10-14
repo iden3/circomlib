@@ -36,4 +36,10 @@ include "../../../basics/comparators/comp_constant/comp_constant.circom";
 
 ## Benchmarks 
 
-## Test
+```
+Number of Wires: 1292
+Number of Constraints: 1295
+Number of Private Inputs: 0
+Number of Public Inputs: 2
+Number of Outputs: 256
+```

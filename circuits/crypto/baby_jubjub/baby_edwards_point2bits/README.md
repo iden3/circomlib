@@ -30,7 +30,7 @@ include "../../../basics/comparators/comp_constant/comp_constant.circom";
 
 | Output        | Type                     | Description         |
 | ------------- | -------------            | -------------       | 
-| `out[256]`    | Binary array of 256 bits | Blabla              |
+| `out[256]`    | Binary array of 256 bits | TODO              |
 
 
 <!--
@@ -40,4 +40,10 @@ out[255] <== signCalc.out;
 
 ## Benchmarks 
 
-## Test
+```
+Number of Wires: 772
+Number of Constraints: 771
+Number of Private Inputs: 0
+Number of Public Inputs: 2
+Number of Outputs: 256
+```
