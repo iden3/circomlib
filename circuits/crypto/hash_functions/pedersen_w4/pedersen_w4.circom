@@ -101,4 +101,3 @@ template Pedersen(n) {
         out[1] <== segments[0].out[1];
     }
 }
-

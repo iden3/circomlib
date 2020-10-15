@@ -42,4 +42,20 @@ include "_ark.circom"
 
 ## Benchmarks 
 
-## Test
+With `nInputs = 2`, `t = 3`, `nRoundsF = 8`, `nRoundsP = 57`:
+```
+Number of Wires: 243
+Number of Constraints: 240
+Number of Private Inputs: 0
+Number of Public Inputs: 2
+Number of Outputs: 1
+```
+
+With `nInputs = 2`, `t = 6`, `nRoundsF = 8`, `nRoundsP = 57`:
+```
+Number of Wires: 306
+Number of Constraints: 303
+Number of Private Inputs: 0
+Number of Public Inputs: 2
+Number of Outputs: 1
+```

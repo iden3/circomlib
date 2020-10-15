@@ -34,4 +34,11 @@ include "_mimc_feistel.circom"
 
 ## Benchmarks 
 
-## Test
+With `nInputs = 2`, `nRounds = 220` and `nOutputs = 3`:
+```
+Number of Wires: 2644
+Number of Constraints: 2640
+Number of Private Inputs: 0
+Number of Public Inputs: 3
+Number of Outputs: 3
+```

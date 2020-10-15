@@ -44,4 +44,11 @@ TODO: No és amb bits?? (Mirar el test!)
 
 ## Benchmarks 
 
-## Test
+With `n = 256`:
+```
+Number of Wires: 709
+Number of Constraints: 452
+Number of Private Inputs: 0
+Number of Public Inputs: 256
+Number of Outputs: 2
+```

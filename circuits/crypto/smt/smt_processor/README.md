@@ -33,4 +33,11 @@ None.
 
 ## Benchmarks 
 
-## Test
+With `nLevels = 10`:
+```
+Number of Wires: 7906
+Number of Constraints: 7897
+Number of Private Inputs: 0
+Number of Public Inputs: 18
+Number of Outputs: 1
+```

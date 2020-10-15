@@ -44,4 +44,11 @@ There is no output.
 
 ## Benchmarks 
 
-## Test
+With `n = 80`:
+```
+Number of Wires: 8391
+Number of Constraints: 7572
+Number of Private Inputs: 0
+Number of Public Inputs: 848
+Number of Outputs: 0
+```

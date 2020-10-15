@@ -67,4 +67,20 @@ Binary array of nout bits
 
 ## Benchmarks 
 
-## Test
+With `nBits = 448`:
+```
+Number of Wires: 59452
+Number of Constraints: 59051
+Number of Private Inputs: 0
+Number of Public Inputs: 448
+Number of Outputs: 256
+```
+
+With `nBits = 512`:
+```
+Number of Wires: 59682
+Number of Constraints: 59281
+Number of Private Inputs: 0
+Number of Public Inputs: 512
+Number of Outputs: 256
+```
