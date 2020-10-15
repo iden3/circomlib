@@ -7,6 +7,8 @@ This templates double a point on the [Baby Jubjub curve](https://github.com/ethe
 (`xout`, `yout`) =  (`x`,`y`) + (`x`,`y`)
         = ((2`x``y`)/(1+``d``x`^2`y`^2`)),(`y^2`-`ax^2`)/(1-`dx^2y^2`))
 
+where `a = 168700` and `d = 168696`.
+
 ## Schema
 
 ```

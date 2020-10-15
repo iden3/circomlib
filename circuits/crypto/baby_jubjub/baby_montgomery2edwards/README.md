@@ -2,7 +2,13 @@
 
 ## Description
 
-This template converts a point on Montgomery Baby Jubjub curve to its twisted Edwards form. It uses the birational map... TODO: Fill in with the formula! 
+This template converts a point on Montgomery Baby Jubjub curve to its twisted Edwards form. It uses the birational map:
+```
+(u, v) --> (x, y)
+
+x = u/v
+y = (u-1)/(u+1)
+```
 
 ## Schema
 
@@ -21,13 +27,14 @@ None.
 
 | Input         | Type           | Description         |                                            
 | ------------- | -------------  | -------------       | 
-| `in[2]`       | Array of two field elements  | TODO: Add!  |
+| `in[2]`       | Array of 2 field elements  | Coordinates `(u, v)` of a point on Montgomery Baby Jubjub curve. More precisely, `in[0] = u` and `in[1] = v`.  |
 
 ## Outputs
 
 | Output        | Type           | Description     |
 | ------------- | -------------  | ----------      | 
-| `out[2]`      | Array of 2 field elements  | TODO: coordinates `(x, y)` of the point ... ! |
+| `out[2]`      | Array of 2 field elements  | Coordinates `(x, y)` of the point `(u, v)` in Montgomery form. More precisely, `out[0] = x` and `out[1] = y`. |
+
 
 ## Benchmarks 
 

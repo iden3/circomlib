@@ -2,7 +2,7 @@
 
 ## Description
 
-This templates adds two points on the [Baby Jubjub curve](https://github.com/barryWhiteHat/baby_jubjub) in Montgomery form. More specifically, given two **different** points P1 = (`x1`, `y1`) and P2 = (`x2`, `y2`) it returns a point P3 = (`xout`, `yout`)  such that 
+This template adds two points on the [Baby Jubjub curve](https://github.com/barryWhiteHat/baby_jubjub) in Montgomery form. More specifically, given two **different** points P1 = (`x1`, `y1`) and P2 = (`x2`, `y2`) it returns a point P3 = (`xout`, `yout`)  such that 
 
 (`xout`, `yout`) =  (`x1`,`y1`) + (`x2`,`y2`) 
         = ( `B` * `lambda`^2 - `A` - `x1` - `x2`, `lambda` * ( `x1` - `x3` ) - `y1`)
