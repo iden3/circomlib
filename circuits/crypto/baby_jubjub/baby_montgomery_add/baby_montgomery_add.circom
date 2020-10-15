@@ -19,29 +19,29 @@
 
 /*
              x2 - x1
-    lamda = ---------
+    lambda = ---------
              y2 - y1
 
-                                                    x3 + A + x1 + x2
-    x3 = B * lamda^2 - A - x1 -x2    =>  lamda^2 = ------------------
-                                                         B
+                                                       x3 + A + x1 + x2
+    x3 = B * lambda^2 - A - x1 -x2    =>  lambda^2 = ------------------
+                                                              B
 
-    y3 = (2*x1 + x2 + A)*lamda - B*lamda^3 - y1  =>
+    y3 = (2*x1 + x2 + A)*lambda - B*lambda^3 - y1  =>
 
 
-    =>  y3 = lamda * ( 2*x1 + x2 + A  - x3 - A - x1 - x2)  - y1 =>
+    =>  y3 = lambda * ( 2*x1 + x2 + A  - x3 - A - x1 - x2)  - y1 =>
 
     =>  y3 = lamda * ( x1 - x3 ) - y1
 
 ----------
 
              y2 - y1
-    lamda = ---------
+    lambda = ---------
              x2 - x1
 
-    x3 = B * lamda^2 - A - x1 -x2
+    x3 = B * lambda^2 - A - x1 -x2
 
-    y3 = lamda * ( x1 - x3 ) - y1
+    y3 = lambda * ( x1 - x3 ) - y1
 
  */
 
@@ -56,11 +56,11 @@ template BabyMontgomeryAdd() {
     var A = (2 * (a + d)) / (a - d);
     var B = 4 / (a - d);
 
-    signal lamda;
+    signal lambda;
 
-    lamda <-- (in2[1] - in1[1]) / (in2[0] - in1[0]);
-    lamda * (in2[0] - in1[0]) === (in2[1] - in1[1]);
+    lambda <-- (in2[1] - in1[1]) / (in2[0] - in1[0]);
+    lambda * (in2[0] - in1[0]) === (in2[1] - in1[1]);
 
-    out[0] <== B*lamda*lamda - A - in1[0] -in2[0];
-    out[1] <== lamda * (in1[0] - out[0]) - in1[1];
+    out[0] <== B*lambda*lambda - A - in1[0] -in2[0];
+    out[1] <== lambda * (in1[0] - out[0]) - in1[1];
 }

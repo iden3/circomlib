@@ -7,6 +7,8 @@ This template adds two points on the [Baby Jubjub curve](https://github.com/ethe
 (`xout`, `yout`) =  (`x1`,`y1`) + (`x2`,`y2`) 
         = ((`x1y2`+`y1x2`)/(1+`dx1x2y1y2`)),(`y1y2`-`ax1x2`)/(1-`dx1x2y1y2`))
 
+where `a = 168700` and `d = 168696`.
+
 ## Schema
 
 ```
