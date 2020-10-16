@@ -1,4 +1,3 @@
-/*
 const chai = require("chai");
 const path = require("path");
 const crypto = require("crypto");
@@ -67,6 +66,8 @@ describe("SHA256 test", function () {
 
         assert.equal(hash, hash2);
 
+        console.log(arrOut);
+
     }).timeout(1000000);
     it ("Should calculate a hash of 2 compressor", async () => {
         const cir = await tester(path.join(__dirname, "sha256_test448.test.circom"));
@@ -90,4 +91,3 @@ describe("SHA256 test", function () {
     });
 
 });
-*/

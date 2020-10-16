@@ -14,7 +14,7 @@ This is a general overview of how SHA-256 hash function works given any input me
     ```
     H_i = H_{i+1} + C_{M_i}( H_{i-1} )
     ```
-    The function `C` is called the SHA-256 compression function and `+` is the word-wise `mod 232` addition. 
+   The function `C` is called the SHA-256 compression function and `+` is the word-wise `mod 232` addition. 
 4. The hash of `M` is `H_N`.
 
 ## Implementation 
@@ -27,15 +27,13 @@ The template `sha256.circom` has been implemented following the description from
 - `_rotate` : right shift `R_n` (page 2).
 - `_sha256compression` : compression function `C` (page 8).
 - `_shift` : right rotation `S_n` (page 2).
-- `_sigma_plus` : TODO: Jordi? (binary addition of sigmas? as in page 8?).
+- `_sigma_plus` : addition of sigmas (page 8).
 - `_sigma` : logical functions `Σ_{1,2}` and `σ_{1,2}` (page 6).
 - `_t1` : function `T1` in the main loop (page 5).
 - `_t2` : function `T2` in the main loop (page 5).
 - `_xor3` : logical function `XOR` of 3 elements (page 2).
 
 ## Schema
-
-TODO: Make it a bit more explicit...
 
 ```
                  _________________     
@@ -50,6 +48,20 @@ in[nBits] ----> |  Sha256(nBits)  | ----> out[256]
 include "_constants.circom";
 include "_sha256compression.circom";
 ```
+Internally, it also requires
+```
+include "_ch.circom"
+include "_constants.circom";
+include "_maj.circom"
+include "_rotate.circom";
+include "_shift.circom";
+include "_sigma_plus.circom";
+include "_sigma.circom"
+include "_t1.circom";
+include "_t2.circom";
+include "_xor3.circom";
+include "../../../basics/binary_ops/bin_sum/bin_sum.circom";
+```
 
 ## Expected Inputs
 
@@ -61,9 +73,7 @@ include "_sha256compression.circom";
 
 | Output         | Type           | Description         |
 | -------------  | -------------  | -------------       |
-| `out[256]`     | ...            | ..... |
-
-Binary array of nout bits
+| `out[256]`     | Binary array of 256 bits | SHA-256 hash of the input `in`. |
 
 ## Benchmarks 
 

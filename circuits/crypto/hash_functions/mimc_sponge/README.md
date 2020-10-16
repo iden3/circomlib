@@ -2,7 +2,7 @@
 
 ## Description
 
-This template ... .
+This template implements the [MiMC-2n/n](https://eprint.iacr.org/2016/492.pdf) (or Feistel-MiMC) hash function using a sponge construction.
 
 ## Schema
 
@@ -21,16 +21,16 @@ include "_mimc_feistel.circom"
 
 ## Expected Inputs
 
-| Input          | Type           | Description   |
-| -------------  | -------------  | ------------- | 
-| `ins[nInputs]` | ...            | ...   | 
-| `k`            | ...            | ... | 
+| Input          | Type                            | 
+| -------------  | -------------                   |
+| `ins[nInputs]` | Array of `nInputs` field elements |
+| `k`            | Field element                   |
 
 ## Output
 
-| Input            | Type           | Description   |
-| -------------    | -------------  | ------------- | 
-| `outs[nOutputs]` | ...            | ...   | 
+| Input            | Type           |
+| -------------    | -------------  |  
+| `outs[nOutputs]` | Array of `nOutputs` field elements | 
 
 ## Benchmarks 
 

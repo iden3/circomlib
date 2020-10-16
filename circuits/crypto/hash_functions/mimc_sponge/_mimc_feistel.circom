@@ -24,7 +24,7 @@ template MiMCFeistel(nrounds) {
     signal output xL_out;
     signal output xR_out;
 
-    // doesn't contain the first and last round constants, which are always zero
+    // it doesn't contain the first and last round constants, which are always zero.
     var c_partial[218] = [
       7120861356467848435263064379192047478074060781135320967663101236819528304084,
       5024705281721889198577876690145313457398658950011302225525409148828000436681,
