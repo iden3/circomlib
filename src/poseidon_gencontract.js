@@ -4,6 +4,7 @@
 
 const Contract = require("./evmasm");
 const { unstringifyBigInts } = require("ffjavascript").utils;
+const Web3Utils = require("web3-utils");
 
 const { C:K, M } = unstringifyBigInts(require("./poseidon_constants.json"));
 
@@ -99,7 +100,7 @@ function createCode(nInputs) {
     C.push(0);
     C.calldataload();
     C.div();
-    C.push("0xc4420fb4"); // poseidon(uint256[])
+    C.push(Web3Utils.keccak256(`poseidon(uint256[${nInputs}])`).slice(0, 10)); // poseidon(uint256[])
     C.eq();
     C.jmpi("start");
     C.invalid();
@@ -112,11 +113,10 @@ function createCode(nInputs) {
 
     // Load t values from the call data.
     // The function has a single array param param
-    // [Selector (4)] [Pointer (32)][Length (32)] [data1 (32)] ....
-    // We ignore the pointer and the length and just load t values to the state
-    // (Stack positions 0-{t-1}) If the array is shorter, we just set zeros.
+    // [Selector (4)] [item1 (32)] [item2 (32)] ....
+    // Stack positions 0-nInputs.
     for (let i=0; i<t; i++) {
-        C.push(0x44+(0x20*(t-1-i)));
+        C.push(0x04+(0x20*(nInputs-i)));
         C.calldataload();
     }
 
@@ -155,28 +155,33 @@ function createCode(nInputs) {
     return C.createTxData();
 }
 
-module.exports.abi = [
-    {
-        "constant": true,
-        "inputs": [
-            {
-                "name": "input",
-                "type": "uint256[]"
-            }
-        ],
-        "name": "poseidon",
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "pure",
-        "type": "function"
-    }
-];
+function generateABI(nInputs) {
+    return [
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "internalType": `uint256[${nInputs}]`,
+                    "name": "input",
+                    "type": `uint256[${nInputs}]`
+                }
+            ],
+            "name": "poseidon",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "pure",
+            "type": "function"
+        }
+    ];
+}
 
+module.exports.generateABI = generateABI;
 module.exports.createCode = createCode;
 
 

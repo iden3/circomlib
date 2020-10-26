@@ -21,15 +21,16 @@ describe("Poseidon Smart contract test", function () {
     });
 
     it("Should deploy the contract", async () => {
-        const C = new web3.eth.Contract(poseidonGenContract.abi);
+        const C6 = new web3.eth.Contract(poseidonGenContract.generateABI(5));
+        const C3 = new web3.eth.Contract(poseidonGenContract.generateABI(2));
 
-        poseidon6 = await C.deploy({
+        poseidon6 = await C6.deploy({
             data: poseidonGenContract.createCode(5)
         }).send({
             gas: 5000000,
             from: accounts[0]
         });
-        poseidon3 = await C.deploy({
+        poseidon3 = await C3.deploy({
             data: poseidonGenContract.createCode(2)
         }).send({
             gas: 5000000,
@@ -37,7 +38,7 @@ describe("Poseidon Smart contract test", function () {
         });
     });
 
-    it("Shold calculate the poseidon correctly t=6", async () => {
+    it("Should calculate the poseidon correctly t=6", async () => {
 
         const res = await poseidon6.methods.poseidon([1,2, 0, 0, 0]).call();
 
@@ -48,7 +49,7 @@ describe("Poseidon Smart contract test", function () {
 
         assert.equal(res.toString(), res2.toString());
     });
-    it("Shold calculate the poseidon correctly t=3", async () => {
+    it("Should calculate the poseidon correctly t=3", async () => {
 
         const res = await poseidon3.methods.poseidon([1,2]).call();
 
