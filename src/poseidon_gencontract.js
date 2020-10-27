@@ -100,8 +100,13 @@ function createCode(nInputs) {
     C.push(0);
     C.calldataload();
     C.div();
-    C.push(Web3Utils.keccak256(`poseidon(uint256[${nInputs}])`).slice(0, 10)); // poseidon(uint256[])
+    C.dup(0);
+    C.push(Web3Utils.keccak256(`poseidon(uint256[${nInputs}])`).slice(0, 10)); // poseidon(uint256[n])
     C.eq();
+    C.swap(1);
+    C.push(Web3Utils.keccak256(`poseidon(bytes32[${nInputs}])`).slice(0, 10)); // poseidon(bytes32[n])
+    C.eq();
+    C.or();
     C.jmpi("start");
     C.invalid();
 
@@ -157,6 +162,27 @@ function createCode(nInputs) {
 
 function generateABI(nInputs) {
     return [
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "internalType": `bytes32[${nInputs}]`,
+                    "name": "input",
+                    "type": `bytes32[${nInputs}]`
+                }
+            ],
+            "name": "poseidon",
+            "outputs": [
+                {
+                    "internalType": "bytes32",
+                    "name": "",
+                    "type": "bytes32"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "pure",
+            "type": "function"
+        },
         {
             "constant": true,
             "inputs": [
