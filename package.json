@@ -26,13 +26,13 @@
   "dependencies": {
     "blake-hash": "^1.1.0",
     "blake2b": "^2.1.3",
-    "circom": "0.5.21",
+    "circom": "0.5.33",
     "ffjavascript": "0.1.0"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
-    "ganache-cli": "^6.10.1",
+    "ganache-cli": "^6.12.1",
     "mocha": "^7.1.1",
-    "web3": "^1.2.11"
+    "web3": "^1.3.0"
   }
 }
