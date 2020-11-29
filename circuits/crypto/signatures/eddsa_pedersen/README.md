@@ -31,12 +31,23 @@ include "../../../basics/comparators/is_zero/is_zero.circom";```
 
 ## Expected Inputs
 
-| Input         | Type                              | Description      |
-| ------------- | -------------                     | -------------    | 
-| `msg[n]`      | ...                               |  Message    |
-| `A[256]`      | ... encoding of the point, etc.   |  A = [s]B with B generation of large prime subgroup of E (put ref) here  |
-| `R8[256]`     | ...                               |  ...   |
-| `S[256]`      | ...                               |  EdDSA signature    |
+| Input         | Type                     | Description      |
+| ------------- | -------------            | -------------    | 
+| `msg[n]`      | Binary array of `n` bits | Message to be signed.    |
+| `A[256]`      | Binary array of 256 bits | Encoding of the point A = [s]B, where `B` is the generator of the large prime subgroup of E (put ref) here  |
+| `R8[256]`     | Binary array of 256 bits | ...   |
+| `S[256]`      | Binary array of 256 bits | EdDSA signature    |
+
+
+
+| Input         | Type            | Description      |
+| ------------- | -------------   | -------------    | 
+| `enabled`     | Boolean         | </p>If `enabled = 1`, then the templated adds a constraint imposing that the signature is valid.</br>If `enabled = 0`, no constraint is added.</p> | <!-- More precisely: if enabled != 0, the constraint is added. -->
+| `Ax`          | Field element   | `x`-coordinate of the Baby Jubjub public key `A`.  |
+| `Ay`          | Field element   | `y`-coordinate of the Baby Jubjub public key `A`.  |
+| `R8x`         | Field element   | `x`-coordinate of the point `8*R`, where `R` is the first element of the signature `(R, S)`. |
+| `R8y`         | Field element   | `y`-coordinate of the point `8*R`, where `R` is the first element of the signature `(R, S)`. |
+| `S`           | Field element   | Integer between `1` and `l-1` which is the second element of the signature `(R, S)`.    |
 
 ## Outputs
 

@@ -2,10 +2,10 @@
 
 **This is the library of templates of [`circom`](https://github.com/iden3/circom), a circuit compiler for zero-knowledge circuits.**
 
-`Circom` is a circuit programming language and a compiler that allows programmers to design and create their own arithmetic circuits for zero-knowledge proofs. The aim of the `circom` language is two-folded. On the one hand, it allows to describe arithmetic circuits by means of quadratic constraints. On the other hand, it allows to describe how to efficiently compute the output and intermediate signals from a set of given inputs. 
+`Circom` is a circuit programming language and a compiler that allows programmers to design and create their own arithmetic circuits for zero-knowledge proofs. The aim of the `circom` language is two-folded. On the one hand, it allows to describe arithmetic circuits by means of quadratic constraints. On the other hand, it allows to describe how to efficiently compute the output and intermediate signals from a given set of inputs. 
 
-Essentially, a circom circuit consists of set of wires that carry values from the field `F_p` and connect them to addition and multiplication gates `modulo p`. It is important to keep in mind that:
-- The `circom` language is parametric to a certain prime number `p` (which can be changed without affecting the rest of the language (using `GLOBAL_FIELD_P`).
+Essentially, a circom circuit consists of a set of wires that carry values from the field `F_p` and connect them to addition and multiplication gates `modulo p`. It is important to keep in mind that:
+- The `circom` language is parametric to a certain prime number `p` (which can be changed without affecting the rest of the language using `GLOBAL_FIELD_P`).
 - All the elements of circom circuits operate `modulo` this prime `p`.
 - Any number greater than `p` will overflow. 
 
@@ -15,7 +15,7 @@ By default,
 p = 21888242871839275222246405745257275088548364400416034343698204186575808495617
 ```
 
-With `circom`, it is possible to create large circuits by combining smaller ones called `templates`. This repository is an open source library of `circom` templates that contains hundreds of circuits such as comparators, hash functions, digital signatures, binary and decimal convertors and many more. You can also create your custom templates, but before start coding, we recommend you to take a look at the circom documentation website: [https://docs.circom.io](https://docs.circom.io).
+With `circom`, it is possible to create large circuits by combining smaller circuits called `templates`. This repository is an open source library of `circom` templates that contains hundreds of circuits such as comparators, hash functions, digital signatures, binary and decimal convertors and many more. You can also create your custom templates, but before start coding, we recommend you to take a look at the circom documentation website: [https://docs.circom.io](https://docs.circom.io).
 
 ## Structure
 
@@ -23,7 +23,7 @@ The `circuits` folder contains several circom circuit templates to perform diffe
 
 The documentation about some of the more complicated circuits is in the `doc` folder. It contains some Markdown files and some circuit schemes in ASCII. The latter must be opened with Monodraw, an ASCII art editor for Mac. 
 
-The `src` folder has utils written in JavaScript for deploying contracts. These files are also used in some tests.
+The `src` folder has utils written in JavaScript for deploying contracts. These files are required to perform some of the some tests.
 
 - [`circuits`](circuits)
     - [`basics`](circuits/basics)
@@ -102,7 +102,7 @@ The `src` folder has utils written in JavaScript for deploying contracts. These 
 
 ## Contribute to this Repository
 
-Anyone is welcome to contribute with code, tests, documentation, bugs spotting or any small fix! If you would like to contribute, check first out if there are already any open [issues](https://github.com/iden3/circomlib/issues) related to your contribution and if not, please [open a new issue](https://github.com/iden3/circomlib/issues/new) or submit a [pull request](https://github.com/iden3/circomlib/pulls).
+Anyone is welcome to contribute with code, tests, documentation, bugs spotting or any small fix! If you would like to contribute, check out first if there is already any open [issue](https://github.com/iden3/circomlib/issues) related to your contribution and if not, please [open a new issue](https://github.com/iden3/circomlib/issues/new) or submit a [pull request](https://github.com/iden3/circomlib/pulls).
 
 Thank you for your help!
 
@@ -112,4 +112,4 @@ This repository is still under development and **not ready for production**.
 
 ## License
 
-This repository is part of the iden3 project. All files are copyrighted under 2018 0KIMS association and published with GPL-3 license. Please check the [`LICENSE`](/LICENSE) file for more details.
+This repository is part of the [iden3](https://iden3.io/) project. All files are copyrighted under 2018 0KIMS association and published with GPL-3 license. Please check the [`LICENSE`](/LICENSE) file for more details.
