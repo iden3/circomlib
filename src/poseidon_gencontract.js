@@ -29,7 +29,7 @@ function createCode(nInputs) {
     function saveM() {
         for (let i=0; i<t; i++) {
             for (let j=0; j<t; j++) {
-                C.push(toHex256(M[t-2][j][i]));
+                C.push(toHex256(M[t-2][i][j]));
                 C.push((1+i*t+j)*32);
                 C.mstore();
             }

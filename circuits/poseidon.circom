@@ -30,7 +30,7 @@ template Mix(t, M) {
     for (var i=0; i<t; i++) {
         lc = 0;
         for (var j=0; j<t; j++) {
-            lc += M[j][i]*in[j];
+            lc += M[i][j]*in[j];
         }
         out[i] <== lc;
     }
