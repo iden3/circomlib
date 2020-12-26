@@ -39,7 +39,7 @@ function poseidon(inputs) {
         // no matrix multiplication in the last round
         if (r < nRoundsF + nRoundsP - 1) {
             state = state.map((_, i) =>
-                state.reduce((acc, a, j) => F.add(acc, F.mul(M[t - 2][j][i], a)), F.zero)
+                state.reduce((acc, a, j) => F.add(acc, F.mul(M[t - 2][i][j], a)), F.zero)
             );
         }
     }

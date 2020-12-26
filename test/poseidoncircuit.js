@@ -21,7 +21,7 @@ describe("Poseidon Circuit test", function () {
         const w = await circuit6.calculateWitness({inputs: [1, 2, 0,0,0]}, true);
 
         const res2 = poseidon([1,2,0,0,0]);
-        assert.equal("3975478831357328722254985704342968745327876719981393787143845259590563829094", res2.toString());
+        assert.equal("1944517543886089121158331594914426541694339782056411886233994349799551050705", res2.toString());
         await circuit6.assertOut(w, {out : res2});
         await circuit6.checkConstraints(w);
     });
@@ -31,7 +31,7 @@ describe("Poseidon Circuit test", function () {
 
         const res2 = poseidon([3, 4,5,10,23]);
 
-        assert.equal("18540626624821144952552691894137986276337186174352554475896834101336254024067", res2.toString());
+        assert.equal("15043529598202765311255531083507141602555136943545139099151157943137780370931", res2.toString());
         await circuit6.assertOut(w, {out : res2});
         await circuit6.checkConstraints(w);
     });
@@ -41,7 +41,7 @@ describe("Poseidon Circuit test", function () {
         const w = await circuit3.calculateWitness({inputs: [1, 2]});
 
         const res2 = poseidon([1,2]);
-        assert.equal("17117985411748610629288516079940078114952304104811071254131751175361957805920", res2.toString());
+        assert.equal("11309872961022349216464221841186646423561022368884850929991258903497301047946", res2.toString());
         await circuit3.assertOut(w, {out : res2});
         await circuit3.checkConstraints(w);
     });
@@ -50,7 +50,7 @@ describe("Poseidon Circuit test", function () {
         const w = await circuit3.calculateWitness({inputs: [3, 4]});
 
         const res2 = poseidon([3, 4]);
-        assert.equal("21867347236198497199818917118739170715216974132230970409806500217655788551452", res2.toString());
+        assert.equal("5452722186384045185233705092171776011224530037417547968760104202263491217182", res2.toString());
         await circuit3.assertOut(w, {out : res2});
         await circuit3.checkConstraints(w);
     });
