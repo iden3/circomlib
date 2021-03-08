@@ -26,7 +26,7 @@ function poseidon(inputs) {
     const nRoundsF = N_ROUNDS_F;
     const nRoundsP = N_ROUNDS_P[t - 2];
 
-    let state = [...inputs.map(a => F.e(a)), F.zero];
+    let state = [F.zero, ...inputs.map(a => F.e(a))];
     for (let r = 0; r < nRoundsF + nRoundsP; r++) {
         state = state.map((a, i) => F.add(a, C[t - 2][r * t + i]));
 
@@ -36,12 +36,9 @@ function poseidon(inputs) {
             state[0] = pow5(state[0]);
         }
 
-        // no matrix multiplication in the last round
-        if (r < nRoundsF + nRoundsP - 1) {
-            state = state.map((_, i) =>
-                state.reduce((acc, a, j) => F.add(acc, F.mul(M[t - 2][j][i], a)), F.zero)
-            );
-        }
+        state = state.map((_, i) =>
+            state.reduce((acc, a, j) => F.add(acc, F.mul(M[t - 2][i][j], a)), F.zero)
+        );
     }
     return F.normalize(state[0]);
 }

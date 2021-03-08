@@ -67,12 +67,12 @@ describe("EdDSA js test", function () {
         assert.equal(signature.R8[1].toString(),
             "15383486972088797283337779941324724402501462225528836549661220478783371668959");
         assert.equal(signature.S.toString(),
-            "1398758333392199195742243841591064350253744445503462896781493968760929513778");
+            "1672775540645840396591609181675628451599263765380031905495115170613215233181");
 
         const pSignature = eddsa.packSignature(signature);
         assert.equal(pSignature.toString("hex"), ""+
             "dfedb4315d3f2eb4de2d3c510d7a987dcab67089c8ace06308827bf5bcbe02a2"+
-            "32f16b0f2f4c4e1169aa59685637e1429b6581a9531d058d65f4ab224eab1703");
+            "9d043ece562a8f82bfc0adb640c0107a7d3a27c1c7c1a6179a0da73de5c1b203");
 
         const uSignature = eddsa.unpackSignature(pSignature);
         assert(eddsa.verifyPoseidon(msg, uSignature, pubKey));

@@ -29,7 +29,7 @@ function createCode(nInputs) {
     function saveM() {
         for (let i=0; i<t; i++) {
             for (let j=0; j<t; j++) {
-                C.push(toHex256(M[t-2][j][i]));
+                C.push(toHex256(M[t-2][i][j]));
                 C.push((1+i*t+j)*32);
                 C.mstore();
             }
@@ -120,12 +120,14 @@ function createCode(nInputs) {
     // The function has a single array param param
     // [Selector (4)] [item1 (32)] [item2 (32)] ....
     // Stack positions 0-nInputs.
-    for (let i=0; i<t; i++) {
-        C.push(0x04+(0x20*(nInputs-i)));
+    for (let i=0; i<nInputs; i++) {
+        C.push(0x04+(0x20*(nInputs-i-1)));
         C.calldataload();
     }
 
-    for (let i=0; i<nRoundsF+nRoundsP-1; i++) {
+    C.push(0);
+
+    for (let i=0; i<nRoundsF+nRoundsP; i++) {
         ark(i);
         if ((i<nRoundsF/2) || (i>=nRoundsP+nRoundsF/2)) {
             for (let j=0; j<t; j++) {
@@ -141,13 +143,6 @@ function createCode(nInputs) {
         C.jmp("mix");
         C.label(strLabel);
     }
-
-    C.push(toHex256(K[t-2][(nRoundsF+nRoundsP-1)*t]));  // K, st, q
-    C.dup(t+1); // q, K, st, q
-    C.swap(2);  // st[0], K, q, st\st[0]
-    C.addmod();  // st q
-
-    sigma(0);
 
     C.push("0x00");
     C.mstore();     // Save it to pos 0;

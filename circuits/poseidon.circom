@@ -30,7 +30,7 @@ template Mix(t, M) {
     for (var i=0; i<t; i++) {
         lc = 0;
         for (var j=0; j<t; j++) {
-            lc += M[j][i]*in[j];
+            lc += M[i][j]*in[j];
         }
         out[i] <== lc;
     }
@@ -50,19 +50,19 @@ template Poseidon(nInputs) {
     var C[t*(nRoundsF + nRoundsP)] = POSEIDON_C(t);
     var M[t][t] = POSEIDON_M(t);
 
-    component ark[nRoundsF + nRoundsP - 1];
-    component sigmaF[nRoundsF - 1][t];
+    component ark[nRoundsF + nRoundsP];
+    component sigmaF[nRoundsF][t];
     component sigmaP[nRoundsP];
-    component mix[nRoundsF + nRoundsP - 1];
+    component mix[nRoundsF + nRoundsP];
 
     var k;
 
-    for (var i=0; i<nRoundsF + nRoundsP - 1; i++) {
+    for (var i=0; i<nRoundsF + nRoundsP; i++) {
         ark[i] = Ark(t, C, t*i);
         for (var j=0; j<t; j++) {
             if (i==0) {
-                if (j<nInputs) {
-                    ark[i].in[j] <== inputs[j];
+                if (j>0) {
+                    ark[i].in[j] <== inputs[j-1];
                 } else {
                     ark[i].in[j] <== 0;
                 }
@@ -91,8 +91,5 @@ template Poseidon(nInputs) {
         }
     }
 
-    // last round is done only for the first word, so we do it manually to save constraints
-    component lastSigmaF = Sigma();
-    lastSigmaF.in <== mix[nRoundsF + nRoundsP - 2].out[0] + C[t*(nRoundsF + nRoundsP - 1)];
-    out <== lastSigmaF.out;
+    out <== mix[nRoundsF + nRoundsP -1].out[0];
 }
