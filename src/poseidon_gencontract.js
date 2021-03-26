@@ -19,7 +19,7 @@ function toHex256(a) {
 
 function createCode(nInputs) {
 
-    if (( nInputs<1) || (nInputs>8)) throw new Error("Invalid number of inputs. Must be 1<=nInputs<=8");
+    if (( nInputs<1) || (nInputs>6)) throw new Error("Invalid number of inputs. Must be 1<=nInputs<=6");
     const t = nInputs + 1;
     const nRoundsF = N_ROUNDS_F;
     const nRoundsP = N_ROUNDS_P[t - 2];
