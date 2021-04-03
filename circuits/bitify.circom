@@ -66,7 +66,7 @@ template Bits2Num(n) {
 }
 
 template Bits2Num_strict() {
-    signal input in[n];
+    signal input in[254];
     signal output out;
 
     component aliasCheck = AliasCheck();
