@@ -1,6 +1,6 @@
 {
   "name": "circomlib",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Basic circuits library for Circom",
   "main": "index.js",
   "directories": {
