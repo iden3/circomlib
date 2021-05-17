@@ -231,7 +231,7 @@ template Pedersen(n) {
     }
 
 /*
-    coponent packPoint = PackPoint();
+    component packPoint = PackPoint();
 
     if (nSegments>1) {
         packPoint.in[0] <== adders[nSegments-2].xout;
