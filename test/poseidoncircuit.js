@@ -3,18 +3,65 @@ const path = require("path");
 const tester = require("circom").tester;
 
 const poseidon = require("../src/poseidon.js");
+const poseidonPerm = require("../src/poseidonPerm.js");
+const poseidonCipher = require("../src/poseidonCipher.js");
 
 const assert = chai.assert;
 
 describe("Poseidon Circuit test", function () {
     let circuit6;
     let circuit3;
+    let perm3Circuit;
+    let perm6Circuit;
+    let decrypt4Circuit;
 
     this.timeout(100000);
 
     before( async () => {
-        circuit6 = await tester(path.join(__dirname, "circuits", "poseidon6_test.circom"));
         circuit3 = await tester(path.join(__dirname, "circuits", "poseidon3_test.circom"));
+        circuit6 = await tester(path.join(__dirname, "circuits", "poseidon6_test.circom"));
+        perm3Circuit = await tester(path.join(__dirname, "circuits", "poseidonPerm3_test.circom"));
+        perm6Circuit = await tester(path.join(__dirname, "circuits", "poseidonPerm6_test.circom"));
+        decrypt4Circuit = await tester(path.join(__dirname, "circuits", "poseidonDecrypt4_test.circom"));
+    });
+
+    it("poseidon decryption circuit l=4", async () => {
+        const message = [1, 2, 3, 4];
+        const key = [123, 456];
+        const ciphertext = poseidonCipher.encrypt(message, key, 0);
+        const decrypted = poseidonCipher.decrypt(ciphertext, key, 0, message.length);
+        const inputs = {
+            nonce: 0,
+            key,
+            ciphertext
+        };
+        const w = await decrypt4Circuit.calculateWitness(inputs, true);
+        await decrypt4Circuit.assertOut(w, {"decrypted[0]" : decrypted[0]});
+        await decrypt4Circuit.checkConstraints(w);
+    });
+
+    it("poseidonPerm circuit t=3", async () => {
+        const inputs = [0, 1, 2];
+        const res = poseidonPerm(inputs);
+
+        const w = await perm3Circuit.calculateWitness({inputs}, true);
+        await perm3Circuit.assertOut(w, {"out[0]" : res[0]});
+        await perm3Circuit.assertOut(w, {"out[1]" : res[1]});
+        await perm3Circuit.assertOut(w, {"out[2]" : res[2]});
+        await perm3Circuit.checkConstraints(w);
+    });
+
+    it("poseidonPerm circuit t=6", async () => {
+        const inputs = [0, 1, 2, 3, 4];
+        const res = poseidonPerm(inputs);
+
+        const w = await perm6Circuit.calculateWitness({inputs}, true);
+        await perm6Circuit.assertOut(w, {"out[0]" : res[0]});
+        await perm6Circuit.assertOut(w, {"out[1]" : res[1]});
+        await perm6Circuit.assertOut(w, {"out[2]" : res[2]});
+        await perm6Circuit.assertOut(w, {"out[3]" : res[3]});
+        await perm6Circuit.assertOut(w, {"out[4]" : res[4]});
+        await perm6Circuit.checkConstraints(w);
     });
 
     it("Should check constrain of hash([1, 2]) t=6", async () => {

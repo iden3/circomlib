@@ -8,9 +8,9 @@ const F = new ZqField(Scalar.fromString("218882428718392752222464057452572750885
 
 function testEncryptDecrypt(message) {
   const key = [F.e("123"), F.e("456")];
-  const ciphertext = poseidonCipher.encrypt(message, key, F.e(0));
+  const ciphertext = poseidonCipher.encrypt(message, key, 0);
 
-  const decrypted = poseidonCipher.decrypt(ciphertext, key, F.e(0), message.length);
+  const decrypted = poseidonCipher.decrypt(ciphertext, key, 0, message.length);
   assert(decrypted.length === message.length);
   for (let i = 0; i < decrypted.length; i ++) {
     assert(F.e(decrypted[i]) === F.e(message[i]));
