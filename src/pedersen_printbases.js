@@ -17,5 +17,5 @@ if (typeof process.argv[3] != "undefined") {
 
 for (let i=0; i < nBases; i++) {
     const p = pedersenHash.getBasePoint(baseHash, i);
-    console.log(`[${p[0]},${p[1]}]`);
+    console.log(`${i}, ${baseHash}, [${p[0]},${p[1]}]`);
 }
