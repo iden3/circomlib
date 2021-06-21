@@ -7,6 +7,8 @@ exports.pedersenHash = require("./src/pedersenHash");
 exports.SMT = require("./src/smt").SMT;
 exports.SMTMemDB = require("./src/smt_memdb");
 exports.poseidon = require("./src/poseidon");
+exports.poseidonPerm = require("./src/poseidonPerm");
 
-
-
+const poseidonCipher = require("./src/poseidonCipher");
+exports.poseidonEncrypt = poseidonCipher.encrypt;
+exports.poseidonDecrypt = poseidonCipher.decrypt;
