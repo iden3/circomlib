@@ -117,6 +117,75 @@ template PoseidonDecrypt(l) {
     signal input key[2];
     signal output decrypted[decryptedLength];
 
+    component iterations = PoseidonDecryptIterations(l);
+    iterations.nonce <== nonce;
+    iterations.key[0] <== key[0];
+    iterations.key[1] <== key[1];
+    for (var i = 0; i < decryptedLength + 1; i ++) {
+        iterations.ciphertext[i] <== ciphertext[i];
+    }
+
+    // Check the last ciphertext element
+    iterations.decryptedLast === ciphertext[decryptedLength];
+
+    for (var i = 0; i < decryptedLength; i ++) {
+        decrypted[i] <== iterations.decrypted[i];
+    }
+
+    // If length > 3, check if the last (3 - (l mod 3)) elements of the message
+    // are 0
+    if (l % 3 > 0) {
+        if (l % 3 == 2) {
+            decrypted[decryptedLength - 1] === 0;
+        } else if (l % 3 == 2) {
+            decrypted[decryptedLength - 1] === 0;
+            decrypted[decryptedLength - 2] === 0;
+        }
+    }
+}
+
+// Decrypt a ciphertext without checking if the last ciphertext element or
+// whether the last 3 - (l mod 3) elements are 0. This is useful in
+// applications where you do not want an invalid decryption to prevent the
+// generation of a proof.
+template PoseidonDecryptWithoutCheck(l) {
+    var decryptedLength = l;
+    while (decryptedLength % 3 != 0) {
+        decryptedLength += 1;
+    }
+    // e.g. if l == 4, decryptedLength == 6
+
+    signal private input ciphertext[decryptedLength + 1];
+    signal input nonce;
+    signal input key[2];
+    signal output decrypted[decryptedLength];
+
+    component iterations = PoseidonDecryptIterations(l);
+    iterations.nonce <== nonce;
+    iterations.key[0] <== key[0];
+    iterations.key[1] <== key[1];
+    for (var i = 0; i < decryptedLength + 1; i ++) {
+        iterations.ciphertext[i] <== ciphertext[i];
+    }
+
+    for (var i = 0; i < decryptedLength; i ++) {
+        decrypted[i] <== iterations.decrypted[i];
+    }
+}
+
+template PoseidonDecryptIterations(l) {
+    var decryptedLength = l;
+    while (decryptedLength % 3 != 0) {
+        decryptedLength += 1;
+    }
+    // e.g. if l == 4, decryptedLength == 6
+
+    signal private input ciphertext[decryptedLength + 1];
+    signal input nonce;
+    signal input key[2];
+    signal output decrypted[decryptedLength];
+    signal output decryptedLast;
+
     var two128 = 2 ** 128;
 
     // The nonce must be less than 2 ^ 128
@@ -148,18 +217,5 @@ template PoseidonDecrypt(l) {
             strategies[i + 1].inputs[j + 1] <== ciphertext[i * 3 + j];
         }
     }
-
-    // Check the last ciphertext element
-    ciphertext[decryptedLength] === strategies[n].out[1];
-
-    // If length > 3, check if the last (3 - (l mod 3)) elements of the message
-    // are 0
-    if (l % 3 > 0) {
-        if (l % 3 == 2) {
-            decrypted[decryptedLength - 1] === 0;
-        } else if (l % 3 == 2) {
-            decrypted[decryptedLength - 1] === 0;
-            decrypted[decryptedLength - 2] === 0;
-        }
-    }
+    decryptedLast <== strategies[n].out[1];
 }
