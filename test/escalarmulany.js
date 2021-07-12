@@ -1,8 +1,11 @@
 const chai = require("chai");
 const path = require("path");
 const tester = require("circom").tester;
-const Fr = require("ffjavascript").bn128.Fr;
 
+const F1Field = require("ffjavascript").F1Field;
+const Scalar = require("ffjavascript").Scalar;
+exports.p = Scalar.fromString("21888242871839275222246405745257275088548364400416034343698204186575808495617");
+const Fr = new F1Field(exports.p);
 
 function print(circuit, w, s) {
     console.log(s + ": " + w[circuit.getSignalIdx(s)]);
@@ -13,13 +16,14 @@ describe("Escalarmul test", function () {
 
     this.timeout(100000);
 
-    let g = [
-        Fr.e("5299619240641551281634865583518297030282874472190772894086521144482721001553"),
-        Fr.e("16950150798460657717958625567821834550301663161624707787222815936182638968203")
-    ];
+    let g;
 
     before( async() => {
         circuitEMulAny = await tester(path.join(__dirname, "circuits", "escalarmulany_test.circom"));
+        g = [
+                Fr.e("5299619240641551281634865583518297030282874472190772894086521144482721001553"),
+                Fr.e("16950150798460657717958625567821834550301663161624707787222815936182638968203")
+            ]
     });
 
     it("Should generate Same escalar mul", async () => {

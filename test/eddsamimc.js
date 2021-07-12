@@ -2,9 +2,11 @@ const chai = require("chai");
 const path = require("path");
 const tester = require("circom").tester;
 
-const Fr = require("ffjavascript").bn128.Fr;
-
 const eddsa = require("../src/eddsa.js");
+const F1Field = require("ffjavascript").F1Field;
+const Scalar = require("ffjavascript").Scalar;
+exports.p = Scalar.fromString("21888242871839275222246405745257275088548364400416034343698204186575808495617");
+const Fr = new F1Field(exports.p);
 
 const assert = chai.assert;
 
@@ -14,12 +16,11 @@ describe("EdDSA MiMC test", function () {
     this.timeout(100000);
 
     before( async () => {
-
         circuit = await tester(path.join(__dirname, "circuits", "eddsamimc_test.circom"));
     });
 
     it("Sign a single number", async () => {
-        const msg = Fr.e(1234);
+        const msg = Scalar.e(1234);
 
         const prvKey = Buffer.from("0001020304050607080900010203040506070809000102030405060708090001", "hex");
 
@@ -44,7 +45,7 @@ describe("EdDSA MiMC test", function () {
     });
 
     it("Detect Invalid signature", async () => {
-        const msg = Fr.e(1234);
+        const msg = Scalar.e(1234);
 
         const prvKey = Buffer.from("0001020304050607080900010203040506070809000102030405060708090001", "hex");
 
@@ -59,8 +60,8 @@ describe("EdDSA MiMC test", function () {
                 enabled: 1,
                 Ax: pubKey[0],
                 Ay: pubKey[1],
-                R8x: Fr.add(signature.R8[0], Fr.e(1)),
-                R8y: signature.R8[1],
+                R8x: Fr.toString(Fr.add(Fr.e(signature.R8[0]), Fr.e(1))),
+                R8y: Fr.toString(Fr.e(signature.R8[1])),
                 S: signature.S,
                 M: msg}, true);
             assert(false);
@@ -71,7 +72,7 @@ describe("EdDSA MiMC test", function () {
 
 
     it("Test a dissabled circuit with a bad signature", async () => {
-        const msg = Fr.e(1234);
+        const msg = Scalar.e(1234);
 
         const prvKey = Buffer.from("0001020304050607080900010203040506070809000102030405060708090001", "hex");
 
@@ -86,8 +87,8 @@ describe("EdDSA MiMC test", function () {
             enabled: 0,
             Ax: pubKey[0],
             Ay: pubKey[1],
-            R8x: Fr.add(signature.R8[0], Fr.e(1)),
-            R8y: signature.R8[1],
+            R8x: Fr.toString(Fr.add(Fr.e(signature.R8[0]), Fr.e(1))),
+            R8y: Fr.toString(Fr.e(signature.R8[1])),
             S: signature.S,
             M: msg}, true);
 
