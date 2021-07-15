@@ -27,7 +27,7 @@ template Main() {
     component sha256_2 = SHA256_2();
 
     sha256_2.a <== a;
-    sha256_2.b <== a;
+    sha256_2.b <== b;
     out <== sha256_2.out;
 }
 
