@@ -48,7 +48,7 @@ describe("Aliascheck test", function () {
     });
 
     it("Satisfy the aliastest q-1", async () => {
-        const inp = getBits(F.minusone, 254);
+        const inp = getBits(F.e(-1), 254);
         // console.log(JSON.stringify(utils.stringifyBigInts(inp)));
         await cir.calculateWitness({in: inp}, true);
     });

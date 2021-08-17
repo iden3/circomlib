@@ -7,6 +7,13 @@ const assert = chai.assert;
 
 const utils = require("ffjavascript").utils;
 
+function buff2hex(buff) {
+    function i2hex(i) {
+      return ('0' + i.toString(16)).slice(-2);
+    }
+    return Array.from(buff).map(i2hex).join('');
+}
+
 describe("EdDSA js test", function () {
 
     this.timeout(100000);
@@ -37,7 +44,7 @@ describe("EdDSA js test", function () {
             "2523202440825208709475937830811065542425109372212752003460238913256192595070");
 
         const pSignature = eddsa.packSignature(signature);
-        assert.equal(pSignature.toString("hex"), ""+
+        assert.equal(buff2hex(pSignature), ""+
             "dfedb4315d3f2eb4de2d3c510d7a987dcab67089c8ace06308827bf5bcbe02a2"+
             "7ed40dab29bf993c928e789d007387998901a24913d44fddb64b1f21fc149405");
 
@@ -70,7 +77,7 @@ describe("EdDSA js test", function () {
             "1672775540645840396591609181675628451599263765380031905495115170613215233181");
 
         const pSignature = eddsa.packSignature(signature);
-        assert.equal(pSignature.toString("hex"), ""+
+        assert.equal(buff2hex(pSignature), ""+
             "dfedb4315d3f2eb4de2d3c510d7a987dcab67089c8ace06308827bf5bcbe02a2"+
             "9d043ece562a8f82bfc0adb640c0107a7d3a27c1c7c1a6179a0da73de5c1b203");
 

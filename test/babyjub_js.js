@@ -6,6 +6,12 @@ const assert = chai.assert;
 
 // const bigInt = require("big-integer");
 
+function buff2hex(buff) {
+    function i2hex(i) {
+      return ('0' + i.toString(16)).slice(-2);
+    }
+    return Array.from(buff).map(i2hex).join('');
+}
 
 describe("Baby Jub js test", function () {
 
@@ -144,7 +150,7 @@ describe("Baby Jub js test", function () {
             babyjub.F.e("2626589144620713026669568689430873010625803728049924121243784502389097019475"),
         ];
         const buf = babyjub.packPoint(p);
-        assert.equal(buf.toString("hex"), "53b81ed5bffe9545b54016234682e7b2f699bd42a5e9eae27ff4051bc698ce85");
+        assert.equal(buff2hex(buf), "53b81ed5bffe9545b54016234682e7b2f699bd42a5e9eae27ff4051bc698ce85");
         const p2 = babyjub.unpackPoint(buf);
         assert.equal(p2[0].toString(), "17777552123799933955779906779655732241715742912184938656739573121738514868268");
         assert.equal(p2[1].toString(), "2626589144620713026669568689430873010625803728049924121243784502389097019475");
@@ -156,7 +162,7 @@ describe("Baby Jub js test", function () {
             babyjub.F.e("4338620300185947561074059802482547481416142213883829469920100239455078257889"),
         ];
         const buf = babyjub.packPoint(p);
-        assert.equal(buf.toString("hex"), "e114eb17eddf794f063a68fecac515e3620e131976108555735c8b0773929709");
+        assert.equal(buff2hex(buf), "e114eb17eddf794f063a68fecac515e3620e131976108555735c8b0773929709");
         const p2 = babyjub.unpackPoint(buf);
         assert.equal(p2[0].toString(), "6890855772600357754907169075114257697580319025794532037257385534741338397365");
         assert.equal(p2[1].toString(), "4338620300185947561074059802482547481416142213883829469920100239455078257889");

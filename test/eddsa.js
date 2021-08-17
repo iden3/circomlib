@@ -2,10 +2,14 @@ const chai = require("chai");
 const path = require("path");
 
 const tester = require("circom").tester;
-const Fr = require("ffjavascript").bn128.Fr;
 
 const eddsa = require("../src/eddsa.js");
 const babyJub = require("../src/babyjub.js");
+
+const F1Field = require("ffjavascript").F1Field;
+const Scalar = require("ffjavascript").Scalar;
+exports.p = Scalar.fromString("21888242871839275222246405745257275088548364400416034343698204186575808495617");
+const Fr = new F1Field(exports.p);
 
 const assert = chai.assert;
 
@@ -13,14 +17,14 @@ function print(circuit, w, s) {
     console.log(s + ": " + w[circuit.getSignalIdx(s)]);
 }
 
-function buffer2bits(buff) {
+function buffer2bits(Fr, buff) {
     const res = [];
     for (let i=0; i<buff.length; i++) {
         for (let j=0; j<8; j++) {
             if ((buff[i]>>j)&1) {
-                res.push(Fr.one);
+                res.push(Fr.toString(Fr.one));
             } else {
-                res.push(Fr.zero);
+                res.push(Fr.toString(Fr.zero));
             }
         }
     }
@@ -55,10 +59,10 @@ describe("EdDSA test", function () {
 
         assert(eddsa.verify(msg, uSignature, pubKey));
 
-        const msgBits = buffer2bits(msg);
-        const r8Bits = buffer2bits(pSignature.slice(0, 32));
-        const sBits = buffer2bits(pSignature.slice(32, 64));
-        const aBits = buffer2bits(pPubKey);
+        const msgBits = buffer2bits(Fr, msg);
+        const r8Bits = buffer2bits(Fr, pSignature.slice(0, 32));
+        const sBits = buffer2bits(Fr, pSignature.slice(32, 64));
+        const aBits = buffer2bits(Fr, pPubKey);
 
         const w = await circuit.calculateWitness({A: aBits, R8: r8Bits, S: sBits, msg: msgBits}, true);
 

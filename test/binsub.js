@@ -1,6 +1,5 @@
 const path = require("path");
 
-const Fr = require("ffjavascript").bn128.Fr;
 const Scalar = require("ffjavascript").Scalar;
 const tester = require("circom").tester;
 
