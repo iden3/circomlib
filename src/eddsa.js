@@ -23,6 +23,11 @@ exports.unpackSignature = unpackSignature;
 exports.pruneBuffer = pruneBuffer;
 
 
+function ensureBuffer(_buff) {
+    if (Buffer.isBuffer(_buff)) return buff;
+    return Buffer.from(_buff);
+}
+
 function pruneBuffer(_buff) {
     const buff = Buffer.from(_buff);
     buff[0] = buff[0] & 0xF8;
@@ -66,7 +71,7 @@ function signMiMC(prv, msg) {
     const s = utils.leBuff2int(sBuff);
     const A = babyJub.mulPointEscalar(babyJub.Base8, Scalar.shr(s, 3));
 
-    const msgBuff = utils.leInt2Buff(msg, 32);
+    const msgBuff = ensureBuffer(utils.leInt2Buff(msg, 32));
     const rBuff = createBlakeHash("blake512").update(Buffer.concat([h1.slice(32,64), msgBuff])).digest();
     let r = utils.leBuff2int(rBuff);
     const Fr = new F1Field(babyJub.subOrder);
@@ -86,7 +91,7 @@ function signMiMCSponge(prv, msg) {
     const s = utils.leBuff2int(sBuff);
     const A = babyJub.mulPointEscalar(babyJub.Base8, Scalar.shr(s, 3));
 
-    const msgBuff = utils.leInt2Buff(msg, 32);
+    const msgBuff = ensureBuffer(utils.leInt2Buff(msg, 32));
     const rBuff = createBlakeHash("blake512").update(Buffer.concat([h1.slice(32,64), msgBuff])).digest();
     let r = utils.leBuff2int(rBuff);
     const Fr = new F1Field(babyJub.subOrder);
@@ -106,7 +111,7 @@ function signPoseidon(prv, msg) {
     const s = utils.leBuff2int(sBuff);
     const A = babyJub.mulPointEscalar(babyJub.Base8, Scalar.shr(s, 3));
 
-    const msgBuff = utils.leInt2Buff(msg, 32);
+    const msgBuff = ensureBuffer(utils.leInt2Buff(msg, 32));
     const rBuff = createBlakeHash("blake512").update(Buffer.concat([h1.slice(32,64), msgBuff])).digest();
     let r = utils.leBuff2int(rBuff);
     const Fr = new F1Field(babyJub.subOrder);
