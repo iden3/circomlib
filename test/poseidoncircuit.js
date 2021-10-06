@@ -9,12 +9,14 @@ const assert = chai.assert;
 describe("Poseidon Circuit test", function () {
     let circuit6;
     let circuit3;
+    let circuit16;
 
     this.timeout(100000);
 
     before( async () => {
         circuit6 = await tester(path.join(__dirname, "circuits", "poseidon6_test.circom"));
         circuit3 = await tester(path.join(__dirname, "circuits", "poseidon3_test.circom"));
+        circuit16 = await tester(path.join(__dirname, "circuits", "poseidon16_test.circom"));
     });
 
     it("Should check constrain of hash([1, 2]) t=6", async () => {
@@ -56,5 +58,15 @@ describe("Poseidon Circuit test", function () {
         assert.equal("14763215145315200506921711489642608356394854266165572616578112107564877678998", res2.toString());
         await circuit3.assertOut(w, {out : res2});
         await circuit3.checkConstraints(w);
+    });
+
+    it("Should check constrain of hash([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16])", async () => {
+        const w = await circuit16.calculateWitness({inputs: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]});
+
+        const res2 = poseidon([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]);
+
+        assert.equal("9989051620750914585850546081941653841776809718687451684622678807385399211877", res2.toString());
+        await circuit16.assertOut(w, {out : res2});
+        await circuit16.checkConstraints(w);
     });
 });

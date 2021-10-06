@@ -20,7 +20,7 @@ const pow5 = a => F.mul(a, F.square(F.square(a, a)));
 
 function poseidon(inputs) {
     assert(inputs.length > 0);
-    assert(inputs.length < N_ROUNDS_P.length - 1);
+    assert(inputs.length <= N_ROUNDS_P.length);
 
     const t = inputs.length + 1;
     const nRoundsF = N_ROUNDS_F;
