@@ -3,8 +3,8 @@ const path = require("path");
 
 const tester = require("circom").tester;
 
-const eddsa = require("../src/eddsa.js");
-const babyJub = require("../src/babyjub.js");
+const eddsa = require("circomlibjs").eddsa;
+const babyJub = require("circomlibjs").babyjub;
 
 const F1Field = require("ffjavascript").F1Field;
 const Scalar = require("ffjavascript").Scalar;

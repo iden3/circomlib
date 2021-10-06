@@ -7,8 +7,8 @@ const Fr = new F1Field(exports.p);
 
 const tester = require("circom").tester;
 
-const babyJub = require("../src/babyjub.js");
-const pedersen = require("../src/pedersenHash.js");
+const babyJub = require("circomlibjs").babyjub;
+const pedersen = require("circomlibjs").pedersenHash;
 
 
 describe("Pedersen test", function() {

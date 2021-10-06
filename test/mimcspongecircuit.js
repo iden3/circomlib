@@ -1,7 +1,7 @@
 const path = require("path");
 const tester = require("circom").tester;
 
-const mimcjs = require("../src/mimcsponge.js");
+const mimcjs = require("circomlibjs").mimcsponge;
 
 
 describe("MiMC Sponge Circuit test", function () {

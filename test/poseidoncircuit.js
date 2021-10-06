@@ -2,7 +2,7 @@ const chai = require("chai");
 const path = require("path");
 const tester = require("circom").tester;
 
-const poseidon = require("../src/poseidon.js");
+const poseidon = require("circomlibjs").poseidon;
 
 const assert = chai.assert;
 

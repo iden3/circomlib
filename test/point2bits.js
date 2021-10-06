@@ -1,7 +1,7 @@
 const path = require("path");
 const tester = require("circom").tester;
 
-const babyJub = require("../src/babyjub.js");
+const babyJub = require("circomlibjs").babyjub;
 
 
 describe("Point 2 bits test", function() {

@@ -6,7 +6,7 @@ exports.p = Scalar.fromString("2188824287183927522224640574525727508854836440041
 const Fr = new F1Field(exports.p);
 const tester = require("circom").tester;
 
-const smt = require("../src/smt.js");
+const smt = require("circomlibjs").smt;
 
 const assert = chai.assert;
 

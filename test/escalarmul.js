@@ -1,7 +1,7 @@
 const chai = require("chai");
 const path = require("path");
 const tester = require("circom").tester;
-const babyJub = require("../src/babyjub.js");
+const babyJub = require("circomlibjs").babyjub;
 
 const F1Field = require("ffjavascript").F1Field;
 const Scalar = require("ffjavascript").Scalar;

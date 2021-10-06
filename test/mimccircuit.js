@@ -2,7 +2,7 @@ const chai = require("chai");
 const path = require("path");
 const tester = require("circom").tester;
 
-const mimcjs = require("../src/mimc7.js");
+const mimcjs = require("circomlibjs").mimc7;
 
 describe("MiMC Circuit test", function () {
     let circuit;
