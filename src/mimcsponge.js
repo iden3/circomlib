@@ -18,7 +18,7 @@ exports.getConstants = (seed, nRounds) => {
     if (typeof seed === "undefined") seed = SEED;
     if (typeof nRounds === "undefined") nRounds = NROUNDS;
     const cts = new Array(nRounds);
-    let c = Web3Utils.keccak256(SEED);
+    let c = Web3Utils.keccak256(seed);
     for (let i=1; i<nRounds; i++) {
         c = Web3Utils.keccak256(c);
 
