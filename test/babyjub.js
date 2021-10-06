@@ -2,8 +2,8 @@ const chai = require("chai");
 const path = require("path");
 
 const createBlakeHash = require("blake-hash");
-const eddsa = require("../src/eddsa.js");
-const F = require("../src/babyjub.js").F;
+const eddsa = require("circomlibjs").eddsa;
+const F = require("circomlibjs").babyjub.F;
 
 const assert = chai.assert;
 
@@ -87,7 +87,7 @@ describe("Baby Jub test", function () {
             await circuitTest.calculateWitness({x: 1, y: 0}, true);
             assert(false, "Should be a valid point");
         } catch(err) {
-            assert(/Constraint\sdoesn't\smatch(.*)168700\s!=\s1/.test(err.message) );
+            assert(assert(err.message.includes("Assert Failed")));
         }
     });
 
