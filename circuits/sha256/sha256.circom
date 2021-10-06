@@ -1,4 +1,4 @@
-
+pragma circom 2.0.0;
 
 include "constants.circom";
 include "sha256compression.circom";

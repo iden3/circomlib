@@ -1,3 +1,5 @@
+pragma circom 2.0.0;
+
 include "./poseidon_constants.circom";
 
 template Sigma() {

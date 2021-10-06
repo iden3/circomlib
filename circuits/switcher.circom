@@ -24,6 +24,8 @@
     If sel == 1 then outL = R and outR=L
 
  */
+ 
+pragma circom 2.0.0;
 
 template Switcher() {
     signal input sel;

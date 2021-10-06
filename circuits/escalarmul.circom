@@ -60,6 +60,7 @@
 
 
  */
+pragma circom 2.0.0;
 
 include "mux4.circom";
 include "escalarmulw4table.circom";

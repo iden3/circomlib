@@ -16,6 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
+pragma circom 2.0.0;
 
 include "montgomery.circom";
 include "babyjub.circom";
@@ -82,19 +83,19 @@ template SegmentMulAny(n) {
     var i;
 
     bits[0] = BitElementMulAny();
-    e2m.out[0] ==> bits[0].dblIn[0]
-    e2m.out[1] ==> bits[0].dblIn[1]
-    e2m.out[0] ==> bits[0].addIn[0]
-    e2m.out[1] ==> bits[0].addIn[1]
+    e2m.out[0] ==> bits[0].dblIn[0];
+    e2m.out[1] ==> bits[0].dblIn[1];
+    e2m.out[0] ==> bits[0].addIn[0];
+    e2m.out[1] ==> bits[0].addIn[1];
     e[1] ==> bits[0].sel;
 
     for (i=1; i<n-1; i++) {
         bits[i] = BitElementMulAny();
 
-        bits[i-1].dblOut[0] ==> bits[i].dblIn[0]
-        bits[i-1].dblOut[1] ==> bits[i].dblIn[1]
-        bits[i-1].addOut[0] ==> bits[i].addIn[0]
-        bits[i-1].addOut[1] ==> bits[i].addIn[1]
+        bits[i-1].dblOut[0] ==> bits[i].dblIn[0];
+        bits[i-1].dblOut[1] ==> bits[i].dblIn[1];
+        bits[i-1].addOut[0] ==> bits[i].addIn[0];
+        bits[i-1].addOut[1] ==> bits[i].addIn[1];
         e[i+1] ==> bits[i].sel;
     }
 

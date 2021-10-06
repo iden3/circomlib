@@ -26,6 +26,7 @@ fnc:  0 -> VERIFY INCLUSION
       1 -> VERIFY NOT INCLUSION
 
  */
+ pragma circom 2.0.0;
 
 
 include "../gates.circom";

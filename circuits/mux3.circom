@@ -16,6 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
+pragma circom 2.0.0;
 
 template MultiMux3(n) {
     signal input c[n][8];  // Constants
@@ -46,7 +47,7 @@ template MultiMux3(n) {
           a10[i] <==  ( c[i][ 3]-c[i][ 2]-c[i][ 1]+c[i][ 0] ) * s10;
            a1[i] <==  ( c[i][ 2]-c[i][ 0] ) * s[1];
            a0[i] <==  ( c[i][ 1]-c[i][ 0] ) * s[0];
-            a[i] <==  ( c[i][ 0] )
+            a[i] <==  ( c[i][ 0] );
 
           out[i] <== ( a210[i] + a21[i] + a20[i] + a2[i] ) * s[2] +
                      (  a10[i] +  a1[i] +  a0[i] +  a[i] );

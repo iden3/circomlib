@@ -16,6 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
+pragma circom 2.0.0;
 
 include "bitify.circom";
 include "escalarmulfix.circom";
@@ -83,9 +84,9 @@ template BabyCheck() {
 
 // Extracts the public key from private key
 template BabyPbk() {
-    signal private input  in;
-    signal         output Ax;
-    signal         output Ay;
+    signal input  in;
+    signal output Ax;
+    signal output Ay;
 
     var BASE8[2] = [
         5299619240641551281634865583518297030282874472190772894086521144482721001553,

@@ -36,7 +36,7 @@ na           0
 H' is the Hash function with the inputs shifted acordingly.
 
 *****/
-
+pragma circom 2.0.0;
 
 template SMTVerifierLevel() {
     signal input st_top;

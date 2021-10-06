@@ -90,6 +90,7 @@ fnc[0]  fnc[1]
                                                           xor=0
 
 ***************************************************************************************************/
+pragma circom 2.0.0;
 
 template SMTProcessorSM() {
   signal input xor;
@@ -144,14 +145,14 @@ template SMTProcessorSM() {
   //      + prev_bot
   //      - prev_bot *                         xor
 
-  st_bot <== (1-xor) * (aux2 - st_old0 + prev_bot)
+  st_bot <== (1-xor) * (aux2 - st_old0 + prev_bot);
 
 
   // st_upd = prev_top * (1-fnc[0]) *levIns;
   //    = + prev_top * levIns
   //      - prev_top * levIns * fnc[0]
 
-  st_upd <== aux1 - aux2
+  st_upd <== aux1 - aux2;
 
   // st_na = prev_new1 + prev_old0 + prev_na + prev_upd;
   //    = + prev_new1

@@ -57,6 +57,7 @@ The end of the last level will have to be `na`
                                                  #########
 
  */
+ pragma circom 2.0.0;
 
 
 template SMTVerifierSM() {

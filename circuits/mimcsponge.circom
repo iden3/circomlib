@@ -1,3 +1,5 @@
+pragma circom 2.0.0;
+
 // implements MiMC-2n/n as hash using a sponge construction.
 // log_5(21888242871839275222246405745257275088548364400416034343698204186575808495617) ~= 110
 // => nRounds should be 220
@@ -280,7 +282,8 @@ template MiMCFeistel(nrounds) {
         t2[i] <== t*t;
         t4[i] <== t2[i]*t2[i];
         if (i<nrounds-1) {
-          xL[i] <== ((i==0) ? xR_in : xR[i-1]) + t4[i]*t;
+          var aux = (i==0) ? xR_in : xR[i-1] ;
+          xL[i] <== aux + t4[i]*t;
           xR[i] <== (i==0) ? xL_in : xL[i-1];
         } else {
           xR_out <== xR[i-1] + t4[i]*t;
