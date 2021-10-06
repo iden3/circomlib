@@ -1,7 +1,7 @@
 const chai = require("chai");
 const path = require("path");
 
-const tester = require("circom").tester;
+const wasm_tester = require("circom_tester").wasm;
 
 const eddsa = require("../src/eddsa.js");
 const babyJub = require("../src/babyjub.js");
@@ -38,7 +38,7 @@ describe("EdDSA test", function () {
     this.timeout(100000);
 
     before( async () => {
-        circuit = await tester(path.join(__dirname, "circuits", "eddsa_test.circom"));
+        circuit = await wasm_tester(path.join(__dirname, "circuits", "eddsa_test.circom"));
     });
 
     it("Sign a single 10 bytes from 0 to 9", async () => {

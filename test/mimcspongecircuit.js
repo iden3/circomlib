@@ -1,5 +1,5 @@
 const path = require("path");
-const tester = require("circom").tester;
+const wasm_tester = require("circom_tester").wasm;
 
 const mimcjs = require("../src/mimcsponge.js");
 
@@ -11,7 +11,7 @@ describe("MiMC Sponge Circuit test", function () {
 
     it("Should check permutation", async () => {
 
-        circuit = await tester(path.join(__dirname, "circuits", "mimc_sponge_test.circom"));
+        circuit = await wasm_tester(path.join(__dirname, "circuits", "mimc_sponge_test.circom"));
 
         const w = await circuit.calculateWitness({xL_in: 1, xR_in: 2, k: 3});
 
@@ -24,7 +24,7 @@ describe("MiMC Sponge Circuit test", function () {
     });
 
     it("Should check hash", async () => {
-        circuit = await tester(path.join(__dirname, "circuits", "mimc_sponge_hash_test.circom"));
+        circuit = await wasm_tester(path.join(__dirname, "circuits", "mimc_sponge_hash_test.circom"));
 
         const w = await circuit.calculateWitness({ins: [1, 2], k: 0});
 

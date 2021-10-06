@@ -1,6 +1,6 @@
 const chai = require("chai");
 const path = require("path");
-const tester = require("circom").tester;
+const wasm_tester = require("circom_tester").wasm;
 
 const poseidon = require("../src/poseidon.js");
 
@@ -13,8 +13,8 @@ describe("Poseidon Circuit test", function () {
     this.timeout(100000);
 
     before( async () => {
-        circuit6 = await tester(path.join(__dirname, "circuits", "poseidon6_test.circom"));
-        circuit3 = await tester(path.join(__dirname, "circuits", "poseidon3_test.circom"));
+        circuit6 = await wasm_tester(path.join(__dirname, "circuits", "poseidon6_test.circom"));
+        circuit3 = await wasm_tester(path.join(__dirname, "circuits", "poseidon3_test.circom"));
     });
 
     it("Should check constrain of hash([1, 2]) t=6", async () => {

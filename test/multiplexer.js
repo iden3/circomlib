@@ -1,5 +1,5 @@
 const path = require("path");
-const tester = require("circom").tester;
+const wasm_tester = require("circom_tester").wasm;
 const F1Field = require("ffjavascript").F1Field;
 const Scalar = require("ffjavascript").Scalar;
 exports.p = Scalar.fromString("21888242871839275222246405745257275088548364400416034343698204186575808495617");
@@ -9,7 +9,7 @@ describe("Mux4 test", function() {
     this.timeout(100000);
     it("Should create a constant multiplexer 4", async () => {
 
-        const circuit = await tester(path.join(__dirname, "circuits", "mux4_1.circom"));
+        const circuit = await wasm_tester(path.join(__dirname, "circuits", "mux4_1.circom"));
 
         const ct16 = [
             Fr.e("123"),
@@ -41,7 +41,7 @@ describe("Mux4 test", function() {
 
     it("Should create a constant multiplexer 3", async () => {
 
-        const circuit = await tester(path.join(__dirname, "circuits", "mux3_1.circom"));
+        const circuit = await wasm_tester(path.join(__dirname, "circuits", "mux3_1.circom"));
 
         const ct8 = [
             Fr.e("37"),
@@ -64,7 +64,7 @@ describe("Mux4 test", function() {
     });
     it("Should create a constant multiplexer 2", async () => {
 
-        const circuit = await tester(path.join(__dirname, "circuits", "mux2_1.circom"));
+        const circuit = await wasm_tester(path.join(__dirname, "circuits", "mux2_1.circom"));
 
         const ct4 = [
             Fr.e("37"),
@@ -83,7 +83,7 @@ describe("Mux4 test", function() {
     });
     it("Should create a constant multiplexer 1", async () => {
 
-        const circuit = await tester(path.join(__dirname, "circuits", "mux1_1.circom"));
+        const circuit = await wasm_tester(path.join(__dirname, "circuits", "mux1_1.circom"));
 
         const ct2 = [
             Fr.e("37"),
