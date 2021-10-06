@@ -1,6 +1,6 @@
 const chai = require("chai");
 const path = require("path");
-const tester = require("circom").tester;
+const wasm_tester = require("circom_tester").wasm;
 const babyJub = require("circomlibjs").babyjub;
 
 const F1Field = require("ffjavascript").F1Field;
@@ -19,7 +19,7 @@ describe("Exponentioation test", function () {
 
     it("Should generate the Exponentiation table in k=0", async () => {
 
-        const circuit = await tester(path.join(__dirname, "circuits", "escalarmulw4table_test.circom"));
+        const circuit = await wasm_tester(path.join(__dirname, "circuits", "escalarmulw4table_test.circom"));
 
         const w = await circuit.calculateWitness({in: 1});
 
@@ -46,7 +46,7 @@ describe("Exponentioation test", function () {
 
     it("Should generate the Exponentiation table in k=3", async () => {
 
-        const circuit = await tester(path.join(__dirname, "circuits", "escalarmulw4table_test3.circom"));
+        const circuit = await wasm_tester(path.join(__dirname, "circuits", "escalarmulw4table_test3.circom"));
 
         const w = await circuit.calculateWitness({in: 1});
 
@@ -77,7 +77,7 @@ describe("Exponentioation test", function () {
 
     it("Should exponentiate g^31", async () => {
 
-        const circuit = await tester(path.join(__dirname, "circuits", "escalarmul_test.circom"));
+        const circuit = await wasm_tester(path.join(__dirname, "circuits", "escalarmul_test.circom"));
 
         const w = await circuit.calculateWitness({"in": 31});
 
@@ -110,7 +110,7 @@ describe("Exponentioation test", function () {
 
     it("Number of constrains for 256 bits", async () => {
 
-        const circuit = await tester(path.join(__dirname, "circuits", "escalarmul_test_min.circom"));
+        const circuit = await wasm_tester(path.join(__dirname, "circuits", "escalarmul_test_min.circom"));
 
     }).timeout(10000000);
 

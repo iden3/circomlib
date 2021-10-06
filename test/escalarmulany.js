@@ -1,6 +1,6 @@
 const chai = require("chai");
 const path = require("path");
-const tester = require("circom").tester;
+const wasm_tester = require("circom_tester").wasm;
 
 const F1Field = require("ffjavascript").F1Field;
 const Scalar = require("ffjavascript").Scalar;
@@ -19,7 +19,7 @@ describe("Escalarmul test", function () {
     let g;
 
     before( async() => {
-        circuitEMulAny = await tester(path.join(__dirname, "circuits", "escalarmulany_test.circom"));
+        circuitEMulAny = await wasm_tester(path.join(__dirname, "circuits", "escalarmulany_test.circom"));
         g = [
                 Fr.e("5299619240641551281634865583518297030282874472190772894086521144482721001553"),
                 Fr.e("16950150798460657717958625567821834550301663161624707787222815936182638968203")

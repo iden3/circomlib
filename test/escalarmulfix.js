@@ -1,6 +1,6 @@
 const chai = require("chai");
 const path = require("path");
-const tester = require("circom").tester;
+const wasm_tester = require("circom_tester").wasm;
 const babyjub = require("circomlibjs").babyjub;
 const F1Field = require("ffjavascript").F1Field;
 const Scalar = require("ffjavascript").Scalar;
@@ -19,7 +19,7 @@ describe("Escalarmul test", function () {
     this.timeout(100000);
 
     before( async() => {
-        circuit = await tester(path.join(__dirname, "circuits", "escalarmulfix_test.circom"));
+        circuit = await wasm_tester(path.join(__dirname, "circuits", "escalarmulfix_test.circom"));
     });
 
     it("Should generate Same escalar mul", async () => {

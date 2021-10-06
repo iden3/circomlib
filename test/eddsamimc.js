@@ -1,6 +1,6 @@
 const chai = require("chai");
 const path = require("path");
-const tester = require("circom").tester;
+const wasm_tester = require("circom_tester").wasm;
 
 const eddsa = require("circomlibjs").eddsa;
 const F1Field = require("ffjavascript").F1Field;
@@ -16,7 +16,7 @@ describe("EdDSA MiMC test", function () {
     this.timeout(100000);
 
     before( async () => {
-        circuit = await tester(path.join(__dirname, "circuits", "eddsamimc_test.circom"));
+        circuit = await wasm_tester(path.join(__dirname, "circuits", "eddsamimc_test.circom"));
     });
 
     it("Sign a single number", async () => {
@@ -66,7 +66,7 @@ describe("EdDSA MiMC test", function () {
                 M: msg}, true);
             assert(false);
         } catch(err) {
-            assert(/Constraint\sdoesn't\smatch(.*)1\s!=\s0/.test(err.message) );
+	    assert(err.message.includes("Assert Failed"));
         }
     });
 

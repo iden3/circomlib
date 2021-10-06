@@ -10,7 +10,7 @@ const assert = chai.assert;
 
 const sha256 = require("./helpers/sha256");
 
-const tester = require("circom").tester;
+const wasm_tester = require("circom_tester").wasm;
 
 // const printSignal = require("./helpers/printsignal");
 
@@ -53,7 +53,7 @@ describe("SHA256 test", function () {
     });
 
     it("Should calculate a hash of 1 compressor", async () => {
-        const cir = await tester(path.join(__dirname, "circuits", "sha256_2_test.circom"));
+        const cir = await wasm_tester(path.join(__dirname, "circuits", "sha256_2_test.circom"));
 
         const witness = await cir.calculateWitness({ "a": "1", "b": "2" }, true);
 
@@ -74,7 +74,7 @@ describe("SHA256 test", function () {
     }).timeout(1000000);
 
     it("Should calculate a hash of 2 compressor", async () => {
-        const cir = await tester(path.join(__dirname, "circuits", "sha256_test512.circom"));
+        const cir = await wasm_tester(path.join(__dirname, "circuits", "sha256_test512.circom"));
 
         const b = new Buffer.alloc(64);
         for (let i=0; i<64; i++) {
@@ -95,7 +95,7 @@ describe("SHA256 test", function () {
 
     }).timeout(1000000);
     it ("Should calculate a hash of 2 compressor", async () => {
-        const cir = await tester(path.join(__dirname, "circuits", "sha256_test448.circom"));
+        const cir = await wasm_tester(path.join(__dirname, "circuits", "sha256_test448.circom"));
 
         const testStr = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
 

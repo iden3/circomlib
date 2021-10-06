@@ -1,7 +1,7 @@
 const chai = require("chai");
 const path = require("path");
-const tester = require("circom").tester;
 const babyJub = require("circomlibjs").babyjub;
+const wasm_tester = require("circom_tester").wasm;
 const F1Field = require("ffjavascript").F1Field;
 const Scalar = require("ffjavascript").Scalar;
 exports.p = Scalar.fromString("21888242871839275222246405745257275088548364400416034343698204186575808495617");
@@ -24,13 +24,13 @@ describe("Montgomery test", function () {
 
     this.timeout(100000);
     before( async() => {
-        circuitE2M = await tester(path.join(__dirname, "circuits", "edwards2montgomery.circom"));
+        circuitE2M = await wasm_tester(path.join(__dirname, "circuits", "edwards2montgomery.circom"));
         await circuitE2M.loadSymbols();
-        circuitM2E = await tester(path.join(__dirname, "circuits", "montgomery2edwards.circom"));
+        circuitM2E = await wasm_tester(path.join(__dirname, "circuits", "montgomery2edwards.circom"));
         await circuitM2E.loadSymbols();
-        circuitMAdd = await tester(path.join(__dirname, "circuits", "montgomeryadd.circom"));
+        circuitMAdd = await wasm_tester(path.join(__dirname, "circuits", "montgomeryadd.circom"));
         await circuitMAdd.loadSymbols();
-        circuitMDouble = await tester(path.join(__dirname, "circuits", "montgomerydouble.circom"));
+        circuitMDouble = await wasm_tester(path.join(__dirname, "circuits", "montgomerydouble.circom"));
         await circuitMDouble.loadSymbols();
     });
     it("Convert Edwards to Montgomery and back again", async () => {
