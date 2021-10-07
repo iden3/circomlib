@@ -87,7 +87,7 @@ describe("Baby Jub test", function () {
             await circuitTest.calculateWitness({x: 1, y: 0}, true);
             assert(false, "Should be a valid point");
         } catch(err) {
-            assert(assert(err.message.includes("Assert Failed")));
+            assert(err.message.includes("Assert Failed"));
         }
     });
 

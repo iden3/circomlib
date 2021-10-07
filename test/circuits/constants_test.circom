@@ -17,4 +17,4 @@ template A() {
     lc === in;
 }
 
-component main = A();
+component main {public [in]} = A();

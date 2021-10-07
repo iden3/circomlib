@@ -16,7 +16,6 @@ describe("Binary sum test", function () {
     it("Should create a constant circuit", async () => {
         const circuit = await wasm_tester(path.join(__dirname, "circuits", "constants_test.circom"));
         await circuit.loadConstraints();
-
         assert.equal(circuit.nVars, 2);
         assert.equal(circuit.constraints.length, 1);
 
