@@ -10,7 +10,7 @@ describe("Poseidon Circuit test", function () {
     let circuit6;
     let circuit3;
 
-    this.timeout(100000);
+    this.timeout(1000000);
 
     before( async () => {
         circuit6 = await wasm_tester(path.join(__dirname, "circuits", "poseidon6_test.circom"));
