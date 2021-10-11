@@ -4,7 +4,7 @@
 
 - This repository contains a library of circuit templates. 
 - All files are copyrighted under 2018 0KIMS association and part of the free software [circom](https://github.com/iden3/circom) (Zero Knowledge Circuit Compiler). 
-- You can read more about the circom language in [the circom documentation webpage](https://docs.circom.io/).
+- You can read more about the circom language in [the circom documentation webpage](http://docs.circom.io/).
 
 ## Organisation
 
