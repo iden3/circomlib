@@ -1,6 +1,6 @@
 {
   "name": "circomlib",
-  "version": "0.5.3",
+  "version": "1.0.0",
   "description": "Basic circuits library for Circom",
   "main": "index.js",
   "directories": {
@@ -23,18 +23,11 @@
   },
   "author": "0Kims",
   "license": "GPL-3.0",
-  "dependencies": {
-    "blake-hash": "^1.1.0",
-    "blake2b": "^2.1.3",
-    "circom": "0.5.33",
-    "ffjavascript": "0.2.38",
-    "web3-utils": "^1.3.0"
-  },
   "devDependencies": {
+    "blake-hash": "^2.0.0",
     "chai": "^4.3.4",
-    "eslint": "^6.8.0",
-    "ganache-cli": "^6.12.1",
-    "mocha": "^7.1.1",
-    "web3": "^1.3.0"
+    "circom_tester": "0.0.5",
+    "circomlibjs": "^0.0.8",
+    "mocha": "^9.1.2"
   }
 }

@@ -1,10 +1,11 @@
 const chai = require("chai");
 const path = require("path");
-const tester = require("circom").tester;
+const wasm_tester = require("circom_tester").wasm;
+const tester = wasm_tester
 
-const poseidon = require("../src/poseidon.js");
 const poseidonPerm = require("../src/poseidonPerm.js");
 const poseidonCipher = require("../src/poseidonCipher.js");
+const poseidon = require("circomlibjs").poseidon;
 
 const assert = chai.assert;
 
@@ -15,7 +16,7 @@ describe("Poseidon Circuit test", function () {
     let perm6Circuit;
     let decrypt4Circuit;
 
-    this.timeout(100000);
+    this.timeout(1000000);
 
     before( async () => {
         circuit3 = await tester(path.join(__dirname, "circuits", "poseidon3_test.circom"));

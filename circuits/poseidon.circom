@@ -1,3 +1,5 @@
+pragma circom 2.0.0;
+
 include "./poseidon_constants.circom";
 include "./comparators.circom";
 
@@ -112,7 +114,7 @@ template PoseidonDecrypt(l) {
     }
     // e.g. if l == 4, decryptedLength == 6
 
-    signal private input ciphertext[decryptedLength + 1];
+    signal input ciphertext[decryptedLength + 1];
     signal input nonce;
     signal input key[2];
     signal output decrypted[decryptedLength];
@@ -155,7 +157,7 @@ template PoseidonDecryptWithoutCheck(l) {
     }
     // e.g. if l == 4, decryptedLength == 6
 
-    signal private input ciphertext[decryptedLength + 1];
+    signal input ciphertext[decryptedLength + 1];
     signal input nonce;
     signal input key[2];
     signal output decrypted[decryptedLength];
@@ -180,7 +182,7 @@ template PoseidonDecryptIterations(l) {
     }
     // e.g. if l == 4, decryptedLength == 6
 
-    signal private input ciphertext[decryptedLength + 1];
+    signal input ciphertext[decryptedLength + 1];
     signal input nonce;
     signal input key[2];
     signal output decrypted[decryptedLength];

@@ -16,10 +16,11 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
+pragma circom 2.0.0;
 
 include "constants.circom";
 include "sha256compression.circom";
-include "../bitify.circom"
+include "../bitify.circom";
 
 template Sha256_2() {
     signal input a;

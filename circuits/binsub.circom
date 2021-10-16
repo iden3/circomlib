@@ -38,6 +38,7 @@ Main Constraint:
     aux * (aux-1) == 0
 
 */
+pragma circom 2.0.0;
 
 template BinSub(n) {
     signal input in[2][n];

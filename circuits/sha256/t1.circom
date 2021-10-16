@@ -16,6 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
+pragma circom 2.0.0;
 
 include "../binsum.circom";
 include "sigma.circom";
@@ -32,7 +33,7 @@ template T1() {
 
     var ki;
 
-    component ch = Ch(32);
+    component ch = Ch_t(32);
     component bigsigma1 = BigSigma(6, 11, 25);
 
     for (ki=0; ki<32; ki++) {

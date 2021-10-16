@@ -2,12 +2,12 @@ const chai = require("chai");
 const path = require("path");
 
 const createBlakeHash = require("blake-hash");
-const eddsa = require("../src/eddsa.js");
-const F = require("../src/babyjub.js").F;
+const eddsa = require("circomlibjs").eddsa;
+const F = require("circomlibjs").babyjub.F;
 
 const assert = chai.assert;
 
-const tester = require("circom").tester;
+const wasm_tester = require("circom_tester").wasm;
 const utils = require("ffjavascript").utils;
 const Scalar = require("ffjavascript").Scalar;
 
@@ -19,11 +19,11 @@ describe("Baby Jub test", function () {
     this.timeout(100000);
 
     before( async() => {
-        circuitAdd = await tester(path.join(__dirname, "circuits", "babyadd_tester.circom"));
+        circuitAdd = await wasm_tester(path.join(__dirname, "circuits", "babyadd_tester.circom"));
 
-        circuitTest = await tester(path.join(__dirname, "circuits", "babycheck_test.circom"));
+        circuitTest = await wasm_tester(path.join(__dirname, "circuits", "babycheck_test.circom"));
 
-        circuitPbk = await tester(path.join(__dirname, "circuits", "babypbk_test.circom"));
+        circuitPbk = await wasm_tester(path.join(__dirname, "circuits", "babypbk_test.circom"));
     });
 
     it("Should add point (0,1) and (0,1)", async () => {
@@ -87,7 +87,7 @@ describe("Baby Jub test", function () {
             await circuitTest.calculateWitness({x: 1, y: 0}, true);
             assert(false, "Should be a valid point");
         } catch(err) {
-            assert(/Constraint\sdoesn't\smatch(.*)168700\s!=\s1/.test(err.message) );
+            assert(err.message.includes("Assert Failed"));
         }
     });
 

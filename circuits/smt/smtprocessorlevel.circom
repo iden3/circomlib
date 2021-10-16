@@ -38,6 +38,7 @@ upd          old1leaf                    new1leaf
 H' is the Hash function with the inputs shifted acordingly.
 
 *****/
+pragma circom 2.0.0;
 
 
 template SMTProcessorLevel() {

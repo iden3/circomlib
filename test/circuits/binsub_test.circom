@@ -1,8 +1,10 @@
-include "../../circuits/bitify.circom"
-include "../../circuits/binsub.circom"
+pragma circom 2.0.0;
+
+include "../../circuits/bitify.circom";
+include "../../circuits/binsub.circom";
 
 template A() {
-    signal private input a;
+    signal input a; //private
     signal input b;
     signal output out;
 

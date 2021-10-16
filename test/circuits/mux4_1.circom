@@ -1,3 +1,5 @@
+pragma circom 2.0.0;
+
 include "../../circuits/mux4.circom";
 include "../../circuits/bitify.circom";
 
@@ -33,7 +35,7 @@ template Constants() {
 
 template Main() {
     var i;
-    signal private input selector;
+    signal input selector;//private
     signal output out;
 
     component mux = Mux4();

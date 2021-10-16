@@ -16,6 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
+pragma circom 2.0.0;
 
 template XOR() {
     signal input a;
@@ -67,21 +68,23 @@ template NOR() {
 template MultiAND(n) {
     signal input in[n];
     signal output out;
-    var i;
+    component and1;
+    component and2;
+    component ands[2];
     if (n==1) {
         out <== in[0];
     } else if (n==2) {
-        component and1 = AND();
+        and1 = AND();
         and1.a <== in[0];
         and1.b <== in[1];
         out <== and1.out;
     } else {
-        component and2 = AND();
-        component ands[2];
+        and2 = AND();
         var n1 = n\2;
         var n2 = n-n\2;
         ands[0] = MultiAND(n1);
         ands[1] = MultiAND(n2);
+        var i;
         for (i=0; i<n1; i++) ands[0].in[i] <== in[i];
         for (i=0; i<n2; i++) ands[1].in[i] <== in[n1+i];
         and2.a <== ands[0].out;

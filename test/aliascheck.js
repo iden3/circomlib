@@ -9,7 +9,7 @@ const utils = require("ffjavascript").utils;
 const q = Scalar.fromString("21888242871839275222246405745257275088548364400416034343698204186575808495617");
 const F = new F1Field(q);
 
-const tester = require("circom").tester;
+const wasm_tester = require("circom_tester").wasm;
 
 function print(circuit, w, s) {
     console.log(s + ": " + w[circuit.getSignalIdx(s)]);
@@ -34,7 +34,7 @@ describe("Aliascheck test", function () {
     let cir;
     before( async() => {
 
-        cir = await tester(path.join(__dirname, "circuits", "aliascheck_test.circom"));
+        cir = await wasm_tester(path.join(__dirname, "circuits", "aliascheck_test.circom"));
     });
 
     it("Satisfy the aliastest 0", async () => {
@@ -59,7 +59,7 @@ describe("Aliascheck test", function () {
             await cir.calculateWitness({in: inp}, true);
             assert(false);
         } catch(err) {
-            assert(/Constraint\sdoesn't\smatch(.*)1\s!=\s0/.test(err.message) );
+            assert(err.message.includes("Assert Failed"));
         }
     });
 
@@ -70,7 +70,7 @@ describe("Aliascheck test", function () {
             await cir.calculateWitness({in: inp}, true);
             assert(false);
         } catch(err) {
-            assert(/Constraint\sdoesn't\smatch(.*)1\s!=\s0/.test(err.message) );
+            assert(err.message.includes("Assert Failed"));
         }
     });
 

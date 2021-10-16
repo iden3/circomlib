@@ -1,3 +1,4 @@
-include "../../circuits/poseidon.circom"
+pragma circom 2.0.0;
+include "../../circuits/poseidon.circom";
 
-component main = PoseidonDecrypt(4);
+component main {public [ciphertext]} = PoseidonDecrypt(4);

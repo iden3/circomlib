@@ -1,4 +1,6 @@
-include "../../circuits/sha256/constants.circom"
+pragma circom 2.0.0;
+
+include "../../circuits/sha256/constants.circom";
 
 template A() {
     signal input in;
@@ -15,4 +17,4 @@ template A() {
     lc === in;
 }
 
-component main = A();
+component main {public [in]} = A();

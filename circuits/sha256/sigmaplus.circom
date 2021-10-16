@@ -16,9 +16,10 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
+pragma circom 2.0.0;
 
-include "../binsum.circom"
-include "sigma.circom"
+include "../binsum.circom";
+include "sigma.circom";
 
 template SigmaPlus() {
     signal input in2[32];

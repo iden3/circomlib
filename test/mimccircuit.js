@@ -1,8 +1,8 @@
 const chai = require("chai");
 const path = require("path");
-const tester = require("circom").tester;
+const wasm_tester = require("circom_tester").wasm;
 
-const mimcjs = require("../src/mimc7.js");
+const mimcjs = require("circomlibjs").mimc7;
 
 describe("MiMC Circuit test", function () {
     let circuit;
@@ -10,7 +10,7 @@ describe("MiMC Circuit test", function () {
     this.timeout(100000);
 
     before( async () => {
-        circuit = await tester(path.join(__dirname, "circuits", "mimc_test.circom"));
+        circuit = await wasm_tester(path.join(__dirname, "circuits", "mimc_test.circom"));
     });
 
     it("Should check constrain", async () => {

@@ -60,6 +60,8 @@ function log2(a) {
 }
 */
 
+pragma circom 2.0.0;
+
 template EscalarProduct(w) {
     signal input in1[w];
     signal input in2[w];

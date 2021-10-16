@@ -33,8 +33,9 @@ out = a&b ^ (!a)&c =>
 out = a*(b-c) + c
 
 */
+pragma circom 2.0.0;
 
-template Ch(n) {
+template Ch_t(n) {
     signal input a[n];
     signal input b[n];
     signal input c[n];

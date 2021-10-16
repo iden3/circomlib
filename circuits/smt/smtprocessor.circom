@@ -127,6 +127,7 @@ fnc[0]  fnc[1]
 
 
 ***************************************************************************************************/
+pragma circom 2.0.0;
 
 include "../gates.circom";
 include "../bitify.circom";
@@ -152,7 +153,7 @@ template SMTProcessor(nLevels) {
 
     var i;
 
-    enabled <== fnc[0] + fnc[1] - fnc[0]*fnc[1]
+    enabled <== fnc[0] + fnc[1] - fnc[0]*fnc[1];
 
     component hash1Old = SMTHash1();
     hash1Old.key <== oldKey;
