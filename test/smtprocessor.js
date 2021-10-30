@@ -3,10 +3,8 @@ const path = require("path");
 const wasm_tester = require("circom_tester").wasm;
 const F1Field = require("ffjavascript").F1Field;
 const Scalar = require("ffjavascript").Scalar;
-exports.p = Scalar.fromString("21888242871839275222246405745257275088548364400416034343698204186575808495617");
-const Fr = new F1Field(exports.p);
 
-const smt = require("circomlibjs").smt;
+const newMemEmptyTrie = require("circomlibjs").newMemEmptyTrie;
 
 const assert = chai.assert;
 
@@ -14,83 +12,96 @@ function print(circuit, w, s) {
     console.log(s + ": " + w[circuit.getSignalIdx(s)]);
 }
 
-async function testInsert(tree, key, value, circuit ) {
+async function testInsert(tree, _key, _value, circuit ) {
+    const key = tree.F.e(_key);
+    const value = tree.F.e(_value)
 
     const res = await tree.insert(key,value);
     let siblings = res.siblings;
-    while (siblings.length<10) siblings.push(Fr.e(0));
+    for (let i=0; i<siblings.length; i++) siblings[i] = tree.F.toObject(siblings[i]);
+    while (siblings.length<10) siblings.push(0);
 
     const w = await circuit.calculateWitness({
         fnc: [1,0],
-        oldRoot: res.oldRoot,
+        oldRoot: tree.F.toObject(res.oldRoot),
         siblings: siblings,
-        oldKey: res.isOld0 ? 0 : res.oldKey,
-        oldValue: res.isOld0 ? 0 : res.oldValue,
+        oldKey: res.isOld0 ? 0 : tree.F.toObject(res.oldKey),
+        oldValue: res.isOld0 ? 0 : tree.F.toObject(res.oldValue),
         isOld0: res.isOld0 ? 1 : 0,
-        newKey: key,
-        newValue: value
+        newKey: tree.F.toObject(key),
+        newValue: tree.F.toObject(value)
     }, true);
 
     await circuit.checkConstraints(w);
 
-    await circuit.assertOut(w, {newRoot: res.newRoot});
+    await circuit.assertOut(w, {newRoot: tree.F.toObject(res.newRoot)});
 
 }
 
-async function testDelete(tree, key, circuit) {
+async function testDelete(tree, _key, circuit) {
+    const key = tree.F.e(_key);
     const res = await tree.delete(key);
     let siblings = res.siblings;
-    while (siblings.length<10) siblings.push(Fr.e(0));
+    for (let i=0; i<siblings.length; i++) siblings[i] = tree.F.toObject(siblings[i]);
+    while (siblings.length<10) siblings.push(0);
 
     const w = await circuit.calculateWitness({
         fnc: [1,1],
-        oldRoot: res.oldRoot,
+        oldRoot: tree.F.toObject(res.oldRoot),
         siblings: siblings,
-        oldKey: res.isOld0 ? 0 : res.oldKey,
-        oldValue: res.isOld0 ? 0 : res.oldValue,
+        oldKey: res.isOld0 ? 0 : tree.F.toObject(res.oldKey),
+        oldValue: res.isOld0 ? 0 : tree.F.toObject(res.oldValue),
         isOld0: res.isOld0 ? 1 : 0,
-        newKey: res.delKey,
-        newValue: res.delValue
+        newKey: tree.F.toObject(res.delKey),
+        newValue: tree.F.toObject(res.delValue)
     }, true);
 
     await circuit.checkConstraints(w);
 
-    await circuit.assertOut(w, {newRoot: res.newRoot});
+    await circuit.assertOut(w, {newRoot: tree.F.toObject(res.newRoot)});
 }
 
-async function testUpdate(tree, key, newValue, circuit) {
+async function testUpdate(tree, _key, _newValue, circuit) {
+    const key = tree.F.e(_key);
+    const newValue = tree.F.e(_newValue);
     const res = await tree.update(key, newValue);
     let siblings = res.siblings;
-    while (siblings.length<10) siblings.push(Fr.e(0));
+    for (let i=0; i<siblings.length; i++) siblings[i] = tree.F.toObject(siblings[i]);
+    while (siblings.length<10) siblings.push(0);
 
     const w = await circuit.calculateWitness({
         fnc: [0,1],
-        oldRoot: res.oldRoot,
+        oldRoot: tree.F.toObject(res.oldRoot),
         siblings: siblings,
-        oldKey: res.oldKey,
-        oldValue: res.oldValue,
+        oldKey: tree.F.toObject(res.oldKey),
+        oldValue: tree.F.toObject(res.oldValue),
         isOld0: 0,
-        newKey: res.newKey,
-        newValue: res.newValue
+        newKey: tree.F.toObject(res.newKey),
+        newValue: tree.F.toObject(res.newValue)
     });
 
     await circuit.checkConstraints(w);
 
-    await circuit.assertOut(w, {newRoot: res.newRoot});
+    await circuit.assertOut(w, {newRoot: tree.F.toObject(res.newRoot)});
 }
 
 
 describe("SMT Processor test", function () {
     let circuit;
     let tree;
+    let Fr;
 
-    this.timeout(10000000);
+    this.timeout(1000000000);
 
     before( async () => {
         circuit = await wasm_tester(path.join(__dirname, "circuits", "smtprocessor10_test.circom"));
         await circuit.loadSymbols();
 
-        tree = await smt.newMemEmptyTrie();
+        tree = await newMemEmptyTrie();
+        Fr = tree.F;
+    });
+    after(async () => {
+        globalThis.curve_bn128.terminate();
     });
 
     it("Should verify an insert to an empty tree", async () => {
@@ -115,12 +126,12 @@ describe("SMT Processor test", function () {
     it("Should test convination of adding and removing 3 elements", async () => {
         const keys = [Fr.e(8), Fr.e(9), Fr.e(32)];
         const values = [Fr.e(88), Fr.e(99), Fr.e(3232)];
-        const tree1 = await smt.newMemEmptyTrie();
-        const tree2 = await smt.newMemEmptyTrie();
-        const tree3 = await smt.newMemEmptyTrie();
-        const tree4 = await smt.newMemEmptyTrie();
-        const tree5 = await smt.newMemEmptyTrie();
-        const tree6 = await smt.newMemEmptyTrie();
+        const tree1 = await newMemEmptyTrie();
+        const tree2 = await newMemEmptyTrie();
+        const tree3 = await newMemEmptyTrie();
+        const tree4 = await newMemEmptyTrie();
+        const tree5 = await newMemEmptyTrie();
+        const tree6 = await newMemEmptyTrie();
 
         await testInsert(tree1,keys[0],values[0], circuit);
         await testInsert(tree1,keys[1],values[1], circuit);
@@ -173,7 +184,7 @@ describe("SMT Processor test", function () {
 
     it("Should match a NOp with random vals", async () => {
         let siblings = [];
-        while (siblings.length<10) siblings.push(Fr.e(88));
+        while (siblings.length<10) siblings.push(88);
         const w = await circuit.calculateWitness({
             fnc: [0,0],
             oldRoot: 11,
@@ -185,16 +196,16 @@ describe("SMT Processor test", function () {
             newValue: 77
         });
 
-        const root1 = w[circuit.symbols["main.oldRoot"].varIdx];
-        const root2 = w[circuit.symbols["main.newRoot"].varIdx];
+        const root1 = Fr.e(w[circuit.symbols["main.oldRoot"].varIdx]);
+        const root2 = Fr.e(w[circuit.symbols["main.newRoot"].varIdx]);
 
         await circuit.checkConstraints(w);
 
         assert(Fr.eq(root1, root2));
     });
     it("Should update an element", async () => {
-        const tree1 = await smt.newMemEmptyTrie();
-        const tree2 = await smt.newMemEmptyTrie();
+        const tree1 = await newMemEmptyTrie();
+        const tree2 = await newMemEmptyTrie();
 
         await testInsert(tree1,8,88, circuit);
         await testInsert(tree1,9,99, circuit);

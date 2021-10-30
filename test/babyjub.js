@@ -2,8 +2,7 @@ const chai = require("chai");
 const path = require("path");
 
 const createBlakeHash = require("blake-hash");
-const eddsa = require("circomlibjs").eddsa;
-const F = require("circomlibjs").babyjub.F;
+const buildEddsa = require("circomlibjs").buildEddsa;
 
 const assert = chai.assert;
 
@@ -12,6 +11,8 @@ const utils = require("ffjavascript").utils;
 const Scalar = require("ffjavascript").Scalar;
 
 describe("Baby Jub test", function () {
+    let eddsa;
+    let F;
     let circuitAdd;
     let circuitTest;
     let circuitPbk;
@@ -19,41 +20,48 @@ describe("Baby Jub test", function () {
     this.timeout(100000);
 
     before( async() => {
+
+        eddsa = await buildEddsa();
+        F = eddsa.F;
+
         circuitAdd = await wasm_tester(path.join(__dirname, "circuits", "babyadd_tester.circom"));
 
         circuitTest = await wasm_tester(path.join(__dirname, "circuits", "babycheck_test.circom"));
 
         circuitPbk = await wasm_tester(path.join(__dirname, "circuits", "babypbk_test.circom"));
     });
+    after(async () => {
+        globalThis.curve_bn128.terminate();
+    });
 
     it("Should add point (0,1) and (0,1)", async () => {
 
         const input={
-            x1: F.e(0),
-            y1: F.e(1),
-            x2: F.e(0),
-            y2: F.e(1)
+            x1: 0,
+            y1: 1,
+            x2: 0,
+            y2: 1
         };
 
         const w = await circuitAdd.calculateWitness(input, true);
 
-        await circuitAdd.assertOut(w, {xout: F.e(0), yout: F.e(1)});
+        await circuitAdd.assertOut(w, {xout: 0, yout: 1});
     });
 
     it("Should add 2 same numbers", async () => {
 
         const input={
-            x1: F.e("17777552123799933955779906779655732241715742912184938656739573121738514868268"),
-            y1: F.e("2626589144620713026669568689430873010625803728049924121243784502389097019475"),
-            x2: F.e("17777552123799933955779906779655732241715742912184938656739573121738514868268"),
-            y2: F.e("2626589144620713026669568689430873010625803728049924121243784502389097019475")
+            x1: 17777552123799933955779906779655732241715742912184938656739573121738514868268n,
+            y1: 2626589144620713026669568689430873010625803728049924121243784502389097019475n,
+            x2: 17777552123799933955779906779655732241715742912184938656739573121738514868268n,
+            y2: 2626589144620713026669568689430873010625803728049924121243784502389097019475n
         };
 
         const w = await circuitAdd.calculateWitness(input, true);
 
         await circuitAdd.assertOut(w, {
-            xout: F.e("6890855772600357754907169075114257697580319025794532037257385534741338397365"),
-            yout: F.e("4338620300185947561074059802482547481416142213883829469920100239455078257889")
+            xout: 6890855772600357754907169075114257697580319025794532037257385534741338397365n,
+            yout: 4338620300185947561074059802482547481416142213883829469920100239455078257889n
         });
 
     });
@@ -61,17 +69,17 @@ describe("Baby Jub test", function () {
     it("Should add 2 different numbers", async () => {
 
         const input={
-            x1: F.e("17777552123799933955779906779655732241715742912184938656739573121738514868268"),
-            y1: F.e("2626589144620713026669568689430873010625803728049924121243784502389097019475"),
-            x2: F.e("16540640123574156134436876038791482806971768689494387082833631921987005038935"),
-            y2: F.e("20819045374670962167435360035096875258406992893633759881276124905556507972311")
+            x1: 17777552123799933955779906779655732241715742912184938656739573121738514868268n,
+            y1: 2626589144620713026669568689430873010625803728049924121243784502389097019475n,
+            x2: 16540640123574156134436876038791482806971768689494387082833631921987005038935n,
+            y2: 20819045374670962167435360035096875258406992893633759881276124905556507972311n
         };
 
         const w = await circuitAdd.calculateWitness(input, true);
 
         await circuitAdd.assertOut(w, {
-            xout: F.e("7916061937171219682591368294088513039687205273691143098332585753343424131937"),
-            yout: F.e("14035240266687799601661095864649209771790948434046947201833777492504781204499")
+            xout: 7916061937171219682591368294088513039687205273691143098332585753343424131937n,
+            yout: 14035240266687799601661095864649209771790948434046947201833777492504781204499n
         });
 
     });
@@ -105,7 +113,7 @@ describe("Baby Jub test", function () {
 
         const w = await circuitPbk.calculateWitness(input, true);
 
-        await circuitPbk.assertOut(w, {Ax : A[0], Ay: A[1]});
+        await circuitPbk.assertOut(w, {Ax : F.toObject(A[0]), Ay: F.toObject(A[1])});
 
         await circuitPbk.checkConstraints(w);
     });

@@ -1,12 +1,9 @@
 const chai = require("chai");
 const path = require("path");
 const wasm_tester = require("circom_tester").wasm;
-const babyJub = require("circomlibjs").babyjub;
+const buildBabyjub = require("circomlibjs").buildBabyjub;
 
-const F1Field = require("ffjavascript").F1Field;
 const Scalar = require("ffjavascript").Scalar;
-exports.p = Scalar.fromString("21888242871839275222246405745257275088548364400416034343698204186575808495617");
-const Fr = new F1Field(exports.p);
 
 const assert = chai.assert;
 
@@ -15,7 +12,17 @@ function print(circuit, w, s) {
 }
 
 describe("Exponentioation test", function () {
+    let babyJub;
+    let Fr;
     this.timeout(100000);
+
+    before( async () => {
+        babyJub = await buildBabyjub();
+        Fr = babyJub.F;
+    });
+    after(async () => {
+        globalThis.curve_bn128.terminate();
+    });
 
     it("Should generate the Exponentiation table in k=0", async () => {
 
@@ -36,7 +43,7 @@ describe("Exponentioation test", function () {
 
         for (let i=0; i<16; i++) {
 
-            expectedOut.push(dbl);
+            expectedOut.push([Fr.toObject(dbl[0]), Fr.toObject(dbl[1])]);
             dbl = babyJub.addPoint(dbl,g);
         }
 
@@ -66,7 +73,7 @@ describe("Exponentioation test", function () {
         const expectedOut = [];
 
         for (let i=0; i<16; i++) {
-            expectedOut.push(dbl);
+            expectedOut.push([Fr.toObject(dbl[0]), Fr.toObject(dbl[1])]);
 
             dbl = babyJub.addPoint(dbl,g);
         }
@@ -94,9 +101,9 @@ describe("Exponentioation test", function () {
             c = babyJub.addPoint(c,g);
         }
 
-        await circuit.assertOut(w, {out: c});
+        await circuit.assertOut(w, {out: [Fr.toObject(c[0]), Fr.toObject(c[1])] });
 
-        const w2 = await circuit.calculateWitness({"in": Fr.add(Fr.shl(Fr.e(1), Fr.e(252)),Fr.one)});
+        const w2 = await circuit.calculateWitness({"in": Scalar.add(Scalar.shl(Scalar.e(1), 252),Scalar.e(1))});
 
         c = [g[0], g[1]];
         for (let i=0; i<252;i++) {
@@ -104,7 +111,7 @@ describe("Exponentioation test", function () {
         }
         c = babyJub.addPoint(c,g);
 
-        await circuit.assertOut(w2, {out: c});
+        await circuit.assertOut(w2, {out: [Fr.toObject(c[0]), Fr.toObject(c[1])] });
 
     }).timeout(10000000);
 

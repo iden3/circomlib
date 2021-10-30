@@ -1,11 +1,8 @@
 const chai = require("chai");
 const path = require("path");
 const wasm_tester = require("circom_tester").wasm;
-const babyjub = require("circomlibjs").babyjub;
-const F1Field = require("ffjavascript").F1Field;
+const buildBabyjub = require("circomlibjs").buildBabyjub;
 const Scalar = require("ffjavascript").Scalar;
-exports.p = Scalar.fromString("21888242871839275222246405745257275088548364400416034343698204186575808495617");
-const Fr = new F1Field(exports.p);
 
 const assert = chai.assert;
 
@@ -14,12 +11,20 @@ function print(circuit, w, s) {
 }
 
 describe("Escalarmul test", function () {
+    let babyJub;
+    let Fr;
     let circuit;
 
     this.timeout(100000);
 
+
     before( async() => {
+        babyJub = await buildBabyjub();
+        Fr = babyJub.F;
         circuit = await wasm_tester(path.join(__dirname, "circuits", "escalarmulfix_test.circom"));
+    });
+    after(async () => {
+        globalThis.curve_bn128.terminate();
     });
 
     it("Should generate Same escalar mul", async () => {
@@ -38,13 +43,13 @@ describe("Escalarmul test", function () {
 
         await circuit.checkConstraints(w);
 
-        await circuit.assertOut(w, {out: babyjub.Base8});
+        await circuit.assertOut(w, {out: [Fr.toObject(babyJub.Base8[0]), Fr.toObject(babyJub.Base8[1])]});
 
     });
 
     it("Should generate scalar mul of a specific constant", async () => {
 
-        const s = Fr.e("2351960337287830298912035165133676222414898052661454064215017316447594616519");
+        const s = Scalar.e("2351960337287830298912035165133676222414898052661454064215017316447594616519");
         const base8 = [
             Fr.e("5299619240641551281634865583518297030282874472190772894086521144482721001553"),
             Fr.e("16950150798460657717958625567821834550301663161624707787222815936182638968203")
@@ -54,9 +59,9 @@ describe("Escalarmul test", function () {
 
         await circuit.checkConstraints(w);
 
-        const expectedRes = babyjub.mulPointEscalar(base8, s);
+        const expectedRes = babyJub.mulPointEscalar(base8, s);
 
-        await circuit.assertOut(w, {out: expectedRes});
+        await circuit.assertOut(w, {out: [Fr.toObject(expectedRes[0]), Fr.toObject(expectedRes[1])]});
 
     });
 
@@ -68,21 +73,21 @@ describe("Escalarmul test", function () {
         ];
 
         for (let i=0; i<50; i++) {
-            const s = Fr.e(i);
+            const s = Scalar.e(i);
 
             const w = await circuit.calculateWitness({"e": s}, true);
 
             await circuit.checkConstraints(w);
 
-            const expectedRes = babyjub.mulPointEscalar(base8, s);
+            const expectedRes = babyJub.mulPointEscalar(base8, s);
 
-            await circuit.assertOut(w, {out: expectedRes});
+            await circuit.assertOut(w, {out: [Fr.toObject(expectedRes[0]), Fr.toObject(expectedRes[1])]});
         }
     });
 
     it("If multiply by order should return 0", async () => {
 
-        const w = await circuit.calculateWitness({"e": babyjub.subOrder }, true);
+        const w = await circuit.calculateWitness({"e": babyJub.subOrder }, true);
 
         await circuit.checkConstraints(w);
 

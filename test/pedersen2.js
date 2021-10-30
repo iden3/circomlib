@@ -1,22 +1,28 @@
 const path = require("path");
 
-const F1Field = require("ffjavascript").F1Field;
 const Scalar = require("ffjavascript").Scalar;
-exports.p = Scalar.fromString("21888242871839275222246405745257275088548364400416034343698204186575808495617");
-const Fr = new F1Field(exports.p);
+
+const buildPedersenHash = require("circomlibjs").buildPedersenHash;
+const buildBabyJub = require("circomlibjs").buildBabyjub;
 
 const wasm_tester = require("circom_tester").wasm;
 
-const babyJub = require("circomlibjs").babyjub;
-const pedersen = require("circomlibjs").pedersenHash;
-
 
 describe("Pedersen test", function() {
+    let babyJub
+    let pedersen;
+    let F;
     let circuit;
     this.timeout(100000);
     before( async() => {
 
+        babyJub = await buildBabyJub();
+        F = babyJub.F;
+        pedersen = await buildPedersenHash();
         circuit = await wasm_tester(path.join(__dirname, "circuits", "pedersen2_test.circom"));
+    });
+    after(async () => {
+        globalThis.curve_bn128.terminate();
     });
     it("Should pedersen at zero", async () => {
 
@@ -29,16 +35,16 @@ describe("Pedersen test", function() {
         const h = pedersen.hash(b);
         const hP = babyJub.unpackPoint(h);
 
-        await circuit.assertOut(w, {out: hP});
+        await circuit.assertOut(w, {out: [F.toObject(hP[0]), F.toObject(hP[1])] });
 
     });
     it("Should pedersen with 253 ones", async () => {
 
         let w;
 
-        const n = Fr.sub(Fr.shl(Fr.one, Fr.e(253)), Fr.one);
+        const n = F.e(Scalar.sub(Scalar.shl(Scalar.e(1), 253), Scalar.e(1)));
 
-        w = await circuit.calculateWitness({ in: n}, true);
+        w = await circuit.calculateWitness({ in: F.toObject(n)}, true);
 
         const b = Buffer.alloc(32);
         for (let i=0; i<31; i++) b[i] = 0xFF;
@@ -47,7 +53,7 @@ describe("Pedersen test", function() {
         const h = pedersen.hash(b);
         const hP = babyJub.unpackPoint(h);
 
-        await circuit.assertOut(w, {out: hP});
+        await circuit.assertOut(w, {out: [F.toObject(hP[0]), F.toObject(hP[1])] });
 
     });
 });
