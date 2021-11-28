@@ -3,7 +3,7 @@
 ## Description
 
 - This folder contains circuit templates for standard operations and many cryptographic primitives.
-- Below you can find specifications of each function. In the representation of elements, there are three tyes:
+- Below you can find specifications of each function. In the representation of elements, there are three types:
     - Binary
     - String
     - Field element (the field is specified in each case. We consider 2 possible fields: Fp and Fr, where p... and r... .)
@@ -15,7 +15,7 @@
 ## Jordi
 
 * compconstant - Returns 1 if `in` (expanded to binary array) > `ct`
-* aliascheck - check if `in` (expanded to binary array) oveflowed its 254 bits (<= -1)
+* aliascheck - check if `in` (expanded to binary array) overflowed its 254 bits (<= -1)
 * babyjub - twisted Edwards curve 168700.x^2 + y^2 = 1 + 168696.x^2.y^2
   * BabyAdd - (`xout`,`yout`) = (`x1`,`y1`) + (`x2`,`y2`)
   * BabyDbl - (`xout`,`yout`) = 2*(`x`,`y`)
@@ -129,7 +129,7 @@ Arithmetic on [Baby Jubjub elliptic curve](https://github.com/barryWhiteHat/baby
 
 - `BinSub(n)`
 
-    - DESCRIPTION: binary substraction.
+    - DESCRIPTION: binary subtraction.
     - SCHEMA
     - INPUT
     - OUTPUT
