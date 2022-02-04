@@ -18,20 +18,21 @@
 */
 pragma circom 2.0.0;
 
+include "mux2.circom";
 include "mux3.circom";
 
-template MultiMux6(n) {
-    signal input c[n][64];  // Constants
-    signal input s[6];   // Selector
+template MultiMux5(n) {
+    signal input c[n][32];  // Constants
+    signal input s[5];   // Selector
     signal output out[n];
 
     component leafs[n][8];
     component root[n];
     for (var i=0; i<n; i++) {
-        // Make a tree (with depth 2) of Mux3 components, with 8 leaf node and one root node.
+        // Make a tree (with depth 2).  Leaf nodes are Mux3 components (with 4 leaf node) and one Mux2 root node.
 
         // Leaf components
-        for (var j=0; j<8; j++) {
+        for (var j=0; j<4; j++) {
             leafs[i][j] = Mux3();
 
             // Set the leaf component's constants
@@ -46,35 +47,34 @@ template MultiMux6(n) {
         }
 
         // Root component
-        root[i] = Mux3();
+        root[i] = Mux2();
 
         // Set the root component's constants (the output of it's child nodes).
-        for (var j=0; j<8; j++) {
+        for (var j=0; j<4; j++) {
             root[i].c[j] <== leafs[i][j].out;
         }
 
-        // Set the root component's selector (the most significant 3 bits of the selector);
+        // Set the root component's selector (the most significant 2 bits of the selector);
         root[i].s[0] <== s[3];
         root[i].s[1] <== s[4];
-        root[i].s[2] <== s[5];
 
         out[i] <== root[i].out;
     }
 }
 
-template Mux6() {
+template Mux5() {
     var i;
-    signal input c[64];  // Constants
-    signal input s[6];   // Selector
+    signal input c[32];  // Constants
+    signal input s[5];   // Selector
     signal output out;
 
-    component mux = MultiMux6(1);
+    component mux = MultiMux5(1);
 
-    for (i=0; i<64; i++) {
+    for (i=0; i<32; i++) {
         mux.c[0][i] <== c[i];
     }
 
-    for (i=0; i<6; i++) {
+    for (i=0; i<5; i++) {
       s[i] ==> mux.s[i];
     }
 

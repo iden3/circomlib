@@ -90,6 +90,55 @@ describe("Mux6 test", function() {
         }
     });
 
+    it("Should create a constant multiplexer 5", async () => {
+
+        const circuit = await wasm_tester(path.join(__dirname, "circuits", "mux5_1.circom"));
+
+        const ct32 = [
+            Fr.e("1230"),
+            Fr.e("4560"),
+            Fr.e("7890"),
+            Fr.e("0120"),
+            Fr.e("1110"),
+            Fr.e("2220"),
+            Fr.e("3330"),
+            Fr.e("45460"),
+            Fr.e("1345230"),
+            Fr.e("443560"),
+            Fr.e("156230"),
+            Fr.e("45660"),
+            Fr.e("12230"),
+            Fr.e("45460"),
+            Fr.e("42560"),
+            Fr.e("44560"),
+
+            Fr.e("1231"),
+            Fr.e("4561"),
+            Fr.e("7891"),
+            Fr.e("0121"),
+            Fr.e("1111"),
+            Fr.e("2221"),
+            Fr.e("3331"),
+            Fr.e("45461"),
+            Fr.e("1345231"),
+            Fr.e("443561"),
+            Fr.e("156231"),
+            Fr.e("45661"),
+            Fr.e("12231"),
+            Fr.e("45461"),
+            Fr.e("42561"),
+            Fr.e("44561")
+        ];
+
+        for (let i=0; i<32; i++) {
+            const w = await circuit.calculateWitness({ "selector": i }, true);
+
+            await circuit.checkConstraints(w);
+
+            await circuit.assertOut(w, {out: ct32[i]});
+        }
+    });
+
     it("Should create a constant multiplexer 4", async () => {
 
         const circuit = await wasm_tester(path.join(__dirname, "circuits", "mux4_1.circom"));
