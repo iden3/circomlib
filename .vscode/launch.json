@@ -24,6 +24,17 @@
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
             "cwd": "${workspaceFolder}",
             "args": ["test/smtverifier.js"]
+        },
+        {
+            "type": "pwa-node",
+            "request": "launch",
+            "name": "Test Poseidon",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "cwd": "${workspaceFolder}",
+            "args": ["test/poseidoncircuit.js"]
         }
     ]
 }

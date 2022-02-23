@@ -32,9 +32,35 @@ template Mix(t, M) {
     for (var i=0; i<t; i++) {
         lc = 0;
         for (var j=0; j<t; j++) {
-            lc += M[i][j]*in[j];
+            lc += M[j][i]*in[j];
         }
         out[i] <== lc;
+    }
+}
+
+template MixLast(t, M) {
+    signal input in[t];
+    signal output out;
+
+    var lc = 0;
+    for (var j=0; j<t; j++) {
+        lc += M[j][0]*in[j];
+    }
+    out <== lc;
+}
+
+template MixS(t, S, r) {
+    signal input in[t];
+    signal output out[t];
+
+    
+    var lc = 0;
+    for (var i=0; i<t; i++) {
+        lc += S[(t*2-1)*r+i]*in[i];
+    }
+    out[0] <== lc;
+    for (var i=1; i<t; i++) {
+        out[i] <== in[i] +  in[0] * S[(t*2-1)*r + t + i -1];
     }
 }
 
@@ -49,49 +75,119 @@ template Poseidon(nInputs) {
     var t = nInputs + 1;
     var nRoundsF = 8;
     var nRoundsP = N_ROUNDS_P[t - 2];
-    var C[t*(nRoundsF + nRoundsP)] = POSEIDON_C(t);
+    var C[t*nRoundsF + nRoundsP] = POSEIDON_C(t);
+    var S[  N_ROUNDS_P[t-2]  *  (t*2-1)  ]  = POSEIDON_S(t);
     var M[t][t] = POSEIDON_M(t);
+    var P[t][t] = POSEIDON_P(t);
 
-    component ark[nRoundsF + nRoundsP];
+    component ark[nRoundsF];
     component sigmaF[nRoundsF][t];
     component sigmaP[nRoundsP];
-    component mix[nRoundsF + nRoundsP];
+    component mix[nRoundsF-1];
+    component mixS[nRoundsP];
+    component mixLast;
 
-    var k;
 
-    for (var i=0; i<nRoundsF + nRoundsP; i++) {
-        ark[i] = Ark(t, C, t*i);
+    ark[0] = Ark(t, C, 0);
+    for (var j=0; j<t; j++) {
+        if (j>0) {
+            ark[0].in[j] <== inputs[j-1];
+        } else {
+            ark[0].in[j] <== 0;
+        }
+    }
+
+    for (var r = 0; r < nRoundsF\2-1; r++) {
         for (var j=0; j<t; j++) {
-            if (i==0) {
-                if (j>0) {
-                    ark[i].in[j] <== inputs[j-1];
-                } else {
-                    ark[i].in[j] <== 0;
-                }
+            sigmaF[r][j] = Sigma();
+            if(r==0) {
+                sigmaF[r][j].in <== ark[0].out[j];
             } else {
-                ark[i].in[j] <== mix[i-1].out[j];
+                sigmaF[r][j].in <== mix[r-1].out[j];
             }
         }
 
-        if (i < nRoundsF/2 || i >= nRoundsP + nRoundsF/2) {
-            k = i < nRoundsF/2 ? i : i - nRoundsP;
-            mix[i] = Mix(t, M);
-            for (var j=0; j<t; j++) {
-                sigmaF[k][j] = Sigma();
-                sigmaF[k][j].in <== ark[i].out[j];
-                mix[i].in[j] <== sigmaF[k][j].out;
-            }
+        ark[r+1] = Ark(t, C, (r+1)*t);
+        for (var j=0; j<t; j++) {
+            ark[r+1].in[j] <== sigmaF[r][j].out;
+        }
+
+        mix[r] = Mix(t,M);
+        for (var j=0; j<t; j++) {
+            mix[r].in[j] <== ark[r+1].out[j];
+        }
+
+    }
+
+    for (var j=0; j<t; j++) {
+        sigmaF[nRoundsF\2-1][j] = Sigma();
+        sigmaF[nRoundsF\2-1][j].in <== mix[nRoundsF\2-2].out[j];
+    }
+
+    ark[nRoundsF\2] = Ark(t, C, (nRoundsF\2)*t );
+    for (var j=0; j<t; j++) {
+        ark[nRoundsF\2].in[j] <== sigmaF[nRoundsF\2-1][j].out;
+    }
+
+    mix[nRoundsF\2-1] = Mix(t,P);
+    for (var j=0; j<t; j++) {
+        mix[nRoundsF\2-1].in[j] <== ark[nRoundsF\2].out[j];
+    }
+
+
+    for (var r = 0; r < nRoundsP; r++) {
+        sigmaP[r] = Sigma();
+        if (r==0) {
+            sigmaP[r].in <== mix[nRoundsF\2-1].out[0];
         } else {
-            k = i - nRoundsF/2;
-            mix[i] = Mix(t, M);
-            sigmaP[k] = Sigma();
-            sigmaP[k].in <== ark[i].out[0];
-            mix[i].in[0] <== sigmaP[k].out;
-            for (var j=1; j<t; j++) {
-                mix[i].in[j] <== ark[i].out[j];
+            sigmaP[r].in <== mixS[r-1].out[0];
+        }
+
+        mixS[r] = MixS(t, S, r);
+        for (var j=0; j<t; j++) {
+            if (j==0) {
+                mixS[r].in[j] <== sigmaP[r].out + C[(nRoundsF\2+1)*t + r];
+            } else {
+                if (r==0) {
+                    mixS[r].in[j] <== mix[nRoundsF\2-1].out[j];
+                } else {
+                    mixS[r].in[j] <== mixS[r-1].out[j];
+                }
             }
         }
     }
 
-    out <== mix[nRoundsF + nRoundsP -1].out[0];
+    for (var r = 0; r < nRoundsF\2-1; r++) {
+        for (var j=0; j<t; j++) {
+            sigmaF[nRoundsF\2 + r][j] = Sigma();
+            if (r==0) {
+                sigmaF[nRoundsF\2 + r][j].in <== mixS[nRoundsP-1].out[j];
+            } else {
+                sigmaF[nRoundsF\2 + r][j].in <== mix[nRoundsF\2+r-1].out[j];
+            }
+        }
+
+        ark[ nRoundsF\2 + r + 1] = Ark(t, C,  (nRoundsF\2+1)*t + nRoundsP + r*t );
+        for (var j=0; j<t; j++) {
+            ark[nRoundsF\2 + r + 1].in[j] <== sigmaF[nRoundsF\2 + r][j].out;
+        }
+
+        mix[nRoundsF\2 + r] = Mix(t,M);
+        for (var j=0; j<t; j++) {
+            mix[nRoundsF\2 + r].in[j] <== ark[nRoundsF\2 + r + 1].out[j];
+        }
+
+    }
+
+    for (var j=0; j<t; j++) {
+        sigmaF[nRoundsF-1][j] = Sigma();
+        sigmaF[nRoundsF-1][j].in <== mix[nRoundsF-2].out[j];
+    }
+
+    mixLast = MixLast(t,M);
+    for (var j=0; j<t; j++) {
+        mixLast.in[j] <== sigmaF[nRoundsF-1][j].out;
+    }
+
+    out <== mixLast.out;
 }
