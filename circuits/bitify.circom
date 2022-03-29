@@ -20,9 +20,10 @@ pragma circom 2.0.0;
 
 include "comparators.circom";
 include "aliascheck.circom";
-
+include "assert.circom";
 
 template Num2Bits(n) {
+    assert(n <= 253);
     signal input in;
     signal output out[n];
     var lc1=0;
@@ -41,18 +42,26 @@ template Num2Bits(n) {
 template Num2Bits_strict() {
     signal input in;
     signal output out[254];
+    var lc1=0;
+
+    var e2=1;
+    for (var i = 0; i<254; i++) {
+        out[i] <-- (in >> i) & 1;
+        out[i] * (out[i] -1 ) === 0;
+        lc1 += out[i] * e2;
+        e2 = e2+e2;
+    }
+
+    lc1 === in;
 
     component aliasCheck = AliasCheck();
-    component n2b = Num2Bits(254);
-    in ==> n2b.in;
-
     for (var i=0; i<254; i++) {
-        n2b.out[i] ==> out[i];
-        n2b.out[i] ==> aliasCheck.in[i];
+        out[i] ==> aliasCheck.in[i];
     }
 }
 
 template Bits2Num(n) {
+    assert(n <= 253);
     signal input in[n];
     signal output out;
     var lc1=0;
@@ -69,19 +78,24 @@ template Bits2Num(n) {
 template Bits2Num_strict() {
     signal input in[254];
     signal output out;
+    var lc1=0;
 
-    component aliasCheck = AliasCheck();
-    component b2n = Bits2Num(254);
-
-    for (var i=0; i<254; i++) {
-        in[i] ==> b2n.in[i];
-        in[i] ==> aliasCheck.in[i];
+    var e2 = 1;
+    for (var i = 0; i<254; i++) {
+        lc1 += in[i] * e2;
+        e2 = e2 + e2;
     }
 
-    b2n.out ==> out;
+    lc1 ==> out;
+
+    component aliasCheck = AliasCheck();
+    for (var i=0; i<254; i++) {
+        in[i] ==> aliasCheck.in[i];
+    }
 }
 
 template Num2BitsNeg(n) {
+    assert(n <= 253);
     signal input in;
     signal output out[n];
     var lc1=0;
