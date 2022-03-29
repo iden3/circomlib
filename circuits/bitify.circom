@@ -20,7 +20,6 @@ pragma circom 2.0.0;
 
 include "comparators.circom";
 include "aliascheck.circom";
-include "assert.circom";
 
 template Num2Bits(n) {
     assert(n <= 253);
