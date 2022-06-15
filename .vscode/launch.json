@@ -35,6 +35,29 @@
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
             "cwd": "${workspaceFolder}",
             "args": ["test/poseidoncircuit.js"]
+        },
+        {
+            "type": "pwa-node",
+            "request": "launch",
+            "name": "Test binsum",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "cwd": "${workspaceFolder}",
+            "args": ["test/binsum.js"]
+        },
+        {
+            "type": "pwa-node",
+            "request": "launch",
+            "name": "Test babyjub",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "cwd": "${workspaceFolder}",
+            "args": ["test/babyjub.js"]
         }
+
     ]
 }
