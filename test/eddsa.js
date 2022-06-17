@@ -43,9 +43,6 @@ describe("EdDSA test", function () {
         F = babyJub.F;
         circuit = await wasm_tester(path.join(__dirname, "circuits", "eddsa_test.circom"));
     });
-    after(async () => {
-        globalThis.curve_bn128.terminate();
-    });
 
 
     it("Sign a single 10 bytes from 0 to 9", async () => {

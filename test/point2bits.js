@@ -16,9 +16,6 @@ describe("Point 2 bits test", function() {
 
         circuit = await wasm_tester(path.join(__dirname, "circuits", "pointbits_loopback.circom"));
     });
-    after(async () => {
-        globalThis.curve_bn128.terminate();
-    });
 
     it("Should do the both convertions for 8Base", async () => {
         const w = await circuit.calculateWitness({ in: [F.toObject(babyJub.Base8[0]), F.toObject(babyJub.Base8[1])]}, true);

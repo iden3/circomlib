@@ -21,9 +21,6 @@ describe("Pedersen test", function() {
         pedersen = await buildPedersenHash();
         circuit = await wasm_tester(path.join(__dirname, "circuits", "pedersen2_test.circom"));
     });
-    after(async () => {
-        globalThis.curve_bn128.terminate();
-    });
     it("Should pedersen at zero", async () => {
 
         let w;

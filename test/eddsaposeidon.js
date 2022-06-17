@@ -21,9 +21,6 @@ describe("EdDSA Poseidon test", function () {
         F = babyJub.F;
         circuit = await wasm_tester(path.join(__dirname, "circuits", "eddsaposeidon_test.circom"));
     });
-    after(async () => {
-        globalThis.curve_bn128.terminate();
-    });
 
     it("Sign a single number", async () => {
         const msg = F.e(1234);

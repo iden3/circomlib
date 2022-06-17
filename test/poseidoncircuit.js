@@ -11,6 +11,7 @@ describe("Poseidon Circuit test", function () {
     let F;
     let circuit6;
     let circuit3;
+    let circuitEx;
 
     this.timeout(1000000);
 
@@ -19,9 +20,7 @@ describe("Poseidon Circuit test", function () {
         F = poseidon.F;
         circuit6 = await wasm_tester(path.join(__dirname, "circuits", "poseidon6_test.circom"));
         circuit3 = await wasm_tester(path.join(__dirname, "circuits", "poseidon3_test.circom"));
-    });
-    after(async () => {
-        globalThis.curve_bn128.terminate();
+        circuitEx = await wasm_tester(path.join(__dirname, "circuits", "poseidonex_test.circom"));
     });
 
     it("Should check constrain of hash([1, 2]) t=6", async () => {
@@ -64,4 +63,18 @@ describe("Poseidon Circuit test", function () {
         await circuit3.assertOut(w, {out : F.toObject(res2)});
         await circuit3.checkConstraints(w);
     });
+
+    it("Should check constrain of hash with state and 16 ins and outs", async () => {
+        const ins = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
+        const w = await circuitEx.calculateWitness({inputs: ins, initialState: 17});
+
+        const res2 = poseidon(ins, 17, 17);
+        const res2f = [];
+        for (let i=0; i<res2.length; i++) {
+            res2f[i] = F.toObject(res2[i]);
+        }
+        await circuitEx.assertOut(w, {out : res2f});
+        await circuitEx.checkConstraints(w);
+    });
+
 });

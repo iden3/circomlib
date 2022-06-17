@@ -23,9 +23,6 @@ describe("Escalarmul test", function () {
         Fr = babyJub.F;
         circuit = await wasm_tester(path.join(__dirname, "circuits", "escalarmulfix_test.circom"));
     });
-    after(async () => {
-        globalThis.curve_bn128.terminate();
-    });
 
     it("Should generate Same escalar mul", async () => {
 

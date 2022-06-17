@@ -100,9 +100,6 @@ describe("SMT Processor test", function () {
         tree = await newMemEmptyTrie();
         Fr = tree.F;
     });
-    after(async () => {
-        globalThis.curve_bn128.terminate();
-    });
 
     it("Should verify an insert to an empty tree", async () => {
         const key = Fr.e(111);

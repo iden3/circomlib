@@ -28,9 +28,6 @@ describe("Double Pedersen test", function() {
         circuit = await wasm_tester(path.join(__dirname, "circuits", "pedersen_test.circom"));
 
     });
-    after(async () => {
-        globalThis.curve_bn128.terminate();
-    });
 
     it("Should pedersen at zero", async () => {
 

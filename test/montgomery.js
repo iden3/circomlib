@@ -28,7 +28,7 @@ describe("Montgomery test", function () {
             Fr.e("5299619240641551281634865583518297030282874472190772894086521144482721001553"),
             Fr.e("16950150798460657717958625567821834550301663161624707787222815936182638968203")
         ];
-    
+
         circuitE2M = await wasm_tester(path.join(__dirname, "circuits", "edwards2montgomery.circom"));
         await circuitE2M.loadSymbols();
         circuitM2E = await wasm_tester(path.join(__dirname, "circuits", "montgomery2edwards.circom"));
@@ -37,9 +37,6 @@ describe("Montgomery test", function () {
         await circuitMAdd.loadSymbols();
         circuitMDouble = await wasm_tester(path.join(__dirname, "circuits", "montgomerydouble.circom"));
         await circuitMDouble.loadSymbols();
-    });
-    after(async () => {
-        globalThis.curve_bn128.terminate();
     });
 
     it("Convert Edwards to Montgomery and back again", async () => {

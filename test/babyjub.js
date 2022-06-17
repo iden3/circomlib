@@ -30,9 +30,6 @@ describe("Baby Jub test", function () {
 
         circuitPbk = await wasm_tester(path.join(__dirname, "circuits", "babypbk_test.circom"));
     });
-    after(async () => {
-        globalThis.curve_bn128.terminate();
-    });
 
     it("Should add point (0,1) and (0,1)", async () => {
 

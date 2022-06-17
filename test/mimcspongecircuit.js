@@ -15,9 +15,6 @@ describe("MiMC Sponge Circuit test", function () {
         mimcSponge = await buildMimcSponge();
         F = mimcSponge.F;
     });
-    after(async () => {
-        globalThis.curve_bn128.terminate();
-    });
 
 
     it("Should check permutation", async () => {

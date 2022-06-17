@@ -77,9 +77,6 @@ describe("SMT Verifier test", function () {
         await tree.insert(8,88);
         await tree.insert(32,3232);
     });
-    after(async () => {
-        globalThis.curve_bn128.terminate();
-    });
 
     it("Check inclussion in a tree of 3", async () => {
         await testInclusion(tree, 7, circuit);

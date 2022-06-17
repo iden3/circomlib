@@ -20,9 +20,6 @@ describe("Exponentioation test", function () {
         babyJub = await buildBabyjub();
         Fr = babyJub.F;
     });
-    after(async () => {
-        globalThis.curve_bn128.terminate();
-    });
 
     it("Should generate the Exponentiation table in k=0", async () => {
 

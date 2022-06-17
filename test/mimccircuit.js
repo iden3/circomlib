@@ -14,9 +14,6 @@ describe("MiMC Circuit test", function () {
         mimc7 = await buildMimc7();
         circuit = await wasm_tester(path.join(__dirname, "circuits", "mimc_test.circom"));
     });
-    after(async () => {
-        globalThis.curve_bn128.terminate();
-    });
 
     it("Should check constrain", async () => {
         const w = await circuit.calculateWitness({x_in: 1, k: 2}, true);
