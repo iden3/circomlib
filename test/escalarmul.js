@@ -11,7 +11,7 @@ function print(circuit, w, s) {
     console.log(s + ": " + w[circuit.getSignalIdx(s)]);
 }
 
-describe("Exponentioation test", function () {
+describe("Exponentiation test", function () {
     let babyJub;
     let Fr;
     this.timeout(100000);
