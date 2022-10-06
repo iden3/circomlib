@@ -62,6 +62,8 @@ function log2(a) {
 
 pragma circom 2.0.0;
 
+include "comparators.circom";
+
 template EscalarProduct(w) {
     signal input in1[w];
     signal input in2[w];
@@ -80,15 +82,17 @@ template Decoder(w) {
     signal output out[w];
     signal output success;
     var lc=0;
+    
+    component checkZero[w];
 
     for (var i=0; i<w; i++) {
-        out[i] <-- (inp == i) ? 1 : 0;
-        out[i] * (inp-i) === 0;
+        checkZero[i] = IsZero();
+        checkZero[i].in <== inp - i;
+        out[i] <== checkZero[i].out;
         lc = lc + out[i];
     }
 
     lc ==> success;
-    success * (success -1) === 0;
 }
 
 
