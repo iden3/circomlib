@@ -1,4 +1,5 @@
- /*
+// DONE
+/*
     Copyright 2018 0KIMS association.
 
     This file is part of circom (Zero Knowledge Circuit Compiler).
@@ -18,6 +19,16 @@
 */
 
 /*
+Used tags:
+binary: is a tag without value that indicates that the signal should have a binary value (0 or 1);
+        Formally: if x has tag binary then x*(x-1) === 0 is expected to be true
+	(although it's not checked by the compiler)
+
+In this template if the inputs fulfil the conditions associated to the tag then
+the outputs fulfil the conditions associated to the tag
+*/
+
+/*
 This component creates a binary substraction.
 
 
@@ -26,7 +37,7 @@ Main Constraint:
  +  2^n
  - (in[1][0]     * 2^0  +  in[1][1]     * 2^1  + ..... + in[1][n-1]    * 2^(n-1))
  ===
-   out[0] * 2^0  + out[1] * 2^1 +   + out[n-1] *2^(n-1) + aux
+   out[0] * 2^0  + out[1] * 2^1 +   + out[n-1] *2^(n-1) + aux *2^n
 
 
     out[0]     * (out[0] - 1) === 0
@@ -41,22 +52,20 @@ Main Constraint:
 pragma circom 2.0.0;
 
 template BinSub(n) {
-    signal input in[2][n];
-    signal output out[n];
+    signal input {binary} in[2][n];
+    signal output {binary} out[n];
 
     signal aux;
 
     var lin = 2**n;
     var lout = 0;
 
-    var i;
-
-    for (i=0; i<n; i++) {
+    for (var i=0; i<n; i++) {
         lin = lin + in[0][i]*(2**i);
         lin = lin - in[1][i]*(2**i);
     }
 
-    for (i=0; i<n; i++) {
+    for (var i=0; i<n; i++) {
         out[i] <-- (lin >> i) & 1;
 
         // Ensure out is binary

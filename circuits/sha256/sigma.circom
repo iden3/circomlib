@@ -23,55 +23,22 @@ include "rotate.circom";
 include "shift.circom";
 
 template SmallSigma(ra, rb, rc) {
-    signal input in[32];
-    signal output out[32];
-    var k;
+    signal input {binary} in[32];
+    signal output {binary} out[32];
 
-    component rota = RotR(32, ra);
-    component rotb = RotR(32, rb);
-    component shrc = ShR(32, rc);
+    signal {binary} roa[32] <== RotR(32, ra)(in);
+    signal {binary} rob[32] <== RotR(32, rb)(in);
+    signal {binary} shc[32] <== ShR(32, rc)(in);
+    out <== Xor3(32)(roa,rob,shc);
 
-    for (k=0; k<32; k++) {
-        rota.in[k] <== in[k];
-        rotb.in[k] <== in[k];
-        shrc.in[k] <== in[k];
-    }
-
-    component xor3 = Xor3(32);
-    for (k=0; k<32; k++) {
-        xor3.a[k] <== rota.out[k];
-        xor3.b[k] <== rotb.out[k];
-        xor3.c[k] <== shrc.out[k];
-    }
-
-    for (k=0; k<32; k++) {
-        out[k] <== xor3.out[k];
-    }
 }
 
 template BigSigma(ra, rb, rc) {
-    signal input in[32];
-    signal output out[32];
-    var k;
-
-    component rota = RotR(32, ra);
-    component rotb = RotR(32, rb);
-    component rotc = RotR(32, rc);
-    for (k=0; k<32; k++) {
-        rota.in[k] <== in[k];
-        rotb.in[k] <== in[k];
-        rotc.in[k] <== in[k];
-    }
-
-    component xor3 = Xor3(32);
-
-    for (k=0; k<32; k++) {
-        xor3.a[k] <== rota.out[k];
-        xor3.b[k] <== rotb.out[k];
-        xor3.c[k] <== rotc.out[k];
-    }
-
-    for (k=0; k<32; k++) {
-        out[k] <== xor3.out[k];
-    }
+    signal input {binary} in[32];
+    signal output {binary} out[32];
+    
+    signal {binary} roa[32] <== RotR(32, ra)(in);
+    signal {binary} rob[32] <== RotR(32, rb)(in);
+    signal {binary} roc[32] <== RotR(32, rc)(in);
+    out <== Xor3(32)(roa,rob,roc);
 }

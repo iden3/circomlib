@@ -23,7 +23,7 @@ include "mux3.circom";
 include "babyjub.circom";
 
 template Window4() {
-    signal input in[4];
+    signal input {binary} in[4];
     signal input base[2];
     signal output out[2];
     signal output out8[2];   // Returns 8*Base (To be linked)
@@ -110,7 +110,7 @@ template Window4() {
 
 
 template Segment(nWindows) {
-    signal input in[nWindows*4];
+    signal input {binary} in[nWindows*4];
     signal input base[2];
     signal output out[2];
 
@@ -174,7 +174,7 @@ template Segment(nWindows) {
 }
 
 template Pedersen(n) {
-    signal input in[n];
+    signal input {binary} in[n];
     signal output out[2];
 
     var BASE[10][2] = [

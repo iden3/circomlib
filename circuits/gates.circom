@@ -18,7 +18,10 @@
 */
 pragma circom 2.0.0;
 
-template XOR() {
+include "arrayops.circom";
+include "bitify.circom";
+
+template XOR() {  //  TODO : needs binary counter example a = 1 and b= 2 ==> out = -1 (wrong)
     signal input a;
     signal input b;
     signal output out;
@@ -26,15 +29,15 @@ template XOR() {
     out <== a + b - 2*a*b;
 }
 
-template AND() {
-    signal input a;
-    signal input b;
-    signal output out;
+template AND() {      //TODO do not need {binary} but preserves binary}
+    signal input {binary} a;
+    signal input {binary} b;
+    signal output {binary} out;
 
     out <== a*b;
 }
 
-template OR() {
+template OR() {  // TODO : needs binary counter example a = 2 and b= 2 ==> out = 0 (wrong)
     signal input a;
     signal input b;
     signal output out;
@@ -42,11 +45,11 @@ template OR() {
     out <== a + b - a*b;
 }
 
-template NOT() {
+template NOT() {  //TODO: needs binary
     signal input in;
     signal output out;
 
-    out <== 1 + in - 2*in;
+    out <== 1 + in - 2*in;  //???? TODO
 }
 
 template NAND() {
@@ -66,30 +69,16 @@ template NOR() {
 }
 
 template MultiAND(n) {
-    signal input in[n];
-    signal output out;
-    component and1;
-    component and2;
-    component ands[2];
+    signal input {binary} in[n];
+    signal output {binary} out;
+
     if (n==1) {
         out <== in[0];
     } else if (n==2) {
-        and1 = AND();
-        and1.a <== in[0];
-        and1.b <== in[1];
-        out <== and1.out;
+        out <== AND()(in[0],in[1]);
     } else {
-        and2 = AND();
         var n1 = n\2;
-        var n2 = n-n\2;
-        ands[0] = MultiAND(n1);
-        ands[1] = MultiAND(n2);
-        var i;
-        for (i=0; i<n1; i++) ands[0].in[i] <== in[i];
-        for (i=0; i<n2; i++) ands[1].in[i] <== in[n1+i];
-        and2.a <== ands[0].out;
-        and2.b <== ands[1].out;
-        out <== and2.out;
+        out <== AND()(MultiAND(n1)(ForceBinaryArray(n1)(Slice (n,0,n1)(in))),MultiAND(n-n1)(ForceBinaryArray(n-n1)(Slice (n,n1,n)(in))));
     }
 }
 

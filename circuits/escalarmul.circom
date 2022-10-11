@@ -1,4 +1,4 @@
-  /*
+/*
     Copyright 2018 0KIMS association.
 
     This file is part of circom (Zero Knowledge Circuit Compiler).
@@ -69,7 +69,7 @@ include "babyjub.circom";
 template EscalarMulWindow(base, k) {
 
     signal input in[2];
-    signal input sel[4];
+    signal input {binary} sel[4];
     signal output out[2];
 
     var table[16][2];
@@ -126,7 +126,7 @@ template EscalarMulWindow(base, k) {
  */
 
 template EscalarMul(n, base) {
-    signal input in[n];
+    signal input {binary} in[n];
     signal input inp[2];   // Point input to be added
     signal output out[2];
 

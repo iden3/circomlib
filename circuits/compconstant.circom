@@ -23,11 +23,10 @@ include "bitify.circom";
 // Returns 1 if in (in binary) > ct
 
 template CompConstant(ct) {
-    signal input in[254];
-    signal output out;
+    signal input {binary} in[254];  // TODO dependent on the prime
+    signal output {binary} out;
 
     signal parts[127];
-    signal sout;
 
     var clsb;
     var cmsb;
@@ -64,11 +63,15 @@ template CompConstant(ct) {
         e = e*2;
     }
 
-    sout <== sum;
+    var aux[135] = Num2Bits(135)(sum);
+    out <== aux[127];
+}
 
-    component num2bits = Num2Bits(135);
-
-    num2bits.in <== sout;
-
-    out <== num2bits.out[127];
+template AddMaxValueTag (n) {
+    signal input in;
+    signal output {max} out;
+    var res = CompConstant(n)(Num2Bits(254)(in));
+    res === 0;
+    out.max = n;
+    out <== in;
 }

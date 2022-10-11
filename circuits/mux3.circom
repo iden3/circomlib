@@ -1,3 +1,4 @@
+// DONE
 /*
     Copyright 2018 0KIMS association.
 
@@ -20,8 +21,8 @@ pragma circom 2.0.0;
 
 template MultiMux3(n) {
     signal input c[n][8];  // Constants
-    signal input s[3];   // Selector
-    signal output out[n];
+    signal input {binary} s[3];   // Selector  
+    signal output out[n];      // TODO preserve tags from c
 
     signal a210[n];
     signal a21[n];
@@ -58,18 +59,12 @@ template MultiMux3(n) {
 template Mux3() {
     var i;
     signal input c[8];  // Constants
-    signal input s[3];   // Selector
+    signal input {binary} s[3];   // Selector
     signal output out;
 
-    component mux = MultiMux3(1);
-
-    for (i=0; i<8; i++) {
-        mux.c[0][i] <== c[i];
-    }
-
-    for (i=0; i<3; i++) {
-      s[i] ==> mux.s[i];
-    }
-
-    mux.out[0] ==> out;
+    signal aux[1][8];
+    aux[0] <== c;
+    var muxout[1];
+    muxout = MultiMux3(1)(aux,s);
+    muxout[0] ==> out;
 }

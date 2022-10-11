@@ -1,3 +1,4 @@
+// DONE
 /*
     Copyright 2018 0KIMS association.
 
@@ -20,14 +21,18 @@ pragma circom 2.0.0;
 
 include "compconstant.circom";
 
+/*
+Used tags:
+binary: is a tag without value that indicates that the signal should have a binary value (0 or 1);
+        Formally: if x has tag binary then x*(x-1) === 0 is expected to be true
+	(although it's not checked by the compiler)
+*/
+
+// states that the number in binary (unsigned) is smaller than or equal to P-1
 
 template AliasCheck() {
+    signal input {binary} in[254];
 
-    signal input in[254];
-
-    component  compConstant = CompConstant(-1);
-
-    for (var i=0; i<254; i++) in[i] ==> compConstant.in[i];
-
-    compConstant.out === 0;
+    var aux = CompConstant(-1)(in);
+    aux === 0;
 }

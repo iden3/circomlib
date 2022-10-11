@@ -147,7 +147,7 @@ template SMTProcessor(nLevels) {
     signal input isOld0;
     signal input newKey;
     signal input newValue;
-    signal input fnc[2];
+    signal input {binary} fnc[2];
 
     signal enabled;
 
@@ -253,7 +253,7 @@ template SMTProcessor(nLevels) {
     areKeyEquals.in[1] <== newKey;
 
     component keysOk = MultiAND(3);
-    keysOk.in[0] <== 1-fnc[0];
+    keysOk.in[0] <== ForceBinary()(1-fnc[0]);
     keysOk.in[1] <== fnc[1];
     keysOk.in[2] <== 1-areKeyEquals.out;
 

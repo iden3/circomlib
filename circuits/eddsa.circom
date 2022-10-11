@@ -27,9 +27,9 @@ include "escalarmulfix.circom";
 template EdDSAVerifier(n) {
     signal input msg[n];
 
-    signal input A[256];
-    signal input R8[256];
-    signal input S[256];
+    signal input {binary} A[256];
+    signal input {binary} R8[256];
+    signal input {binary} S[256];
 
     signal Ax;
     signal Ay;
@@ -41,12 +41,13 @@ template EdDSAVerifier(n) {
 
 // Ensure S<Subgroup Order
 
-    component  compConstant = CompConstant(2736030358979909402780800718157159386076813972158567259200215660948447373040);
-
+    // take the first 254 bits of S
+    signal {binary} auxS[254];
     for (i=0; i<254; i++) {
-        S[i] ==> compConstant.in[i];
+        auxS[i] <== S[i];
     }
-    compConstant.out === 0;
+    signal auxout <== CompConstant(2736030358979909402780800718157159386076813972158567259200215660948447373040)(auxS);
+    auxout === 0;
     S[254] === 0;
     S[255] === 0;
 

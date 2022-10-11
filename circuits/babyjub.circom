@@ -1,3 +1,4 @@
+//DONE
 /*
     Copyright 2018 0KIMS association.
 
@@ -21,6 +22,12 @@ pragma circom 2.0.0;
 include "bitify.circom";
 include "escalarmulfix.circom";
 
+/*
+   only valid for bn128
+   P = 21888242871839275222246405745257275088548364400416034343698204186575808495617
+   check -1 === 21888242871839275222246405745257275088548364400416034343698204186575808495616
+*/
+
 template BabyAdd() {
     signal input x1;
     signal input y1;
@@ -28,6 +35,9 @@ template BabyAdd() {
     signal input y2;
     signal output xout;
     signal output yout;
+
+    // prime check
+    -1 === 21888242871839275222246405745257275088548364400416034343698204186575808495616;
 
     signal beta;
     signal gamma;
@@ -55,14 +65,10 @@ template BabyDbl() {
     signal output xout;
     signal output yout;
 
-    component adder = BabyAdd();
-    adder.x1 <== x;
-    adder.y1 <== y;
-    adder.x2 <== x;
-    adder.y2 <== y;
-
-    adder.xout ==> xout;
-    adder.yout ==> yout;
+    // prime check
+    -1 === 21888242871839275222246405745257275088548364400416034343698204186575808495616;
+    
+    BabyAdd()(x,y,x,y) ==> (xout, yout);
 }
 
 
@@ -70,6 +76,9 @@ template BabyCheck() {
     signal input x;
     signal input y;
 
+    // prime check
+    -1 === 21888242871839275222246405745257275088548364400416034343698204186575808495616;
+    
     signal x2;
     signal y2;
 
@@ -88,20 +97,14 @@ template BabyPbk() {
     signal output Ax;
     signal output Ay;
 
+    // prime check
+    -1 === 21888242871839275222246405745257275088548364400416034343698204186575808495616;
+    
     var BASE8[2] = [
         5299619240641551281634865583518297030282874472190772894086521144482721001553,
         16950150798460657717958625567821834550301663161624707787222815936182638968203
     ];
-
-    component pvkBits = Num2Bits(253);
-    pvkBits.in <== in;
-
-    component mulFix = EscalarMulFix(253, BASE8);
-
-    var i;
-    for (i=0; i<253; i++) {
-        mulFix.e[i] <== pvkBits.out[i];
-    }
-    Ax  <== mulFix.out[0];
-    Ay  <== mulFix.out[1];
+    var aux[2] = EscalarMulFix(253, BASE8)(Num2Bits(253)(in));
+    Ax <== aux[0];
+    Ay <== aux[1];
 }

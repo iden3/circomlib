@@ -1,3 +1,7 @@
+/*
+
+*/
+
 pragma circom 2.0.0;
 
 // implements MiMC-2n/n as hash using a sponge construction.

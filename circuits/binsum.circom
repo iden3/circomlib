@@ -1,3 +1,4 @@
+// DONE
 /*
     Copyright 2018 0KIMS association.
 
@@ -15,6 +16,16 @@
 
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
+*/
+
+/*
+Used tags:
+binary: is a tag without value that indicates that the signal should have a binary value (0 or 1);
+        Formally: if x has tag binary then x*(x-1) === 0 is expected to be true
+	(although it's not checked by the compiler)
+
+In this template if the inputs fulfil the conditions associated to the tag then
+the outputs fulfil the conditions associated to the tag
 */
 
 /*
@@ -49,9 +60,11 @@ To waranty binary outputs:
 /*
     This function calculates the number of extra bits in the output to do the full sum.
  */
- pragma circom 2.0.0;
+pragma circom 2.0.0;
 
-function nbits(a) {
+//only works for numbers below 2**252 (since 2**252 * 2 can be negative and hence will return 0)  
+
+function nbits(a) { // TODO a = 0 wrong
     var n = 1;
     var r = 0;
     while (n-1<a) {
@@ -63,9 +76,10 @@ function nbits(a) {
 
 
 template BinSum(n, ops) {
-    var nout = nbits((2**n -1)*ops);
-    signal input in[ops][n];
-    signal output out[nout];
+    // var nout = nbits((2**n -1)*ops); // TODO CHECK
+    var nout = n + nbits(ops-1);
+    signal input {binary} in[ops][n];
+    signal output {binary} out[nout];
 
     var lin = 0;
     var lout = 0;

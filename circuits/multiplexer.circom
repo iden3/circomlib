@@ -62,6 +62,8 @@ function log2(a) {
 
 pragma circom 2.0.0;
 
+include "matrixops.circom";
+
 template EscalarProduct(w) {
     signal input in1[w];
     signal input in2[w];
@@ -75,6 +77,18 @@ template EscalarProduct(w) {
     out <== lc;
 }
 
+//revise
+// if inp < w then out[inp] == 1 and out[x] == 0 for all x!=inp
+// otherwise out[x] == 0 for all 0 <= x <= w
+
+// constraints only state this
+// out[x] == 0 for all 0 <= x <= w and x!=inp
+// 0<= success <= 1 and success = sum out
+
+// possible solution all zeros
+
+// constraints says implies
+// code says if and only if
 template Decoder(w) {
     signal input inp;
     signal output out[w];
@@ -91,25 +105,20 @@ template Decoder(w) {
     success * (success -1) === 0;
 }
 
-
 template Multiplexer(wIn, nIn) {
     signal input inp[nIn][wIn];
     signal input sel;
     signal output out[wIn];
-    component dec = Decoder(nIn);
-    component ep[wIn];
 
-    for (var k=0; k<wIn; k++) {
-        ep[k] = EscalarProduct(nIn);
-    }
-
-    sel ==> dec.inp;
+    signal dec_out[nIn], dec_success;
+    (dec_out, dec_success) <== Decoder(nIn)(sel);
+    
+    signal inp_trans[wIn][nIn];
+    inp_trans <== Transpose(nIn, wIn)(inp);
+    
     for (var j=0; j<wIn; j++) {
-        for (var k=0; k<nIn; k++) {
-            inp[k][j] ==> ep[j].in1[k];
-            dec.out[k] ==> ep[j].in2[k];
-        }
-        ep[j].out ==> out[j];
+	out[j] <== EscalarProduct(nIn)(inp_trans[j], dec_out);
     }
-    dec.success === 1;
+    
+    dec_success === 1;
 }

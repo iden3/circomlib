@@ -21,7 +21,7 @@ pragma circom 2.0.0;
 include "escalarmul.circom";
 
 template Pedersen(n) {
-    signal input in[n];
+    signal input {binary} in[n];
     signal output out[2];
 
     var nexps = ((n-1) \ 250) + 1;

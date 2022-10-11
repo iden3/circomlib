@@ -22,29 +22,21 @@ include "../binsum.circom";
 include "sigma.circom";
 
 template SigmaPlus() {
-    signal input in2[32];
-    signal input in7[32];
-    signal input in15[32];
-    signal input in16[32];
-    signal output out[32];
-    var k;
+    signal input {binary} in2[32];
+    signal input {binary} in7[32];
+    signal input {binary} in15[32];
+    signal input {binary} in16[32];
+    signal output {binary} out[32];
+    signal {binary} sumin [4][32];
+  
+    sumin[0] <== SmallSigma(17,19,10)(in2);
+    sumin[1] <== in7;
+    sumin[2] <== SmallSigma(7, 18, 3)(in15);
+    sumin[3] <== in16;
 
-    component sigma1 = SmallSigma(17,19,10);
-    component sigma0 = SmallSigma(7, 18, 3);
-    for (k=0; k<32; k++) {
-        sigma1.in[k] <== in2[k];
-        sigma0.in[k] <== in15[k];
-    }
+    signal {binary} sumout[34] <== BinSum(32, 4)(sumin);
 
-    component sum = BinSum(32, 4);
-    for (k=0; k<32; k++) {
-        sum.in[0][k] <== sigma1.out[k];
-        sum.in[1][k] <== in7[k];
-        sum.in[2][k] <== sigma0.out[k];
-        sum.in[3][k] <== in16[k];
-    }
-
-    for (k=0; k<32; k++) {
-        out[k] <== sum.out[k];
+    for (var k=0; k<32; k++) {
+        out[k] <== sumout[k];
     }
 }

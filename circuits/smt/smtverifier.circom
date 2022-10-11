@@ -47,7 +47,7 @@ template SMTVerifier(nLevels) {
     signal input isOld0;
     signal input key;
     signal input value;
-    signal input fnc;
+    signal input {binary} fnc;
 
     var i;
 

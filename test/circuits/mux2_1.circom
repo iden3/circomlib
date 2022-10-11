@@ -19,19 +19,7 @@ template Main() {
     signal input selector;//private
     signal output out;
 
-    component mux = Mux2();
-    component n2b = Num2Bits(2);
-    component cst = Constants();
-
-    selector ==> n2b.in;
-    for (i=0; i<2; i++) {
-        n2b.out[i] ==> mux.s[i];
-    }
-    for (i=0; i<4; i++) {
-        cst.out[i] ==> mux.c[i];
-    }
-
-    mux.out ==> out;
+    out <== Mux2()(Constants()(), Num2Bits(2)(selector));
 }
 
 component main = Main();

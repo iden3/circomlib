@@ -99,21 +99,55 @@ template MultiMux4(n) {
     }
 }
 
+/*
+// previous version needs 19 non-linear constraints
+// with a mux3 and a mux1 needs 17 non-linear constraints
+
+include "mux1.circom";
+include "mux3.circom";
+
+template MultiMux4(n) {
+    signal input c[n][16];  // Constants
+    signal input {binary} s[4];   // Selector
+    signal output out[n];
+
+    signal {binary} auxs[3];
+    auxs[0] <== s[0];
+    auxs[1] <== s[1];
+    auxs[2] <== s[2];
+
+    signal c1[n][8];
+    signal c2[n][8];
+
+    for (var i = 0; i < n; i++) {
+        for (var j = 0; j < 8; j++) {
+            c1[i][j] <== c[i][j];
+            c2[i][j] <== c[i][j+8];
+	}
+    }
+
+
+    signal auxout0[n] <== MultiMux3(n)(c1,auxs);
+    signal auxout1[n] <== MultiMux3(n)(c2,auxs);
+    
+    signal c3[n][2];
+    for (var i = 0; i < n; i++) {
+        c3[i][0] <== auxout0[i];
+        c3[i][1] <== auxout1[i];
+    }
+    out <== MultiMux1(n)(c3,s[3]);
+}
+*/
+
 template Mux4() {
     var i;
     signal input c[16];  // Constants
-    signal input s[4];   // Selector
+    signal input {binary} s[4];   // Selector
     signal output out;
 
-    component mux = MultiMux4(1);
-
-    for (i=0; i<16; i++) {
-        mux.c[0][i] <== c[i];
-    }
-
-    for (i=0; i<4; i++) {
-      s[i] ==> mux.s[i];
-    }
-
-    mux.out[0] ==> out;
+    signal aux[1][16];
+    aux[0] <== c;
+    var muxout[1];
+    muxout = MultiMux4(1)(aux,s);
+    muxout[0] ==> out;
 }

@@ -23,36 +23,23 @@ include "sigma.circom";
 include "ch.circom";
 
 template T1() {
-    signal input h[32];
-    signal input e[32];
-    signal input f[32];
-    signal input g[32];
-    signal input k[32];
-    signal input w[32];
-    signal output out[32];
-
-    var ki;
-
-    component ch = Ch_t(32);
-    component bigsigma1 = BigSigma(6, 11, 25);
-
-    for (ki=0; ki<32; ki++) {
-        bigsigma1.in[ki] <== e[ki];
-        ch.a[ki] <== e[ki];
-        ch.b[ki] <== f[ki];
-        ch.c[ki] <== g[ki];
-    }
+    signal input {binary} h[32];
+    signal input {binary} e[32];
+    signal input {binary} f[32];
+    signal input {binary} g[32];
+    signal input {binary} k[32];
+    signal input {binary} w[32];
+    signal output {binary} out[32];
 
     component sum = BinSum(32, 5);
-    for (ki=0; ki<32; ki++) {
-        sum.in[0][ki] <== h[ki];
-        sum.in[1][ki] <== bigsigma1.out[ki];
-        sum.in[2][ki] <== ch.out[ki];
-        sum.in[3][ki] <== k[ki];
-        sum.in[4][ki] <== w[ki];
-    }
+    
+    sum.in[0] <== h;
+    sum.in[1] <== BigSigma(6, 11, 25)(e);
+    sum.in[2] <== Ch_t(32)(e,f,g);
+    sum.in[3] <== k;
+    sum.in[4] <== w;
 
-    for (ki=0; ki<32; ki++) {
+    for (var ki=0; ki<32; ki++) {
         out[ki] <== sum.out[ki];
     }
 }

@@ -30,7 +30,6 @@ template Sha256_2() {
     var i;
     var k;
 
-    component bits2num = Bits2Num(216);
     component num2bits[2];
 
     num2bits[0] = Num2Bits(216);
@@ -51,38 +50,46 @@ template Sha256_2() {
     component hg0 = H(6);
     component hh0 = H(7);
 
+    signal {binary} auxhin[256];
     for (k=0; k<32; k++ ) {
-        sha256compression.hin[0*32+k] <== ha0.out[k];
-        sha256compression.hin[1*32+k] <== hb0.out[k];
-        sha256compression.hin[2*32+k] <== hc0.out[k];
-        sha256compression.hin[3*32+k] <== hd0.out[k];
-        sha256compression.hin[4*32+k] <== he0.out[k];
-        sha256compression.hin[5*32+k] <== hf0.out[k];
-        sha256compression.hin[6*32+k] <== hg0.out[k];
-        sha256compression.hin[7*32+k] <== hh0.out[k];
+        auxhin[0*32+k] <== ha0.out[k];
+        auxhin[1*32+k] <== hb0.out[k];
+        auxhin[2*32+k] <== hc0.out[k];
+        auxhin[3*32+k] <== hd0.out[k];
+        auxhin[4*32+k] <== he0.out[k];
+        auxhin[5*32+k] <== hf0.out[k];
+        auxhin[6*32+k] <== hg0.out[k];
+        auxhin[7*32+k] <== hh0.out[k];
     }
 
+    sha256compression.hin <== auxhin;
+
+    signal {binary} auxinp[512];
+    
     for (i=0; i<216; i++) {
-        sha256compression.inp[i] <== num2bits[0].out[215-i];
-        sha256compression.inp[i+216] <== num2bits[1].out[215-i];
+        auxinp[i] <== num2bits[0].out[215-i];
+        auxinp[i+216] <== num2bits[1].out[215-i];
     }
 
-    sha256compression.inp[432] <== 1;
+    auxinp[432] <== 1;
 
     for (i=433; i<503; i++) {
-        sha256compression.inp[i] <== 0;
+        auxinp[i] <== 0;
     }
 
-    sha256compression.inp[503] <== 1;
-    sha256compression.inp[504] <== 1;
-    sha256compression.inp[505] <== 0;
-    sha256compression.inp[506] <== 1;
-    sha256compression.inp[507] <== 1;
-    sha256compression.inp[508] <== 0;
-    sha256compression.inp[509] <== 0;
-    sha256compression.inp[510] <== 0;
-    sha256compression.inp[511] <== 0;
+    auxinp[503] <== 1;
+    auxinp[504] <== 1;
+    auxinp[505] <== 0;
+    auxinp[506] <== 1;
+    auxinp[507] <== 1;
+    auxinp[508] <== 0;
+    auxinp[509] <== 0;
+    auxinp[510] <== 0;
+    auxinp[511] <== 0;
 
+    sha256compression.inp <== auxinp;
+    
+    component bits2num = Bits2Num(216);
     for (i=0; i<216; i++) {
         bits2num.in[i] <== sha256compression.out[255-i];
     }

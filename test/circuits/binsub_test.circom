@@ -10,24 +10,13 @@ template A() {
 
     var i;
 
-    component n2ba = Num2Bits(16);
-    component n2bb = Num2Bits(16);
-    component sub = BinSub(16);
-    component b2n = Bits2Num(16);
 
-    n2ba.in <== a;
-    n2bb.in <== b;
+    signal {binary} aux[2][16];
+    aux[0] <== Num2Bits(16)(a);
+    aux[1] <== Num2Bits(16)(b);
+    
+    out <== Bits2Num(16)(BinSub(16)(aux));
 
-    for (i=0; i<16; i++) {
-        sub.in[0][i] <== n2ba.out[i];
-        sub.in[1][i] <== n2bb.out[i];
-    }
-
-    for (i=0; i<16; i++) {
-        b2n.in[i] <== sub.out[i];
-    }
-
-    out <== b2n.out;
 }
 
 component main = A();
