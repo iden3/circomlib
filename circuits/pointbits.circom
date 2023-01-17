@@ -95,16 +95,18 @@ template Bits2Point_Strict() {
 
     out[1] <== b2nY.out;
 
-    var a = 168700;
-    var d = 168696;
+    compute {
+        var a = 168700;
+        var d = 168696;
 
-    var y2 = out[1] * out[1];
+        var y2 = out[1] * out[1];
 
-    var x = sqrt(   (1-y2)/(a - d*y2)  );
+        var x = sqrt(   (1-y2)/(a - d*y2)  );
 
-    if (in[255] == 1) x = -x;
+        if (in[255] == 1) x = -x;
 
-    out[0] <-- x;
+        out[0] <-- x;
+    }
 
     component babyCheck = BabyCheck();
     babyCheck.x <== out[0];
