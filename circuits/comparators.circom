@@ -109,11 +109,12 @@ template SafeLessThan(n) {
     component bInRange = Num2Bits(252);
     bInRange.in <== in[1];
 
-    component n2b = Num2Bits(n+1);
+    component lt = LessThan(n);
 
-    n2b.in <== in[0]+ (1<<n) - in[1];
+    lt.in[0] <== in[0];
+    lt.in[1] <== in[1];
 
-    out <== 1-n2b.out[n];
+    out <== lt.out;
 }
 
 
