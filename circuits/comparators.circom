@@ -98,15 +98,16 @@ template LessThan(n) {
     out <== 1-n2b.out[n];
 }
 
-// Do Range checks on the inputs to avoid overflow
+// Safely compare two n-bit numbers 
+// Performs range checks on the inputs to avoid overflow. Range is n <= 252
 template SafeLessThan(n) {
     assert(n <= 252);
     signal input in[2];
     signal output out;
 
-    component aInRange = Num2Bits(252);
+    component aInRange = Num2Bits(n);
     aInRange.in <== in[0];
-    component bInRange = Num2Bits(252);
+    component bInRange = Num2Bits(n);
     bInRange.in <== in[1];
 
     component lt = LessThan(n);
