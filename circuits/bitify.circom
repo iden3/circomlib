@@ -84,7 +84,7 @@ template Bits2Num_strict() {
 template Num2BitsNeg(n) {
     signal input in;
     signal output out[n];
-    var lc1 = 0;
+    var lc1=0;
 
     component isZero;
 
@@ -92,7 +92,7 @@ template Num2BitsNeg(n) {
 
     var neg = in < 0 ? 2**n + in : in;
 
-    for (var i = 0; i < n; i++) {
+    for (var i = 0; i<n; i++) {
         out[i] <-- (neg >> i) & 1;
         lc1 += out[i] * 2**i;
     }
