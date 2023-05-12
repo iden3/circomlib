@@ -6,7 +6,10 @@ include "../../circuits/escalarmul.circom";
 template Main() {
     signal input in[256];
     signal output out[2];
-
+ 
+  
+  
+    signal {binary} aux_in[256] <== in;
     var i;
 
     var base[2] = [5299619240641551281634865583518297030282874472190772894086521144482721001553,
@@ -18,7 +21,7 @@ template Main() {
     escalarMul.inp[1] <== 1;
 
     for  (i=0; i<256; i++) {
-        in[i] ==> escalarMul.in[i];
+        aux_in[i] ==> escalarMul.in[i];
     }
 
     escalarMul.out[0] ==> out[0];

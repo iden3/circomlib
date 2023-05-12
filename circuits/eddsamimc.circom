@@ -26,7 +26,7 @@ include "escalarmulany.circom";
 include "escalarmulfix.circom";
 
 template EdDSAMiMCVerifier() {
-    signal input enabled;
+    signal input {binary} enabled;
     signal input Ax;
     signal input Ay;
 
@@ -48,8 +48,10 @@ template EdDSAMiMCVerifier() {
     for (i=0; i<253; i++) {
         snum2bits.out[i] ==> compConstant.in[i];
     }
-    compConstant.in[253] <== 0;
-    compConstant.out === 0;
+    
+    signal {binary} aux_0 <== 0;
+    compConstant.in[253] <== aux_0;
+    compConstant.out === aux_0;
 
 // Calculate the h = H(R,A, msg)
 

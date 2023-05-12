@@ -144,12 +144,12 @@ template SMTProcessor(nLevels) {
     signal input siblings[nLevels];
     signal input oldKey;
     signal input oldValue;
-    signal input isOld0;
+    signal input {binary} isOld0;
     signal input newKey;
     signal input newValue;
-    signal input fnc[2];
+    signal input {binary} fnc[2];
 
-    signal enabled;
+    signal {binary} enabled;
 
     var i;
 
@@ -233,7 +233,8 @@ template SMTProcessor(nLevels) {
 
     component topSwitcher = Switcher();
 
-    topSwitcher.sel <== fnc[0]*fnc[1];
+    signal {binary} switch_sel <== fnc[0]*fnc[1];
+    topSwitcher.sel <== switch_sel;
     topSwitcher.L <== levels[0].oldRoot;
     topSwitcher.R <== levels[0].newRoot;
 
@@ -253,9 +254,11 @@ template SMTProcessor(nLevels) {
     areKeyEquals.in[1] <== newKey;
 
     component keysOk = MultiAND(3);
-    keysOk.in[0] <== 1-fnc[0];
+    signal {binary} keys_0 <== 1-fnc[0];
+    signal {binary} keys_2 <== 1-areKeyEquals.out;
+    keysOk.in[0] <== keys_0;
     keysOk.in[1] <== fnc[1];
-    keysOk.in[2] <== 1-areKeyEquals.out;
+    keysOk.in[2] <== keys_2;
 
     keysOk.out === 0;
 }

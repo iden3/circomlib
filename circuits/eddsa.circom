@@ -25,11 +25,11 @@ include "escalarmulany.circom";
 include "escalarmulfix.circom";
 
 template EdDSAVerifier(n) {
-    signal input msg[n];
+    signal input {binary} msg[n];
 
-    signal input A[256];
-    signal input R8[256];
-    signal input S[256];
+    signal input {binary} A[256];
+    signal input {binary} R8[256];
+    signal input {binary} S[256];
 
     signal Ax;
     signal Ay;

@@ -77,8 +77,8 @@ template EscalarProduct(w) {
 
 template Decoder(w) {
     signal input inp;
-    signal output out[w];
-    signal output success;
+    signal output {binary} out[w];
+    signal output {binary} success;
     var lc=0;
 
     for (var i=0; i<w; i++) {

@@ -69,7 +69,7 @@ include "babyjub.circom";
 template EscalarMulWindow(base, k) {
 
     signal input in[2];
-    signal input sel[4];
+    signal input {binary} sel[4];
     signal output out[2];
 
     var table[16][2];
@@ -126,7 +126,7 @@ template EscalarMulWindow(base, k) {
  */
 
 template EscalarMul(n, base) {
-    signal input in[n];
+    signal input {binary} in[n];
     signal input inp[2];   // Point input to be added
     signal output out[2];
 
@@ -134,6 +134,7 @@ template EscalarMul(n, base) {
     var i;
     var j;
 
+    signal {binary} aux_0 <== 0;
     component windows[nBlocks];
 
     // Construct the windows
@@ -145,7 +146,7 @@ template EscalarMul(n, base) {
     for (i=0; i<nBlocks; i++) {
         for (j=0; j<4; j++) {
             if (i*4+j >= n) {
-                windows[i].sel[j] <== 0;
+                windows[i].sel[j] <== aux_0;
             } else {
                 windows[i].sel[j] <== in[i*4+j];
             }

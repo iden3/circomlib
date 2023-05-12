@@ -25,7 +25,7 @@ include "escalarmulany.circom";
 include "escalarmulfix.circom";
 
 template EdDSAPoseidonVerifier() {
-    signal input enabled;
+    signal input {binary} enabled;
     signal input Ax;
     signal input Ay;
 
@@ -47,7 +47,9 @@ template EdDSAPoseidonVerifier() {
     for (i=0; i<253; i++) {
         snum2bits.out[i] ==> compConstant.in[i];
     }
-    compConstant.in[253] <== 0;
+    
+    signal {binary} aux_0 <== 0;
+    compConstant.in[253] <== aux_0;
     compConstant.out*enabled === 0;
 
 // Calculate the h = H(R,A, msg)

@@ -49,7 +49,7 @@ template SMTVerifierLevel() {
     signal input sibling;
     signal input old1leaf;
     signal input new1leaf;
-    signal input lrbit;
+    signal input {binary} lrbit;
     signal input child;
 
     signal aux[2];

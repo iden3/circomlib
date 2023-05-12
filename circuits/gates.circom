@@ -19,55 +19,55 @@
 pragma circom 2.0.0;
 
 template XOR() {
-    signal input a;
-    signal input b;
-    signal output out;
+    signal input {binary} a;
+    signal input {binary} b;
+    signal output {binary} out;
 
     out <== a + b - 2*a*b;
 }
 
 template AND() {
-    signal input a;
-    signal input b;
-    signal output out;
+    signal input {binary} a;
+    signal input {binary} b;
+    signal output {binary} out;
 
     out <== a*b;
 }
 
 template OR() {
-    signal input a;
-    signal input b;
-    signal output out;
+    signal input {binary} a;
+    signal input {binary} b;
+    signal output {binary} out;
 
     out <== a + b - a*b;
 }
 
 template NOT() {
-    signal input in;
-    signal output out;
+    signal input {binary} in;
+    signal output {binary} out;
 
     out <== 1 + in - 2*in;
 }
 
 template NAND() {
-    signal input a;
-    signal input b;
-    signal output out;
+    signal input {binary} a;
+    signal input {binary} b;
+    signal output {binary} out;
 
     out <== 1 - a*b;
 }
 
 template NOR() {
-    signal input a;
-    signal input b;
-    signal output out;
+    signal input {binary} a;
+    signal input {binary} b;
+    signal output {binary} out;
 
     out <== a*b + 1 - a - b;
 }
 
 template MultiAND(n) {
-    signal input in[n];
-    signal output out;
+    signal input {binary} in[n];
+    signal output {binary} out;
     component and1;
     component and2;
     component ands[2];

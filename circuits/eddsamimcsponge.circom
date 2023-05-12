@@ -26,7 +26,7 @@ include "escalarmulany.circom";
 include "escalarmulfix.circom";
 
 template EdDSAMiMCSpongeVerifier() {
-    signal input enabled;
+    signal input {binary} enabled;
     signal input Ax;
     signal input Ay;
 

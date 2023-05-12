@@ -4,8 +4,8 @@ include "constants.circom";
 include "sha256compression.circom";
 
 template Sha256(nBits) {
-    signal input in[nBits];
-    signal output out[256];
+    signal input {binary} in[nBits];
+    signal  output {binary} out[256];
 
     var i;
     var k;
@@ -15,7 +15,7 @@ template Sha256(nBits) {
 
     nBlocks = ((nBits + 64)\512)+1;
 
-    signal paddedIn[nBlocks*512];
+    signal {binary} paddedIn[nBlocks*512];
 
     for (k=0; k<nBits; k++) {
         paddedIn[k] <== in[k];

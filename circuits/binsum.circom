@@ -49,7 +49,7 @@ To waranty binary outputs:
 /*
     This function calculates the number of extra bits in the output to do the full sum.
  */
- pragma circom 2.0.0;
+ pragma circom 2.1.5;
 
 function nbits(a) {
     var n = 1;
@@ -64,8 +64,8 @@ function nbits(a) {
 
 template BinSum(n, ops) {
     var nout = nbits((2**n -1)*ops);
-    signal input in[ops][n];
-    signal output out[nout];
+    signal input {binary} in[ops][n];
+    signal output {binary} out[nout];
 
     var lin = 0;
     var lout = 0;

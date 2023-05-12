@@ -20,9 +20,9 @@ template Main() {
     for  (i=0; i<253; i++) {
         pedersen.in[i] <== n2b.out[i];
     }
-
+    signal {binary} aux_0 <== 0;
     for (i=253; i<256; i++) {
-        pedersen.in[i] <== 0;
+        pedersen.in[i] <== aux_0;
     }
 
     pedersen.out[0] ==> out[0];

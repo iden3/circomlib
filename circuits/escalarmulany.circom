@@ -23,7 +23,7 @@ include "babyjub.circom";
 include "comparators.circom";
 
 template Multiplexor2() {
-    signal input sel;
+    signal input {binary} sel;
     signal input in[2][2];
     signal output out[2];
 
@@ -32,7 +32,7 @@ template Multiplexor2() {
 }
 
 template BitElementMulAny() {
-    signal input sel;
+    signal input {binary} sel;
     signal input dblIn[2];
     signal input addIn[2];
     signal output dblOut[2];
@@ -68,7 +68,7 @@ template BitElementMulAny() {
 // Double is in montgomery to be linked;
 
 template SegmentMulAny(n) {
-    signal input e[n];
+    signal input {binary}  e[n];
     signal input p[2];
     signal output out[2];
     signal output dbl[2];
@@ -129,7 +129,7 @@ template SegmentMulAny(n) {
 // This function assumes that p is in the subgroup and it is different to 0
 
 template EscalarMulAny(n) {
-    signal input e[n];              // Input in binary format
+    signal input {binary} e[n];              // Input in binary format
     signal input p[2];              // Point (Twisted format)
     signal output out[2];           // Point (Twisted format)
 

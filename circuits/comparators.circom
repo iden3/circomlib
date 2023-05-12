@@ -20,10 +20,11 @@ pragma circom 2.0.0;
 
 include "bitify.circom";
 include "binsum.circom";
+include "gates.circom";
 
 template IsZero() {
     signal input in;
-    signal output out;
+    signal output {binary} out;
 
     signal inv;
 
@@ -36,7 +37,7 @@ template IsZero() {
 
 template IsEqual() {
     signal input in[2];
-    signal output out;
+    signal output {binary} out;
 
     component isz = IsZero();
 
@@ -46,7 +47,7 @@ template IsEqual() {
 }
 
 template ForceEqualIfEnabled() {
-    signal input enabled;
+    signal  input {binary} enabled;
     signal input in[2];
 
     component isz = IsZero();
@@ -88,8 +89,10 @@ template LessThan(n) {
 
 template LessThan(n) {
     assert(n <= 252);
-    signal input in[2];
-    signal output out;
+    signal input {maxbit} in[2];
+    signal output {binary} out;
+    
+    assert(in.maxbit <= n);
 
     component n2b = Num2Bits(n+1);
 
@@ -102,22 +105,43 @@ template LessThan(n) {
 
 // N is the number of bits the input  have.
 // The MSF is the sign bit.
-template LessEqThan(n) {
-    signal input in[2];
-    signal output out;
+
+// TODO: does not satisfy tags, we add new version below
+template LessEqThan_old(n) {
+    signal input {maxbit} in[2];
+    signal output {binary} out;
+    
+    assert(in.maxbit <= n);
 
     component lt = LessThan(n);
+    
 
     lt.in[0] <== in[0];
     lt.in[1] <== in[1]+1;
     lt.out ==> out;
 }
 
+template LessEqThan(n){
+    signal input {maxbit} in[2];
+    signal output {binary} out;
+    assert(in.maxbit <= n);
+
+    component gt = GreaterThan(n);
+    gt.in <== in;
+    
+    component nt = NOT();
+    nt.in <== gt.out;
+    nt.out ==> out;
+
+}
+
 // N is the number of bits the input  have.
 // The MSF is the sign bit.
 template GreaterThan(n) {
-    signal input in[2];
-    signal output out;
+    signal input {maxbit} in[2];
+    signal output {binary} out;
+    
+    assert(in.maxbit <= n);
 
     component lt = LessThan(n);
 
@@ -128,14 +152,33 @@ template GreaterThan(n) {
 
 // N is the number of bits the input  have.
 // The MSF is the sign bit.
-template GreaterEqThan(n) {
-    signal input in[2];
-    signal output out;
+
+// TODO: does not satisfy tags, we add new version below
+template GreaterEqThan_old(n) {
+    signal input {maxbit} in[2];
+    signal output {binary} out;
+    
+    assert(in.maxbit <= n);
 
     component lt = LessThan(n);
 
     lt.in[0] <== in[1];
     lt.in[1] <== in[0]+1;
     lt.out ==> out;
+}
+
+
+template GreaterEqThan(n) {
+    signal input {maxbit} in[2];
+    signal output {binary} out;
+    
+    assert(in.maxbit <= n);
+
+    component gt = LessThan(n);
+    gt.in <== in;
+    
+    component nt = NOT();
+    nt.in <== gt.out;
+    nt.out ==> out;
 }
 

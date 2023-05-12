@@ -75,9 +75,9 @@ a parent with a sibling != 0.
  pragma circom 2.0.0;
 
 template SMTLevIns(nLevels) {
-    signal input enabled;
+    signal input {binary} enabled;
     signal input siblings[nLevels];
-    signal output levIns[nLevels];
+    signal output {binary} levIns[nLevels];
     signal done[nLevels-1];        // Indicates if the insLevel has aready been detected.
 
     var i;

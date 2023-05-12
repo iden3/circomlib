@@ -76,7 +76,7 @@ template Bits2Point() {
 }
 
 template Bits2Point_Strict() {
-    signal input in[256];
+    signal input {binary} in[256];
     signal output out[2];
 
     var i;
@@ -135,7 +135,7 @@ template Point2Bits() {
 
 template Point2Bits_Strict() {
     signal input in[2];
-    signal output out[256];
+    signal output {binary} out[256];
 
     var i;
 

@@ -21,8 +21,8 @@ pragma circom 2.0.0;
 include "compconstant.circom";
 
 template Sign() {
-    signal input in[254];
-    signal output sign;
+    signal input {binary} in[254];
+    signal output {binary} sign;
 
     component comp = CompConstant(10944121435919637611123202872628637544274182200208017171849102093287904247808);
 

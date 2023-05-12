@@ -46,7 +46,7 @@ include "babyjub.circom";
     is the output of the windows that it's going to be <= 2^246*B
  */
 template WindowMulFix() {
-    signal input in[3];
+    signal input {binary} in[3];
     signal input base[2];
     signal output out[2];
     signal output out8[2];   // Returns 8*Base (To be linked)
@@ -142,7 +142,7 @@ template WindowMulFix() {
  */
 
 template SegmentMulFix(nWindows) {
-    signal input e[nWindows*3];
+    signal input {binary} e[nWindows*3];
     signal input base[2];
     signal output out[2];
     signal output dbl[2];
@@ -233,7 +233,7 @@ This component multiplies a escalar times a fixed point BASE (twisted edwards fo
         out: The output point in twisted edwards
  */
 template EscalarMulFix(n, BASE) {
-    signal input e[n];              // Input in binary format
+    signal input {binary} e[n];              // Input in binary format
     signal output out[2];           // Point (Twisted format)
 
     var nsegments = (n-1)\246 +1;       // 249 probably would work. But I'm not sure and for security I keep 246
@@ -248,6 +248,8 @@ template EscalarMulFix(n, BASE) {
     var i;
     var nseg;
     var nWindows;
+    
+    signal {binary} aux_0 <== 0;
 
     for (s=0; s<nsegments; s++) {
 
@@ -261,7 +263,7 @@ template EscalarMulFix(n, BASE) {
         }
 
         for (i = nseg; i<nWindows*3; i++) {
-            segments[s].e[i] <== 0;
+            segments[s].e[i] <== aux_0;
         }
 
         if (s==0) {

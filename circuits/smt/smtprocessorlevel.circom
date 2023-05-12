@@ -54,7 +54,7 @@ template SMTProcessorLevel() {
     signal input sibling;
     signal input old1leaf;
     signal input new1leaf;
-    signal input newlrbit;
+    signal input {binary} newlrbit;
     signal input oldChild;
     signal input newChild;
 
