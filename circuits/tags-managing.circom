@@ -64,9 +64,8 @@ template AddBinaryArrayTag(n) {
     signal output {binary} out[n];
 
     for (var i = 0; i < n; i++) {
-       in[i] * (in[i] - 1) === 0;
+    	out[i] <== AddBinaryTag()(in[i]);
     }
-    out <== in;
 }
 
 /*
@@ -149,10 +148,9 @@ template AddMaxbitArrayTag(n,m) {
     out.maxbit = n;
 
     for (var i = 0; i < m; i++) {
-       _ <== Num2Bits(n)(in[i]);
+       out[i] <== AddMaxbitTag(n)(in[i]);
     }
     
-    in ==> out;
 }
 
 /*
