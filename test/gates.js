@@ -25,7 +25,7 @@ function generateBitArrays(n, array = [], index = 0, results = []) {
 }
 
 
-describe.only("Gates test", function ()  {
+describe("Gates test", function ()  {
 
     this.timeout(100000);
 
