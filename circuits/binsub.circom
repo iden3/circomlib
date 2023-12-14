@@ -17,28 +17,40 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/*
-This component creates a binary substraction.
-
-
-Main Constraint:
-   (in[0][0]     * 2^0  +  in[0][1]     * 2^1  + ..... + in[0][n-1]    * 2^(n-1))  +
- +  2^n
- - (in[1][0]     * 2^0  +  in[1][1]     * 2^1  + ..... + in[1][n-1]    * 2^(n-1))
- ===
-   out[0] * 2^0  + out[1] * 2^1 +   + out[n-1] *2^(n-1) + aux
-
-
-    out[0]     * (out[0] - 1) === 0
-    out[1]     * (out[0] - 1) === 0
-    .
-    .
-    .
-    out[n-1]   * (out[n-1] - 1) === 0
-    aux * (aux-1) == 0
-
-*/
 pragma circom 2.1.5;
+
+// The templates and functions in this file are general and work for any prime field
+
+
+/*
+
+*** BinSub(n): template that receives two inputs of n bits representing values in[0] and in[1] in binary and returns n bits representing the result of in[0] - in[1]
+        - Inputs: in[2][n] -> two arrays representing the values in[0] and in[1] using n bits
+                              requires tag binary
+        - Output: out[n] -> result of in[0] - in[1] expressed using n bits
+                            satisfies tag binary
+         
+    Example: BinSub(3)([[1, 0, 1], [1, 1, 1]]) = [0, 1, 1]
+    
+    
+    Main Constraint:
+       (in[0][0]     * 2^0  +  in[0][1]     * 2^1  + ..... + in[0][n-1]    * 2^(n-1))  +
+       +  2^n
+       - (in[1][0]     * 2^0  +  in[1][1]     * 2^1  + ..... + in[1][n-1]    * 2^(n-1))
+       ===
+       out[0] * 2^0  + out[1] * 2^1 +   + out[n-1] *2^(n-1) + aux * 2^n
+
+
+       out[0]     * (out[0] - 1) === 0
+       out[1]     * (out[0] - 1) === 0
+       .
+       .
+       .
+       out[n-1]   * (out[n-1] - 1) === 0
+       aux * (aux-1) == 0
+          
+*/
+
 
 template BinSub(n) {
     signal input {binary} in[2][n];

@@ -25,7 +25,7 @@
                 1 - y      (1 - y)x
 
  */
- pragma circom 2.0.0;
+ pragma circom 2.1.5;
 
 template Edwards2Montgomery() {
     signal input in[2];

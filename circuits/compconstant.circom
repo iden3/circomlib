@@ -16,11 +16,24 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
-pragma circom 2.0.0;
+pragma circom 2.1.5;
 
 include "bitify.circom";
 
-// Returns 1 if in (in binary) > ct
+// The templates and functions of this file only work for prime field bn128 (21888242871839275222246405745257275088548364400416034343698204186575808495617)
+
+
+
+/*
+*** CompConstant(ct): template that receives an input in representing a value in binary using 254 bits and checks if its value is greater than the constant value ct given as a parameter
+        - Inputs: in[254] -> array of 254 bits
+                             requires tag binary
+        - Outputs: out -> binary value, out = in > ct
+                          satisfies tag binary
+ 
+    Example: CompConstant(10)([0, ..., 0]) = 0, CompConstant(10)([1, ..., 1]) = 1              
+          
+*/
 
 template CompConstant(ct) {
     signal input {binary} in[254];

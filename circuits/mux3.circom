@@ -16,7 +16,32 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
-pragma circom 2.0.0;
+
+
+pragma circom 2.1.5;
+
+// The templates and functions in this file are general and work for any prime field
+
+/*
+
+*** MultiMux3(n): template that implements a multiplexer 8-to-1 between eight inputs of n elements
+    - If s == 0 then out = c[0]
+    - If s == 1 then out = c[1]
+       .
+       .
+       .
+       
+    - If s == 6 then out = c[6]
+    - If s == 7 then out = c[7]
+    
+        - Inputs: s[3] -> binary values, selector
+                          requires tag binary
+                  c[n][8] -> eight arrays of n elements that correspond to the inputs of the mux: c[i][0] => first input, c[i][1] => second input, ... 
+        - Output: out[n] -> array of n elements, it takes the value c[i][0] if s == [0, 0, 0], c[i][1] if s == [1, 0, 0], ... , c[i][7] if s == [1, 1, 1]
+        
+    Example: MultiMux3(2)([[1, 2, 4, 1, 1, 6, 7, 3], [3, 1, 3, 1, 4, 6, 6, 2]], [1, 0 , 1]) = [6, 6]
+
+ */
 
 template MultiMux3(n) {
     signal input c[n][8];  // Constants
@@ -54,6 +79,28 @@ template MultiMux3(n) {
 
     }
 }
+
+
+/*
+
+*** Mux3(): template that implements a multiplexer 8-to-1 
+    - If s == 0 then out = c[0]
+    - If s == 1 then out = c[1]
+      . 
+      .
+      .
+      
+    - If s == 6 then out = c[6]
+    - If s == 7 then out = c[7]
+
+        - Inputs: s[3] -> binary values, selector
+                          requires tag binary
+                  c[8] -> eight elements that correspond to the inputs of the mux: c[0] => first input, c[1] => second input, ...
+        - Output: out -> field element, it takes the value c[0] if s == [0, 0, 0], c[1] if s == [1, 0, 0], . . ., c[7] if s == [1, 1, 1] 
+        
+    Example: Mux3()([1, 5, 4, 2, 6, 3, 1, 5], [0, 1, 1]] = 1
+
+ */
 
 template Mux3() {
     var i;

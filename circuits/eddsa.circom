@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
-pragma circom 2.0.0;
+pragma circom 2.1.5;
 
 include "compconstant.circom";
 include "pointbits.circom";
@@ -24,7 +24,7 @@ include "pedersen.circom";
 include "escalarmulany.circom";
 include "escalarmulfix.circom";
 
-template EdDSAVerifier(n) {
+template EdDSAPedersenVerifier(n) {
     signal input {binary} msg[n];
 
     signal input {binary} A[256];

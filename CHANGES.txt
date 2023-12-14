@@ -1,0 +1,16 @@
+Changes:
+
+- Added file tags-managing.circom with templates for managing tags binary, maxbit, maxvalue...
+
+- Removed files mimc.circom, mimcsponge.circom, eddsamimc.circom, eddsamimcsponge.circom, multiplexer.circom
+
+- Added info of the prime field required by the templates
+
+- Added specification describing the expected behavior of the templates
+
+- Updated required circom version to 2.1.5
+
+- Changed comparators GreaterEqThan and LessEqThan to satisfy tags
+
+
+SWITCHER, SIGN, MUX4, MUX3, MUX2, MUX1, GATES, BINSUB, BINSUM, ALIASCHECK, BABYJUB, BITIFY, COMPARATORS, COMPCONSTANT

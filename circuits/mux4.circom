@@ -16,7 +16,32 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
-pragma circom 2.0.0;
+
+pragma circom 2.1.5;
+
+// The templates and functions in this file are general and work for any prime field
+
+
+/*
+
+*** MultiMux4(n): template that implements a multiplexer 16-to-1 between 16 inputs of n elements
+    - If s == 0 then out = c[0]
+    - If s == 1 then out = c[1]
+       .
+       .
+       .
+       
+    - If s == 14 then out = c[14]
+    - If s == 15 then out = c[15]
+    
+        - Inputs: s[4] -> binary values, selector
+                          requires tag binary
+                  c[n][16] -> 16 arrays of n elements that correspond to the inputs of the mux: c[i][0] => first input, c[i][1] => second input, ... 
+        - Output: out[n] -> array of n elements, it takes the value c[i][0] if s == [0, 0, 0, 0], c[i][1] if s == [1, 0, 0, 0], ... , c[i][15] if s == [1, 1, 1, 1]
+        
+    Example: MultiMux4(2)([[1, 2, 4, 1, 1, 6, 7, 3, 1, 2, 4, 1, 1, 6, 7, 3], [3, 1, 3, 1, 4, 6, 6, 2, 1, 2, 4, 1, 1, 6, 7, 3]], [1, 0, 1, 0]) = [6, 6]
+
+ */
 
 template MultiMux4(n) {
     signal input c[n][16];  // Constants
@@ -76,28 +101,32 @@ template MultiMux4(n) {
           out[i] <== ( a3210[i] + a321[i] + a320[i] + a310[i] + a32[i] + a31[i] + a30[i] + a3[i] ) * s[3] +
                      (  a210[i] +  a21[i] +  a20[i] +  a10[i] +  a2[i] +  a1[i] +  a0[i] +  a[i] );
 
-/*
-        out[i] <== (  s210 * ( c[i][15]-c[i][14]-c[i][13]+c[i][12] - c[i][11]+c[i][10]+c[i][ 9]-c[i][ 8]
-                              -c[i][ 7]+c[i][ 6]+c[i][ 5]-c[i][ 4] + c[i][ 3]-c[i][ 2]-c[i][ 1]+c[i][ 0] ) +
-                       s21 * ( c[i][14]-c[i][12]-c[i][10]+c[i][ 8] - c[i][ 6]+c[i][ 4]+c[i][ 2]-c[i][ 0] ) +
-                       s20 * ( c[i][13]-c[i][12]-c[i][ 9]+c[i][ 8] - c[i][ 5]+c[i][ 4]+c[i][ 1]-c[i][ 0] ) +
-                       s10 * ( c[i][11]-c[i][10]-c[i][ 9]+c[i][ 8] - c[i][ 3]+c[i][ 2]+c[i][ 1]-c[i][ 0] ) +
-                      s[2] * ( c[i][12]-c[i][ 8]-c[i][ 4]+c[i][ 0] ) +
-                      s[1] * ( c[i][10]-c[i][ 8]-c[i][ 2]+c[i][ 0] ) +
-                      s[0] * ( c[i][ 9]-c[i][ 8]-c[i][ 1]+c[i][ 0] ) +
-                             ( c[i][ 8]-c[i][ 0] ) ) * s[3]  +
-                (     s210 * ( c[i][ 7]-c[i][ 6]-c[i][ 5]+c[i][ 4] - c[i][ 3]+c[i][ 2]+c[i][ 1]-c[i][ 0] ) +
-                       s21 * ( c[i][ 6]-c[i][ 4]-c[i][ 2]+c[i][ 0] ) +
-                       s20 * ( c[i][ 5]-c[i][ 4]-c[i][ 1]+c[i][ 0] ) +
-                       s10 * ( c[i][ 3]-c[i][ 2]-c[i][ 1]+c[i][ 0] ) +
-                      s[2] * ( c[i][ 4]-c[i][ 0] ) +
-                      s[1] * ( c[i][ 2]-c[i][ 0] ) +
-                      s[0] * ( c[i][ 1]-c[i][ 0] ) +
-                             ( c[i][ 0] ));
 
-*/
     }
 }
+
+
+
+/*
+
+*** Mux4(): template that implements a multiplexer 16-to-1 
+    - If s == 0 then out = c[0]
+    - If s == 1 then out = c[1]
+      . 
+      .
+      .
+      
+    - If s == 14 then out = c[14]
+    - If s == 15 then out = c[15]
+
+        - Inputs: s[4] -> binary values, selector
+                          requires tag binary
+                  c[16] -> 16 elements that correspond to the inputs of the mux: c[0] => first input, c[1] => second input, ...
+        - Output: out -> field element, it takes the value c[0] if s == [0, 0, 0, 0], c[1] if s == [1, 0, 0, 0], . . ., c[15] if s == [1, 1, 1, 1] 
+        
+    Example: Mux3()([1, 5, 4, 2, 6, 3, 1, 5, 1, 5, 4, 2, 6, 3, 1, 5], [0, 0, 1, 1]) = 6
+
+ */
 
 template Mux4() {
     var i;
