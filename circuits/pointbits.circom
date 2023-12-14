@@ -16,13 +16,22 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
-pragma circom 2.0.0;
+pragma circom 2.1.5;
+
+// The templates and functions of this file only work for prime field bn128 (21888242871839275222246405745257275088548364400416034343698204186575808495617)
 
 include "bitify.circom";
 include "aliascheck.circom";
 include "compconstant.circom";
 include "babyjub.circom";
 
+
+/*
+
+*** sqrt(n): function that returns the square of the value n. 
+    That is, it returns a value r s.t. r * r = n mod p
+    
+ */
 
 function sqrt(n) {
 
@@ -69,11 +78,19 @@ function sqrt(n) {
     return r;
 }
 
+/*
 
-template Bits2Point() {
-    signal input in[256];
-    signal output out[2];
-}
+*** Bits2Point_Strict(): template that receives the encoding of a point of a curve using 256 bits and returns its Edwards representation
+        - Inputs: in[256] -> encoding of the point using 256 bits 
+                             requires tag binary
+        - Outputs: out[2] -> curve point using Edwards representation
+                               
+    Encoding:
+       in[0..253] -> binary representation of out[1]
+       in[254] -> 0
+       in[255] -> if out[0] is positive then 0, else 1
+*/
+
 
 template Bits2Point_Strict() {
     signal input {binary} in[256];
@@ -126,12 +143,18 @@ template Bits2Point_Strict() {
 }
 
 
-template Point2Bits() {
-    signal input in[2];
-    signal output out[256];
+/*
 
-
-}
+*** Point2Bits_Strict(): template that receives a point as an input and returns its encoding using 256 bits
+        - Inputs: in[2] -> curve point using Edwards representation
+        - Outputs: out[256] -> encoding of the point using 256 bits
+                               satisfies tag binary
+                               
+    Encoding:
+       out[0..253] -> binary representation of in[1]
+       out[254] -> 0
+       out[255] -> if in[0] is positive then 0, else 1
+*/
 
 template Point2Bits_Strict() {
     signal input in[2];

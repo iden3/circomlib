@@ -16,9 +16,21 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
-pragma circom 2.0.0;
+pragma circom 2.1.5;
+
+// The templates and functions of this file only work for prime field bn128 (21888242871839275222246405745257275088548364400416034343698204186575808495617)
 
 include "escalarmul.circom";
+
+
+/*
+
+*** Pedersen(n): template that performs the Pedersen protocol on the input in, that is the binary representation of a value x using n bits. It calculates the output point of the protocol out in Edwards representation
+        - Inputs: in[n] -> binary representation of the scalar
+                           requires tag binary
+        - Outputs: out[2] -> output curve point in Edwards representation
+    
+ */
 
 template Pedersen(n) {
     signal input {binary} in[n];

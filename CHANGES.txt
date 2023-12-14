@@ -12,5 +12,7 @@ Changes:
 
 - Changed comparators GreaterEqThan and LessEqThan to satisfy tags
 
+- Change name of the template EdDSAVerifier to EdDSAPedersenVerifier in file eddsapedersen.circom (previously eddsa.circom)
 
-SWITCHER, SIGN, MUX4, MUX3, MUX2, MUX1, GATES, BINSUB, BINSUM, ALIASCHECK, BABYJUB, BITIFY, COMPARATORS, COMPCONSTANT
+
+SWITCHER, SIGN, MUX4, MUX3, MUX2, MUX1, GATES, BINSUB, BINSUM, ALIASCHECK, BABYJUB, BITIFY, COMPARATORS, COMPCONSTANT, MONTGOMERY, EDDSA, EDDSAPOSEIDON, PEDERSEN, PEDERSEN_OLD, POINTBITS, 
