@@ -18,9 +18,9 @@
 */
 pragma circom 2.1.5;
 
-include "mux3.circom";
-include "montgomery.circom";
-include "babyjub.circom";
+include "../mux3.circom";
+include "../montgomery.circom";
+include "../babyjub.circom";
 
 
 /*

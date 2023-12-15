@@ -23,8 +23,8 @@ pragma circom 2.1.5;
 include "comparators.circom";
 include "poseidon.circom";
 include "bitify.circom";
-include "escalarmulany.circom";
-include "escalarmulfix.circom";
+include "escalarmul/escalarmulany.circom";
+include "escalarmul/escalarmulfix.circom";
 
 
 /*

@@ -19,9 +19,9 @@
          
 pragma circom 2.1.5;
 
-include "mux4.circom";
+include "../mux4.circom";
 include "escalarmulw4table.circom";
-include "babyjub.circom";
+include "../babyjub.circom";
 
 
 
