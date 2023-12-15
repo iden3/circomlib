@@ -16,11 +16,25 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
-pragma circom 2.0.0;
+pragma circom 2.1.5;
 
 include "montgomery.circom";
 include "babyjub.circom";
 include "comparators.circom";
+
+
+/*
+
+*** Multiplexor2(): template that implements a multiplexer 2-to-1 between two inputs of 2 elements
+    - If s == 0 then out = in[0]
+    - If s == 1 then out = in[1]
+
+        - Inputs: sel -> binary value, selector
+                       requires tag binary
+                  in[2][2] -> two arrays of 2 elements that correspond to the inputs of the mux: in[0] => first input, in[1] => second input 
+        - Output: out[2] -> array of 2 elements, it takes the value in[0] if sel == 0, in[1] if sel == 1 
+
+ */
 
 template Multiplexor2() {
     signal input {binary} sel;
@@ -30,6 +44,25 @@ template Multiplexor2() {
     out[0] <== (in[1][0] - in[0][0])*sel + in[0][0];
     out[1] <== (in[1][1] - in[0][1])*sel + in[0][1];
 }
+
+
+/*
+
+*** BitElementMulAny(): template that receives three inputs: sel representing a bit, and two points of the elliptic curve in Montgomery form dblIn and addIn, and returns the points in Montgomery form dblOut and addOut according to the scheme below. This circuit is used in order to multiply a point of the BabyJub curve by a escalar (k * p with p in the curve). 
+        - Inputs: sel -> binary value
+                         requires tag binary
+                  dblIn[2] -> input curve point in Montgomery representation
+                  addIn[2] -> input curve point in Montgomery representation
+        - Outputs: dblOut[2] -> output curve point in Montgomery representation
+                   addOut[2] -> output curve point in Montgomery representation
+
+
+*** dblOut = 2 * dblIn;
+*** addOut = 
+          -- If sel == 0: addIn;
+          -- If sel == 1: 2 * dblIn + addIn;
+
+*/
 
 template BitElementMulAny() {
     signal input {binary} sel;
@@ -62,10 +95,17 @@ template BitElementMulAny() {
     selector.out[1] ==> addOut[1];
 }
 
-// p is montgomery point
-// n must be <= 248
-// returns out in twisted edwards
-// Double is in montgomery to be linked;
+/*
+
+*** SegmentMulAny(n): template that receives two inputs p[2] and e[n] representing a point of BabyJub curve in its Edwards representation and the binary representation of a field value k respectively, and returns the value out according to the scheme below. This circuit is used in order to multiply a point of the BabyJub curve by a escalar (k * p with p in the curve). 
+        - Inputs: e[n] -> binary representation of k
+                           requires tag binary
+                  p[2] -> input curve point in Edwards representation
+        - Outputs: out[2] -> output curve point in Edwards representation
+
+TODO: ADD SCHEME
+
+*/
 
 template SegmentMulAny(n) {
     signal input {binary}  e[n];
@@ -126,7 +166,19 @@ template SegmentMulAny(n) {
     lastSel.out[1] ==> out[1];
 }
 
-// This function assumes that p is in the subgroup and it is different to 0
+/*
+
+*** EscalarMulAny(n): template that receives two inputs p[2] and e[n] representing a point of BabyJub curve in its Edwards representation and the binary representation of a field value k respectively, and returns the value out according to the scheme below. This circuit is used in order to multiply a point of the BabyJub curve by a escalar (k * p with p in the curve). The input e is the binary representation of the value k and p is the point of the curve.
+        - Inputs: e[n] -> binary representation of k
+                           requires tag binary
+                  p[2] -> input curve point to be multiplied in Edwards representation
+        - Outputs: out[2] -> output curve point k * p in Edwards representation
+
+     Note: This function assumes that p is in the subgroup and it is different to 0
+
+TODO: ADD SCHEME
+
+*/
 
 template EscalarMulAny(n) {
     signal input {binary} e[n];              // Input in binary format

@@ -16,9 +16,23 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
+         
+pragma circom 2.1.5;
+
+include "mux4.circom";
+include "escalarmulw4table.circom";
+include "babyjub.circom";
+
+
 
 /*
-
+*** EscalarMulWindow(base, k): template that receives two inputs in[2]  and a sel[4] representing a value of the prime field and a binary value respectively, and returns the point out according to the scheme below. This circuit is used in order to multiply a curve of the BabyJub curve by a escalar (val * base with base in the curve). The parameter k indicates the number of window in the protocol 
+        - Inputs: in[2] -> field values
+                  sel[4] -> binary values
+                            requires tag binary
+        - Outputs: out[2] -> field values
+    
+  Scheme:
                                                         ┏━━━━━━━━━━━┓
                                                         ┃           ┃
                                                         ┃           ┃
@@ -60,11 +74,6 @@
 
 
  */
-pragma circom 2.0.0;
-
-include "mux4.circom";
-include "escalarmulw4table.circom";
-include "babyjub.circom";
 
 template EscalarMulWindow(base, k) {
 
@@ -101,8 +110,18 @@ template EscalarMulWindow(base, k) {
     adder.yout ==> out[1];
 }
 
+
+
+
 /*
 
+*** EscalarMul(n, base): template that receives two inputs inp[2] and in[n] representing a point of BabyJub curve in its Edwards representation and the binary representation of a field value k respectively, and returns the value out according to the scheme below. This circuit is used in order to multiply a point of the BabyJub curve by a escalar (k * inp with inp in the curve). The input in is the binary representation of the value k and in is the point of the curve.
+        - Inputs: in[n] -> binary representation of k
+                           requires tag binary
+                  inp[2] -> input curve point to be multiplied
+        - Outputs: out[2] -> output curve point k * inp
+    
+  Scheme:
 
                 ┏━━━━━━━━━┓      ┏━━━━━━━━━┓                            ┏━━━━━━━━━━━━━━━━━━━┓
                 ┃         ┃      ┃         ┃                            ┃                   ┃
