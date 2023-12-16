@@ -1,4 +1,4 @@
-pragma circom 2.0.0;
+pragma circom 2.1.5;
 
 include "../../circuits/smt/smtprocessor.circom";
 include "../../circuits/tags-managing.circom";
@@ -16,7 +16,7 @@ template Main() {
     
     signal output newRoot;
 
-    newRoot <== SMTProcessor(10)(oldRoot, siblings, oldKey, oldValue, AddBinaryTag()(isOld0), newKey, newValue, AddBinaryArrayTag(2)(fnc));
+    newRoot <== SMTProcessor(10)(oldRoot, siblings, oldKey, oldValue, BinaryCheck()(isOld0), newKey, newValue, BinaryCheckArray(2)(fnc));
 
     
 }

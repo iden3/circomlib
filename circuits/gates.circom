@@ -114,7 +114,7 @@ template NOT() {
 
 template NAND() {
     signal input {binary} a;
-    signal input {binary} b;.
+    signal input {binary} b;
     signal output {binary} out;
 
     out <== 1 - a*b;

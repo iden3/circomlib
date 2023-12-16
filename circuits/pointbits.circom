@@ -22,7 +22,7 @@ pragma circom 2.1.5;
 
 include "bitify.circom";
 include "aliascheck.circom";
-include "compconstant.circom";
+include "comparators.circom";
 include "babyjub.circom";
 
 
