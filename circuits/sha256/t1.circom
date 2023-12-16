@@ -23,13 +23,13 @@ include "sigma.circom";
 include "ch.circom";
 
 template T1() {
-    signal input h[32];
-    signal input e[32];
-    signal input f[32];
-    signal input g[32];
-    signal input k[32];
-    signal input w[32];
-    signal output out[32];
+    signal input {binary} h[32];
+    signal input {binary} e[32];
+    signal input {binary} f[32];
+    signal input {binary} g[32];
+    signal input {binary} k[32];
+    signal input {binary} w[32];
+    signal output {binary} out[32];
 
     var ki;
 

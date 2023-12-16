@@ -16,19 +16,12 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
-pragma circom 2.0.0;
+pragma circom 2.1.5;
 
-include "mux3.circom";
-include "montgomery.circom";
-include "babyjub.circom";
+include "../mux3.circom";
+include "../montgomery.circom";
+include "../babyjub.circom";
 
-/*
-    Window of 3 elements, it calculates
-        out = base + base*in[0] + 2*base*in[1] + 4*base*in[2]
-        out4 = 4*base
-
-    The result should be compensated.
- */
 
 /*
 
@@ -45,8 +38,25 @@ include "babyjub.circom";
     A good way to see it is that the accumulator input of the adder >= 2^247*B and the other input
     is the output of the windows that it's going to be <= 2^246*B
  */
+ 
+ 
+/*
+
+*** WindowMulFix(): template that given a point in Montgomery representation base and a binary input in, calculates:
+        out = base + base*in[0] + 2*base*in[1] + 4*base*in[2]
+        out8 = 8*base
+
+    This circuit is used in order to multiply a fixed point of the BabyJub curve by a escalar (k * p with p a fixed point of the curve). 
+        - Inputs: in[3] -> binary value
+                         requires tag binary
+                  base[2] -> input curve point in Montgomery representation
+        - Outputs: out[2] -> output curve point in Montgomery representation
+                   out8[2] -> output curve point in Montgomery representation
+    
+ */
+ 
 template WindowMulFix() {
-    signal input in[3];
+    signal input {binary} in[3];
     signal input base[2];
     signal output out[2];
     signal output out8[2];   // Returns 8*Base (To be linked)
@@ -133,16 +143,18 @@ template WindowMulFix() {
 
 
 /*
-    This component does a multiplication of a escalar times a fix base
-    Signals:
-        e: The scalar in bits
-        base: the base point in edwards format
-        out:  The result
-        dbl: Point in Edwards to be linked to the next segment.
+
+*** SegmentMulFix(nWindows): template used to perform a segment of the multiplications needed to perform a multiplication of a scalar times a fix base (k * BASE). 
+        - Inputs: e[3 * nWindows] -> binary representation of the scalar
+                                     requires tag binary
+                  base[2] -> input curve point in Edwards representation
+        - Outputs: out[2] -> output curve point in Edwards representation
+                   dbl[2] -> output curve point in Montgomery representation (to be linked to the next segment)
+    
  */
 
 template SegmentMulFix(nWindows) {
-    signal input e[nWindows*3];
+    signal input {binary} e[nWindows*3];
     signal input base[2];
     signal output out[2];
     signal output dbl[2];
@@ -227,13 +239,17 @@ template SegmentMulFix(nWindows) {
 
 
 /*
-This component multiplies a escalar times a fixed point BASE (twisted edwards format)
-    Signals
-        e: The escalar in binary format
-        out: The output point in twisted edwards
+
+*** EscalarMulFix(n, BASE): template that does a multiplication of a scalar times a fixed point BASE. It receives a point in Edwards representation BASE and a binary input e representing a value k using n bits, and calculates the point k * p.
+        - Inputs: e[n] -> binary representation of the scalar k
+                          requires tag binary
+        - Outputs: out[2] -> output curve point in Edwards representation out = k * BASE
+    
  */
+ 
+ 
 template EscalarMulFix(n, BASE) {
-    signal input e[n];              // Input in binary format
+    signal input {binary} e[n];              // Input in binary format
     signal output out[2];           // Point (Twisted format)
 
     var nsegments = (n-1)\246 +1;       // 249 probably would work. But I'm not sure and for security I keep 246
@@ -248,6 +264,8 @@ template EscalarMulFix(n, BASE) {
     var i;
     var nseg;
     var nWindows;
+    
+    signal {binary} aux_0 <== 0;
 
     for (s=0; s<nsegments; s++) {
 
@@ -261,7 +279,7 @@ template EscalarMulFix(n, BASE) {
         }
 
         for (i = nseg; i<nWindows*3; i++) {
-            segments[s].e[i] <== 0;
+            segments[s].e[i] <== aux_0;
         }
 
         if (s==0) {

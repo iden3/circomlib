@@ -23,8 +23,8 @@ include "rotate.circom";
 include "shift.circom";
 
 template SmallSigma(ra, rb, rc) {
-    signal input in[32];
-    signal output out[32];
+    signal input {binary} in[32];
+    signal output {binary} out[32];
     var k;
 
     component rota = RotR(32, ra);
@@ -50,8 +50,8 @@ template SmallSigma(ra, rb, rc) {
 }
 
 template BigSigma(ra, rb, rc) {
-    signal input in[32];
-    signal output out[32];
+    signal input {binary} in[32];
+    signal output {binary} out[32];
     var k;
 
     component rota = RotR(32, ra);

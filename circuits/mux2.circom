@@ -16,11 +16,32 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
-pragma circom 2.0.0;
 
+pragma circom 2.1.5;
+
+// The templates and functions in this file are general and work for any prime field
+
+
+/*
+
+*** MultiMux2(n): template that implements a multiplexer 4-to-1 between four inputs of n elements
+    - If s == 0 then out = c[0]
+    - If s == 1 then out = c[1]
+    - If s == 2 then out = c[2]
+    - If s == 3 then out = c[3]
+    
+        - Inputs: s[2] -> binary values, selector
+                          requires tag binary
+                  c[n][4] -> four arrays of n elements that correspond to the inputs of the mux: c[i][0] => first input, c[i][1] => second input, ... 
+        - Output: out[n] -> array of n elements, it takes the value c[i][0] if s == [0, 0], c[i][1] if s == [1, 0], c[i][2] if s == [0, 1], c[i][3] if s == [1, 1]
+        
+    Example: MultiMux2(3)([[1, 2, 4, 1], [3, 1, 3, 1], [4, 6, 6, 2]], [0, 1]) = [4, 3, 6]
+
+ */
+ 
 template MultiMux2(n) {
     signal input c[n][4];  // Constants
-    signal input s[2];   // Selector
+    signal input {binary} s[2];   // Selector
     signal output out[n];
 
     signal a10[n];
@@ -43,10 +64,29 @@ template MultiMux2(n) {
     }
 }
 
+
+
+/*
+
+*** Mux2(): template that implements a multiplexer 4-to-1 
+    - If s == 0 then out = c[0]
+    - If s == 1 then out = c[1]
+    - If s == 2 then out = c[2]
+    - If s == 3 then out = c[3]
+
+        - Inputs: s[2] -> binary values, selector
+                          requires tag binary
+                  c[4] -> four elements that correspond to the inputs of the mux: c[0] => first input, c[1] => second input, ...
+        - Output: out -> field element, it takes the value c[0] if s == [0, 0], c[1] if s == [1, 0], c[2] if s == [0, 1], c[3] if s == [1, 1] 
+        
+    Example: Mux2()([1, 5, 4, 2], [1, 1]) = 2
+
+ */
+
 template Mux2() {
     var i;
     signal input c[4];  // Constants
-    signal input s[2];   // Selector
+    signal input {binary} s[2];   // Selector
     signal output out;
 
     component mux = MultiMux2(1);

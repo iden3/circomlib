@@ -1,6 +1,6 @@
 pragma circom 2.0.0;
 
-include "../../circuits/escalarmul.circom";
+include "../../circuits/escalarmul/escalarmul.circom";
 include "../../circuits/bitify.circom";
 
 

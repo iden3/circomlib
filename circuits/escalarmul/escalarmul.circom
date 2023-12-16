@@ -16,9 +16,23 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
+         
+pragma circom 2.1.5;
+
+include "../mux4.circom";
+include "escalarmulw4table.circom";
+include "../babyjub.circom";
+
+
 
 /*
-
+*** EscalarMulWindow(base, k): template that receives two inputs in[2]  and a sel[4] representing a value of the prime field and a binary value respectively, and returns the point out according to the scheme below. This circuit is used in order to multiply a curve of the BabyJub curve by a escalar (val * base with base in the curve). The parameter k indicates the number of window in the protocol 
+        - Inputs: in[2] -> field values
+                  sel[4] -> binary values
+                            requires tag binary
+        - Outputs: out[2] -> field values
+    
+  Scheme:
                                                         ┏━━━━━━━━━━━┓
                                                         ┃           ┃
                                                         ┃           ┃
@@ -60,16 +74,11 @@
 
 
  */
-pragma circom 2.0.0;
-
-include "mux4.circom";
-include "escalarmulw4table.circom";
-include "babyjub.circom";
 
 template EscalarMulWindow(base, k) {
 
     signal input in[2];
-    signal input sel[4];
+    signal input {binary} sel[4];
     signal output out[2];
 
     var table[16][2];
@@ -101,8 +110,18 @@ template EscalarMulWindow(base, k) {
     adder.yout ==> out[1];
 }
 
+
+
+
 /*
 
+*** EscalarMul(n, base): template that receives two inputs inp[2] and in[n] representing a point of BabyJub curve in its Edwards representation and the binary representation of a field value k respectively, and returns the value out according to the scheme below. This circuit is used in order to multiply a point of the BabyJub curve by a escalar (k * inp with inp in the curve). The input in is the binary representation of the value k and in is the point of the curve.
+        - Inputs: in[n] -> binary representation of k
+                           requires tag binary
+                  inp[2] -> input curve point to be multiplied
+        - Outputs: out[2] -> output curve point k * inp
+    
+  Scheme:
 
                 ┏━━━━━━━━━┓      ┏━━━━━━━━━┓                            ┏━━━━━━━━━━━━━━━━━━━┓
                 ┃         ┃      ┃         ┃                            ┃                   ┃
@@ -126,7 +145,7 @@ template EscalarMulWindow(base, k) {
  */
 
 template EscalarMul(n, base) {
-    signal input in[n];
+    signal input {binary} in[n];
     signal input inp[2];   // Point input to be added
     signal output out[2];
 
@@ -134,6 +153,7 @@ template EscalarMul(n, base) {
     var i;
     var j;
 
+    signal {binary} aux_0 <== 0;
     component windows[nBlocks];
 
     // Construct the windows
@@ -145,7 +165,7 @@ template EscalarMul(n, base) {
     for (i=0; i<nBlocks; i++) {
         for (j=0; j<4; j++) {
             if (i*4+j >= n) {
-                windows[i].sel[j] <== 0;
+                windows[i].sel[j] <== aux_0;
             } else {
                 windows[i].sel[j] <== in[i*4+j];
             }

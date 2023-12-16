@@ -16,58 +16,144 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
-pragma circom 2.0.0;
+
+pragma circom 2.1.5;
+
+// The templates and functions in this file are general and work for any prime field
+
+/*
+*** XOR(): template that given two inputs a and b representing booleans (0 or 1) returns the value of a XOR b
+        - Inputs: a -> binary value
+                       requires tag binary
+                  b -> binary value
+                       requires tag binary
+        - Output: out -> binary value, result of a XOR b
+                            satisfies tag binary
+         
+    Example: XOR()(1, 1) = 0
+*/
 
 template XOR() {
-    signal input a;
-    signal input b;
-    signal output out;
+    signal input {binary} a;
+    signal input {binary} b;
+    signal output {binary} out;
 
     out <== a + b - 2*a*b;
 }
 
+/*
+*** AND(): template that given two inputs a and b representing booleans (0 or 1) returns the value of a AND b
+        - Inputs: a -> binary value
+                       requires tag binary
+                  b -> binary value
+                       requires tag binary
+        - Output: out -> binary value, result of a AND b
+                            satisfies tag binary
+         
+    Example: AND()(1, 1) = 1
+*/
+
 template AND() {
-    signal input a;
-    signal input b;
-    signal output out;
+    signal input {binary} a;
+    signal input {binary} b;
+    signal output {binary} out;
 
     out <== a*b;
 }
 
+
+/*
+*** OR(): template that given two inputs a and b representing booleans (0 or 1) returns the value of a OR b
+        - Inputs: a -> binary value
+                       requires tag binary
+                  b -> binary value
+                       requires tag binary
+        - Output: out -> binary value, result of a OR b
+                            satisfies tag binary
+         
+    Example: OR()(1, 0) = 1
+*/
+
 template OR() {
-    signal input a;
-    signal input b;
-    signal output out;
+    signal input {binary} a;
+    signal input {binary} b;
+    signal output {binary} out;
 
     out <== a + b - a*b;
 }
 
+
+/*
+*** NOT(): template that given an input in representing a boolean (0 or 1) returns the value of NOT in
+        - Inputs: in -> binary value
+                       requires tag binary
+        - Output: out -> binary value, result of NOT in
+                            satisfies tag binary
+         
+    Example: NOT()(1) = 0
+*/
+
 template NOT() {
-    signal input in;
-    signal output out;
+    signal input {binary} in;
+    signal output {binary} out;
 
     out <== 1 + in - 2*in;
 }
 
+/*
+*** NAND(): template that given two inputs a and b representing booleans (0 or 1) returns the value of a NAND b
+        - Inputs: a -> binary value
+                       requires tag binary
+                  b -> binary value
+                       requires tag binary
+        - Output: out -> binary value, result of a NAND b
+                            satisfies tag binary
+         
+    Example: NAND()(1, 1) = 0
+*/
+
 template NAND() {
-    signal input a;
-    signal input b;
-    signal output out;
+    signal input {binary} a;
+    signal input {binary} b;
+    signal output {binary} out;
 
     out <== 1 - a*b;
 }
 
+
+/*
+*** NOR(): template that given two inputs a and b representing booleans (0 or 1) returns the value of a NOR b
+        - Inputs: a -> binary value
+                       requires tag binary
+                  b -> binary value
+                       requires tag binary
+        - Output: out -> binary value, result of a NOR b
+                            satisfies tag binary
+         
+    Example: NOR()(1, 0) = 0
+*/
+
 template NOR() {
-    signal input a;
-    signal input b;
-    signal output out;
+    signal input {binary} a;
+    signal input {binary} b;
+    signal output {binary} out;
 
     out <== a*b + 1 - a - b;
 }
 
+/*
+*** MultiAND(n): template that given as input an array of n signals representing booleans (0 or 1) in[0], ... , in[n-1] and returns the value of and[0] AND and[1] ... AND and[n-1] 
+        - Inputs: in[n] -> binary values
+                           requires tag binary
+        - Output: out[n] -> binary value, result of in[0] AND ... AND in[n-1]
+                            satisfies tag binary
+         
+    Example: MultiAND(4)([1, 1, 0, 1]) = 0
+*/
+
 template MultiAND(n) {
-    signal input in[n];
-    signal output out;
+    signal input {binary} in[n];
+    signal output {binary} out;
     component and1;
     component and2;
     component ands[2];

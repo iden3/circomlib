@@ -16,10 +16,30 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
-pragma circom 2.0.0;
+pragma circom 2.1.5;
 
 include "bitify.circom";
-include "escalarmulfix.circom";
+include "escalarmul/escalarmulfix.circom";
+
+// The templates and functions of this file only work for prime field bn128 (21888242871839275222246405745257275088548364400416034343698204186575808495617)
+
+
+/*
+*** BabyAdd(): template that receives two inputs (x1, y1), (x2, y2) representing points of the Baby Jubjub curve in Edwards form and returns the addition of the points (xout, yout)
+        - Inputs: x1, y1 -> two field values representing a point of the curve in Edwards form
+                  x2, y2 -> two field values representing a point of the curve in Edwards form
+        - Outputs: xout, yout -> two field values representing a point of the curve in Edwards form, (xout, yout) = (x1, y1) + (x2, y2)
+         
+    Example:
+    
+    tau = d * x1 * x2 * y1 * y3
+    
+    
+                      x1 * y2 + y1 * x2       y1 * y2 - x1 * x2
+    [xout, yout] = [ -------------------  , -------------------- ]
+                          1 + d * tau            1 - d * tau     
+    
+*/
 
 template BabyAdd() {
     signal input x1;
@@ -49,6 +69,17 @@ template BabyAdd() {
     (1-d*tau)*yout === (delta + a*beta - gamma);
 }
 
+
+
+/*
+*** BabyDouble(): template that receives an input (x, y) representing a point of the Baby Jubjub curve in Edwards form and returns the point 2 * (x, y)
+        - Inputs: x, y -> two field values representing a point of the curve in Edwards form
+        - Outputs: xout, yout -> two field values representing a point of the curve in Edwards form. 2 * (x, y) = (xout, yout)
+         
+    Example: BabyDouble()(x, y) = BabyAdd()(x, y, x, y)
+    
+*/
+
 template BabyDbl() {
     signal input x;
     signal input y;
@@ -64,6 +95,16 @@ template BabyDbl() {
     adder.xout ==> xout;
     adder.yout ==> yout;
 }
+
+
+/*
+*** BabyCheck(): template that receives an input (x, y) and checks if it belongs to the Baby Jubjub curve
+        - Inputs: x, y -> two field values representing the point the point that we want to check
+        - Outputs: None
+        
+    Example: The set of solutions of BabyCheck()(x, y) are the points of the Baby Jubjub curve
+    
+*/
 
 
 template BabyCheck() {
@@ -82,12 +123,23 @@ template BabyCheck() {
     a*x2 + y2 === 1 + d*x2*y2;
 }
 
-// Extracts the public key from private key
+
+/*
+*** BabyPbk(): template that receives an input in representing a value in the prime subgroup with order r = 2736030358979909402780800718157159386076813972158567259200215660948447373041, and returns the point of the BabyJubjub curve in * P with P being the point P = (5299619240641551281634865583518297030282874472190772894086521144482721001553, 16950150798460657717958625567821834550301663161624707787222815936182638968203)
+
+This template is used to extract the public key from the private key.
+        - Inputs: in -> field value in [1,r-1]
+        - Outputs: (Ax, Ay) -> two field values representing a point of the curve in Edwards form, in * P = (Ax, Ay)
+    
+*/
+
 template BabyPbk() {
-    signal input  in;
+    signal input  {minvalue,maxvalue} in;
     signal output Ax;
     signal output Ay;
 
+    var r = 2736030358979909402780800718157159386076813972158567259200215660948447373041;
+    assert(in.minvalue > 0 && in.maxvalue < r);
     var BASE8[2] = [
         5299619240641551281634865583518297030282874472190772894086521144482721001553,
         16950150798460657717958625567821834550301663161624707787222815936182638968203

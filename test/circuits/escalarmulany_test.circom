@@ -1,6 +1,6 @@
-pragma circom 2.0.0;
+pragma circom 2.1.5;
 
-include "../../circuits/escalarmulany.circom";
+include "../../circuits/escalarmul/escalarmulany.circom";
 include "../../circuits/bitify.circom";
 
 template Main() {

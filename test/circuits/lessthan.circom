@@ -1,5 +1,13 @@
-pragma circom 2.0.0;
+pragma circom 2.1.5;
 
 include "../../circuits/comparators.circom";
+include "../../circuits/tags-managing.circom";
 
-component main = LessThan(32);
+
+template A(n){
+    signal input in[2];
+    signal output out <== LessThan(n)(MaxbitCheckArray(n, 2)(in));
+
+}
+
+component main = A(30);

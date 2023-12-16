@@ -19,8 +19,8 @@
 pragma circom 2.0.0;
 
 template ShR(n, r) {
-    signal input in[n];
-    signal output out[n];
+    signal input {binary} in[n];
+    signal output {binary} out[n];
 
     for (var i=0; i<n; i++) {
         if (i+r >= n) {

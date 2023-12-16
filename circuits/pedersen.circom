@@ -16,14 +16,33 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
-pragma circom 2.0.0;
+pragma circom 2.1.5;
+
+// The templates and functions of this file only work for prime field bn128 (21888242871839275222246405745257275088548364400416034343698204186575808495617)
 
 include "montgomery.circom";
 include "mux3.circom";
 include "babyjub.circom";
 
+
+/*
+
+*** Window4(): template that given a point in Montgomery representation base and a binary input in, calculates:
+        out = base + base*in[0] + 2*base*in[1] + 4*base*in[2] in case in[3] == 0, in case in[3] == 1 then it negates out[1] --> out = base * (in[0..2] + 1) if in[3] == 0, out = - base * (in[0..2] + 1) if in[3] == 1
+        
+        out8 = 8*base
+
+    This circuit is used in order to perform the Pedersen protocol on an input in.
+        - Inputs: in[4] -> binary value
+                         requires tag binary
+                  base[2] -> input curve point in Montgomery representation
+        - Outputs: out[2] -> output curve point in Montgomery representation
+                   out8[2] -> output curve point in Montgomery representation
+    
+ */
+
 template Window4() {
-    signal input in[4];
+    signal input {binary} in[4];
     signal input base[2];
     signal output out[2];
     signal output out8[2];   // Returns 8*Base (To be linked)
@@ -108,9 +127,19 @@ template Window4() {
     out[1] <== - mux.out[1]*2*in[3] + mux.out[1];  // Negate y if in[3] is one
 }
 
+/*
+
+*** Segment(nWindows):template used to perform a segment of the multiplications needed to perform a the Pedersen protocol. 
+        - Inputs: in[4 * nWindows] -> binary representation of the scalar
+                                      requires tag binary
+                  base[2] -> input curve point in Edwards representation
+        - Outputs: out[2] -> output curve point in Edwards representation
+    
+ */
+
 
 template Segment(nWindows) {
-    signal input in[nWindows*4];
+    signal input {binary} in[nWindows*4];
     signal input base[2];
     signal output out[2];
 
@@ -173,8 +202,18 @@ template Segment(nWindows) {
     out[1] <== m2e.out[1];
 }
 
+
+/*
+
+*** Pedersen(n): template that performs the Pedersen protocol on the input in, that is the binary representation of the field using n bits. It calculates the output point of the Pedersen protocol in Edwards representation
+        - Inputs: in[n] -> binary representation of the scalar
+                          requires tag binary
+        - Outputs: out[2] -> output curve point in Edwards representation
+    
+ */
+
 template Pedersen(n) {
-    signal input in[n];
+    signal input {binary} in[n];
     signal output out[2];
 
     var BASE[10][2] = [
@@ -231,20 +270,6 @@ template Pedersen(n) {
         }
     }
 
-/*
-    coponent packPoint = PackPoint();
-
-    if (nSegments>1) {
-        packPoint.in[0] <== adders[nSegments-2].xout;
-        packPoint.in[1] <== adders[nSegments-2].yout;
-    } else {
-        packPoint.in[0] <== segments[0].out[0];
-        packPoint.in[1] <== segments[0].out[1];
-    }
-
-    out[0] <== packPoint.out[0];
-    out[1] <== packPoint.out[1];
-*/
 
     if (nSegments>1) {
         out[0] <== adders[nSegments-2].xout;
