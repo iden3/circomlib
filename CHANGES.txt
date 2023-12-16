@@ -18,3 +18,4 @@ Changes:
 
 - Moved template Compconstant(ct) and Sign (from files compconstant.circom and sign.circom) to comparators.circom
 
+- Added tags minvlue and maxvalue to babypkb
