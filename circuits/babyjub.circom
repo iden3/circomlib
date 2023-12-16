@@ -125,20 +125,21 @@ template BabyCheck() {
 
 
 /*
-*** BabyPbk(): template that receives an input in representing a value of the prime field and returns the point of the BabyJubjub curve in * P with P being the point
-P = (5299619240641551281634865583518297030282874472190772894086521144482721001553, 16950150798460657717958625567821834550301663161624707787222815936182638968203)
+*** BabyPbk(): template that receives an input in representing a value in the prime subgroup with order r = 2736030358979909402780800718157159386076813972158567259200215660948447373041, and returns the point of the BabyJubjub curve in * P with P being the point P = (5299619240641551281634865583518297030282874472190772894086521144482721001553, 16950150798460657717958625567821834550301663161624707787222815936182638968203)
 
 This template is used to extract the public key from the private key.
-        - Inputs: in -> field value
+        - Inputs: in -> field value in [1,r-1]
         - Outputs: (Ax, Ay) -> two field values representing a point of the curve in Edwards form, in * P = (Ax, Ay)
     
 */
 
 template BabyPbk() {
-    signal input  in;
+    signal input  {minvalue,maxvalue} in;
     signal output Ax;
     signal output Ay;
 
+    var r = 2736030358979909402780800718157159386076813972158567259200215660948447373041;
+    assert(in.minvalue > 0 && in.maxvalue < r);
     var BASE8[2] = [
         5299619240641551281634865583518297030282874472190772894086521144482721001553,
         16950150798460657717958625567821834550301663161624707787222815936182638968203
