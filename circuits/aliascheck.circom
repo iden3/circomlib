@@ -18,7 +18,7 @@
 */
 pragma circom 2.1.5;
 
-include "compconstant.circom";
+include "comparators.circom";
 
 // The templates and functions of this file only work for prime field bn128 (21888242871839275222246405745257275088548364400416034343698204186575808495617)
 

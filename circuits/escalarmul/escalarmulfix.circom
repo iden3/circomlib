@@ -18,9 +18,9 @@
 */
 pragma circom 2.1.5;
 
-include "mux3.circom";
-include "montgomery.circom";
-include "babyjub.circom";
+include "../mux3.circom";
+include "../montgomery.circom";
+include "../babyjub.circom";
 
 
 /*
@@ -144,7 +144,7 @@ template WindowMulFix() {
 
 /*
 
-*** SegmentMulFix(nWindows): template used to perform a segment of the multiplications needed to perform a multiplication of a scalar times a fix base. 
+*** SegmentMulFix(nWindows): template used to perform a segment of the multiplications needed to perform a multiplication of a scalar times a fix base (k * BASE). 
         - Inputs: e[3 * nWindows] -> binary representation of the scalar
                                      requires tag binary
                   base[2] -> input curve point in Edwards representation
@@ -240,10 +240,10 @@ template SegmentMulFix(nWindows) {
 
 /*
 
-*** EscalarMulFix(n, BASE): template that does a multiplication of a scalar times a fixed point BASE. It receives a point in Edwards representation BASE and a binary input in representing a value k, and calculates the point k * p.
-        - Inputs: e[n] -> binary representation of the scalar
+*** EscalarMulFix(n, BASE): template that does a multiplication of a scalar times a fixed point BASE. It receives a point in Edwards representation BASE and a binary input e representing a value k using n bits, and calculates the point k * p.
+        - Inputs: e[n] -> binary representation of the scalar k
                           requires tag binary
-        - Outputs: out[2] -> output curve point in Edwards representation
+        - Outputs: out[2] -> output curve point in Edwards representation out = k * BASE
     
  */
  

@@ -63,7 +63,7 @@ template BinaryCheckArray(n) {
     signal output {binary} out[n];
 
     for (var i = 0; i < n; i++) {
-    	out[i] <== AddBinaryTag()(in[i]);
+    	out[i] <== BinaryCheck()(in[i]);
     }
 }
 
@@ -147,7 +147,7 @@ template MaxbitCheckArray(n,m) {
     out.maxbit = n;
 
     for (var i = 0; i < m; i++) {
-       out[i] <== AddMaxbitTag(n)(in[i]);
+       out[i] <== MaxbitCheck(n)(in[i]);
     }
     
 }
@@ -211,7 +211,7 @@ template MaxValueCheck(n) {
     
     signal {maxbit} aux[2];
     aux.maxbit = nbits(n);
-    aux[0] <== AddMaxbitTag(nbits(n))(in); // to ensure the correct size
+    aux[0] <== MaxbitCheck(nbits(n))(in); // to ensure the correct size
     aux[1] <== n;
 
     signal out1 <== LessEqThan(n)(aux);
@@ -240,7 +240,7 @@ template AddMaxAbsValueTag(n){
     
     signal {maxbit} aux[2];
     aux.maxbit = needed_bits;
-    aux[0] <== AddMaxbitTag(needed_bits)(in + n); // to ensure that 0 <= aux[0] < 2**nbits(2 * n)
+    aux[0] <== MaxbitCheck(needed_bits)(in + n); // to ensure that 0 <= aux[0] < 2**nbits(2 * n)
     aux[1] <== 2 * n;
 
     signal out1 <== LessEqThan(n)(aux); // checks that 0 <= in + n <= 2 * n <==> -n <= in <= n

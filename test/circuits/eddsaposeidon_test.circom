@@ -14,7 +14,7 @@ template A(){
 
     signal input M; // mesage 
     
-    signal enabled_aux <== AddBinaryTag()(enabled);
+    signal enabled_aux <== BinaryCheck()(enabled);
     
     EdDSAPoseidonVerifier()(enabled_aux, Ax, Ay, S, R8x, R8y, M);
 

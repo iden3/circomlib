@@ -18,9 +18,9 @@
 */
 pragma circom 2.1.5;
 
-include "montgomery.circom";
-include "babyjub.circom";
-include "comparators.circom";
+include "../montgomery.circom";
+include "../babyjub.circom";
+include "../comparators.circom";
 
 
 /*

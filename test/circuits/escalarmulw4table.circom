@@ -1,6 +1,6 @@
-pragma circom 2.0.0;
+pragma circom 2.1.5;
 
-include "../../circuits/escalarmulw4table.circom";
+include "../../circuits/escalarmul/escalarmulw4table.circom";
 
 
 

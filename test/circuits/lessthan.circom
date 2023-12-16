@@ -6,7 +6,7 @@ include "../../circuits/tags-managing.circom";
 
 template A(n){
     signal input in[2];
-    signal output out <== LessThan(n)(AddMaxbitArrayTag(n, 2)(in));
+    signal output out <== LessThan(n)(MaxbitCheckArray(n, 2)(in));
 
 }
 

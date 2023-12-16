@@ -1,4 +1,4 @@
-pragma circom 2.0.0;
+pragma circom 2.1.5;
 
 include "../../circuits/smt/smtverifier.circom";
 include "../../circuits/tags-managing.circom";
@@ -14,8 +14,8 @@ template SMTVerifier_main(nLevels) {
     signal input value;
     signal input fnc;
 
-    SMTVerifier(nLevels)(AddBinaryTag()(enabled), root, siblings, oldKey, oldValue, 
-                        AddBinaryTag()(isOld0), key, value,
-                        AddBinaryTag()(fnc));
+    SMTVerifier(nLevels)(BinaryCheck()(enabled), root, siblings, oldKey, oldValue, 
+                        BinaryCheck()(isOld0), key, value,
+                        BinaryCheck()(fnc));
 }
 component main = SMTVerifier_main(10);

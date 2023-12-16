@@ -21,15 +21,15 @@ pragma circom 2.1.5;
 
 // The templates and functions of this file only work for prime field bn128 (21888242871839275222246405745257275088548364400416034343698204186575808495617)
 
-include "compconstant.circom";
+include "comparators.circom";
 include "pointbits.circom";
 include "pedersen.circom";
-include "escalarmulany.circom";
-include "escalarmulfix.circom";
+include "escalarmul/escalarmulany.circom";
+include "escalarmul/escalarmulfix.circom";
 
 /*
 
-*** EdDSAPerdersenVerifier(n): template that implements the EdDSA verification protocol based on Pedersen hash for a message of size n. The circuit receives the message that we want to verify and the public and private keys (that are points of a curve in Edwards representation encoded using 256 bits) and checks if the message is correct.
+*** EdDSAPedersenVerifier(n): template that implements the EdDSA verification protocol based on Pedersen hash for a message of size n. The circuit receives the message that we want to verify and the public and private keys (that are points of a curve in Edwards representation encoded using 256 bits) and checks if the message is correct.
         - Inputs: msg[n] -> msg encoded in bits
                             requires tag binary
                   A[256] -> encoding of a point of a curve in Edwards representation using 256 bits
