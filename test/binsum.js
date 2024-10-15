@@ -28,7 +28,8 @@ describe("Binary sum test", function () {
         const circuit = await wasm_tester(path.join(__dirname, "circuits", "sum_test.circom"));
         await circuit.loadConstraints();
 
-        assert.equal(circuit.constraints.length, 97);  // 32 (in1) + 32(in2) + 32(out) + 1 (carry)
+        // assert.equal(circuit.constraints.length, 97);  // 32 (in1) + 32(in2) + 32(out) + 1 (carry) with --O2
+        assert.equal(circuit.constraints.length, 101);  // 32 (in1) + 32(in2) + 32(out) + 1 (carry) + 4 linear with --O1
 
         const witness = await circuit.calculateWitness({ "a": "111", "b": "222" }, true);
 
