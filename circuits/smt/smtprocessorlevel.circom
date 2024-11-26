@@ -35,7 +35,7 @@ na           0                           0
 
 upd          old1leaf                    new1leaf
 
-H' is the Hash function with the inputs shifted acordingly.
+H' is the Hash function with the inputs shifted accordingly.
 
 *****/
 pragma circom 2.0.0;
