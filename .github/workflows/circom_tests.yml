@@ -1,0 +1,38 @@
+name: Circom CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+      
+    # Get Rust toolchain
+    - run: curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf -o install_toolchain.sh
+    - run: chmod +x install_toolchain.sh
+    - run: sh install_toolchain.sh -y
+
+    # Install circom
+    - run: git clone https://github.com/iden3/circom.git
+    - run: cd circom && cargo build --release && cargo install --path circom
+
+    - run: npm i
+    - run: npm ci
+    - run: npm test
