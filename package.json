@@ -22,7 +22,7 @@
     "url": "https://github.com/iden3/circomlib.git"
   },
   "author": "0Kims",
-  "license": "GPL-3.0",
+  "license": "LGPL-3.0",
   "devDependencies": {
     "blake-hash": "^2.0.0",
     "chai": "^4.3.4",
