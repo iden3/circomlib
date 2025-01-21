@@ -1,7 +1,7 @@
 const chai = require("chai");
 const path = require("path");
 
-const createBlakeHash = require("blake-hash");
+const { blake512 } = require('@noble/hashes/blake1');
 const buildEddsa = require("circomlibjs").buildEddsa;
 
 const assert = chai.assert;
@@ -99,7 +99,7 @@ describe("Baby Jub test", function () {
     it("Should extract the public key from the private one", async () => {
 
         const rawpvk = Buffer.from("0001020304050607080900010203040506070809000102030405060708090021", "hex");
-        const pvk    = eddsa.pruneBuffer(createBlakeHash("blake512").update(rawpvk).digest().slice(0,32));
+        const pvk    = eddsa.pruneBuffer(blake512(rawpvk).slice(0,32));
         const S      = Scalar.shr(utils.leBuff2int(pvk), 3);
 
         const A      = eddsa.prv2pub(rawpvk);
