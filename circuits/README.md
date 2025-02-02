@@ -3,7 +3,7 @@
 ## Description
 
 - This folder contains circuit templates for standard operations and many cryptographic primitives.
-- Below you can find specifications of each function. In the representation of elements, there are three tyes:
+- Below you can find specifications of each function. In the representation of elements, there are three types, ties:
     - Binary
     - String
     - Field element (the field is specified in each case. We consider 2 possible fields: Fp and Fr, where p... and r... .)
