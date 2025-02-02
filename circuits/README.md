@@ -15,7 +15,7 @@
 ## Jordi
 
 * compconstant - Returns 1 if `in` (expanded to binary array) > `ct`
-* aliascheck - check if `in` (expanded to binary array) oveflowed its 254 bits (<= -1)
+* aliascheck - check if `in` (expanded to binary array) overflowed its 254 bits (<= -1)
 * babyjub - twisted Edwards curve 168700.x^2 + y^2 = 1 + 168696.x^2.y^2
   * BabyAdd - (`xout`,`yout`) = (`x1`,`y1`) + (`x2`,`y2`)
   * BabyDbl - (`xout`,`yout`) = 2*(`x`,`y`)
