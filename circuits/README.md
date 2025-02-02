@@ -129,7 +129,7 @@ Arithmetic on [Baby Jubjub elliptic curve](https://github.com/barryWhiteHat/baby
 
 - `BinSub(n)`
 
-    - DESCRIPTION: binary substraction.
+    - DESCRIPTION: binary subtraction.
     - SCHEMA
     - INPUT
     - OUTPUT
