@@ -59,6 +59,7 @@ template Bits2Num(n) {
 
     var e2 = 1;
     for (var i = 0; i<n; i++) {
+        in[i] * (in[i] - 1) === 0;
         lc1 += in[i] * e2;
         e2 = e2 + e2;
     }
