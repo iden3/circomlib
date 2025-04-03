@@ -23,7 +23,7 @@ This component finds the level where the oldInsert is done.
 The rules are:
 
 levIns[i] == 1 if its level and all the child levels have a sibling of 0 and
-the parent level has a sibling != 0.  Considere that the root level always has
+the parent level has a sibling != 0.  Consider that the root level always has
 a parent with a sibling != 0.
 
 
@@ -78,7 +78,7 @@ template SMTLevIns(nLevels) {
     signal input enabled;
     signal input siblings[nLevels];
     signal output levIns[nLevels];
-    signal done[nLevels-1];        // Indicates if the insLevel has aready been detected.
+    signal done[nLevels-1];        // Indicates if the insLevel has already been detected.
 
     var i;
 

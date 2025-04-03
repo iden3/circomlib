@@ -18,7 +18,7 @@
 */
 
 /*
-This component creates a binary substraction.
+This component creates a binary subtraction.
 
 
 Main Constraint:

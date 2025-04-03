@@ -120,7 +120,7 @@ describe("SMT Processor test", function () {
         await testDelete(tree, 333, circuit);
     });
 
-    it("Should test convination of adding and removing 3 elements", async () => {
+    it("Should test combination of adding and removing 3 elements", async () => {
         const keys = [Fr.e(8), Fr.e(9), Fr.e(32)];
         const values = [Fr.e(88), Fr.e(99), Fr.e(3232)];
         const tree1 = await newMemEmptyTrie();
