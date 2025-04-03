@@ -26,8 +26,8 @@
   "devDependencies": {
     "@noble/hashes": "^1.7.1",
     "chai": "^4.3.4",
-    "circom_tester": "0.0.20",
-    "circomlibjs": "^0.1.4",
-    "mocha": "^9.1.3"
+    "circom_tester": "0.0.21",
+    "circomlibjs": "^0.1.7",
+    "mocha": "^11.1.0"
   }
 }
