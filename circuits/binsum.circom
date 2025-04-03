@@ -22,7 +22,7 @@
 Binary Sum
 ==========
 
-This component creates a binary sum componet of ops operands and n bits each operand.
+This component creates a binary sum component of ops operands and n bits each operand.
 
 e is Number of carries: Depends on the number of operands in the input.
 
@@ -34,7 +34,7 @@ Main Constraint:
  ===
    out[0] * 2^0  + out[1] * 2^1 +   + out[n+e-1] *2(n+e-1)
 
-To waranty binary outputs:
+To warranty binary outputs:
 
     out[0]     * (out[0] - 1) === 0
     out[1]     * (out[0] - 1) === 0

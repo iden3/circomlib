@@ -109,7 +109,7 @@ template EdDSAPoseidonVerifier() {
         mulFix.e[i] <== snum2bits.out[i];
     }
 
-// Do the comparation left == right if enabled;
+// Do the comparison left == right if enabled;
 
     component eqCheckX = ForceEqualIfEnabled();
     eqCheckX.enabled <== enabled;

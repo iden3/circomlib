@@ -118,7 +118,7 @@ Insert to a used leaf.
                      ┗━━━━━━━┛                                      ┗━━━━━━━┛
 
 
-Fnction
+Function
 fnc[0]  fnc[1]
 0       0             NOP
 0       1             UPDATE
@@ -247,7 +247,7 @@ template SMTProcessor(nLevels) {
 //    topSwitcher.outL === oldRoot*enabled;
 //    topSwitcher.outR === newRoot*enabled;
 
-    // Ckeck keys are equal if updating
+    // Check keys are equal if updating
     component areKeyEquals = IsEqual();
     areKeyEquals.in[0] <== oldKey;
     areKeyEquals.in[1] <== newKey;

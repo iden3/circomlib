@@ -75,7 +75,7 @@ describe("EdDSA MiMC test", function () {
     });
 
 
-    it("Test a dissabled circuit with a bad signature", async () => {
+    it("Test a disabled circuit with a bad signature", async () => {
         const msg = F.e(1234);
 
         const prvKey = Buffer.from("0001020304050607080900010203040506070809000102030405060708090001", "hex");
