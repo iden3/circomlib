@@ -20,7 +20,7 @@
 /***************************************************************************************************
 Each level on a SMTProcessor has a state.
 
-The state of the level depends on the state of te botom level and on `xor` and
+The state of the level depends on the state of the botom level and on `xor` and
 `is0` signals.
 
 `isOldLev` 1 when is the level where oldLeaf is.
