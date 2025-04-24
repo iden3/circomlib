@@ -46,7 +46,7 @@ template NOT() {
     signal input in;
     signal output out;
 
-    out <== 1 + in - 2*in;
+    out <== 1 - in;
 }
 
 template NAND() {
