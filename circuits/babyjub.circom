@@ -55,14 +55,22 @@ template BabyDbl() {
     signal output xout;
     signal output yout;
 
-    component adder = BabyAdd();
-    adder.x1 <== x;
-    adder.y1 <== y;
-    adder.x2 <== x;
-    adder.y2 <== y;
+    var a = 168700;
+    var d = 168696;
+    signal x2 <== x * x;
+    signal y2 <== y * y;
+    signal xy <== x * y;
+    signal xy2 <== xy * xy;
 
-    adder.xout ==> xout;
-    adder.yout ==> yout;
+    signal denomx <== 1 + d * xy2;
+    signal denomy <== 1 - d * xy2;
+
+
+    xout <-- (2 * xy) / denomx;
+    yout <-- (y2 - a * x2) / denomy;
+
+    denomx * xout === 2 * xy;
+    denomy * yout === y2 - a * x2;
 }
 
 
