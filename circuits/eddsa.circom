@@ -132,7 +132,7 @@ template EdDSAVerifier(n) {
         mulFix.e[i] <== S[i];
     }
 
-// Do the comparation left == right
+// Do the comparison left == right
 
     mulFix.out[0] === addRight.xout;
     mulFix.out[1] === addRight.yout;
