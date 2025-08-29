@@ -237,7 +237,7 @@ template EscalarMulFix(n, BASE) {
     signal output out[2];           // Point (Twisted format)
 
     var nsegments = (n-1)\246 +1;       // 249 probably would work. But I'm not sure and for security I keep 246
-    var nlastsegment = n - (nsegments-1)*249;
+    var nlastsegment = n - (nsegments-1)*246;
 
     component segments[nsegments];
 
@@ -251,13 +251,13 @@ template EscalarMulFix(n, BASE) {
 
     for (s=0; s<nsegments; s++) {
 
-        nseg = (s < nsegments-1) ? 249 : nlastsegment;
+        nseg = (s < nsegments-1) ? 246 : nlastsegment;
         nWindows = ((nseg - 1)\3)+1;
 
         segments[s] = SegmentMulFix(nWindows);
 
         for (i=0; i<nseg; i++) {
-            segments[s].e[i] <== e[s*249+i];
+            segments[s].e[i] <== e[s*246+i];
         }
 
         for (i = nseg; i<nWindows*3; i++) {
