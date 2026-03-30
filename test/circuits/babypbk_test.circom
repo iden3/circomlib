@@ -1,6 +1,6 @@
 pragma circom 2.0.0;
 include "../../circuits/babyjub.circom";
-include "../../circuits/tag-managing.circom";
+include "../../circuits/tags-managing.circom";
 
 template BabyPbk_aux() {
     signal input in;

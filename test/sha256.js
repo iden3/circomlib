@@ -86,7 +86,7 @@ describe("SHA256 test", function () {
             .digest("hex");
 
         const arrIn = buffer2bitArray(b);
-        const witness = await cir.calculateWitness({ "in": arrIn }, true);
+        const witness = await cir.calculateWitness({ "a": arrIn }, true);
 
         const arrOut = witness.slice(1, 257);
         const hash2 = bitArray2buffer(arrOut).toString("hex");
@@ -107,7 +107,7 @@ describe("SHA256 test", function () {
 
         const arrIn = buffer2bitArray(b);
 
-        const witness = await cir.calculateWitness({ "in": arrIn }, true);
+        const witness = await cir.calculateWitness({ "a": arrIn }, true);
 
         const arrOut = witness.slice(1, 257);
         const hash2 = bitArray2buffer(arrOut).toString("hex");

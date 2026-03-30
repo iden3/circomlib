@@ -5,7 +5,7 @@ include "../../circuits/tags-managing.circom";
 
 template A(){
     signal input in[254];
-    signal output out <== Sign()(BinaryCheckArray(254)(in));
+    signal output sign <== Sign()(BinaryCheckArray(254)(in));
 
 }
 

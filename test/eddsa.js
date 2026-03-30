@@ -41,7 +41,7 @@ describe("EdDSA test", function () {
         eddsa = await buildEddsa();
         babyJub = await buildBabyjub();
         F = babyJub.F;
-        circuit = await wasm_tester(path.join(__dirname, "circuits", "eddsa_test.circom"));
+        circuit = await wasm_tester(path.join(__dirname, "circuits", "eddsapedersen_test.circom"));
     });
 
 

@@ -11,7 +11,7 @@ function print(circuit, w, s) {
     console.log(s + ": " + w[circuit.getSignalIdx(s)]);
 }
 
-describe("Exponentioation test", function () {
+describe("Exponentiation test", function () {
     let babyJub;
     let Fr;
     this.timeout(100000);
@@ -114,7 +114,7 @@ describe("Exponentioation test", function () {
 
     it("Number of constrains for 256 bits", async () => {
 
-        const circuit = await wasm_tester(path.join(__dirname, "circuits", "escalarmul_test_min.circom"));
+        const circuit = await wasm_tester(path.join(__dirname, "circuits", "escalarmul_min_test.circom"));
 
     }).timeout(10000000);
 

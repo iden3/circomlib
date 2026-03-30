@@ -75,7 +75,6 @@ template SmallSigma(ra, rb, rc) {
                             satisfies tag binary
 
 */
-*/
 
 template BigSigma(ra, rb, rc) {
     signal input {binary} in[32];

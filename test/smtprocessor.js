@@ -188,7 +188,7 @@ describe("SMT Processor test", function () {
             siblings: siblings,
             oldKey: 33,
             oldValue: 44,
-            isOld0: 55,
+            isOld0: 1, // only binary value is accepted
             newKey: 66,
             newValue: 77
         });
