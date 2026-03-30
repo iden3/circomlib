@@ -17,23 +17,33 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* Ch
 
-000 0
-001 1
-010 0
-011 1
-100 0
-101 0
-110 1
-111 1
+pragma circom 2.1.5;
 
-out = a&b ^ (!a)&c =>
+/*
 
-out = a*(b-c) + c
-
-*/
-pragma circom 2.0.0;
+*** Ch_t(n): template that receives three inputs of n bits and returns for each i = 0..n-1
+        out[i] = (a[i] & b[i]) or (!a[i] & c[i]) (that is, (a[i] => b[i]) & (!a[i] => c[i]))
+ 
+        - Inputs: a[n] -> array of n bits
+                          requires tag binary
+                  b[n] -> array of n bits
+                          requires tag binary
+                  c[n] -> array of n bits
+                          requires tag binary
+        - Output: out[n] -> array of n bits, it takes the value out[i] = (a[i] & b[i]) or (!a[i] & c[i])
+                            satisfies tag binary
+        
+    Example:    a b c   out
+                0 0 0    0
+                0 0 1    1
+                0 1 0    0
+                0 1 1    1
+                1 0 0    0
+                1 0 1    0
+                1 1 0    1
+                1 1 1    1
+ */
 
 template Ch_t(n) {
     signal input {binary} a[n];

@@ -18,6 +18,16 @@
 */
 pragma circom 2.0.0;
 
+
+/*
+
+*** H(x): template that returns the value of the constant H(x) used in the sha256 protocol represented using 32 bits
+
+        - Output: out[32] -> array of 32 bits, returns the constant H(x)
+                             satisfies tag binary
+
+ */
+
 template H(x) {
     signal output {binary} out[32];
     var c[8] = [0x6a09e667,
@@ -33,6 +43,16 @@ template H(x) {
         out[i] <== (c[x] >> i) & 1;
     }
 }
+
+/*
+
+*** K(x): template that returns the value of the constant K(x) used in the sha256 protocol represented using 32 bits
+
+        - Output: out[32] -> array of 32 bits, returns the constant K(x)
+                             satisfies tag binary
+                             
+ */
+
 
 template K(x) {
     signal output {binary} out[32];

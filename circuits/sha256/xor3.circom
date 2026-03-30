@@ -17,19 +17,32 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* Xor3 function for sha256
+pragma circom 2.1.5;
 
-out = a ^ b ^ c  =>
+/*
 
-out = a+b+c - 2*a*b - 2*a*c - 2*b*c + 4*a*b*c   =>
-
-out = a*( 1 - 2*b - 2*c + 4*b*c ) + b + c - 2*b*c =>
-
-mid = b*c
-out = a*( 1 - 2*b -2*c + 4*mid ) + b + c - 2 * mid
-
-*/
-pragma circom 2.0.0;
+*** Xor3(n): template that receives three inputs of n bits and returns for each i = 0..n-1
+        out[i] = xor3(a[i], b[i], c[i]), more details in the table below
+ 
+        - Inputs: a[n] -> array of n bits
+                          requires tag binary
+                  b[n] -> array of n bits
+                          requires tag binary
+                  c[n] -> array of n bits
+                          requires tag binary
+        - Output: out[n] -> array of n bits, it takes the value out[i] = xor3(a[i], b[i], c[i])
+                            satisfies tag binary
+        
+    Example:    a b c   out
+                0 0 0    0
+                0 0 1    1
+                0 1 0    1
+                0 1 1    0
+                1 0 0    1
+                1 0 1    0
+                1 1 0    0
+                1 1 1    1
+ */
 
 template Xor3(n) {
     signal input {binary} a[n];

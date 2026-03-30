@@ -16,7 +16,22 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
-pragma circom 2.0.0;
+pragma circom 2.1.5;
+
+
+/*
+
+*** ShR(n, r): template that receives an array of n bits and returns the array shifted r positions to the right
+ 
+        - Inputs: in[n] -> array of n bits
+                          requires tag binary
+        - Output: out[n] -> array of n bits, it takes the value: 
+                                out[i] = in[i + r] if i + r < n, out[i] = 0 otherwise
+                            satisfies tag binary
+        
+    Example: ShR(4, 2)([1, 0, 0, 1]) = [0, 1, 0, 0]
+
+*/
 
 template ShR(n, r) {
     signal input {binary} in[n];

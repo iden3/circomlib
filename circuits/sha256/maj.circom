@@ -17,19 +17,32 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* Maj function for sha256
+pragma circom 2.1.5;
 
-out = a&b ^ a&c ^ b&c  =>
+/*
 
-out = a*b   +  a*c  +  b*c  -  2*a*b*c  =>
-
-out = a*( b + c - 2*b*c ) + b*c =>
-
-mid = b*c
-out = a*( b + c - 2*mid ) + mid
-
-*/
-pragma circom 2.0.0;
+*** Maj_t(n): template that receives three inputs of n bits and returns for each i = 0..n out[i] = 1 in case at least two of a the values of a[i], b[i] and c[i] are 1, and 0 otherwise
+ 
+        - Inputs: a[n] -> array of n bits
+                          requires tag binary
+                  b[n] -> array of n bits
+                          requires tag binary
+                  c[n] -> array of n bits
+                          requires tag binary
+        - Output: out[n] -> array of n bits, it takes the value: 
+                                out[i] = a[i] & b[i] \/ a[i] & c[i] \/ b[i] & c[i]
+                            satisfies tag binary
+        
+    Example:    a b c   out
+                0 0 0    0
+                0 0 1    0
+                0 1 0    0
+                0 1 1    1
+                1 0 0    0
+                1 0 1    1
+                1 1 0    1
+                1 1 1    1
+ */
 
 template Maj_t(n) {
     signal input {binary} a[n];
