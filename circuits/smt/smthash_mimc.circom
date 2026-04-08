@@ -26,9 +26,9 @@ include "../mimc.circom";
  */
 
 template SMTHash1() {
-    signal input key;
-    signal input value;
-    signal output out;
+    input signal key;
+    input signal value;
+    output signal out;
 
     component h = MultiMiMC7(2, 91);   // Constant
     h.in[0] <== key;
@@ -45,9 +45,9 @@ template SMTHash1() {
  */
 
 template SMTHash2() {
-    signal input L;
-    signal input R;
-    signal output out;
+    input signal L;
+    input signal R;
+    output signal out;
 
     component h = MultiMiMC7(2, 91);   // Constant
     h.in[0] <== L;

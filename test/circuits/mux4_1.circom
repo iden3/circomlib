@@ -1,4 +1,4 @@
-pragma circom 2.0.0;
+pragma circom 2.1.5;
 
 include "../../circuits/mux4.circom";
 include "../../circuits/bitify.circom";
@@ -6,7 +6,7 @@ include "../../circuits/bitify.circom";
 
 template Constants() {
     var i;
-    signal output out[16];
+    output signal out[16];
 
     out[0] <== 123;
     out[1] <== 456;
@@ -34,21 +34,16 @@ template Constants() {
 }
 
 template Main() {
-    var i;
-    signal input selector;//private
-    signal output out;
+    input signal selector;//private
+    output signal out;
 
     component mux = Mux4();
     component n2b = Num2Bits(4);
     component cst = Constants();
 
     selector ==> n2b.in;
-    for (i=0; i<4; i++) {
-        n2b.out[i] ==> mux.s[i];
-    }
-    for (i=0; i<16; i++) {
-        cst.out[i] ==> mux.c[i];
-    }
+    n2b.out ==> mux.s;
+    cst.out ==> mux.c;
 
     mux.out ==> out;
 }

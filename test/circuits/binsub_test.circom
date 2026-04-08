@@ -1,12 +1,13 @@
-pragma circom 2.0.0;
+pragma circom 2.1.5;
 
 include "../../circuits/bitify.circom";
 include "../../circuits/binsub.circom";
+include "../../circuits/buses.circom";
 
 template A() {
-    signal input a; //private
-    signal input b;
-    signal output out;
+    input signal a; //private
+    input signal b;
+    output signal out;
 
     var i;
 
@@ -18,14 +19,10 @@ template A() {
     n2ba.in <== a;
     n2bb.in <== b;
 
-    for (i=0; i<16; i++) {
-        sub.in[0][i] <== n2ba.out[i];
-        sub.in[1][i] <== n2bb.out[i];
-    }
-
-    for (i=0; i<16; i++) {
-        b2n.in[i] <== sub.out[i];
-    }
+    sub.in[0] <== n2ba.out;
+    sub.in[1] <== n2bb.out;
+    
+    b2n.in <== sub.out;
 
     out <== b2n.out;
 }

@@ -1,11 +1,11 @@
-pragma circom 2.0.0;
+pragma circom 2.1.5;
 
 include "../../circuits/sha256/sha256_2.circom";
 
 template Main() {
-    signal input a; //private
-    signal input b; //private
-    signal output out;
+    input signal a; //private
+    input signal b; //private
+    output signal out;
 
     component sha256_2 = Sha256_2();
 

@@ -1,6 +1,6 @@
-//    signal input hin[256];
-//    signal input inp[512];
-//    signal output out[256];
+//    input signal hin[256];
+//    input signal inp[512];
+//    output signal out[256];
 pragma circom 2.0.0;
 
 function rrot(x, n) {

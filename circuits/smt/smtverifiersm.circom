@@ -57,50 +57,44 @@ The end of the last level will have to be `na`
                                                  #########
 
  */
- pragma circom 2.0.0;
+ pragma circom 2.1.9;
+ 
+ include "smtbuses.circom";
 
 
 template SMTVerifierSM() {
-    signal input is0;
-    signal input levIns;
-    signal input fnc;
+    input signal {binary} is0;
+    input signal {binary} levIns;
+    input signal {binary} fnc;
 
-    signal input prev_top;
-    signal input prev_i0;
-    signal input prev_iold;
-    signal input prev_inew;
-    signal input prev_na;
+    input SMTVerifierState prev;
 
-    signal output st_top;
-    signal output st_i0;
-    signal output st_iold;
-    signal output st_inew;
-    signal output st_na;
+    output SMTVerifierState st;
 
     signal prev_top_lev_ins;
     signal prev_top_lev_ins_fnc;
 
-    prev_top_lev_ins <== prev_top * levIns;
+    prev_top_lev_ins <== prev.top * levIns;
     prev_top_lev_ins_fnc <== prev_top_lev_ins*fnc;  // prev_top * levIns * fnc
 
     // st_top = prev_top * (1-levIns)
     //    = + prev_top
     //      - prev_top * levIns
-    st_top <== prev_top - prev_top_lev_ins;
+    st.top <== prev.top - prev_top_lev_ins;
 
     // st_inew = prev_top * levIns * (1-fnc)
     //   = + prev_top * levIns
     //     - prev_top * levIns * fnc
-    st_inew <== prev_top_lev_ins - prev_top_lev_ins_fnc;
+    st.inew <== prev_top_lev_ins - prev_top_lev_ins_fnc;
 
     // st_iold = prev_top * levIns * (1-is0)*fnc
     //   = + prev_top * levIns * fnc
     //     - prev_top * levIns * fnc * is0
-    st_iold <== prev_top_lev_ins_fnc * (1 - is0);
+    st.iold <== prev_top_lev_ins_fnc * (1 - is0);
 
     // st_i0 = prev_top * levIns * is0
     //  = + prev_top * levIns * is0
-    st_i0 <== prev_top_lev_ins * is0;
+    st.i0 <== prev_top_lev_ins * is0;
 
-    st_na <== prev_na + prev_inew + prev_iold + prev_i0;
+    st.na <== prev.na + prev.inew + prev.iold + prev.i0;
 }

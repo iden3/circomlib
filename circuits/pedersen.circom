@@ -16,17 +16,37 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
-pragma circom 2.0.0;
+pragma circom 2.1.5;
+
+// The templates and functions of this file only work for prime field bn128 (21888242871839275222246405745257275088548364400416034343698204186575808495617)
 
 include "montgomery.circom";
 include "mux3.circom";
 include "babyjub.circom";
+include "buses.circom";
+
+
+/*
+
+*** Window4(): template that given a point in Montgomery representation base and a binary input in, calculates:
+        out = base + base*in[0] + 2*base*in[1] + 4*base*in[2] in case in[3] == 0, in case in[3] == 1 then it negates out[1] --> out = base * (in[0..2] + 1) if in[3] == 0, out = - base * (in[0..2] + 1) if in[3] == 1
+        
+        out8 = 8*base
+
+    This circuit is used in order to perform the Pedersen protocol on an input in.
+        - Inputs: in[4] -> binary value
+                         requires tag binary
+                  base[2] -> input curve point in Montgomery representation
+        - Outputs: out[2] -> output curve point in Montgomery representation
+                   out8[2] -> output curve point in Montgomery representation
+    
+ */
 
 template Window4() {
-    signal input in[4];
-    signal input base[2];
-    signal output out[2];
-    signal output out8[2];   // Returns 8*Base (To be linked)
+    input signal {binary} in[4];
+    input Point {babymontgomery} base;
+    output Point {babymontgomery} pout;
+    output Point {babymontgomery} pout8;   // Returns 8*Base (To be linked)
 
     component mux = MultiMux3(2);
 
@@ -44,75 +64,71 @@ template Window4() {
 
 // in[0]  -> 1*BASE
 
-    mux.c[0][0] <== base[0];
-    mux.c[1][0] <== base[1];
+    mux.c[0][0] <== base.x;
+    mux.c[1][0] <== base.y;
 
 // in[1] -> 2*BASE
-    dbl2.in[0] <== base[0];
-    dbl2.in[1] <== base[1];
-    mux.c[0][1] <== dbl2.out[0];
-    mux.c[1][1] <== dbl2.out[1];
+    dbl2.pin <== base;
+    mux.c[0][1] <== dbl2.pout.x;
+    mux.c[1][1] <== dbl2.pout.y;
 
 // in[2] -> 3*BASE
-    adr3.in1[0] <== base[0];
-    adr3.in1[1] <== base[1];
-    adr3.in2[0] <== dbl2.out[0];
-    adr3.in2[1] <== dbl2.out[1];
-    mux.c[0][2] <== adr3.out[0];
-    mux.c[1][2] <== adr3.out[1];
+    adr3.pin1 <== base;
+    adr3.pin2 <== dbl2.pout;
+    mux.c[0][2] <== adr3.pout.x;
+    mux.c[1][2] <== adr3.pout.y;
 
 // in[3] -> 4*BASE
-    adr4.in1[0] <== base[0];
-    adr4.in1[1] <== base[1];
-    adr4.in2[0] <== adr3.out[0];
-    adr4.in2[1] <== adr3.out[1];
-    mux.c[0][3] <== adr4.out[0];
-    mux.c[1][3] <== adr4.out[1];
+    adr4.pin1 <== base;
+    adr4.pin2 <== adr3.pout;
+    mux.c[0][3] <== adr4.pout.x;
+    mux.c[1][3] <== adr4.pout.y;
 
 // in[4] -> 5*BASE
-    adr5.in1[0] <== base[0];
-    adr5.in1[1] <== base[1];
-    adr5.in2[0] <== adr4.out[0];
-    adr5.in2[1] <== adr4.out[1];
-    mux.c[0][4] <== adr5.out[0];
-    mux.c[1][4] <== adr5.out[1];
+    adr5.pin1 <== base;
+    adr5.pin2 <== adr4.pout;
+    mux.c[0][4] <== adr5.pout.x;
+    mux.c[1][4] <== adr5.pout.y;
 
 // in[5] -> 6*BASE
-    adr6.in1[0] <== base[0];
-    adr6.in1[1] <== base[1];
-    adr6.in2[0] <== adr5.out[0];
-    adr6.in2[1] <== adr5.out[1];
-    mux.c[0][5] <== adr6.out[0];
-    mux.c[1][5] <== adr6.out[1];
+    adr6.pin1 <== base;
+    adr6.pin2 <== adr5.pout;
+    mux.c[0][5] <== adr6.pout.x;
+    mux.c[1][5] <== adr6.pout.y;
 
 // in[6] -> 7*BASE
-    adr7.in1[0] <== base[0];
-    adr7.in1[1] <== base[1];
-    adr7.in2[0] <== adr6.out[0];
-    adr7.in2[1] <== adr6.out[1];
-    mux.c[0][6] <== adr7.out[0];
-    mux.c[1][6] <== adr7.out[1];
+    adr7.pin1 <== base;
+    adr7.pin2 <== adr6.pout;
+    mux.c[0][6] <== adr7.pout.x;
+    mux.c[1][6] <== adr7.pout.y;
 
 // in[7] -> 8*BASE
-    adr8.in1[0] <== base[0];
-    adr8.in1[1] <== base[1];
-    adr8.in2[0] <== adr7.out[0];
-    adr8.in2[1] <== adr7.out[1];
-    mux.c[0][7] <== adr8.out[0];
-    mux.c[1][7] <== adr8.out[1];
+    adr8.pin1 <== base;
+    adr8.pin2 <== adr7.pout;
+    mux.c[0][7] <== adr8.pout.x;
+    mux.c[1][7] <== adr8.pout.y;
 
-    out8[0] <== adr8.out[0];
-    out8[1] <== adr8.out[1];
+    pout8 <== adr8.pout;
 
-    out[0] <== mux.out[0];
-    out[1] <== - mux.out[1]*2*in[3] + mux.out[1];  // Negate y if in[3] is one
+    pout.x <== mux.out[0];
+    pout.y <== - mux.out[1]*2*in[3] + mux.out[1];  // Negate y if in[3] is one
 }
+
+/*
+
+*** Segment(nWindows):template used to perform a segment of the multiplications needed to perform a the Pedersen protocol. 
+        - Inputs: in[4 * nWindows] -> binary representation of the scalar
+                                      requires tag binary
+                  base[2] -> input curve point in Edwards representation
+        - Outputs: out[2] -> output curve point in Edwards representation
+    
+ */
 
 
 template Segment(nWindows) {
-    signal input in[nWindows*4];
-    signal input base[2];
-    signal output out[2];
+    input signal {binary} in[nWindows*4];
+    input Point {babyedwards} base;
+    output Point {babyedwards} pout;
 
     var i;
     var j;
@@ -120,8 +136,7 @@ template Segment(nWindows) {
     // Convert the base to montgomery
 
     component e2m = Edwards2Montgomery();
-    e2m.in[0] <== base[0];
-    e2m.in[1] <== base[1];
+    e2m.pin <== base;
 
     component windows[nWindows];
     component doublers1[nWindows-1];
@@ -133,49 +148,49 @@ template Segment(nWindows) {
             windows[i].in[j] <== in[4*i+j];
         }
         if (i==0) {
-            windows[i].base[0] <== e2m.out[0];
-            windows[i].base[1] <== e2m.out[1];
+            windows[i].base <== e2m.pout;
         } else {
             doublers1[i-1] = MontgomeryDouble();
             doublers2[i-1] = MontgomeryDouble();
-            doublers1[i-1].in[0] <== windows[i-1].out8[0];
-            doublers1[i-1].in[1] <== windows[i-1].out8[1];
-            doublers2[i-1].in[0] <== doublers1[i-1].out[0];
-            doublers2[i-1].in[1] <== doublers1[i-1].out[1];
+            doublers1[i-1].pin <== windows[i-1].pout8;
+            doublers2[i-1].pin <== doublers1[i-1].pout;
 
-            windows[i].base[0] <== doublers2[i-1].out[0];
-            windows[i].base[1] <== doublers2[i-1].out[1];
+            windows[i].base <== doublers2[i-1].pout;
 
             adders[i-1] = MontgomeryAdd();
             if (i==1) {
-                adders[i-1].in1[0] <== windows[0].out[0];
-                adders[i-1].in1[1] <== windows[0].out[1];
+                adders[i-1].pin1 <== windows[0].pout;
             } else {
-                adders[i-1].in1[0] <== adders[i-2].out[0];
-                adders[i-1].in1[1] <== adders[i-2].out[1];
+                adders[i-1].pin1 <== adders[i-2].pout;
             }
-            adders[i-1].in2[0] <== windows[i].out[0];
-            adders[i-1].in2[1] <== windows[i].out[1];
+            adders[i-1].pin2 <== windows[i].pout;
         }
     }
 
     component m2e = Montgomery2Edwards();
 
     if (nWindows > 1) {
-        m2e.in[0] <== adders[nWindows-2].out[0];
-        m2e.in[1] <== adders[nWindows-2].out[1];
+        m2e.pin <== adders[nWindows-2].pout;
     } else {
-        m2e.in[0] <== windows[0].out[0];
-        m2e.in[1] <== windows[0].out[1];
+        m2e.pin <== windows[0].pout;
     }
 
-    out[0] <== m2e.out[0];
-    out[1] <== m2e.out[1];
+    pout <== m2e.pout;
 }
 
+
+/*
+
+*** Pedersen(n): template that performs the Pedersen protocol on the input in, that is the binary representation of the field using n bits. It calculates the output point of the Pedersen protocol in Edwards representation
+        - Inputs: in[n] -> binary representation of the scalar
+                          requires tag binary
+        - Outputs: out[2] -> output curve point in Edwards representation
+    
+ */
+
 template Pedersen(n) {
-    signal input in[n];
-    signal output out[2];
+    input signal {binary} in[n];
+    output Point {babyedwards} pout;
 
     var BASE[10][2] = [
         [10457101036533406547632367118273992217979173478358440826365724437999023779287,19824078218392094440610104313265183977899662750282163392862422243483260492317],
@@ -199,18 +214,22 @@ template Pedersen(n) {
     var j;
     var nBits;
     var nWindows;
+    Point {babyedwards} aux[nSegments];
+    
+    signal {binary} aux_0 <== 0;
     for (i=0; i<nSegments; i++) {
         nBits = (i == (nSegments-1)) ? n - (nSegments-1)*200 : 200;
         nWindows = ((nBits - 1)\4)+1;
         segments[i] = Segment(nWindows);
-        segments[i].base[0] <== BASE[i][0];
-        segments[i].base[1] <== BASE[i][1];
+        aux[i].x <== BASE[i][0];
+        aux[i].y <== BASE[i][1];
+        segments[i].base <== aux[i];
         for (j = 0; j<nBits; j++) {
             segments[i].in[j] <== in[i*200+j];
         }
         // Fill padding bits
         for (j = nBits; j < nWindows*4; j++) {
-            segments[i].in[j] <== 0;
+            segments[i].in[j] <== aux_0;
         }
     }
 
@@ -219,39 +238,19 @@ template Pedersen(n) {
     for (i=0; i<nSegments-1; i++) {
         adders[i] = BabyAdd();
         if (i==0) {
-            adders[i].x1 <== segments[0].out[0];
-            adders[i].y1 <== segments[0].out[1];
-            adders[i].x2 <== segments[1].out[0];
-            adders[i].y2 <== segments[1].out[1];
+            adders[i].pin1 <== segments[0].pout;
+            adders[i].pin2 <== segments[1].pout;
         } else {
-            adders[i].x1 <== adders[i-1].xout;
-            adders[i].y1 <== adders[i-1].yout;
-            adders[i].x2 <== segments[i+1].out[0];
-            adders[i].y2 <== segments[i+1].out[1];
+            adders[i].pin1 <== adders[i-1].pout;
+            adders[i].pin2 <== segments[i+1].pout;
         }
     }
 
-/*
-    coponent packPoint = PackPoint();
 
     if (nSegments>1) {
-        packPoint.in[0] <== adders[nSegments-2].xout;
-        packPoint.in[1] <== adders[nSegments-2].yout;
+        pout <== adders[nSegments-2].pout;
     } else {
-        packPoint.in[0] <== segments[0].out[0];
-        packPoint.in[1] <== segments[0].out[1];
-    }
-
-    out[0] <== packPoint.out[0];
-    out[1] <== packPoint.out[1];
-*/
-
-    if (nSegments>1) {
-        out[0] <== adders[nSegments-2].xout;
-        out[1] <== adders[nSegments-2].yout;
-    } else {
-        out[0] <== segments[0].out[0];
-        out[1] <== segments[0].out[1];
+        pout <== segments[0].pout;
     }
 }
 

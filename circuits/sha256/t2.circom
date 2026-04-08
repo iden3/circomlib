@@ -23,10 +23,10 @@ include "sigma.circom";
 include "maj.circom";
 
 template T2() {
-    signal input a[32];
-    signal input b[32];
-    signal input c[32];
-    signal output out[32];
+    input signal {binary} a[32];
+    input signal {binary} b[32];
+    input signal {binary} c[32];
+    output signal {binary} out[32];
     var k;
 
     component bigsigma0 = BigSigma(2, 13, 22);

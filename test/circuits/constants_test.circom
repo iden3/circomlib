@@ -3,7 +3,7 @@ pragma circom 2.0.0;
 include "../../circuits/sha256/constants.circom";
 
 template A() {
-    signal input in;
+    input signal in;
     component h0;
     h0 = K(8);
 

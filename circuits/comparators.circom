@@ -16,14 +16,29 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
-pragma circom 2.0.0;
+pragma circom 2.1.5;
 
 include "bitify.circom";
 include "binsum.circom";
+include "gates.circom";
+include "buses.circom";
+
+// The templates and functions of this file only work for any prime field
+
+
+/*
+*** IsZero(): template that receives an input in representing a field value and returns 1 if the input value is zero, 0 otherwise.
+        - Inputs: in -> field value
+        - Outputs: out -> in == 0
+                          satisfies tag binary
+         
+    Example: IsZero()(5) = 0, IsZero()(0) = 0
+          
+*/
 
 template IsZero() {
-    signal input in;
-    signal output out;
+    input signal in;
+    output signal {binary} out;
 
     signal inv;
 
@@ -34,9 +49,20 @@ template IsZero() {
 }
 
 
+
+/*
+*** IsEqual(): template that receives two inputs in[0] and in[1] representing field values and returns 1 if in[0] == in[1], 0 otherwise.
+        - Inputs: in[2] -> array of 2 field values
+        - Outputs: out -> in[0] == in[1]
+                          satisfies tag binary
+         
+    Example: IsEqual()([5, 2]) = 0, IsZero()([2, 2]) = 0
+          
+*/
+
 template IsEqual() {
-    signal input in[2];
-    signal output out;
+    input signal in[2];
+    output signal {binary} out;
 
     component isz = IsZero();
 
@@ -45,9 +71,21 @@ template IsEqual() {
     isz.out ==> out;
 }
 
+
+/*
+*** ForceEqualIfEnabled(): template that receives two inputs in[0] and in[1] representing field values and checks that in[0] == in[1] in case enabled == 1
+        - Inputs: in[2] -> array of 2 field values
+                  enabled -> binary value
+                             requires tag binary
+        - Outputs: None
+         
+    Example: ForceEqualIfEnabled()([5, 2], 1) is not satisfiable as in[0] != in[1] and enabled = 1
+          
+*/
+
 template ForceEqualIfEnabled() {
-    signal input enabled;
-    signal input in[2];
+    input signal {binary} enabled;
+    input signal in[2];
 
     component isz = IsZero();
 
@@ -56,40 +94,26 @@ template ForceEqualIfEnabled() {
     (1 - isz.out)*enabled === 0;
 }
 
+
+
 /*
-// N is the number of bits the input  have.
-// The MSF is the sign bit.
-template LessThan(n) {
-    signal input in[2];
-    signal output out;
 
-    component num2Bits0;
-    component num2Bits1;
-
-    component adder;
-
-    adder = BinSum(n, 2);
-
-    num2Bits0 = Num2Bits(n);
-    num2Bits1 = Num2BitsNeg(n);
-
-    in[0] ==> num2Bits0.in;
-    in[1] ==> num2Bits1.in;
-
-    var i;
-    for (i=0;i<n;i++) {
-        num2Bits0.out[i] ==> adder.in[0][i];
-        num2Bits1.out[i] ==> adder.in[1][i];
-    }
-
-    adder.out[n-1] ==> out;
-}
+*** LessThan(n): template that receives two inputs in[0] and in[1] representing field values and returns 1 if in[0] < in[1], 0 otherwise.
+        - Inputs: in[2] -> array of 2 field values
+                           requires tag maxbit with in.maxbit <= n
+        - Outputs: out -> in[0] < in[1]
+                          satisfies tag binary
+         
+    Example: LessThan()([5, 2]) = 0, LessThan()([1, 2]) = 1
+          
 */
 
 template LessThan(n) {
-    assert(n <= 252);
-    signal input in[2];
-    signal output out;
+    assert(n <= maxbits()-2);
+    input signal {maxbit} in[2];
+    output signal {binary} out;
+    
+    assert(in.maxbit <= n);
 
     component n2b = Num2Bits(n+1);
 
@@ -99,25 +123,51 @@ template LessThan(n) {
 }
 
 
+/*
 
-// N is the number of bits the input  have.
-// The MSF is the sign bit.
-template LessEqThan(n) {
-    signal input in[2];
-    signal output out;
+*** LessEqThan(n): template that receives two inputs in[0] and in[1] representing field values and returns 1 if in[0] <= in[1], 0 otherwise.
+        - Inputs: in[2] -> array of 2 field values
+                           requires tag maxbit with in.maxbit <= n
+        - Outputs: out -> in[0] <= in[1]
+                          satisfies tag binary
+         
+    Example: LessEqThan()([5, 2]) = 0, LessEqThan()([2, 2]) = 1
+          
+*/
 
-    component lt = LessThan(n);
+template LessEqThan(n){
+    input signal {maxbit} in[2];
+    output signal {binary} out;
+    assert(in.maxbit <= n);
 
-    lt.in[0] <== in[0];
-    lt.in[1] <== in[1]+1;
-    lt.out ==> out;
+    component gt = GreaterThan(n);
+    gt.in <== in;
+    
+    component nt = NOT();
+    nt.in <== gt.out;
+    nt.out ==> out;
+
 }
 
-// N is the number of bits the input  have.
-// The MSF is the sign bit.
+
+/*
+
+*** GreaterThan(n): template that receives two inputs in[0] and in[1] representing field values and returns 1 if in[0] > in[1], 0 otherwise.
+        - Inputs: in[2] -> array of 2 field values
+                           requires tag maxbit with in.maxbit <= n
+        - Outputs: out -> in[0] > in[1]
+                          satisfies tag binary
+         
+    Example: GreaterThan()([5, 2]) = 1, GreaterThan()([2, 2]) = 0
+          
+*/
+
+
 template GreaterThan(n) {
-    signal input in[2];
-    signal output out;
+    input signal {maxbit} in[2];
+    output signal {binary} out;
+    
+    assert(in.maxbit <= n);
 
     component lt = LessThan(n);
 
@@ -126,16 +176,92 @@ template GreaterThan(n) {
     lt.out ==> out;
 }
 
-// N is the number of bits the input  have.
-// The MSF is the sign bit.
+
+
+/*
+
+*** GreaterEqThan(n): template that receives two inputs in[0] and in[1] representing field values and returns 1 if in[0] >= in[1], 0 otherwise.
+        - Inputs: in[2] -> array of 2 field values
+                           requires tag maxbit with in.maxbit <= n
+        - Outputs: out -> in[0] >= in[1]
+                          satisfies tag binary
+         
+    Example: GreterEqThan()([5, 2]) = 1, GreaterEqThan()([2, 2]) = 1
+          
+*/
+
 template GreaterEqThan(n) {
-    signal input in[2];
-    signal output out;
+    input signal {maxbit} in[2];
+    output signal {binary} out;
+    
+    assert(in.maxbit <= n);
 
-    component lt = LessThan(n);
-
-    lt.in[0] <== in[1];
-    lt.in[1] <== in[0]+1;
-    lt.out ==> out;
+    component gt = LessThan(n);
+    gt.in <== in;
+    
+    component nt = NOT();
+    nt.in <== gt.out;
+    nt.out ==> out;
 }
+
+
+/*
+*** Sign(): template that receives an input in representing a value in binary using maxbits() bits and checks if the value is positive or negative. We consider a number positive in case in <= p \ 2 and negative otherwise 
+        - Inputs: in[maxbits()] -> array of maxbits() bits
+                             requires tag binary
+        - Outputs: sign -> 0 in case in <= prime \ 2, 1 otherwise
+                           satisfies tag binary
+         
+          
+*/
+
+template Sign() {
+    input signal {binary} in[maxbits()];
+    output signal {binary} sign;
+
+    component comp = CompConstant(maxbits(), - 1 \ 2);
+
+    var i;
+    
+    comp.in <== in;
+
+    sign <== comp.out;
+}
+
+
+
+/*
+*** CompConstant(n,ct): template that receives an input in representing a value in binary using n bits and checks if its value is greater than the constant value ct given as a parameter. De constant must be representable with n bits.
+
+        - Inputs: in[maxbits()] -> array of maxbits() bits
+                             requires tag binary
+        - Outputs: out -> binary value, out = in > ct
+                          satisfies tag binary
+ 
+    Example: CompConstant(10)([0, ..., 0]) = 0, CompConstant(10)([1, ..., 1]) = 1              
+          
+*/
+
+template CompConstant(n,ct) {
+    log(nbits(ct));
+    assert(nbits(ct) <= n);
+    input signal {binary} in[n];
+    output signal {binary} out;
+
+    signal {binary} res[n];
+    if (ct & 1 == 0) {
+        res[0] <== in[0];
+    } else {
+        res[0] <== 0;
+    }
+    for (var i=1; i < n; i++) {
+        // re[i-1] says if in[0..i-1] > ct[0..i-1] (upto bit i-1)
+        if ((ct >> i) & 1 == 0) {
+            res[i] <== OR()(res[i-1],in[i]);
+        } else {
+            res[i] <== AND()(res[i-1],in[i]);
+	}
+    }
+    out <== res[n-1];
+}    
 

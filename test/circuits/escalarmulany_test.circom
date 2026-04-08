@@ -1,29 +1,25 @@
-pragma circom 2.0.0;
+pragma circom 2.1.5;
 
-include "../../circuits/escalarmulany.circom";
+include "../../circuits/escalarmul/escalarmulany.circom";
 include "../../circuits/bitify.circom";
 
 template Main() {
-    signal input e;
-    signal input p[2];
-    signal output out[2];
+    input signal e;
+    input Point p;
+    output Point {babyedwards} pout;
+    
+    Point checked_p <== BabyCheck()(p);
 
     component n2b = Num2Bits(253);
     component escalarMulAny = EscalarMulAny(253);
 
-    escalarMulAny.p[0] <== p[0];
-    escalarMulAny.p[1] <== p[1];
-
-    var i;
+    escalarMulAny.pin <== checked_p;
 
     e ==> n2b.in;
+    n2b.out ==> escalarMulAny.e;
 
-    for  (i=0; i<253; i++) {
-        n2b.out[i] ==> escalarMulAny.e[i];
-    }
+    escalarMulAny.pout ==> pout;
 
-    escalarMulAny.out[0] ==> out[0];
-    escalarMulAny.out[1] ==> out[1];
 }
 
 component main = Main();

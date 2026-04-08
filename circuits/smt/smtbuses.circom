@@ -16,21 +16,31 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
-pragma circom 2.0.0;
 
-include "compconstant.circom";
+/*
 
-template Sign() {
-    signal input in[254];
-    signal output sign;
+Defines a bus that represents a state of the state machine (sm) used to perform the smt hashing.
+See smtverifiersm.circom to see more details of the behavior of this machine
 
-    component comp = CompConstant(10944121435919637611123202872628637544274182200208017171849102093287904247808);
+*/
+ pragma circom 2.1.9;
 
-    var i;
 
-    for (i=0; i<254; i++) {
-        comp.in[i] <== in[i];
-    }
-
-    sign <== comp.out;
+bus SMTVerifierState() {
+    signal top;
+    signal i0;
+    signal iold;
+    signal inew;
+    signal na;
 }
+
+
+bus SMTProcessorState() {
+    signal top;
+    signal old0;
+    signal bot;
+    signal new1;
+    signal na;
+    signal upd;
+}
+

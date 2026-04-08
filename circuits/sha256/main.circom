@@ -21,9 +21,9 @@ pragma circom 2.0.0;
 include "sha256_2.circom";
 
 template Main() {
-    signal input a;
-    signal input b;
-    signal output out;
+    input signal a;
+    input signal b;
+    output signal out;
 
     component sha256_2 = Sha256_2();
 

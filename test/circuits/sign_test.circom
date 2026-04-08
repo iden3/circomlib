@@ -1,5 +1,14 @@
-pragma circom 2.0.0;
+pragma circom 2.1.5;
 
-include "../../circuits/sign.circom";
+include "../../circuits/comparators.circom";
+include "../../circuits/tags-managing.circom";
 
-component main = Sign();
+template A(){
+    input signal in[254];
+    component sign = Sign();
+    sign.in <== BinaryCheckArray(254)(in);
+    output signal {binary} out <== sign.sign;
+
+}
+
+component main = A();

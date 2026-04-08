@@ -1,5 +1,12 @@
-pragma circom 2.0.0;
+pragma circom 2.1.5;
 
 include "../../circuits/montgomery.circom";
 
-component main = MontgomeryDouble();
+template Main(){
+    input Point a;
+    output Point out;
+    out <== MontgomeryDouble()(MontgomeryBabyCheck()(a));
+}
+
+
+component main = Main();

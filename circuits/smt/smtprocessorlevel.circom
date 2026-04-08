@@ -39,24 +39,20 @@ H' is the Hash function with the inputs shifted acordingly.
 
 *****/
 pragma circom 2.0.0;
+include "smtbuses.circom";
 
 
 template SMTProcessorLevel() {
-    signal input st_top;
-    signal input st_old0;
-    signal input st_bot;
-    signal input st_new1;
-    signal input st_na;
-    signal input st_upd;
+    input SMTProcessorState st; 
 
-    signal output oldRoot;
-    signal output newRoot;
-    signal input sibling;
-    signal input old1leaf;
-    signal input new1leaf;
-    signal input newlrbit;
-    signal input oldChild;
-    signal input newChild;
+    output signal oldRoot;
+    output signal newRoot;
+    input signal sibling;
+    input signal old1leaf;
+    input signal new1leaf;
+    input signal {binary} newlrbit;
+    input signal oldChild;
+    input signal newChild;
 
     signal aux[4];
 
@@ -75,21 +71,21 @@ template SMTProcessorLevel() {
     oldProofHash.L <== oldSwitcher.outL;
     oldProofHash.R <== oldSwitcher.outR;
 
-    aux[0] <== old1leaf * (st_bot + st_new1 + st_upd);
-    oldRoot <== aux[0] +  oldProofHash.out * st_top;
+    aux[0] <== old1leaf * (st.bot + st.new1 + st.upd);
+    oldRoot <== aux[0] +  oldProofHash.out * st.top;
 
     // New side
 
-    aux[1] <== newChild * ( st_top + st_bot);
-    newSwitcher.L <== aux[1] + new1leaf*st_new1;
+    aux[1] <== newChild * ( st.top + st.bot);
+    newSwitcher.L <== aux[1] + new1leaf*st.new1;
 
-    aux[2] <== sibling*st_top;
-    newSwitcher.R <== aux[2] + old1leaf*st_new1;
+    aux[2] <== sibling*st.top;
+    newSwitcher.R <== aux[2] + old1leaf*st.new1;
 
     newSwitcher.sel <== newlrbit;
     newProofHash.L <== newSwitcher.outL;
     newProofHash.R <== newSwitcher.outR;
 
-    aux[3] <== newProofHash.out * (st_top + st_bot + st_new1);
-    newRoot <==  aux[3] + new1leaf * (st_old0 + st_upd);
+    aux[3] <== newProofHash.out * (st.top + st.bot + st.new1);
+    newRoot <==  aux[3] + new1leaf * (st.old0 + st.upd);
 }

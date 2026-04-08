@@ -16,7 +16,11 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
-pragma circom 2.0.0;
+pragma circom 2.1.5;
+
+// The templates and functions of this file only work for finite field F_p = bn128,
+// with the prime number p = 21888242871839275222246405745257275088548364400416034343698204186575808495617.
+
 
 function pointAdd(x1,y1,x2,y2) {
     var a = 168700;

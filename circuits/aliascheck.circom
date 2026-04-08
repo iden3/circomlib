@@ -16,18 +16,33 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
-pragma circom 2.0.0;
+pragma circom 2.1.5;
 
-include "compconstant.circom";
+include "comparators.circom";
+include "buses.circom";
+include "bitify.circom";
+
+// The templates and functions of this file only work for any prime field
+
+
+/*
+*** AliasCheck(): template that receives an input in representing a value in binary using maxbits() bits and checks that the value belongs to the prime field (that is, if in represents the value x in binary, then the template checks that x <= p-1)
+        - Inputs: in[maxbits()] -> array of maxbits() bits
+                                   requires tag binary
+        - Outputs: None
+         
+    Example: in case we are working in the prime field with p = 11, then AliasCheck()([1, 0, 0, 1]) is satisfiable as 9 < 11, but AliasCheck()([1, 0, 1, 1]) is not as 13 >= 11. In the second case the executable program (C or WASM) reaches a false assert, and the generated R1CS is not satisfiable
+          
+*/
 
 
 template AliasCheck() {
 
-    signal input in[254];
+    input signal {binary} in[maxbits()];
 
-    component  compConstant = CompConstant(-1);
+    component  compConstant = CompConstant(maxbits(), -1);
 
-    for (var i=0; i<254; i++) in[i] ==> compConstant.in[i];
+    compConstant.in <== in;
 
     compConstant.out === 0;
 }

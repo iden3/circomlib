@@ -17,55 +17,45 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/*
+ pragma circom 2.1.5;
 
-Binary Sum
-==========
 
-This component creates a binary sum componet of ops operands and n bits each operand.
-
-e is Number of carries: Depends on the number of operands in the input.
-
-Main Constraint:
-   in[0][0]     * 2^0  +  in[0][1]     * 2^1  + ..... + in[0][n-1]    * 2^(n-1)  +
- + in[1][0]     * 2^0  +  in[1][1]     * 2^1  + ..... + in[1][n-1]    * 2^(n-1)  +
- + ..
- + in[ops-1][0] * 2^0  +  in[ops-1][1] * 2^1  + ..... + in[ops-1][n-1] * 2^(n-1)  +
- ===
-   out[0] * 2^0  + out[1] * 2^1 +   + out[n+e-1] *2(n+e-1)
-
-To waranty binary outputs:
-
-    out[0]     * (out[0] - 1) === 0
-    out[1]     * (out[0] - 1) === 0
-    .
-    .
-    .
-    out[n+e-1] * (out[n+e-1] - 1) == 0
-
- */
-
+// The templates and functions in this file are general and work for any prime field
 
 /*
-    This function calculates the number of extra bits in the output to do the full sum.
- */
- pragma circom 2.0.0;
 
-function nbits(a) {
-    var n = 1;
-    var r = 0;
-    while (n-1<a) {
-        r++;
-        n *= 2;
-    }
-    return r;
-}
+*** BinSum(n, ops): template that receives ops inputs of n bits representing values in[0], ..., in[ops-1] in binary and returns n + nbits(ops) bits representing the result of in[0] + ... + in[ops - 1]
+        - Inputs: in[ops][n] -> ops arrays representing the values in[0], ... , in[ops - 1] using n bits
+                           satisfies tag binary
+        - Output: out[n + nbits(ops - 1)] -> result of in[0] + ... + in[ops - 1] expressed using n + nbits(ops) bits
+                         satisfies tag binary
+         
+    Example: BinSum(3, 3)([[1, 0, 1], [1, 1, 1], [0, 0, 1]]) = [0, 0, 0, 0, 1]
+    
+    
+    Main Constraint:
+        in[0][0]     * 2^0  +  in[0][1]     * 2^1  + ..... + in[0][n-1]    * 2^(n-1)  +
+        + in[1][0]     * 2^0  +  in[1][1]     * 2^1  + ..... + in[1][n-1]    * 2^(n-1)  +
+        + ..
+        + in[ops-1][0] * 2^0  +  in[ops-1][1] * 2^1  + ..... + in[ops-1][n-1] * 2^(n-1)  +
+        ===
+        out[0] * 2^0  + out[1] * 2^1 +   + out[n+e-1] *2(n+e-1)
 
+    To waranty output binarys:
+
+        out[0]     * (out[0] - 1) === 0
+        out[1]     * (out[0] - 1) === 0
+        .
+        .
+        .  
+        out[n+e-1] * (out[n+e-1] - 1) == 0
+          
+*/
 
 template BinSum(n, ops) {
     var nout = nbits((2**n -1)*ops);
-    signal input in[ops][n];
-    signal output out[nout];
+    input signal {binary} in[ops][n];
+    output signal {binary} out[nout];
 
     var lin = 0;
     var lout = 0;

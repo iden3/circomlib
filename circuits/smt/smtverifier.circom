@@ -26,9 +26,9 @@ fnc:  0 -> VERIFY INCLUSION
       1 -> VERIFY NOT INCLUSION
 
  */
- pragma circom 2.0.0;
+ pragma circom 2.1.9;
 
-
+include "smtbuses.circom";
 include "../gates.circom";
 include "../bitify.circom";
 include "../comparators.circom";
@@ -39,15 +39,15 @@ include "smtverifiersm.circom";
 include "smthash_poseidon.circom";
 
 template SMTVerifier(nLevels) {
-    signal input enabled;
-    signal input root;
-    signal input siblings[nLevels];
-    signal input oldKey;
-    signal input oldValue;
-    signal input isOld0;
-    signal input key;
-    signal input value;
-    signal input fnc;
+    input signal {binary} enabled;
+    input signal root;
+    input signal siblings[nLevels];
+    input signal oldKey;
+    input signal oldValue;
+    input signal {binary} isOld0;
+    input signal key;
+    input signal value;
+    input signal {binary} fnc;
 
     var i;
 
@@ -73,33 +73,25 @@ template SMTVerifier(nLevels) {
     for (i=0; i<nLevels; i++) {
         sm[i] = SMTVerifierSM();
         if (i==0) {
-            sm[i].prev_top <== enabled;
-            sm[i].prev_i0 <== 0;
-            sm[i].prev_inew <== 0;
-            sm[i].prev_iold <== 0;
-            sm[i].prev_na <== 1-enabled;
+            sm[i].prev.top <== enabled;
+            sm[i].prev.i0 <== 0;
+            sm[i].prev.inew <== 0;
+            sm[i].prev.iold <== 0;
+            sm[i].prev.na <== 1-enabled;
         } else {
-            sm[i].prev_top <== sm[i-1].st_top;
-            sm[i].prev_i0 <== sm[i-1].st_i0;
-            sm[i].prev_inew <== sm[i-1].st_inew;
-            sm[i].prev_iold <== sm[i-1].st_iold;
-            sm[i].prev_na <== sm[i-1].st_na;
+            sm[i].prev <== sm[i-1].st;
         }
         sm[i].is0 <== isOld0;
         sm[i].fnc <== fnc;
         sm[i].levIns <== smtLevIns.levIns[i];
     }
-    sm[nLevels-1].st_na + sm[nLevels-1].st_iold + sm[nLevels-1].st_inew + sm[nLevels-1].st_i0 === 1;
+    sm[nLevels-1].st.na + sm[nLevels-1].st.iold + sm[nLevels-1].st.inew + sm[nLevels-1].st.i0 === 1;
 
     component levels[nLevels];
     for (i=nLevels-1; i != -1; i--) {
         levels[i] = SMTVerifierLevel();
 
-        levels[i].st_top <== sm[i].st_top;
-        levels[i].st_i0 <== sm[i].st_i0;
-        levels[i].st_inew <== sm[i].st_inew;
-        levels[i].st_iold <== sm[i].st_iold;
-        levels[i].st_na <== sm[i].st_na;
+        levels[i].st <== sm[i].st;
 
         levels[i].sibling <== siblings[i];
         levels[i].old1leaf <== hash1Old.out;
@@ -119,9 +111,10 @@ template SMTVerifier(nLevels) {
     areKeyEquals.in[0] <== oldKey;
     areKeyEquals.in[1] <== key;
 
+    signal {binary} keys_1 <== 1-isOld0;
     component keysOk = MultiAND(4);
     keysOk.in[0] <== fnc;
-    keysOk.in[1] <== 1-isOld0;
+    keysOk.in[1] <== keys_1;
     keysOk.in[2] <== areKeyEquals.out;
     keysOk.in[3] <== enabled;
 

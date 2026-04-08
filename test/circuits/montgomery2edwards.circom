@@ -1,5 +1,14 @@
-pragma circom 2.0.0;
+pragma circom 2.1.5;
 
 include "../../circuits/montgomery.circom";
 
-component main = Montgomery2Edwards();
+template Main(){
+    input Point a;
+    output Point out;
+    out <== Montgomery2Edwards()(MontgomeryBabyCheck()(a));
+
+}
+
+
+component main = Main();
+
