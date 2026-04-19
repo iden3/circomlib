@@ -21,6 +21,7 @@ pragma circom 2.1.5;
 include "bitify.circom";
 include "montgomery.circom";
 include "escalarmul/escalarmulfix.circom";
+include "buses.circom";
 
 // The templates and functions of this file only work for finite field F_p = bn128,
 // with the prime number p = 21888242871839275222246405745257275088548364400416034343698204186575808495617.

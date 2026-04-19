@@ -41,7 +41,7 @@ describe("EdDSA test", function () {
         eddsa = await buildEddsa();
         babyJub = await buildBabyjub();
         F = babyJub.F;
-        circuit = await wasm_tester(path.join(__dirname, "circuits", "eddsa_test.circom"));
+        circuit = await wasm_tester(path.join(__dirname, "circuits", "eddsapedersen_test.circom"));
     });
 
 
@@ -67,6 +67,9 @@ describe("EdDSA test", function () {
         const r8Bits = buffer2bits( pSignature.slice(0, 32));
         const sBits = buffer2bits( pSignature.slice(32, 64));
         const aBits = buffer2bits( pPubKey);
+        console.log(aBits.length,aBits[254],aBits[255]);
+        console.log(r8Bits.length,r8Bits[254],r8Bits[255]);
+        console.log(sBits.length,sBits[254],sBits[255]);
 
         const w = await circuit.calculateWitness({A: aBits, R8: r8Bits, S: sBits, msg: msgBits}, true);
 

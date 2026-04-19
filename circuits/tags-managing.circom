@@ -167,7 +167,6 @@ template MinMaxValueCheck(ct1,ct2){
     output signal {minvalue,maxvalue} out;
 
     var n = nbits(ct2);
-    
     signal inb[n] <== Num2Bits(n)(in);
     signal res1 <== CompConstant(n, ct1-1)(inb);
     res1 === 1;

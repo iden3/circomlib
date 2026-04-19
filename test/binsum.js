@@ -25,7 +25,7 @@ describe("Binary sum test", function () {
         assert(Fr.eq(Fr.e(witness[1]),Fr.e("0xd807aa98")));
     });
     it("Should create a sum circuit", async () => {
-        const circuit = await wasm_tester(path.join(__dirname, "circuits", "sum_test.circom"));
+        const circuit = await wasm_tester(path.join(__dirname, "circuits", "binsum_test.circom"));
         await circuit.loadConstraints();
 
         // assert.equal(circuit.constraints.length, 97);  // 32 (in1) + 32(in2) + 32(out) + 1 (carry) with --O2

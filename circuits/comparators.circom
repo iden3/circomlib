@@ -243,7 +243,6 @@ template Sign() {
 */
 
 template CompConstant(n,ct) {
-    log(nbits(ct));
     assert(nbits(ct) <= n);
     input signal {binary} in[n];
     output signal {binary} out;

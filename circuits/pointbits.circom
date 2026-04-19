@@ -81,14 +81,13 @@ function sqrt(n) {
 /*
 
 *** Bits2Point_Strict(): template that receives the encoding of a point of a curve using 256 bits and returns its Edwards representation
-        - Inputs: in[256] -> encoding of the point using 256 bits 
-                             requires tag binary
-        - Outputs: out[2] -> curve point using Edwards representation
+        - Inputs: BinaryPoint(254) in -> encoding of the point using 255 bits plus sign 
+                                         requires tag binary
+        - Outputs: Point out  -> curve point using Edwards representation
                                
     Encoding:
-       in[0..253] -> binary representation of out[1]
-       in[254] -> 0
-       in[255] -> if out[0] is positive then 0, else 1
+       in.binY[0..253] -> binary representation of out[1]
+       in.signX -> if out[0] is positive then 0, else 1
 */
 
 

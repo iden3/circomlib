@@ -66,7 +66,6 @@ function nbits(a) {
         while (n-1<a && n >= 0) {
             r++;
             n *= 2;
-            log(n);
         }
         if (n-1 < 0){
             return maxbits();

@@ -65,10 +65,12 @@ template EdDSAPedersenVerifier(n) {
 
 // Convert A to Field elements (And verify A)
     pA <== Bits2Point_Strict()(A);
+    log(pA.x,pA.y);
 
 
 // Convert R8 to Field elements (And verify R8)
     pR8 <== Bits2Point_Strict()(R8);
+    log(pR8.x,pR8.y);
 
 // Calculate the h = H(R,A, msg)
 
@@ -134,6 +136,9 @@ template EdDSAPedersenVerifier(n) {
     mulFix.e[254] <== S.signX;
 
 // Do the comparation left == right
+
+    log(mulFix.pout.x, addRight.pout.x);
+    log(mulFix.pout.x, addRight.pout.y);
 
     mulFix.pout === addRight.pout;
 }
