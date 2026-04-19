@@ -114,7 +114,7 @@ describe("Exponentioation test", function () {
 
     it("Number of constrains for 256 bits", async () => {
 
-        const circuit = await wasm_tester(path.join(__dirname, "circuits", "escalarmul_test_min.circom"));
+        const circuit = await wasm_tester(path.join(__dirname, "circuits", "escalarmul_min_test.circom"));
 
     }).timeout(10000000);
 
