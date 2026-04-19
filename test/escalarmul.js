@@ -98,7 +98,7 @@ describe("Exponentioation test", function () {
             c = babyJub.addPoint(c,g);
         }
 
-        await circuit.assertOut(w, {out: [Fr.toObject(c[0]), Fr.toObject(c[1])] });
+        await circuit.assertOut(w, {"pout.x": Fr.toObject(c[0]), "pout.y": Fr.toObject(c[1]) });
 
         const w2 = await circuit.calculateWitness({"in": Scalar.add(Scalar.shl(Scalar.e(1), 252),Scalar.e(1))});
 
@@ -108,7 +108,7 @@ describe("Exponentioation test", function () {
         }
         c = babyJub.addPoint(c,g);
 
-        await circuit.assertOut(w2, {out: [Fr.toObject(c[0]), Fr.toObject(c[1])] });
+        await circuit.assertOut(w2, {"pout.x": Fr.toObject(c[0]), "pout.y": Fr.toObject(c[1]) });
 
     }).timeout(10000000);
 
