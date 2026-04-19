@@ -108,12 +108,22 @@ template EdDSAPedersenVerifier(n) {
     component isZero = IsZero();
     isZero.in <== dbl3.pin.x;
     isZero.out === 0;
-
+/*
     component mulAny = EscalarMulAny(255);
     for (i=0; i<254; i++) {
         mulAny.e[i] <== point2bitsH.out.binY[i];
     }
     mulAny.e[254] <== point2bitsH.out.signX;
+    
+    mulAny.pin <== dbl3.pout;
+*/
+    component mulAny = EscalarMulAny(256);
+    for (i=0; i<254; i++) {
+        mulAny.e[i] <== point2bitsH.out.binY[i];
+    }
+    
+    mulAny.e[254] <== BinaryCheck ()(0);
+    mulAny.e[255] <== point2bitsH.out.signX;
     
     mulAny.pin <== dbl3.pout;
 
