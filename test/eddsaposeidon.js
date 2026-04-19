@@ -35,10 +35,10 @@ describe("EdDSA Poseidon test", function () {
 
         const input = {
             enabled: 1,
-            Ax: F.toObject(pubKey[0]),
-            Ay: F.toObject(pubKey[1]),
-            R8x: F.toObject(signature.R8[0]),
-            R8y: F.toObject(signature.R8[1]),
+            "A.x": F.toObject(pubKey[0]),
+            "A.y": F.toObject(pubKey[1]),
+            "R8.x": F.toObject(signature.R8[0]),
+            "R8.y": F.toObject(signature.R8[1]),
             S: signature.S,
             M: F.toObject(msg)
         };
@@ -64,10 +64,10 @@ describe("EdDSA Poseidon test", function () {
         try {
             await circuit.calculateWitness({
                 enabled: 1,
-                Ax: F.toObject(pubKey[0]),
-                Ay: F.toObject(pubKey[1]),
-                R8x: F.toObject(F.add(signature.R8[0], F.e(1))),
-                R8y: F.toObject(signature.R8[1]),
+                "A.x": F.toObject(pubKey[0]),
+                "A.y": F.toObject(pubKey[1]),
+                "R8.x": F.toObject(F.add(signature.R8[0], F.e(1))),
+                "R8.y": F.toObject(signature.R8[1]),
                 S: signature.S,
                 M: F.toObject(msg)}, true);
             assert(false);
@@ -91,10 +91,14 @@ describe("EdDSA Poseidon test", function () {
 
         const w = await circuit.calculateWitness({
             enabled: 0,
-            Ax: F.toObject(pubKey[0]),
-            Ay: F.toObject(pubKey[1]),
-            R8x: F.toObject(F.add(signature.R8[0], F.e(1))),
-            R8y: F.toObject(signature.R8[1]),
+            "A.x": F.toObject(pubKey[0]),
+            "A.y": F.toObject(pubKey[1]),
+            //"R8.x": F.toObject(F.add(signature.R8[0], F.e(1))),
+            //"R8.y": F.toObject(signature.R8[1]),
+            // fails becauses it is not a point in the curve
+            "R8.x": F.toObject(pubKey[0]),
+            "R8.y": F.toObject(pubKey[1]),
+            // This is a bad signature
             S: signature.S,
             M: F.toObject(msg)}, true);
 
