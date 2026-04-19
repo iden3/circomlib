@@ -11,7 +11,7 @@ function print(circuit, w, s) {
     console.log(s + ": " + w[circuit.getSignalIdx(s)]);
 }
 
-describe("Escalarmul test", function () {
+describe("EscalarMulAny test", function () {
     let circuitEMulAny;
 
     this.timeout(100000);
@@ -32,7 +32,7 @@ describe("Escalarmul test", function () {
 
         await circuitEMulAny.checkConstraints(w);
 
-        await circuitEMulAny.assertOut(w, {out: g}, true);
+        await circuitEMulAny.assertOut(w, {"pout.x": g[0], "pout.y": g[1]}, true);
 
     });
 
@@ -43,7 +43,7 @@ describe("Escalarmul test", function () {
 
         await circuitEMulAny.checkConstraints(w);
 
-        await circuitEMulAny.assertOut(w, {out: [0,1]}, true);
+        await circuitEMulAny.assertOut(w, {"pout.x": 0, "pout.y": 1}, true);
 
     });
 

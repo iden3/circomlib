@@ -30,7 +30,7 @@ describe("Escalarmul test", function () {
 
         await circuit.checkConstraints(w);
 
-        await circuit.assertOut(w, {out: [0,1]}, true);
+        await circuit.assertOut(w, {"pout.x": 0, "pout.y": 1}, true);
 
     });
 
@@ -40,7 +40,7 @@ describe("Escalarmul test", function () {
 
         await circuit.checkConstraints(w);
 
-        await circuit.assertOut(w, {out: [Fr.toObject(babyJub.Base8[0]), Fr.toObject(babyJub.Base8[1])]});
+        await circuit.assertOut(w, {"pout.x": Fr.toObject(babyJub.Base8[0]), "pout.y": Fr.toObject(babyJub.Base8[1])});
 
     });
 
@@ -58,7 +58,7 @@ describe("Escalarmul test", function () {
 
         const expectedRes = babyJub.mulPointEscalar(base8, s);
 
-        await circuit.assertOut(w, {out: [Fr.toObject(expectedRes[0]), Fr.toObject(expectedRes[1])]});
+        await circuit.assertOut(w, {"pout.x": Fr.toObject(expectedRes[0]), "pout.y": Fr.toObject(expectedRes[1])});
 
     });
 
@@ -78,7 +78,7 @@ describe("Escalarmul test", function () {
 
             const expectedRes = babyJub.mulPointEscalar(base8, s);
 
-            await circuit.assertOut(w, {out: [Fr.toObject(expectedRes[0]), Fr.toObject(expectedRes[1])]});
+            await circuit.assertOut(w, {"pout.x": Fr.toObject(expectedRes[0]), "pout.y": Fr.toObject(expectedRes[1])});
         }
     });
 
@@ -88,7 +88,7 @@ describe("Escalarmul test", function () {
 
         await circuit.checkConstraints(w);
 
-        await circuit.assertOut(w, {out: [0,1]});
+        await circuit.assertOut(w, {"pout.x": 0, "pout.y": 1});
     });
 
 });
