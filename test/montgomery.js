@@ -42,17 +42,17 @@ describe("Montgomery test", function () {
     it("Convert Edwards to Montgomery and back again", async () => {
         let w, xout, yout;
 
-        w = await circuitE2M.calculateWitness({ in: [Fr.toObject(g[0]), Fr.toObject(g[1])]}, true);
+        w = await circuitE2M.calculateWitness({ a: [Fr.toObject(g[0]), Fr.toObject(g[1])]}, true);
 
-        xout = w[circuitE2M.symbols["main.out[0]"].varIdx];
-        yout = w[circuitE2M.symbols["main.out[1]"].varIdx];
+        xout = w[circuitE2M.symbols["main.out.x"].varIdx];
+        yout = w[circuitE2M.symbols["main.out.y"].varIdx];
 
         mg = [xout, yout];
 
-        w = await circuitM2E.calculateWitness({ in: [xout, yout]}, true);
+        w = await circuitM2E.calculateWitness({ a: [xout, yout]}, true);
 
-        xout = w[circuitM2E.symbols["main.out[0]"].varIdx];
-        yout = w[circuitM2E.symbols["main.out[1]"].varIdx];
+        xout = w[circuitM2E.symbols["main.out.x"].varIdx];
+        yout = w[circuitM2E.symbols["main.out.y"].varIdx];
 
         assert(Fr.eq(Fr.e(xout), g[0]));
         assert(Fr.eq(Fr.e(yout), g[1]));
@@ -62,17 +62,17 @@ describe("Montgomery test", function () {
 
         g2 = babyJub.addPoint(g,g);
 
-        w = await circuitMDouble.calculateWitness({ in: mg}, true);
+        w = await circuitMDouble.calculateWitness({ a: mg}, true);
 
-        xout = w[circuitE2M.symbols["main.out[0]"].varIdx];
-        yout = w[circuitE2M.symbols["main.out[1]"].varIdx];
+        xout = w[circuitE2M.symbols["main.out.x"].varIdx];
+        yout = w[circuitE2M.symbols["main.out.y"].varIdx];
 
         mg2 = [xout, yout];
 
-        w = await circuitM2E.calculateWitness({ in: mg2}, true);
+        w = await circuitM2E.calculateWitness({ a: mg2}, true);
 
-        xout = w[circuitM2E.symbols["main.out[0]"].varIdx];
-        yout = w[circuitM2E.symbols["main.out[1]"].varIdx];
+        xout = w[circuitM2E.symbols["main.out.x"].varIdx];
+        yout = w[circuitM2E.symbols["main.out.y"].varIdx];
 
 
         assert(Fr.eq(Fr.e(xout), g2[0]));
@@ -83,17 +83,17 @@ describe("Montgomery test", function () {
 
         g3 = babyJub.addPoint(g,g2);
 
-        w = await circuitMAdd.calculateWitness({ in1: mg, in2: mg2}, true);
+        w = await circuitMAdd.calculateWitness({ a: mg, b: mg2}, true);
 
-        xout = w[circuitMAdd.symbols["main.out[0]"].varIdx];
-        yout = w[circuitMAdd.symbols["main.out[1]"].varIdx];
+        xout = w[circuitMAdd.symbols["main.out.x"].varIdx];
+        yout = w[circuitMAdd.symbols["main.out.y"].varIdx];
 
         mg3 = [xout, yout];
 
-        w = await circuitM2E.calculateWitness({ in: mg3}, true);
+        w = await circuitM2E.calculateWitness({ a: mg3}, true);
 
-        xout = w[circuitM2E.symbols["main.out[0]"].varIdx];
-        yout = w[circuitM2E.symbols["main.out[1]"].varIdx];
+        xout = w[circuitM2E.symbols["main.out.x"].varIdx];
+        yout = w[circuitM2E.symbols["main.out.y"].varIdx];
 
         assert(Fr.eq(Fr.e(xout), g3[0]));
         assert(Fr.eq(Fr.e(yout), g3[1]));
