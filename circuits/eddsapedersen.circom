@@ -65,15 +65,14 @@ template EdDSAPedersenVerifier(n) {
 
 // Convert A to Field elements (And verify A)
     pA <== Bits2Point_Strict()(A);
-    log(pA.x,pA.y);
 
 
 // Convert R8 to Field elements (And verify R8)
     pR8 <== Bits2Point_Strict()(R8);
-    log(pR8.x,pR8.y);
 
 // Calculate the h = H(R,A, msg)
 
+/*
     component hash = Pedersen(510+n);
 
     for (i=0; i<254; i++) {
@@ -88,6 +87,25 @@ template EdDSAPedersenVerifier(n) {
     
     for (i=0; i<n; i++) {
         hash.in[510+i] <== msg[i];
+    }
+*/
+
+    component hash = Pedersen(512+n);
+
+    for (i=0; i<254; i++) {
+        hash.in[i] <== R8.binY[i];
+    }
+    hash.in[254] <== BinaryCheck()(0);
+    hash.in[255] <== R8.signX;
+    
+    for (i=0; i<254; i++) {
+        hash.in[256 + i] <== A.binY[i];
+    }
+    hash.in[510] <== BinaryCheck()(0);
+    hash.in[511] <== A.signX;
+    
+    for (i=0; i<n; i++) {
+        hash.in[512+i] <== msg[i];
     }
 
     component point2bitsH = Point2Bits_Strict();
@@ -122,7 +140,7 @@ template EdDSAPedersenVerifier(n) {
         mulAny.e[i] <== point2bitsH.out.binY[i];
     }
     
-    mulAny.e[254] <== BinaryCheck ()(0);
+    mulAny.e[254] <== BinaryCheck()(0);
     mulAny.e[255] <== point2bitsH.out.signX;
     
     mulAny.pin <== dbl3.pout;
@@ -146,9 +164,6 @@ template EdDSAPedersenVerifier(n) {
     mulFix.e[254] <== S.signX;
 
 // Do the comparation left == right
-
-    log(mulFix.pout.x, addRight.pout.x);
-    log(mulFix.pout.x, addRight.pout.y);
 
     mulFix.pout === addRight.pout;
 }
