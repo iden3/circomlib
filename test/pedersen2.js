@@ -32,7 +32,7 @@ describe("Pedersen test", function() {
         const h = pedersen.hash(b);
         const hP = babyJub.unpackPoint(h);
 
-        await circuit.assertOut(w, {out: [F.toObject(hP[0]), F.toObject(hP[1])] });
+        await circuit.assertOut(w, {"pout.x": F.toObject(hP[0]), "pout.y": F.toObject(hP[1]) });
 
     });
     it("Should pedersen with 253 ones", async () => {
@@ -50,7 +50,7 @@ describe("Pedersen test", function() {
         const h = pedersen.hash(b);
         const hP = babyJub.unpackPoint(h);
 
-        await circuit.assertOut(w, {out: [F.toObject(hP[0]), F.toObject(hP[1])] });
+        await circuit.assertOut(w, {"pout.x": F.toObject(hP[0]), "pout.y": F.toObject(hP[1]) });
 
     });
 });

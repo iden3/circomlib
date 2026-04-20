@@ -35,7 +35,7 @@ describe("Double Pedersen test", function() {
 
         w = await circuit.calculateWitness({ in: ["0", "0"]}, true);
 
-        await circuit.assertOut(w, {out: [0,1]});
+        await circuit.assertOut(w, {"pout.x": 0, "pout.y": 1});
 
     });
     it("Should pedersen at one first generator", async () => {
@@ -43,7 +43,7 @@ describe("Double Pedersen test", function() {
 
         w = await circuit.calculateWitness({ in: ["1", "0"]}, true);
 
-        await circuit.assertOut(w, {out: [Fr.toObject(PBASE[0][0]), Fr.toObject(PBASE[0][1])]});
+        await circuit.assertOut(w, {"pout.x": Fr.toObject(PBASE[0][0]), "pout.y": Fr.toObject(PBASE[0][1])});
 
     });
     it("Should pedersen at one second generator", async () => {
@@ -51,7 +51,7 @@ describe("Double Pedersen test", function() {
 
         w = await circuit.calculateWitness({ in: ["0", "1"]}, true);
 
-        await circuit.assertOut(w, {out: [Fr.toObject(PBASE[1][0]), Fr.toObject(PBASE[1][1])]});
+        await circuit.assertOut(w, {"pout.x": Fr.toObject(PBASE[1][0]), "pout.y": Fr.toObject(PBASE[1][1])});
 
     });
     it("Should pedersen at mixed generators", async () => {
@@ -63,7 +63,7 @@ describe("Double Pedersen test", function() {
             babyJub.mulPointEscalar(PBASE[1], 7)
         );
 
-        await circuit.assertOut(w, {out: [Fr.toObject(r[0]), Fr.toObject(r[1])]});
+        await circuit.assertOut(w, {"pout.x": Fr.toObject(r[0]), "pout.y": Fr.toObject(r[1])});
 
     });
     it("Should pedersen all ones", async () => {
@@ -78,6 +78,6 @@ describe("Double Pedersen test", function() {
             babyJub.mulPointEscalar(PBASE[1], allOnes)
         );
 
-        await circuit.assertOut(w, {out: [Fr.toObject(r2[0]), Fr.toObject(r2[1])]});
+        await circuit.assertOut(w, {"pout.x": Fr.toObject(r2[0]), "pout.y": Fr.toObject(r2[1])});
     });
 });
