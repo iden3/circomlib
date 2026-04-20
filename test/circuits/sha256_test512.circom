@@ -5,12 +5,12 @@ include "../../circuits/tags-managing.circom";
 
 
 template Main() {
-    input signal a[512]; //private
+    input signal in[512]; //private
     output signal out[256];
 
     component sha256_2 = Sha256(512);
 
-    sha256_2.in <== BinaryCheckArray(512)(a);
+    sha256_2.in <== BinaryCheckArray(512)(in);
     out <== sha256_2.out;
 }
 

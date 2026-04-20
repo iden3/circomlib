@@ -5,9 +5,9 @@ include "../../circuits/tags-managing.circom";
 
 template A(){
     input signal in[254];
-    component sign = Sign();
-    sign.in <== BinaryCheckArray(254)(in);
-    output signal {binary} out <== sign.sign;
+    component csign = Sign();
+    csign.in <== BinaryCheckArray(254)(in);
+    output signal {binary} sign <== csign.sign;
 
 }
 
