@@ -127,7 +127,7 @@ fnc[0]  fnc[1]
 
 
 ***************************************************************************************************/
-pragma circom 2.0.0;
+pragma circom 2.1.9;
 
 include "smtbuses.circom";
 include "../gates.circom";

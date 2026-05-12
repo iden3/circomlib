@@ -29,7 +29,7 @@ mid = b*c
 out = a*( 1 - 2*b -2*c + 4*mid ) + b + c - 2 * mid
 
 */
-pragma circom 2.0.0;
+pragma circom 2.1.5;
 
 template Xor3(n) {
     input signal {binary} a[n];

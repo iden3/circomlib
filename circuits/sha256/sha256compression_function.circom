@@ -1,7 +1,7 @@
 //    input signal hin[256];
 //    input signal inp[512];
 //    output signal out[256];
-pragma circom 2.0.0;
+pragma circom 2.1.5;
 
 function rrot(x, n) {
     return ((x >> n) | (x << (32-n))) & 0xFFFFFFFF;
