@@ -145,6 +145,7 @@ template MaxValueCheck(ct){
 */
 
 template MinValueCheck(ct){
+    assert(ct >= 1);
     input signal in;
     output signal {minvalue} out;
 
