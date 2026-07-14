@@ -183,24 +183,23 @@ template MinMaxValueCheck(ct1,ct2){
         - Output: out -> same value as in, but including max_abs tag with out.max_abs = n
                          satisfies tag out.max_abs = n
          
-    Example: MaxValueTagCheck(15)(-14) = 14 and can be satisfied
+    Example: MaxValueTagCheck(15)(-14) = -14, which has absolute value 14 and hence it  is satisfied
     Note: in case the input in does not satisfy the specification of max_abs then the generated system of constraints does not have any solution for that input. 
-          For instance, MaxAbsValueTagCheck(33)(-100) -> no solution
-          
+          For instance, MaxAbsValueTagCheck(33)(-100) -> has no solution for the constraint system
 */
 
 template MaxAbsValueTagCheck(n){
     input signal in;
     output signal {max_abs} out;
-    
     var needed_bits = nbits(2 * n);
-    
+    assert(needed_bits <= maxbits() - 2); // for efficiency reasons only supports postive numbers n upto maxbits() - 3  
     signal {maxbit} aux[2];
     aux.maxbit = needed_bits;
     aux[0] <== MaxbitCheck(needed_bits)(in + n); // to ensure that 0 <= aux[0] < 2**nbits(2 * n)
     aux[1] <== 2 * n;
 
-    signal out1 <== LessEqThan(n)(aux); // checks that 0 <= in + n <= 2 * n <==> -n <= in <= n
+    // we check that 0 <= in + n <= 2 * n <==> -n <= in <= n as LessEqThan(needed_bits) only succeeds if in + n is positive
+    signal out1 <== LessEqThan(needed_bits)(aux); 
     out1 === 1;
     
     out.max_abs = n;
