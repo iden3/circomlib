@@ -103,12 +103,13 @@ template Num2BinNeg(n) {
 
     isZero = IsZero();
 
-    var neg = n == 0 ? 0 : 2**n - in;
+    var neg0 = in == 0 ? 0 : 2**n - in;
+    var neg = n == 0 ? 0 : neg0;
 
     for (var i = 0; i<n; i++) {
-        out[i] <-- (neg >> i) & 1;
-        out[i] * (out[i] -1 ) === 0;
-        lc1 += out[i] * 2**i;
+        out.bits[i] <-- (neg >> i) & 1;
+        out.bits[i] * (out.bits[i] -1 ) === 0;
+        lc1 += out.bits[i] * 2**i;
     }
     in ==> isZero.in;
     lc1 + isZero.out * 2**n === 2**n - in;
