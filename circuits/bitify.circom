@@ -206,7 +206,8 @@ template Num2BitsNeg(n) {
 
     isZero = IsZero();
 
-    var neg = n == 0 ? 0 : 2**n - in;
+    var neg0 = in == 0 ? 0 : 2**n - in; // Fix to meet specification
+    var neg = n == 0 ? 0 : neg0;
 
     for (var i = 0; i<n; i++) {
         out[i] <-- (neg >> i) & 1;
