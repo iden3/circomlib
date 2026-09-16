@@ -202,7 +202,7 @@ template MaxAbsValueTagCheck(n){
     aux[0] <== MaxbitCheck(needed_bits)(in + n); // to ensure that 0 <= aux[0] < 2**nbits(2 * n)
     aux[1] <== 2 * n;
 
-    signal out1 <== LessEqThan(n)(aux); // checks that 0 <= in + n <= 2 * n <==> -n <= in <= n
+    signal out1 <== LessEqThan(needed_bits)(aux); // checks that 0 <= in + n <= 2 * n <==> -n <= in <= n
     out1 === 1;
     
     out.max_abs = n;
