@@ -107,7 +107,7 @@ template Num2Bits(n) {
 
 *** Num2Bits_strict(): template that transforms an input into its binary representation using 254 bits
         - Inputs: in -> field value
-        - Output: out[n] -> binary representation of in using 254 bits
+        - Output: out[maxbits()] -> binary representation of in
                   satisfies tag binary
          
     Example: Assuming p = 11, then Num2Bits_strict()(13) = [0, 1, 0, 0]
@@ -159,13 +159,18 @@ template Bits2Num(n) {
 
 /* 
 
-*** Bits2Num_strict(): template that transforms an input of 254 bits representing a value x in binary into the decimal representation of x
-        - Inputs: in[n] -> binary representation of out using maxbits() + 1 bits
+*** Bits2Num_strict(): template that transforms an input of maxbits() bits representing a value x in binary into the decimal representation of x
+        - Inputs: in[maxbits()] -> binary representation of out
                            requires tag binary
         - Output: out -> value represented by the input
-                         satisfies tag maxbit with out.maxbit =  254
+                         satisfies tag maxbit with out.maxbit = maxbits()
          
-    Example: Assuming p = 11, then Bits2Num_strict()([1, 1, 0, 1]) = 2 (13 mod 11 = 2)
+    Unlike Bits2Num, it runs an AliasCheck, so the bits must represent a value below the
+    prime. Two bit patterns can otherwise stand for the same field element, and the check
+    is what rules the second one out. It is required, not optional.
+         
+    Example: Assuming p = 11, then Bits2Num_strict()([1, 0, 0, 1]) = 9, while
+             Bits2Num_strict()([1, 1, 0, 1]) has no solution, as those bits represent 11
 
 */
 
@@ -176,7 +181,7 @@ template Bits2Num_strict() {
     input signal {binary} in[max_nbits];
     output signal {maxbit} out;
 
-    component aliasCheck = AliasCheck(); // Maybe remove?
+    component aliasCheck = AliasCheck();
     component b2n = Bits2Num(max_nbits);
     
     in ==> b2n.in;
