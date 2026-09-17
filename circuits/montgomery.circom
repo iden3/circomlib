@@ -76,6 +76,13 @@ template Edwards2Montgomery() {
     input Point {babyedwards} pin;
     output Point {babymontgomery} pout;
 
+    // pin.x must be non-zero, otherwise pout.y * pin.x === pout.x says nothing about
+    // pout.y and leaves it free. Supplying an inverse is satisfiable exactly when
+    // pin.x != 0, and costs one constraint.
+    signal xInv;
+    xInv <-- 1 / pin.x;
+    xInv * pin.x === 1;
+
     pout.x <-- (1 + pin.y) / (1 - pin.y);
     pout.y <-- pout.x / pin.x;
 
@@ -100,6 +107,12 @@ template Edwards2Montgomery() {
 template Montgomery2Edwards() {
     input Point {babymontgomery} pin;
     output Point {babyedwards} pout;
+
+    // pin.y must be non-zero, otherwise pout.x * pin.y === pin.x says nothing about
+    // pout.x and leaves it free.
+    signal yInv;
+    yInv <-- 1 / pin.y;
+    yInv * pin.y === 1;
 
     pout.x <-- pin.x / pin.y;
     pout.y <-- (pin.x - 1) / (pin.x + 1);
@@ -139,6 +152,13 @@ template MontgomeryAdd() {
     var B = 1;
 
     signal lamda;
+
+    // The two points must differ in x. Otherwise lamda * 0 === pin2.y - pin1.y, which for
+    // pin1 == pin2 is 0 === 0 and leaves lamda free, and with it the whole output.
+    // Addition here is incomplete: use MontgomeryDouble to add a point to itself.
+    signal dxInv;
+    dxInv <-- 1 / (pin2.x - pin1.x);
+    dxInv * (pin2.x - pin1.x) === 1;
 
     lamda <-- (pin2.y - pin1.y) / (pin2.x - pin1.x);
     lamda * (pin2.x - pin1.x) === pin2.y - pin1.y;
