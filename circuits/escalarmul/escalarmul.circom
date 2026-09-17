@@ -17,7 +17,7 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
          
-pragma circom 2.1.5;
+pragma circom 2.2.0;
 
 include "../mux4.circom";
 include "escalarmulw4table.circom";

@@ -17,7 +17,7 @@
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
 
-pragma circom 2.1.5;
+pragma circom 2.2.0;
 
 // The templates and functions in this file are general and work for any prime field
 

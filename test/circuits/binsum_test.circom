@@ -1,4 +1,4 @@
-pragma circom 2.0.0;
+pragma circom 2.2.0;
 
 include "../../circuits/bitify.circom";
 include "../../circuits/binsum.circom";

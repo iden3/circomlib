@@ -33,7 +33,7 @@ out = a&b ^ (!a)&c =>
 out = a*(b-c) + c
 
 */
-pragma circom 2.1.5;
+pragma circom 2.2.0;
 
 template Ch_t(n) {
     input signal {binary} a[n];

@@ -72,7 +72,7 @@ a parent with a sibling != 0.
                   └───────────┘
 
  */
- pragma circom 2.0.0;
+pragma circom 2.2.0;
 
 template SMTLevIns(nLevels) {
     input signal {binary} enabled;

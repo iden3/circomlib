@@ -26,7 +26,7 @@ fnc:  0 -> VERIFY INCLUSION
       1 -> VERIFY NOT INCLUSION
 
  */
- pragma circom 2.1.9;
+pragma circom 2.2.0;
 
 include "smtbuses.circom";
 include "../gates.circom";

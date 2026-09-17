@@ -11,12 +11,11 @@ Requirements
 ------------
 
 - circom 2.2.0 or later. The library uses buses, which circom introduced in 2.2.0
-  (release of October 7, 2024); tags and anonymous components date from 2.1.x. The
-  pragma lines in the sources say less than this: most files declare 2.1.5, seven SMT
-  files declare 2.1.9 and four files declare 2.0.0. A pragma is a lower bound the
-  compiler checks against its own version, so none of them stops an older compiler
-  from failing on the bus syntax with a parse error. An earlier version of this file
-  gave 2.1.5 as the requirement; that predates checking circom's release notes.
+  (release of October 7, 2024); tags and anonymous components date from 2.1.x. Every
+  file under circuits/ and every test circuit declares "pragma circom 2.2.0;", so an
+  older compiler is refused up front instead of failing on the bus syntax. (They
+  previously declared a mix of 2.0.0, 2.1.5 and 2.1.9.) An earlier version of this
+  file gave 2.1.5 as the requirement; that predates checking circom's release notes.
 
 
 Removed

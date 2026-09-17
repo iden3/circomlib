@@ -90,7 +90,7 @@ fnc[0]  fnc[1]
                                                           xor=0
 
 ***************************************************************************************************/
-pragma circom 2.1.9;
+pragma circom 2.2.0;
 include "smtbuses.circom";
 
 template SMTProcessorSM() {

@@ -29,7 +29,7 @@ mid = b*c
 out = a*( b + c - 2*mid ) + mid
 
 */
-pragma circom 2.1.5;
+pragma circom 2.2.0;
 
 template Maj_t(n) {
     input signal {binary} a[n];
