@@ -163,13 +163,14 @@ BN254-only, because they embed the Baby Jubjub curve or its subgroup order: baby
 montgomery, pointbits (also the square root), pedersen, pedersen_old, escalarmul/*,
 eddsapedersen, eddsapedersen_old, eddsaposeidon.
 
-Poseidon is a special case. poseidon.circom and poseidon_old.circom say "any prime
-field", and their code does compile unchanged for other primes, but the round constants
-in poseidon_constants*.circom were generated for BN254 (grain script, 254-bit prime
-0x30644e72...) and the round numbers were chosen for that field's security level.
-Compiled for another prime the constants are reduced modulo it and the result is a
-function nobody has specified or analysed. Treat Poseidon, and the SMT circuits built
-on it, as BN254-only. SHA-256 is field-agnostic in the ordinary sense (binary signals).
+Poseidon is a special case. Its round structure compiles unchanged for other primes,
+but the round constants in poseidon_constants*.circom were generated for BN254 (grain
+script, 254-bit prime 0x30644e72...) and the round numbers were chosen for that field's
+security level. Compiled for another prime the constants are reduced modulo it and the
+result is a function nobody has specified or analysed. poseidon.circom and
+poseidon_old.circom used to claim "any prime field"; their headers now say BN254 only,
+and why. Treat Poseidon, and the SMT circuits built on it, as BN254-only. SHA-256 is
+field-agnostic in the ordinary sense (binary signals).
 
 
 Fixes
