@@ -3,8 +3,9 @@
 Circuit templates for standard operations and cryptographic primitives, written in
 [circom](https://github.com/iden3/circom).
 
-Requires **circom 2.1.5 or later**: the library uses buses and signal tags, which
-earlier versions do not support.
+Requires **circom 2.2.0 or later**: buses were introduced in circom 2.2.0 (tags in
+2.1.x). The `pragma` lines in the files state lower versions; they are minimums the
+compiler checks against itself and do not enforce this requirement.
 
 ## Where the specifications live
 
