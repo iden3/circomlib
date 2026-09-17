@@ -105,7 +105,7 @@ template Num2Bits(n) {
 
 /* 
 
-*** Num2Bits_strict(): template that transforms an input into its binary representation using 254 bits
+*** Num2Bits_strict(): template that transforms an input into its binary representation using maxbits() bits
         - Inputs: in -> field value
         - Output: out[maxbits()] -> binary representation of in
                   satisfies tag binary
