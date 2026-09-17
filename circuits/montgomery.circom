@@ -193,6 +193,21 @@ template MontgomeryDouble() {
 
 
 
+/*
+*** MontgomeryBabyCheck(): template that receives an input point pin and checks that it
+                           belongs to the Baby-Jubjub curve in Montgomery form.
+        - Inputs: pin -> bus representing the point that we want to check
+        - Outputs: pout -> the same point as the input, with the babymontgomery tag
+                           attached to point out it is on the Baby-Jubjub Montgomery curve
+
+    The set of solutions of MontgomeryBabyCheck()(p) are the points of the Baby-Jubjub
+    curve in Montgomery form. They must fulfil the equation y^2 = x^3 + A*x^2 + x,
+    A = 168698.
+
+    This is the Montgomery counterpart of BabyCheck() in babyjub.circom, which does the
+    same for the twisted Edwards form and grants the babyedwards tag instead.
+*/
+
 template MontgomeryBabyCheck(){
     input Point pin;
     output Point {babymontgomery} pout;
