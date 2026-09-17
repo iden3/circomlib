@@ -53,6 +53,8 @@ include "buses.circom";
 /*
     spec tag babyedwards: 168700*(p.x)^2 + (p.y)^2 = 1 + 168696*(p.x)^2*(p.y)^2
     spec tag babymontgomery: (p.y)^2 = (p.x)^3 + 168698*(p.x)^2 + p.x
+    spec tag babysubgroup: r*p = (0, 1) with r = 2736030358979909402780800718157159386076813972158567259200215660948447373041,
+                           that is, p is in the prime order subgroup (the identity included)
 */
 
 /*
@@ -184,4 +186,126 @@ template BabyPbk() {
 
     mulFix.e <== pvkBits.out;
     A <== mulFix.pout;
+}
+
+
+/*
+*** babyAddPoints(x1, y1, x2, y2): function that adds two points of the Baby-Jubjub curve in twisted Edwards form.
+    For use in witness computation only; it adds no constraints.
+        - Inputs: (x1, y1), (x2, y2) -> two points of the curve
+        - Output: [x, y] -> their sum
+*/
+
+function babyAddPoints(x1, y1, x2, y2) {
+    var a = 168700;
+    var d = 168696;
+    var beta = x1*y2;
+    var gamma = y1*x2;
+    var delta = (-a*x1 + y1)*(x2 + y2);
+    var tau = beta*gamma;
+    var out[2];
+    out[0] = (beta + gamma) / (1 + d*tau);
+    out[1] = (delta + a*beta - gamma) / (1 - d*tau);
+    return out;
+}
+
+/*
+*** babyMulPoint(x, y, k): function that multiplies a point of the Baby-Jubjub curve in twisted Edwards form by a scalar.
+    Double and add; for use in witness computation only, it adds no constraints.
+        - Inputs: (x, y) -> a point of the curve
+                  k -> the scalar
+        - Output: [x, y] -> k*(x, y)
+*/
+
+function babyMulPoint(x, y, k) {
+    var rx = 0;
+    var ry = 1;
+    var px = x;
+    var py = y;
+    var t[2];
+    while (k > 0) {
+        if ((k & 1) == 1) {
+            t = babyAddPoints(rx, ry, px, py);
+            rx = t[0];
+            ry = t[1];
+        }
+        t = babyAddPoints(px, py, px, py);
+        px = t[0];
+        py = t[1];
+        k = k >> 1;
+    }
+    var out[2];
+    out[0] = rx;
+    out[1] = ry;
+    return out;
+}
+
+
+/*
+*** BabySubgroupClear(): template that receives a point of the Baby-Jubjub curve in twisted Edwards form and returns
+                         8 times that point, which is in the prime order subgroup, tagged babysubgroup.
+        - Inputs: pin -> bus representing a point of the curve
+                         requires tag babyedwards
+        - Outputs: pout -> bus representing the point 8*pin
+                           satisfies tags babyedwards and babysubgroup
+
+    The curve has 8*r points and r is prime, so multiplying by 8 kills every component of
+    order dividing 8 and lands in the subgroup of order r for any point of the curve. This
+    is the cofactor clearing that the EdDSA verifiers perform on the public key. The
+    result is the identity exactly when pin has order dividing 8.
+
+    Cost: three doublings, 18 constraints.
+*/
+
+template BabySubgroupClear() {
+    input Point {babyedwards} pin;
+    output Point {babyedwards, babysubgroup} pout;
+
+    component dbl1 = BabyDbl();
+    dbl1.pin <== pin;
+    component dbl2 = BabyDbl();
+    dbl2.pin <== dbl1.pout;
+    component dbl3 = BabyDbl();
+    dbl3.pin <== dbl2.pout;
+
+    pout <== dbl3.pout;
+}
+
+
+/*
+*** BabySubgroupCheck(): template that receives a point of the Baby-Jubjub curve in twisted Edwards form, checks that
+                         it is in the prime order subgroup, and returns the same point tagged babysubgroup.
+        - Inputs: pin -> bus representing a point of the curve
+                         requires tag babyedwards
+        - Outputs: pout -> the same point as pin
+                           satisfies tags babyedwards and babysubgroup
+
+    A point p is in the subgroup of order r if and only if p = 8*q for some point q of the
+    curve: 8*q is always in the subgroup, and for p in the subgroup q = (8^-1 mod r)*p is
+    on the curve and works. So the prover supplies q as a witness, the template checks that
+    q is on the curve and that 8*q = p, and no witness exists when p is not in the subgroup.
+    The identity is in the subgroup and is accepted.
+
+    This is far cheaper than checking r*p = (0, 1) directly, which would be a full scalar
+    multiplication. Cost: BabyCheck plus three doublings, 21 constraints.
+
+    Example: BabySubgroupCheck()((0, -1)) has no solution, as (0, -1) has order 2.
+*/
+
+template BabySubgroupCheck() {
+    input Point {babyedwards} pin;
+    output Point {babyedwards, babysubgroup} pout;
+
+    // q = (8^-1 mod r) * pin, computed for the witness only
+    var q[2] = babyMulPoint(pin.x, pin.y, 2394026564107420727433200628387514462817212225638746351800188703329891451411);
+    Point qw;
+    qw.x <-- q[0];
+    qw.y <-- q[1];
+
+    Point {babyedwards} qc <== BabyCheck()(qw);
+    Point {babyedwards, babysubgroup} q8 <== BabySubgroupClear()(qc);
+
+    q8 === pin;
+
+    pout <== pin;
 }

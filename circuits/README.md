@@ -42,6 +42,7 @@ not carry it yet, pass the signal through the matching template in
 | `unique`         | the bits of a `BinaryNumber` represent a value below `p`   |
 | `babyedwards`    | `168700*x^2 + y^2 = 1 + 168696*x^2*y^2`                    |
 | `babymontgomery` | `y^2 = x^3 + 168698*x^2 + x`                               |
+| `babysubgroup`   | the point is in the prime order subgroup, `r * p = (0, 1)`; from `BabySubgroupClear` or `BabySubgroupCheck` |
 
 Tags on the inputs of the `main` component are assumed, never checked. A circuit
 whose `main` takes untrusted input must therefore add the checks itself, as the
@@ -110,7 +111,7 @@ curve `168700*x^2 + y^2 = 1 + 168696*x^2*y^2` over the BN254 scalar field.
 
 | File                          | Provides                                                                     |
 | ----------------------------- | ----------------------------------------------------------------------------- |
-| `babyjub`                     | `BabyAdd()`, `BabyDbl()`, `BabyCheck()`, `BabyPbk()`                           |
+| `babyjub`                     | `BabyAdd()`, `BabyDbl()`, `BabyCheck()`, `BabyPbk()`, `BabySubgroupClear()`, `BabySubgroupCheck()` |
 | `montgomery`                  | `Edwards2Montgomery()`, `Montgomery2Edwards()`, `MontgomeryAdd()`, `MontgomeryDouble()`, `MontgomeryBabyCheck()` |
 | `pointbits`                   | `Bits2Point_Strict()`, `Point2Bits_Strict()`, and the function `sqrt(n)`       |
 | `escalarmul/escalarmul`       | `EscalarMul(n, base)`, `EscalarMulWindow(base, k)`                             |
@@ -118,8 +119,9 @@ curve `168700*x^2 + y^2 = 1 + 168696*x^2*y^2` over the BN254 scalar field.
 | `escalarmul/escalarmulfix`    | `EscalarMulFix(n, BASE)` and its parts `SegmentMulFix(nWindows)`, `WindowMulFix()` |
 | `escalarmul/escalarmulw4table`| the functions `EscalarMulW4Table(base, k)`, `pointAdd(x1, y1, x2, y2)`         |
 
-`EscalarMulAny` assumes its point is in the prime order subgroup and is not the
-identity. No tag expresses that, so the caller is responsible for it.
+`EscalarMulAny` requires the `babysubgroup` tag on its point. `BabySubgroupClear` grants
+it by multiplying by 8, which is what the EdDSA verifiers do to the public key;
+`BabySubgroupCheck` grants it without moving the point, for 21 constraints.
 
 ### Hashes
 
