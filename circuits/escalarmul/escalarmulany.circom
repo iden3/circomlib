@@ -93,7 +93,12 @@ template BitElementMulAny() {
 
     dblIn ==> doubler.pin;
     doubler.pout ==> adder.pin1;
-    addIn ==> adder.pin2;
+    // Within a segment, dblIn is 2^i*P and addIn is P plus a subset of {2P, 4P, ..., 2^i*P},
+    // an odd multiple of P; the adder adds 2^(i+1)*P, an even multiple. Both multipliers
+    // stay below 2^149 < r, so they are distinct and not negatives of each other, and the
+    // points differ in x. This rests on P having prime order r, the documented precondition
+    // of EscalarMulAny: for a small-order P the multiples wrap and may coincide.
+    adder.pin2 <== AssumeDistinctX()(addIn);
     addIn ==> selector.pin[0];
     adder.pout ==> selector.pin[1];
 

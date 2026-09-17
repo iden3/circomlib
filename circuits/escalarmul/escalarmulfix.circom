@@ -90,38 +90,42 @@ template WindowMulFix() {
     mux.c[1][1] <== dbl2.pout.y;
 
 // in[2] -> 3*BASE
+    // Each adder below computes base + (k-1)*base for k = 3..8. The x coordinates coincide
+    // only if base == +-(k-1)*base, i.e. (k-2)*base or k*base is the identity, which cannot
+    // happen for a base of prime order r with k <= 8. Every base fed to this template is a
+    // non-identity multiple of a subgroup generator, so the property holds by construction.
     adr3.pin1 <== base;
-    adr3.pin2 <== dbl2.pout;
+    adr3.pin2 <== AssumeDistinctX()(dbl2.pout);
     mux.c[0][2] <== adr3.pout.x;
     mux.c[1][2] <== adr3.pout.y;
 
 // in[3] -> 4*BASE
     adr4.pin1 <== base;
-    adr4.pin2 <== adr3.pout;
+    adr4.pin2 <== AssumeDistinctX()(adr3.pout);
     mux.c[0][3] <== adr4.pout.x;
     mux.c[1][3] <== adr4.pout.y;
 
 // in[4] -> 5*BASE
     adr5.pin1 <== base;
-    adr5.pin2 <== adr4.pout;
+    adr5.pin2 <== AssumeDistinctX()(adr4.pout);
     mux.c[0][4] <== adr5.pout.x;
     mux.c[1][4] <== adr5.pout.y;
 
 // in[5] -> 6*BASE
     adr6.pin1 <== base;
-    adr6.pin2 <== adr5.pout;
+    adr6.pin2 <== AssumeDistinctX()(adr5.pout);
     mux.c[0][5] <== adr6.pout.x;
     mux.c[1][5] <== adr6.pout.y;
 
 // in[6] -> 7*BASE
     adr7.pin1 <== base;
-    adr7.pin2 <== adr6.pout;
+    adr7.pin2 <== AssumeDistinctX()(adr6.pout);
     mux.c[0][6] <== adr7.pout.x;
     mux.c[1][6] <== adr7.pout.y;
 
 // in[7] -> 8*BASE
     adr8.pin1 <== base;
-    adr8.pin2 <== adr7.pout;
+    adr8.pin2 <== AssumeDistinctX()(adr7.pout);
     mux.c[0][7] <== adr8.pout.x;
     mux.c[1][7] <== adr8.pout.y;
 
@@ -177,11 +181,15 @@ template SegmentMulFix(nWindows) {
         for (j=0; j<3; j++) {
             windows[i].in[j] <== e[3*i+j];
         }
+        // cadders accumulate Q = B + 8B + 64B + ... : at step i the accumulator is
+        // ((8^i - 1)/7)*B and the addend is 8^i*B (or 2*8^nWindows*B on the last step). Both
+        // multipliers are distinct positive integers whose sum stays below r for
+        // nWindows <= 83, so the two points differ in x.
         if (i<nWindows-1) {
-            cadders[i].pin2 <== windows[i].pout8;
+            cadders[i].pin2 <== AssumeDistinctX()(windows[i].pout8);
         } else {
             dblLast.pin <== windows[i].pout8;
-            cadders[i].pin2 <== dblLast.pout;
+            cadders[i].pin2 <== AssumeDistinctX()(dblLast.pout);
         }
     }
 
@@ -192,7 +200,11 @@ template SegmentMulFix(nWindows) {
         } else {
             adders[i].pin1 <== adders[i-1].pout;
         }
-        adders[i].pin2 <== windows[i].pout;
+        // The accumulator starts at 2*8^nWindows*B and only grows; the window output is
+        // 8^i*(1 + a_i)*B <= 8^(i+1)*B <= 8^nWindows*B, so its multiplier is strictly smaller.
+        // Both stay below r, and their sum does too, so the points differ in x. This is the
+        // "accumulator input >= ..., window output <= ..." argument in the header.
+        adders[i].pin2 <== AssumeDistinctX()(windows[i].pout);
     }
 
     component m2e = Montgomery2Edwards();

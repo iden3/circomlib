@@ -73,38 +73,42 @@ template Window4() {
     mux.c[1][1] <== dbl2.pout.y;
 
 // in[2] -> 3*BASE
+    // Each adder below computes base + (k-1)*base for k = 3..8. The x coordinates coincide
+    // only if base == +-(k-1)*base, i.e. (k-2)*base or k*base is the identity, which cannot
+    // happen for a base of prime order r with k <= 8. Every base fed to this template is a
+    // non-identity multiple of a subgroup generator, so the property holds by construction.
     adr3.pin1 <== base;
-    adr3.pin2 <== dbl2.pout;
+    adr3.pin2 <== AssumeDistinctX()(dbl2.pout);
     mux.c[0][2] <== adr3.pout.x;
     mux.c[1][2] <== adr3.pout.y;
 
 // in[3] -> 4*BASE
     adr4.pin1 <== base;
-    adr4.pin2 <== adr3.pout;
+    adr4.pin2 <== AssumeDistinctX()(adr3.pout);
     mux.c[0][3] <== adr4.pout.x;
     mux.c[1][3] <== adr4.pout.y;
 
 // in[4] -> 5*BASE
     adr5.pin1 <== base;
-    adr5.pin2 <== adr4.pout;
+    adr5.pin2 <== AssumeDistinctX()(adr4.pout);
     mux.c[0][4] <== adr5.pout.x;
     mux.c[1][4] <== adr5.pout.y;
 
 // in[5] -> 6*BASE
     adr6.pin1 <== base;
-    adr6.pin2 <== adr5.pout;
+    adr6.pin2 <== AssumeDistinctX()(adr5.pout);
     mux.c[0][5] <== adr6.pout.x;
     mux.c[1][5] <== adr6.pout.y;
 
 // in[6] -> 7*BASE
     adr7.pin1 <== base;
-    adr7.pin2 <== adr6.pout;
+    adr7.pin2 <== AssumeDistinctX()(adr6.pout);
     mux.c[0][6] <== adr7.pout.x;
     mux.c[1][6] <== adr7.pout.y;
 
 // in[7] -> 8*BASE
     adr8.pin1 <== base;
-    adr8.pin2 <== adr7.pout;
+    adr8.pin2 <== AssumeDistinctX()(adr7.pout);
     mux.c[0][7] <== adr8.pout.x;
     mux.c[1][7] <== adr8.pout.y;
 
@@ -163,7 +167,10 @@ template Segment(nWindows) {
             } else {
                 adders[i-1].pin1 <== adders[i-2].pout;
             }
-            adders[i-1].pin2 <== windows[i].pout;
+            // windows[j] outputs +-(1..8)*32^j*G, so |accumulator| < 32^i <= |windows[i]| as
+            // multipliers, and the two are never negatives of each other either. Segments are at
+            // most 50 windows, keeping every multiplier below r, so the points differ in x.
+            adders[i-1].pin2 <== AssumeDistinctX()(windows[i].pout);
         }
     }
 

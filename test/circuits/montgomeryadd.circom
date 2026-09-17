@@ -6,7 +6,10 @@ template Main(){
     input Point a;
     input Point b;
     output Point out;
-    out <== MontgomeryAdd()(MontgomeryBabyCheck()(a), MontgomeryBabyCheck()(b));
+    Point {babymontgomery} am <== MontgomeryBabyCheck()(a);
+    Point {babymontgomery} bm <== MontgomeryBabyCheck()(b);
+    // arbitrary inputs, so the distinctness is checked rather than assumed
+    out <== MontgomeryAdd()(am, DistinctXCheck()(am, bm));
 }
 
 
