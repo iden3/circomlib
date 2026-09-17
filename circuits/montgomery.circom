@@ -127,7 +127,17 @@ template Montgomery2Edwards() {
                      and returns the addition of the points.
         - Inputs: pin1 -> bus representing a point of the Baby-Jubjub curve in Montgomery form
                   pin2 -> bus representing a point of the Baby-Jubjub curve in Montgomery form
+                          requires pin2.x != pin1.x
         - Outputs: pout -> bus representing the point pin1 + pin2 of the Baby-Jubjub curve in Montgomery form
+
+    This addition law is incomplete: it is defined only when the two points differ in x,
+    and the template has no solution otherwise. Which template to reach for:
+      - the points are known to be equal      -> MontgomeryDouble()
+      - the points are known to differ in x   -> MontgomeryAdd(), the cheapest option
+      - neither is known                      -> BabyAdd() in babyjub.circom
+    BabyAdd works on the twisted Edwards form, and its law is complete on Baby-Jubjub, so
+    it is correct for every pair of points on the curve with no precondition to discharge.
+    It is what BabyDbl uses to add a point to itself.
          
     Montgomery Addition Law:
 
@@ -155,7 +165,7 @@ template MontgomeryAdd() {
 
     // The two points must differ in x. Otherwise lamda * 0 === pin2.y - pin1.y, which for
     // pin1 == pin2 is 0 === 0 and leaves lamda free, and with it the whole output.
-    // Addition here is incomplete: use MontgomeryDouble to add a point to itself.
+    // See the note above on what to use when that cannot be guaranteed.
     signal dxInv;
     dxInv <-- 1 / (pin2.x - pin1.x);
     dxInv * (pin2.x - pin1.x) === 1;
