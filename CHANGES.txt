@@ -136,6 +136,42 @@ Semantics.
   the field.
 
 
+Field generality
+----------------
+
+The bit-level templates no longer assume BN254. Where the previous release hardcoded
+254 bits, the constant (p-1)/2, or 252 as the comparator limit, they now derive these
+from the field: maxbits() gives the bit length of the prime, nbits(x) the bit length
+of a value, and (p-1)/2 is written as -1 \ 2. The templates and the files that state
+"any prime field" are:
+
+  aliascheck     AliasCheck (in[maxbits()], was in[254])
+  bitify         Num2Bits, Num2Bits_strict, Bits2Num, Bits2Num_strict, Num2BitsNeg
+  binnum         Num2Bin, Bin2Num, Num2BinNeg
+  comparators    IsZero, IsEqual, ForceEqualIfEnabled, LessThan, LessEqThan,
+                 GreaterThan, GreaterEqThan, Sign (the BN254 constant is gone),
+                 CompConstant(n, ct)
+  tags-managing  all eight templates
+  binsum, binsub, gates, mux1..mux4, switcher
+
+Verified by compiling probe circuits for each group with circom -p bn128, bls12381 and
+goldilocks: AliasCheck takes 254, 255 and 64 inputs respectively, and constraint counts
+scale with it. The test wrappers under test/circuits still hardcode 254 in places and
+are BN254-only as tests.
+
+BN254-only, because they embed the Baby Jubjub curve or its subgroup order: babyjub,
+montgomery, pointbits (also the square root), pedersen, pedersen_old, escalarmul/*,
+eddsapedersen, eddsapedersen_old, eddsaposeidon.
+
+Poseidon is a special case. poseidon.circom and poseidon_old.circom say "any prime
+field", and their code does compile unchanged for other primes, but the round constants
+in poseidon_constants*.circom were generated for BN254 (grain script, 254-bit prime
+0x30644e72...) and the round numbers were chosen for that field's security level.
+Compiled for another prime the constants are reduced modulo it and the result is a
+function nobody has specified or analysed. Treat Poseidon, and the SMT circuits built
+on it, as BN254-only. SHA-256 is field-agnostic in the ordinary sense (binary signals).
+
+
 Fixes
 -----
 

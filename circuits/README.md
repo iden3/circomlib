@@ -66,13 +66,18 @@ state machines of the sparse Merkle tree circuits.
 Some files are written for the BN254 scalar field and some work over any prime.
 Each file says which at the top; the summary is:
 
-- **Any prime field**: `aliascheck`, `binsub`, `binsum`, `bitify`, `comparators`,
-  `gates`, `tags-managing`.
+- **Any prime field**: `aliascheck`, `binsub`, `binsum`, `bitify`, `binnum`, `comparators`,
+  `gates`, `mux1`–`mux4`, `switcher`, `tags-managing`. These derive every size from the
+  field through `maxbits()` and `nbits()`; verified by compiling them for `bn128`,
+  `bls12381` and `goldilocks`, where `AliasCheck` takes 254, 255 and 64 inputs.
 - **BN254 only**: `babyjub`, `eddsapedersen`, `eddsapedersen_old`, `eddsaposeidon`,
   `montgomery`, `pedersen`, `pedersen_old`, `pointbits`, and everything under
-  `escalarmul/`.
-
-The remaining files do not state a requirement.
+  `escalarmul/`. They embed the Baby Jubjub curve or its subgroup order.
+- **Poseidon**: `poseidon.circom` and `poseidon_old.circom` say "any prime field" and do
+  compile for other primes, but their round constants were generated for BN254 and their
+  round numbers chosen for its security level; for another prime the result is an
+  unspecified function. Treat Poseidon, and the `smt/` circuits built on it, as BN254-only.
+- `sha256/` works on binary signals and has no field dependence.
 
 ## Index
 
