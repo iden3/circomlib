@@ -39,7 +39,7 @@ include "buses.circom";
     via the map (u,v) -> (x,y) = [ --- , ----- ] with inverse (x,y) -> (u,v) = [ ----- , --------- ]
                                     v     u+1                                     1-y     (1-y)*x
 
-    Since a is not a square in bn128, the twisted Edwards curve is a quadratic twist of the Edwards curve
+    Since a is a square in bn128, the twisted Edwards curve is isomorphic to the Edwards curve
     
     x'^2 + y'^2 = 1 + d'*x'^2*y'^2
 
@@ -65,7 +65,13 @@ include "buses.circom";
                                                x1*y2 + y1*x2         y1*y2 - a * x1*x2
     [xout, yout] = [x1, y1] + [x2, y2] = [ --------------------- , --------------------- ]
                                             1 + d * x1*x2*y1*y2     1 - d * x1*x2*y1*y2     
-    
+
+    On Baby-Jubjub a is a square and d is not, so by the Bernstein-Lange criterion this law
+    is complete: neither denominator can vanish for points on the curve. The template is
+    therefore correct for any two points, including equal ones and the identity, and needs
+    no precondition from the caller. MontgomeryAdd in montgomery.circom is cheaper but
+    incomplete, so it is the right choice only where the caller can guarantee that the two
+    points differ in x.
 */
 
 template BabyAdd() {

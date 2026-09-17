@@ -42,7 +42,7 @@ include "buses.circom";
     via the map (u,v) -> (x,y) = [ --- , ----- ] with inverse (x,y) -> (u,v) = [ ----- , --------- ]
                                     v     u+1                                     1-y     (1-y)*x
 
-    Since a is not a square in bn128, the twisted Edwards curve is a quadratic twist of the Edwards curve
+    Since a is a square in bn128, the twisted Edwards curve is isomorphic to the Edwards curve
     
     x'^2 + y'^2 = 1 + d'*x'^2*y'^2
 
