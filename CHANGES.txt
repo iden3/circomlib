@@ -1,21 +1,222 @@
-Changes:
+Changes
+=======
 
-- Added file tags-managing.circom with templates for managing tags binary, maxbit, maxvalue...
+Unreleased. BREAKING: this release converts the library to circom buses and signal
+tags, and needs a major version bump. Of the 100 templates in the previous release,
+13 are removed, 31 have their ports reshaped, 46 keep their ports but now require
+tags on their inputs, and 10 are unchanged (the Poseidon family, SMTHash1/SMTHash2 and
+the sha256 example). 110 input ports now require a tag. Migration notes are at the end.
 
-- Removed files mimc.circom, mimcsponge.circom, eddsamimc.circom, eddsamimcsponge.circom, multiplexer.circom
 
-- Added info of the prime field required by the templates
+Requirements
+------------
 
-- Added specification describing the expected behavior of the templates
+- circom 2.2.0 or later. The library uses buses, which circom introduced in 2.2.0
+  (release of October 7, 2024); tags and anonymous components date from 2.1.x. The
+  pragma lines in the sources say less than this: depending on the file they declare
+  2.0.0, 2.1.0, 2.1.5 or 2.1.9. A pragma is a lower bound the compiler checks against
+  its own version, so none of them stops an older compiler from failing on the bus
+  syntax with a parse error. An earlier version of this file gave 2.1.5 as the
+  requirement; that predates checking circom's release notes.
 
-- Updated required circom version to 2.1.5
 
-- Changed comparators GreaterEqThan and LessEqThan to satisfy tags
+Removed
+-------
 
-- Change name of the template EdDSAVerifier to EdDSAPedersenVerifier in file eddsapedersen.circom (previously eddsa.circom)
+- Files: mimc.circom, mimcsponge.circom, eddsamimc.circom, eddsamimcsponge.circom,
+  multiplexer.circom, compconstant.circom, sign.circom, smt/smthash_mimc.circom.
+  With them the templates MiMC7, MultiMiMC7, MiMCSponge, MiMCFeistel,
+  EdDSAMiMCVerifier, EdDSAMiMCSpongeVerifier, Multiplexer, Decoder, EscalarProduct
+  and the MiMC-based SMTHash1/SMTHash2 (the Poseidon-based ones in
+  smt/smthash_poseidon.circom remain). CompConstant and Sign moved, see below.
+- Templates Bits2Point() and Point2Bits() in pointbits.circom. Only the _Strict
+  variants remain.
+- Template Multiplexor2 in escalarmulany.circom, replaced by MultiplexorEdwards2 and
+  MultiplexorMontgomery2, one per point representation.
 
-- Fixed include in poseidon_old.circom => using old constants now
 
-- Moved template Compconstant(ct) and Sign (from files compconstant.circom and sign.circom) to comparators.circom
+Moved and renamed
+-----------------
 
-- Added tags minvalue and maxvalue to babypkb
+- escalarmul.circom, escalarmulany.circom, escalarmulfix.circom and
+  escalarmulw4table.circom moved into circuits/escalarmul/. Includes must change.
+- eddsa.circom is now eddsapedersen.circom, and EdDSAVerifier(n) is now
+  EdDSAPedersenVerifier(n).
+- CompConstant and Sign moved from compconstant.circom and sign.circom into
+  comparators.circom. CompConstant(ct) is now CompConstant(n, ct), with n the number
+  of input bits; the previous fixed 254 is maxbits().
+- pedersen_old.circom, poseidon_old.circom and eddsapedersen_old.circom keep the
+  previous formulation of Pedersen, Poseidon and EdDSAPedersenVerifier under the SAME
+  template names. A circuit includes one of each pair, never both.
+
+
+Added
+-----
+
+- buses.circom: Point (x, y), BinaryPoint(n) (binY[n], signX; both binary),
+  BinaryNumber(n) (bits[n]; binary). smt/smtbuses.circom: SMTProcessorState,
+  SMTVerifierState, the state machines' state as one bus.
+- tags-managing.circom: BinaryCheck, BinaryCheckArray(n), MaxbitCheck(n),
+  MaxbitCheckArray(n, m), MaxValueCheck(ct), MinValueCheck(ct),
+  MinMaxValueCheck(ct1, ct2), MaxAbsValueTagCheck(n). Each adds the constraints that
+  make a property hold and returns the input carrying the corresponding tag. This is
+  how a plain signal acquires a tag that another template requires.
+- binnum.circom: Num2Bin(n), Bin2Num(n), Num2BinNeg(n), the bitify conversions over the
+  BinaryNumber bus. Num2Bin and Num2BinNeg tag their output {unique}, meaning the bits
+  represent a value below the prime.
+- montgomery.circom: MontgomeryBabyCheck(), the Montgomery-form counterpart of
+  BabyCheck; grants the babymontgomery tag.
+- bitify.circom: function maxbits(), the number of bits of the field prime (254 for
+  BN254). Templates that hardcoded 254 now use it.
+- Every template carries a specification comment stating its inputs, outputs and the
+  tags it requires and grants; every file states which prime field it works over.
+- circuits/README.md is now an index: where the specifications live, the tags and what
+  each asserts, the buses, the field requirement per file, and every template by file.
+
+
+Changed interfaces
+------------------
+
+Tags. A tag records a property of a signal. The compiler propagates tags and rejects a
+call whose input lacks a required tag ("missing tags required by input signal"), but it
+never checks the property itself: a tag is an obligation where it is granted and an
+assumption where it is required. Tags on the inputs of the main component are assumed,
+not checked. Tags in use:
+
+  binary          0 <= in <= 1
+  maxbit          0 <= in <= 2**in.maxbit - 1
+  maxvalue        0 <= in <= in.maxvalue
+  minvalue        in >= in.minvalue
+  max_abs         -in.max_abs <= in <= in.max_abs
+  unique          the bits of a BinaryNumber represent a value below the prime
+  babyedwards     168700*x^2 + y^2 = 1 + 168696*x^2*y^2
+  babymontgomery  y^2 = x^3 + 168698*x^2 + x
+
+Ports reshaped (31 templates). Coordinate pairs became Point buses and out[2] became
+pout; port names changed accordingly.
+
+  Curve arithmetic: BabyAdd (x1,y1,x2,y2 -> xout,yout is now pin1,pin2 -> pout),
+    BabyDbl, BabyCheck (now also returns pout with babyedwards), BabyPbk (out Ax,Ay is
+    now A: Point; in requires {minvalue, maxvalue}), Edwards2Montgomery,
+    Montgomery2Edwards, MontgomeryAdd, MontgomeryDouble.
+  Scalar multiplication: EscalarMul, EscalarMulWindow, EscalarMulAny, SegmentMulAny,
+    BitElementMulAny, EscalarMulFix, SegmentMulFix, WindowMulFix. Points are buses,
+    scalar bits require {binary}.
+  Pedersen: Pedersen, Segment, Window4. Output is pout: Point; in requires {binary}.
+  Bits: AliasCheck, Bits2Num_strict, Num2Bits_strict, CompConstant, Sign. Inputs are
+    in[maxbits()] and require {binary}; outputs are tagged.
+  Encoding: Bits2Point_Strict (in[256] -> out[2] is now in: BinaryPoint(254) -> pout)
+    and Point2Bits_Strict (in[2] -> out[256] is now pin -> out: BinaryPoint(254)).
+    The bus holds 255 bits: binY[0..253] and signX. Bit 254 of the former 256-bit
+    encoding, always 0, has no signal. See migration note 4.
+  EdDSA: EdDSAPedersenVerifier takes msg[n] {binary} and A, R8, S as BinaryPoint(254)
+    (were A[256], R8[256], S[256]). EdDSAPoseidonVerifier takes A and R8 as Point
+    {babyedwards} (were Ax, Ay, R8x, R8y) and enabled as {binary}.
+  SMT internals: SMTProcessorLevel, SMTProcessorSM, SMTVerifierLevel, SMTVerifierSM
+    exchange their state as SMTProcessorState/SMTVerifierState buses instead of the
+    separate st_*/prev_* signals. SMTProcessor and SMTVerifier keep their ports.
+
+Same ports, inputs now require tags (46 templates). The code looks compatible and
+fails at compile time until the caller supplies the tag.
+
+  {binary}  AND, OR, XOR, NOT, NAND, NOR, MultiAND; Mux1..Mux4, MultiMux1..MultiMux4
+            (selectors), Switcher (sel); BinSum, BinSub, Bits2Num;
+            ForceEqualIfEnabled (enabled); Sha256, Sha256compression, Ch_t, Maj_t,
+            Xor3, RotR, ShR, SmallSigma, BigSigma, SigmaPlus, T1, T2;
+            SMTVerifier (enabled, isOld0, fnc), SMTProcessor (isOld0, fnc),
+            SMTLevIns (enabled).
+  {maxbit}  LessThan, LessEqThan, GreaterThan, GreaterEqThan, on both inputs;
+            in.maxbit must not exceed the template's n.
+  Output tags only, no caller change: IsZero, IsEqual, Num2Bits, Num2BitsNeg,
+            Sha256_2, H, K.
+
+Semantics.
+- GreaterEqThan and LessEqThan were changed to satisfy tags.
+- LessThan(n) asserts n <= maxbits() - 2 (252 on BN254), as before but in terms of
+  the field.
+
+
+Fixes
+-----
+
+- poseidon_old.circom included the new constants; it now includes
+  poseidon_constants_old.circom and matches circomlibjs.
+- Num2BitsNeg and Num2BinNeg: the in == 0 case now has a solution at n = maxbits().
+- EscalarMulFix(n) failed to compile for widths where (n-1)\246 != (n-1)\249, among
+  them n = 247..249, 493..498 and 747: the segment count was computed with 246 while
+  the segment size was 249. The count now uses 249. R1CS is byte-identical for every
+  width that compiled before.
+- MaxAbsValueTagCheck(n) failed to compile for n = 1 and n = 2; the comparator was
+  given the bound instead of the bit width.
+- MinMaxValueCheck(0, ct2) compiled into a circuit no input satisfies (ct1 - 1 wraps to
+  p - 1). It is now rejected at compile time, as MinValueCheck(0) already was.
+- Num2Bin(n) and Num2BinNeg(n) granted {unique} for n > maxbits() without an alias
+  check, so two bit patterns could stand for one value. n > maxbits() is now rejected.
+- sha256/main.circom (an example with its own main) wired input a into both operands
+  of Sha256_2; it now hashes (a, b).
+- smt/smthash_mimc.circom included the removed mimc.circom and could not compile;
+  removed.
+- Documentation: the header of babyjub.circom and montgomery.circom said a = 168700 is
+  not a square and the curve a quadratic twist; a is a square and the map given is an
+  isomorphism. BabyAdd's docstring records that its law is complete on Baby Jubjub.
+  Bits2Num_strict's example claimed the bits of the prime recompose to a value; they
+  are rejected. MontgomeryBabyCheck, Bits2Point_Strict, Point2Bits_Strict and the
+  EdDSA verifiers describe their bus interfaces. EdDSAPedersenVerifier notes that S is
+  a scalar carried in a BinaryPoint.
+- Tests: tags-managing.circom (all eight templates, plus compile-time rejection of bad
+  parameters), Num2Bits_strict, Bits2Num_strict, Num2BitsNeg, poseidon_old,
+  eddsapedersen_old, tampered-signature cases for the Pedersen verifier; binnum tests.
+  Previously unwired test circuits now run.
+
+
+Known issues
+------------
+
+- Num2BitsNeg(n) and Num2BinNeg(n) with n >= maxbits() compute 2**n - in with 2**n
+  reduced modulo the prime, not the integer 2**n. Exact for n <= maxbits() - 1. Under
+  discussion.
+
+
+Migration
+---------
+
+1. Includes. Update paths for the four escalarmul files; replace eddsa.circom with
+   eddsapedersen.circom; take CompConstant and Sign from comparators.circom. The MiMC
+   and Multiplexer families have no replacement in this library.
+
+2. Points are buses. A Point has fields x and y. Replace coordinate pairs:
+
+     component add = BabyAdd();          component add = BabyAdd();
+     add.x1 <== ax;  add.y1 <== ay;      add.pin1 <== a;            // a: Point
+     add.x2 <== bx;  add.y2 <== by;      add.pin2 <== b;
+     rx <== add.xout; ry <== add.yout;   r <== add.pout;            // r.x, r.y
+
+   A plain Point carries no tag. Curve templates require {babyedwards} (or
+   {babymontgomery}); obtain it with BabyCheck (or MontgomeryBabyCheck), which also
+   constrains the point to be on the curve:
+
+     Point {babyedwards} a <== BabyCheck()(a_raw);
+
+3. Tags. A signal reaching a tagged input must carry the tag. For a signal that does
+   not, pass it through the matching check:
+
+     LessThan(n)([a, b])        ->  LessThan(n)(MaxbitCheckArray(n, 2)([a, b]))
+     XOR()(a, b)                ->  XOR()(BinaryCheck()(a), BinaryCheck()(b))
+     Bits2Num(n)(bits)          ->  Bits2Num(n)(BinaryCheckArray(n)(bits))
+
+   Outputs of Num2Bits already carry {binary}, outputs of Bits2Num carry {maxbit}, so
+   chains of library templates usually need no checks; checks are needed at the
+   boundary where untrusted values enter. Tags on main inputs are assumed, not
+   checked, so a main that takes untrusted input must add the checks itself. The
+   wrappers under test/circuits show the pattern for every template.
+
+4. Encodings. Bits2Point_Strict, Point2Bits_Strict and EdDSAPedersenVerifier use
+   BinaryPoint(254): binY[0..253] are bits 0..253 of the former 256-bit encoding and
+   signX is bit 255. Bit 254 has no signal. Code that converts a 256-bit encoding into
+   the bus must check that bit 254 is 0 and reject otherwise; two encodings would
+   otherwise map to the same point. See test/circuits/eddsapedersen_test.circom.
+
+5. EdDSAPoseidonVerifier callers pass A and R8 as Point {babyedwards}, typically
+   BabyCheck()(A_raw), and enabled through BinaryCheck.
+
+6. CompConstant(ct) becomes CompConstant(maxbits(), ct) for the previous behaviour.
