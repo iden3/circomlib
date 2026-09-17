@@ -4,8 +4,8 @@ Circuit templates for standard operations and cryptographic primitives, written 
 [circom](https://github.com/iden3/circom).
 
 Requires **circom 2.2.0 or later**: buses were introduced in circom 2.2.0 (tags in
-2.1.x). The `pragma` lines in the files state lower versions; they are minimums the
-compiler checks against itself and do not enforce this requirement.
+2.1.x). Every file declares `pragma circom 2.2.0;`, so an older compiler refuses it
+before reaching the bus syntax.
 
 ## Where the specifications live
 

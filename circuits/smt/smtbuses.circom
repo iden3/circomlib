@@ -23,7 +23,7 @@ Defines a bus that represents a state of the state machine (sm) used to perform 
 See smtverifiersm.circom to see more details of the behavior of this machine
 
 */
- pragma circom 2.1.9;
+pragma circom 2.2.0;
 
 
 bus SMTVerifierState() {

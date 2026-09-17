@@ -57,7 +57,7 @@ The end of the last level will have to be `na`
                                                  #########
 
  */
- pragma circom 2.1.9;
+pragma circom 2.2.0;
  
  include "smtbuses.circom";
 

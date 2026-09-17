@@ -1,4 +1,4 @@
-pragma circom 2.0.0;
+pragma circom 2.2.0;
 
 include "../../circuits/escalarmul/escalarmul.circom";
 include "../../circuits/bitify.circom";
