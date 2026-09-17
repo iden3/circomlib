@@ -73,10 +73,11 @@ Each file says which at the top; the summary is:
 - **BN254 only**: `babyjub`, `eddsapedersen`, `eddsapedersen_old`, `eddsaposeidon`,
   `montgomery`, `pedersen`, `pedersen_old`, `pointbits`, and everything under
   `escalarmul/`. They embed the Baby Jubjub curve or its subgroup order.
-- **Poseidon**: `poseidon.circom` and `poseidon_old.circom` say "any prime field" and do
-  compile for other primes, but their round constants were generated for BN254 and their
-  round numbers chosen for its security level; for another prime the result is an
-  unspecified function. Treat Poseidon, and the `smt/` circuits built on it, as BN254-only.
+- **Poseidon**: the round structure compiles for other primes, but the round constants were
+  generated for BN254 and the round numbers chosen for its security level; for another prime
+  the result is an unspecified function. The headers of `poseidon.circom` and
+  `poseidon_old.circom` say so. Treat Poseidon, and the `smt/` circuits built on it, as
+  BN254-only.
 - `sha256/` works on binary signals and has no field dependence.
 
 ## Index
