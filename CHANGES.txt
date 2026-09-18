@@ -1,9 +1,8 @@
 Changes
 =======
 
-Unreleased. BREAKING: this release converts the library to circom buses and signal
-tags, and needs a major version bump. Of the 100 templates in the previous release,
-13 are removed, 31 have their ports reshaped, 46 keep their ports but now require
+3.0.0-alpha.0, pre-release. BREAKING: this release converts the library to circom buses
+and signal tags. Of the 100 templates in the previous release, 2.0.5, 13 are removed, 31 have their ports reshaped, 46 keep their ports but now require
 tags on their inputs, and 10 are unchanged (the Poseidon family, SMTHash1/SMTHash2 and
 the sha256 example). 110 input ports now require a tag. Migration notes are at the end.
 
