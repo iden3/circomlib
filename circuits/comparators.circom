@@ -208,15 +208,18 @@ template GreaterEqThan(n) {
 /*
 *** Sign(): template that receives an input in representing a value in binary using maxbits() bits and checks if the value is positive or negative. We consider a number positive in case in <= p \ 2 and negative otherwise 
         - Inputs: in[maxbits()] -> array of maxbits() bits
-                             requires tag binary
+                             requires tags binary and unique
         - Outputs: sign -> 0 in case in <= prime \ 2, 1 otherwise
                            satisfies tag binary
-         
-          
+
+    The tag unique is required because the sign is computed from the bits, and without an
+    alias check the bits do not determine the value: for x < 2**maxbits() - p both the bits
+    of x and the bits of x + p decompose x, and they have opposite signs. Obtain the tag from
+    AliasCheck or Num2Bits_strict.
 */
 
 template Sign() {
-    input signal {binary} in[maxbits()];
+    input signal {binary, unique} in[maxbits()];
     output signal {binary} sign;
 
     component comp = CompConstant(maxbits(), - 1 \ 2);
