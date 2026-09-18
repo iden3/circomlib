@@ -177,7 +177,11 @@ Fixes
 
 - poseidon_old.circom included the new constants; it now includes
   poseidon_constants_old.circom and matches circomlibjs.
-- Num2BitsNeg and Num2BinNeg: the in == 0 case now has a solution at n = maxbits().
+- Num2BitsNeg and Num2BinNeg: the in == 0 case now has a solution at n = maxbits() - 1,
+  the widest width the templates accept.
+- Num2BitsNeg(n) and Num2BinNeg(n) require n < maxbits(). For n >= maxbits() the integer
+  2**n is not a field element and the templates negated against 2**n mod p, a value
+  with no meaning as a negation; such n are now rejected at compile time.
 - EscalarMulFix(n) failed to compile for widths where (n-1)\246 != (n-1)\249, among
   them n = 247..249, 493..498 and 747: the segment count was computed with 246 while
   the segment size was 249. The count now uses 249. R1CS is byte-identical for every
@@ -203,14 +207,6 @@ Fixes
   parameters), Num2Bits_strict, Bits2Num_strict, Num2BitsNeg, poseidon_old,
   eddsapedersen_old, tampered-signature cases for the Pedersen verifier; binnum tests.
   Previously unwired test circuits now run.
-
-
-Known issues
-------------
-
-- Num2BitsNeg(n) and Num2BinNeg(n) with n >= maxbits() compute 2**n - in with 2**n
-  reduced modulo the prime, not the integer 2**n. Exact for n <= maxbits() - 1. Under
-  discussion.
 
 
 Migration

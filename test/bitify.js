@@ -1,5 +1,7 @@
 const chai = require("chai");
 const path = require("path");
+const os = require("os");
+const fs = require("fs");
 
 const assert = chai.assert;
 
@@ -113,9 +115,9 @@ describe("Bitify strict test", function () {
 describe("Num2BitsNeg test", function () {
     this.timeout(100000);
 
-    // 2**254 is above the prime, so it is reduced. Num2BitsNeg(254) therefore
-    // negates against that reduced value, not against 2**254 itself.
-    const pow254 = Scalar.mod(Scalar.shl(1, 254), q);
+    // 2**253 is the largest power of two below the prime, so 253 is the widest width the
+    // template accepts; there its result is exactly 2**253 - in as an integer.
+    const pow253 = Scalar.shl(1, 253);
 
     let cir;
     before( async() => {
@@ -124,33 +126,52 @@ describe("Num2BitsNeg test", function () {
 
     it("Should return the n bits of 2**n - in", async () => {
         for (const v of [1, 3, 17, 255, 256]) {
-            const w = await cir.calculateWitness({in8: v, in254: 1}, true);
+            const w = await cir.calculateWitness({in8: v, in253: 1}, true);
             await cir.checkConstraints(w);
             await cir.assertOut(w, {out8: getBits(Scalar.sub(256, v), 8)}, true);
         }
     });
 
     it("Should return all zeros for an input of 0", async () => {
-        const w = await cir.calculateWitness({in8: 0, in254: 0}, true);
+        const w = await cir.calculateWitness({in8: 0, in253: 0}, true);
         await cir.checkConstraints(w);
-        await cir.assertOut(w, {out8: getBits(0, 8), out254: getBits(0, 254)}, true);
+        await cir.assertOut(w, {out8: getBits(0, 8), out253: getBits(0, 253)}, true);
     });
 
-    it("Should negate against the reduced 2**254 at the full width", async () => {
-        for (const v of [1, 3, 17]) {
-            const w = await cir.calculateWitness({in8: 1, in254: v}, true);
+    it("Should return exactly 2**253 - in at the widest allowed width", async () => {
+        for (const v of [1, 3, 17, Scalar.sub(pow253, 1), pow253]) {
+            const w = await cir.calculateWitness({in8: 1, in253: v}, true);
             await cir.checkConstraints(w);
-            await cir.assertOut(w, {out254: getBits(Scalar.sub(pow254, v), 254)}, true);
+            await cir.assertOut(w, {out253: getBits(Scalar.sub(pow253, v), 253)}, true);
         }
     });
 
     it("Should not satisfy an input whose negation needs more than n bits", async () => {
-        for (const v of [257, 1000]) {
+        for (const [i8, i253] of [[257, 1], [1000, 1], [1, Scalar.add(pow253, 1)]]) {
             try {
-                await cir.calculateWitness({in8: v, in254: 1}, true);
-                assert(false, "2**8 - " + v + " does not fit in 8 bits");
+                await cir.calculateWitness({in8: i8, in253: i253}, true);
+                assert(false, "2**n - in does not fit in n bits");
             } catch(err) {
                 assert(err.message.includes("Assert Failed"), err.message);
+            }
+        }
+    });
+
+    it("Should reject n = maxbits() at compile time, for both the array and the bus template", async () => {
+        const circuits = path.join(__dirname, "..", "circuits");
+        for (const [inc, call] of [["bitify.circom", "signal output {binary} o[254] <== Num2BitsNeg(254)(in);"],
+                                   ["binnum.circom", "BinaryNumber(254) output {unique} o <== Num2BinNeg(254)(in);"]]) {
+            const dir = fs.mkdtempSync(path.join(os.tmpdir(), "circomlib-neg-"));
+            const file = path.join(dir, "invalid.circom");
+            fs.writeFileSync(file, "pragma circom 2.2.0;\ninclude \"" + path.join(circuits, inc) + "\";\n" +
+                "template A(){ signal input in; " + call + " }\ncomponent main = A();\n");
+            try {
+                await wasm_tester(file);
+                assert(false, inc + ": n = 254 should not compile");
+            } catch (err) {
+                assert(err.message.includes("False assert reached"), err.message);
+            } finally {
+                fs.rmSync(dir, {recursive: true, force: true});
             }
         }
     });
