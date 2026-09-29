@@ -229,7 +229,7 @@ template EscalarMulFix(n, BASE) {
     input signal {binary} e[n];              // Input in binary format
     output Point {babyedwards} pout;           // Point (Twisted format)
 
-    var nsegments = (n-1)\246 +1;       // 249 probably would work. But I'm not sure and for security I keep 246
+    var nsegments = (n-1)\249 +1;       // 249 bits per segment, matching nseg and the indexing of e below
     var nlastsegment = n - (nsegments-1)*249;
 
     component segments[nsegments];
