@@ -40,6 +40,7 @@ not carry it yet, pass the signal through the matching template in
 | `minvalue`       | `in >= in.minvalue`                                        |
 | `max_abs`        | `-in.max_abs <= in <= in.max_abs`                          |
 | `unique`         | the bits of a `BinaryNumber` represent a value below `p`   |
+| `xdistinct`      | a Montgomery point whose x differs from the one it is added to; see `MontgomeryAdd` |
 | `babyedwards`    | `168700*x^2 + y^2 = 1 + 168696*x^2*y^2`                    |
 | `babymontgomery` | `y^2 = x^3 + 168698*x^2 + x`                               |
 
@@ -111,7 +112,7 @@ curve `168700*x^2 + y^2 = 1 + 168696*x^2*y^2` over the BN254 scalar field.
 | File                          | Provides                                                                     |
 | ----------------------------- | ----------------------------------------------------------------------------- |
 | `babyjub`                     | `BabyAdd()`, `BabyDbl()`, `BabyCheck()`, `BabyPbk()`                           |
-| `montgomery`                  | `Edwards2Montgomery()`, `Montgomery2Edwards()`, `MontgomeryAdd()`, `MontgomeryDouble()`, `MontgomeryBabyCheck()` |
+| `montgomery`                  | `Edwards2Montgomery()`, `Montgomery2Edwards()`, `MontgomeryAdd()`, `MontgomeryDouble()`, `MontgomeryBabyCheck()`, `DistinctXCheck()`, `AssumeDistinctX()` |
 | `pointbits`                   | `Bits2Point_Strict()`, `Point2Bits_Strict()`, and the function `sqrt(n)`       |
 | `escalarmul/escalarmul`       | `EscalarMul(n, base)`, `EscalarMulWindow(base, k)`                             |
 | `escalarmul/escalarmulany`    | `EscalarMulAny(n)` and its parts `SegmentMulAny(n)`, `BitElementMulAny()`, `MultiplexorEdwards2()`, `MultiplexorMontgomery2()` |

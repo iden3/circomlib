@@ -123,18 +123,67 @@ template Montgomery2Edwards() {
 
 
 /*
+*** DistinctXCheck(): template that receives two points of the Baby-Jubjub curve in Montgomery form, constrains them
+                      to differ in x, and returns the second one carrying the xdistinct tag.
+        - Inputs: pin1 -> bus representing a point of the Baby-Jubjub curve in Montgomery form
+                  pin2 -> bus representing a point of the Baby-Jubjub curve in Montgomery form
+        - Outputs: out -> the same point as pin2, tagged xdistinct
+                          the tag records that out.x != pin1.x for the pin1 it was checked against
+
+    Costs one constraint: an inverse of pin2.x - pin1.x is supplied as a witness, which is
+    satisfiable exactly when the difference is non-zero.
+*/
+
+template DistinctXCheck() {
+    input Point {babymontgomery} pin1;
+    input Point {babymontgomery} pin2;
+    output Point {babymontgomery, xdistinct} out;
+
+    signal dxInv;
+    dxInv <-- 1 / (pin2.x - pin1.x);
+    dxInv * (pin2.x - pin1.x) === 1;
+
+    out <== pin2;
+}
+
+/*
+*** AssumeDistinctX(): template that grants the xdistinct tag without adding any constraint.
+        - Inputs: pin2 -> bus representing a point of the Baby-Jubjub curve in Montgomery form
+        - Outputs: out -> the same point, tagged xdistinct
+
+    Zero constraints. This is a statement by the caller, not a check: the compiler will
+    accept it whether or not the point really differs in x from what it will be added to.
+    Use it only where the surrounding algorithm proves the property, and write that proof
+    next to the call. Every call to this template is a soundness assumption that a review
+    must be able to find and verify; that is what the tag is for.
+*/
+
+template AssumeDistinctX() {
+    input Point {babymontgomery} pin2;
+    output Point {babymontgomery, xdistinct} out;
+
+    out <== pin2;
+}
+
+/*
 *** MontgomeryAdd(): template that receives two inputs pin1, pin2 representing points of the Baby-Jubjub curve in Montgomery form
                      and returns the addition of the points.
         - Inputs: pin1 -> bus representing a point of the Baby-Jubjub curve in Montgomery form
                   pin2 -> bus representing a point of the Baby-Jubjub curve in Montgomery form
-                          requires pin2.x != pin1.x
+                          requires tag xdistinct: pin2.x != pin1.x
         - Outputs: pout -> bus representing the point pin1 + pin2 of the Baby-Jubjub curve in Montgomery form
 
-    This addition law is incomplete: it is defined only when the two points differ in x,
-    and the template has no solution otherwise. Which template to reach for:
+    This addition law is incomplete: it is defined only when the two points differ in x.
+    If they do not, the constraint on lamda degenerates to 0 === 0 and lamda, and with it
+    the output, is left free. The xdistinct tag on pin2 makes the caller say how that is
+    ruled out, and the compiler rejects a call that does not:
+      - DistinctXCheck()(pin1, pin2)  -> one constraint, holds for any inputs
+      - AssumeDistinctX()(pin2)       -> no constraint; the caller's algorithm is the proof
+    Which template to reach for:
       - the points are known to be equal      -> MontgomeryDouble()
-      - the points are known to differ in x   -> MontgomeryAdd(), the cheapest option
-      - neither is known                      -> BabyAdd() in babyjub.circom
+      - the points are known to differ in x   -> MontgomeryAdd() with AssumeDistinctX()
+      - neither is known                      -> MontgomeryAdd() with DistinctXCheck(),
+                                                 or BabyAdd() in babyjub.circom
     BabyAdd works on the twisted Edwards form, and its law is complete on Baby-Jubjub, so
     it is correct for every pair of points on the curve with no precondition to discharge.
     It is what BabyDbl uses to add a point to itself.
@@ -155,7 +204,8 @@ template Montgomery2Edwards() {
 */
 
 template MontgomeryAdd() {
-    input Point {babymontgomery} pin1, pin2;
+    input Point {babymontgomery} pin1;
+    input Point {babymontgomery, xdistinct} pin2;
     output Point {babymontgomery} pout;
 
     var A = 168698;
@@ -163,13 +213,7 @@ template MontgomeryAdd() {
 
     signal lamda;
 
-    // The two points must differ in x. Otherwise lamda * 0 === pin2.y - pin1.y, which for
-    // pin1 == pin2 is 0 === 0 and leaves lamda free, and with it the whole output.
-    // See the note above on what to use when that cannot be guaranteed.
-    signal dxInv;
-    dxInv <-- 1 / (pin2.x - pin1.x);
-    dxInv * (pin2.x - pin1.x) === 1;
-
+    // pin2 carries xdistinct, so pin2.x - pin1.x is non-zero and lamda is determined.
     lamda <-- (pin2.y - pin1.y) / (pin2.x - pin1.x);
     lamda * (pin2.x - pin1.x) === pin2.y - pin1.y;
 
