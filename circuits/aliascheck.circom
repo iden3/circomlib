@@ -26,10 +26,17 @@ include "bitify.circom";
 
 
 /*
-*** AliasCheck(): template that receives an input in representing a value in binary using maxbits() bits and checks that the value belongs to the prime field (that is, if in represents the value x in binary, then the template checks that x <= p-1)
+*** AliasCheck(): template that receives an input in representing a value in binary using maxbits() bits and checks that the value belongs to the prime field (that is, if in represents the value x in binary, then the template checks that x <= p-1). It returns the same bits carrying the tag unique.
         - Inputs: in[maxbits()] -> array of maxbits() bits
                                    requires tag binary
-        - Outputs: None
+        - Outputs: out[maxbits()] -> the same bits
+                                     satisfies tags binary and unique
+
+    Why the output matters: a maxbits()-bit vector does not determine a field element. For
+    x < 2**maxbits() - p the bits of x and of x + p are both valid decompositions of x, so a
+    template that gives the bits a field meaning (Sign, for instance) can be steered by the
+    choice of decomposition. The tag unique records that this check was done, so such a
+    template can require it.
          
     Example: in case we are working in the prime field with p = 11, then AliasCheck()([1, 0, 0, 1]) is satisfiable as 9 < 11, but AliasCheck()([1, 0, 1, 1]) is not as 13 >= 11. In the second case the executable program (C or WASM) reaches a false assert, and the generated R1CS is not satisfiable
           
@@ -39,10 +46,13 @@ include "bitify.circom";
 template AliasCheck() {
 
     input signal {binary} in[maxbits()];
+    output signal {binary, unique} out[maxbits()];
 
     component  compConstant = CompConstant(maxbits(), -1);
 
     compConstant.in <== in;
 
     compConstant.out === 0;
+
+    out <== in;
 }

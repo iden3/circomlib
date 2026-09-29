@@ -108,7 +108,7 @@ template Num2Bits(n) {
 *** Num2Bits_strict(): template that transforms an input into its binary representation using maxbits() bits
         - Inputs: in -> field value
         - Output: out[maxbits()] -> binary representation of in
-                  satisfies tag binary
+                  satisfies tags binary and unique (the bits are alias free)
          
     Example: Assuming p = 11, then Num2Bits_strict()(13) = [0, 1, 0, 0]
 
@@ -119,14 +119,14 @@ template Num2Bits_strict() {
     var max_nbits = maxbits();
     
     input signal in;
-    output signal {binary} out[max_nbits];
+    output signal {binary, unique} out[max_nbits];
 
     component aliasCheck = AliasCheck();
     component n2b = Num2Bits(max_nbits);
     in ==> n2b.in;
 
-    n2b.out ==> out;
     n2b.out ==> aliasCheck.in;
+    aliasCheck.out ==> out;
 }
 
 /*

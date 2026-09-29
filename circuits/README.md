@@ -40,7 +40,7 @@ not carry it yet, pass the signal through the matching template in
 | `maxvalue`       | `0 <= in <= in.maxvalue`                                   |
 | `minvalue`       | `in >= in.minvalue`                                        |
 | `max_abs`        | `-in.max_abs <= in <= in.max_abs`                          |
-| `unique`         | the bits of a `BinaryNumber` represent a value below `p`   |
+| `unique`         | the bits are alias free, i.e. represent a value below `p`; on `BinaryNumber` and on arrays from `AliasCheck`/`Num2Bits_strict` |
 | `babyedwards`    | `168700*x^2 + y^2 = 1 + 168696*x^2*y^2`                    |
 | `babymontgomery` | `y^2 = x^3 + 168698*x^2 + x`                               |
 

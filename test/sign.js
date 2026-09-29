@@ -66,17 +66,33 @@ describe("Sign test", function() {
         await circuit.assertOut(w, {sign: 1});
     });
 
-    it("Sign of q", async () => {
+    it("Sign of q is rejected: q is not a field element", async () => {
         const inp = getBits(q, 254);
-        const w = await circuit.calculateWitness({in: inp}, true);
-
-        await circuit.assertOut(w, {sign: 1});
+        try {
+            await circuit.calculateWitness({in: inp}, true);
+            throw new Error("the alias check should reject bits that do not represent a field element");
+        } catch (err) {
+            if (!err.message.includes("Assert Failed")) throw err;
+        }
     });
 
-    it("Sign of all ones", async () => {
+    it("Sign of all ones is rejected: 2**254 - 1 >= q", async () => {
         const inp = getBits(Scalar.sub(Scalar.shl(1,254),1), 254);
-        const w = await circuit.calculateWitness({in: inp}, true);
-
-        await circuit.assertOut(w, {sign: 1});
+        try {
+            await circuit.calculateWitness({in: inp}, true);
+            throw new Error("the alias check should reject bits that do not represent a field element");
+        } catch (err) {
+            if (!err.message.includes("Assert Failed")) throw err;
+        }
     });
+    it("The aliased decomposition of 1, the bits of 1 + q, is rejected rather than read as negative", async () => {
+        const inp = getBits(Scalar.add(q, 1), 254);
+        try {
+            await circuit.calculateWitness({in: inp}, true);
+            throw new Error("the alias check should reject bits that do not represent a field element");
+        } catch (err) {
+            if (!err.message.includes("Assert Failed")) throw err;
+        }
+    });
+
 });
