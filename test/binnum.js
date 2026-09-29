@@ -39,24 +39,24 @@ describe("Binnum test", function () {
 
     it("Satisfy the binnumtest 0", async () => {
         const inp = getBits(0, 254);
-        await cir.calculateWitness({in: 0, inb: inp,}, true);
+        await cir.calculateWitness({in: 0, inb: inp, inneg: 0}, true);
     });
 
     it("Satisfy the binnumtest 3", async () => {
         const inp = getBits(3, 254);
-        await cir.calculateWitness({in: 3, inb: inp}, true);
+        await cir.calculateWitness({in: 3, inb: inp, inneg: 3}, true);
     });
 
     it("Satisfy the binnumtest q-1", async () => {
         const inp = getBits(F.e(-1), 254);
         // console.log(JSON.stringify(utils.stringifyBigInts(inp)));
-        await cir.calculateWitness({in: F.e(-1), inb: inp}, true);
+        await cir.calculateWitness({in: F.e(-1), inb: inp, inneg: 3}, true);
     });
 
     it("Should not satisfy an input of q", async () => {
         const inp = getBits(q, 254);
         try {
-            await cir.calculateWitness({in: q, inb: inp}, true);
+            await cir.calculateWitness({in: q, inb: inp, inneg: 0}, true);
             assert(false);
         } catch(err) {
             assert(err.message.includes("Assert Failed"));
@@ -67,7 +67,21 @@ describe("Binnum test", function () {
         const allones = Scalar.sub(Scalar.shl(1, 254) , 1);
         const inp = getBits(allones , 254);
         try {
-            await cir.calculateWitness({in: allones, inb: inp}, true);
+            await cir.calculateWitness({in: allones, inb: inp, inneg: 0}, true);
+            assert(false);
+        } catch(err) {
+            assert(err.message.includes("Assert Failed"));
+        }
+    });
+
+
+    it("Num2BinNeg(253) at its boundaries: 2**253 - 1 -> 1, 2**253 -> 0, 2**253 + 1 -> no solution", async () => {
+        const inp = getBits(3, 254);
+        const top = Scalar.shl(1, 253);
+        await cir.calculateWitness({in: 3, inb: inp, inneg: Scalar.sub(top, 1)}, true);
+        await cir.calculateWitness({in: 3, inb: inp, inneg: top}, true);
+        try {
+            await cir.calculateWitness({in: 3, inb: inp, inneg: Scalar.add(top, 1)}, true);
             assert(false);
         } catch(err) {
             assert(err.message.includes("Assert Failed"));
