@@ -8,7 +8,7 @@ template Main() {
     input Point p;
     output Point {babyedwards} pout;
     
-    Point checked_p <== BabyCheck()(p);
+    Point checked_p <== BabySubgroupCheck()(BabyCheck()(p));
 
     component n2b = Num2Bits(253);
     component escalarMulAny = EscalarMulAny(253);

@@ -103,18 +103,16 @@ template EdDSAPedersenVerifier(n) {
 
 // Calculate second part of the right side:  right2 = h*8*A
 
-    // Multiply by 8 by adding it 3 times.  This also ensure that the result is in
-    // the subgroup.
-    component dbl1 = BabyDbl();
-    dbl1.pin <== pA;
-    component dbl2 = BabyDbl();
-    dbl2.pin <== dbl1.pout;
-    component dbl3 = BabyDbl();
-    dbl3.pin <== dbl2.pout;
+    // Clear the cofactor: 8*A is in the prime order subgroup for any A on the curve, and
+    // carries the babysubgroup tag that EscalarMulAny requires.
+    Point {babyedwards, babysubgroup} A8 <== BabySubgroupClear()(pA);
 
-    // We check that A is not zero.
+    // Reject a public key of order dividing 8, for which 8*A is the identity. A8 is in the
+    // subgroup, where the identity is the only point with x == 0, so the test is exact.
+    // (The previous form tested (4*A).x == 0, which is the same predicate: (4*A).x == 0
+    // iff 4*A is the identity or (0,-1), iff 8*A is the identity.)
     component isZero = IsZero();
-    isZero.in <== dbl3.pin.x;
+    isZero.in <== A8.x;
     isZero.out === 0;
 
     component mulAny = EscalarMulAny(256);
@@ -125,7 +123,7 @@ template EdDSAPedersenVerifier(n) {
     mulAny.e[254] <== BinaryCheck()(0);
     mulAny.e[255] <== point2bitsH.out.signX;
     
-    mulAny.pin <== dbl3.pout;
+    mulAny.pin <== A8;
 
 // Compute the right side: right =  R8 + right2
 

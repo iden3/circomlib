@@ -167,13 +167,22 @@ template SegmentMulAny(n) {
 
 /*
 
-*** EscalarMulAny(n): template that receives two inputs p[2] and e[n] representing a point of BabyJub curve in its Edwards representation and the binary representation of a field value k respectively, and returns the value out according to the scheme below. This circuit is used in order to multiply a point of the BabyJub curve by a escalar (k * p with p in the curve). The input e is the binary representation of the value k and p is the point of the curve.
+*** EscalarMulAny(n): template that receives a point pin of the Baby-Jubjub curve in Edwards representation and the binary representation e[n] of a scalar k, and returns k * pin. This circuit is used in order to multiply a point of the Baby-Jubjub curve by a scalar.
         - Inputs: e[n] -> binary representation of k
                            requires tag binary
-                  p[2] -> input curve point to be multiplied in Edwards representation
-        - Outputs: out[2] -> output curve point k * p in Edwards representation
+                  pin -> bus representing the point to be multiplied, in Edwards representation
+                         requires tags babyedwards and babysubgroup
+        - Outputs: pout -> bus representing the point k * pin in Edwards representation
+                           satisfies tag babyedwards
 
-     Note: This function assumes that p is in the subgroup and it is different to 0
+    The point must be in the prime order subgroup. Two things depend on it: the internal
+    Montgomery adders add an odd multiple of pin to an even one and rely on those never
+    coinciding, which holds when pin has prime order; and the identity is detected by
+    pin.x == 0, which within the subgroup is true of the identity alone. Outside the
+    subgroup the order-2 point (0, -1) also has x == 0 and would be treated as the
+    identity, giving a wrong result with no constraint failing. Obtain the tag from
+    BabySubgroupClear (which multiplies by 8) or BabySubgroupCheck (which does not move
+    the point) in babyjub.circom.
 
 TODO: ADD SCHEME
 
@@ -181,7 +190,7 @@ TODO: ADD SCHEME
 
 template EscalarMulAny(n) {
     input signal {binary} e[n];              // Input in binary format
-    input Point {babyedwards} pin;              // Point (Twisted format)
+    input Point {babyedwards, babysubgroup} pin;   // Point (Twisted format)
     output Point {babyedwards} pout;           // Point (Twisted format)
 
     var nsegments = (n-1)\148 +1;
