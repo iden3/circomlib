@@ -1,830 +1,175 @@
 # CircomLib/Circuits
 
-## Description
-
-- This folder contains circuit templates for standard operations and many cryptographic primitives.
-- Below you can find specifications of each function. In the representation of elements, there are three tyes:
-    - Binary
-    - String
-    - Field element (the field is specified in each case. We consider 2 possible fields: Fp and Fr, where p... and r... .)
-
-## Table of Contents
-
-[TOC]
-
-## Jordi
-
-* compconstant - Returns 1 if `in` (expanded to binary array) > `ct`
-* aliascheck - check if `in` (expanded to binary array) oveflowed its 254 bits (<= -1)
-* babyjub - twisted Edwards curve 168700.x^2 + y^2 = 1 + 168696.x^2.y^2
-  * BabyAdd - (`xout`,`yout`) = (`x1`,`y1`) + (`x2`,`y2`)
-  * BabyDbl - (`xout`,`yout`) = 2*(`x`,`y`)
-  * BabyCheck - check that (`x`,`y`) is on the curve
-* binsub - binary subtraction
-* gates - logical gates
-* mimc - SNARK-friendly hash Minimal Multiplicative Complexity.
-  * https://eprint.iacr.org/2016/492.pdf
-  * zcash/zcash#2233
-* smt - Sparse Merkle Tree
-  * https://ethresear.ch/t/optimizing-sparse-merkle-trees/3751
-* montgomery https://en.wikipedia.org/wiki/Montgomery_curve
-
-## Circuits
-
-### sha256
-
-Folder containing the implementation of sha256 hash circuit.
-
-### smt
-
-Folder containing the circuit implementation of Sparse Merkle Trees.
-
-### aliascheck
-
-- `AliasCheck()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### babyjub
-
-Arithmetic on [Baby Jubjub elliptic curve](https://github.com/barryWhiteHat/baby_jubjub) in twisted Edwards form. (TODO: Expose here the characteristics of the curve?)
-
-
-- `BabyAdd()`
-
-    - DESCRIPTION
-
-      It adds two points on the Baby Jubjub curve. More specifically, given two points P1 = (`x1`, `y1`) and P2 = (`x2`, `y2`) it returns a point P3 = (`xout`, `yout`)  such that
-
-        (`xout`, `yout`) =  (`x1`,`y1`) + (`x2`,`y2`)
-             = ((`x1y2`+`y1x2`)/(1+`dx1x2y1y2`)),(`y1y2`-`ax1x2`)/(1-`dx1x2y1y2`))
-
-    - SCHEMA
-       ```
-                                        var a     var d
-                                          |         |
-                                          |         |
-                                    ______v_________v_______
-                   input x1 ---->  |                        |
-                   input y1 ---->  |        BabyAdd()       | ----> output xout
-                   input x2 ---->  |                        | ----> output yout
-                   input y2 ---->  |________________________|
-       ```
-
-    - INPUTS
-
-      | Input         | Representation | Description         |                                             |
-      | ------------- | -------------  | -------------       | -------------                               |
-      | `x1`          | Bigint         | Field element of Fp | First coordinate of a point (x1, y1) on E.  |
-      | `y1`          | Bigint         | Field element of Fp | Second coordinate of a point (x1, y1) on E. |
-      | `x2`          | Bigint         | Field element of Fp | First coordinate of a point (x2, y2) on E.  |
-      | `y2`          | Bigint         | Field element of Fp | Second coordinate of a point (x2, y2) on E. |
-
-      Requirement: at least `x1`!=`x2` or `y1`!=`y2`.
-
-    - OUTPUT
-
-      | Input         | Representation | Description         |                                             |
-      | ------------- | -------------  | -------------       | -------------                               |
-      | `xout`          | Bigint         | Field element of Fp | First coordinate of the addition point (xout, yout) = (x1, y1) + (x2, y2).  |
-      | `yout`          | Bigint         | Field element of Fp | Second coordinate of the addition point (xout, yout) = (x1, y1) + (x2, y2). |
-
-    - BENCHMARKS (constraints)
-
-    - EXAMPLE
-
-- `BabyDbl()`
-    - DESCRIPTION : doubles a point (`xout`,`yout`) = 2*(`x`,`y`).
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `BabyCheck()`
-
-    - DESCRIPTION : checks if a given point is in the curve.
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `BabyPbk()`
-
-    - DESCRIPTION: : given a private key, it returns the associated public key.
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-
-### binsub
-
-- `BinSub(n)`
-
-    - DESCRIPTION: binary substraction.
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### binsum
-
-- `nbits(a)`
-
-    - DESCRIPTION : binary sum.
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `BinSum(n, ops)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### bitify
-
-- `Num2Bits()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `Num2Bits_strict()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `Bits2Num()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `Bits2Num_strict()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `Num2BitsNeg()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### comparators
-
-- `IsZero() `
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `IsEqual()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `ForceEqualIfEnabled()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `LessThan()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `GreaterThan()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `GreaterEqThan()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### compconstant
-
-- `CompConstant(ct)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### eddsa
-
-Edwards Digital Signature Algorithm in Baby Jubjbub (link a eddsa)
-
-- `EdDSAVerifier(n)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### eddsamimc
-
-- `EdDSAMiMCVerifier()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### eddsamimcsponge
-
-- `EdDSAMiMCSpongeVerifier()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### eddsaposeidon
-
-- `EdDSAPoseidonVerifier()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### escalarmul
-
-- `EscalarMulWindow(base, k)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `EscalarMul(n, base)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### escalarmulany
-
-- `Multiplexor2()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `BitElementMulAny()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `SegmentMulAny(n)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `EscalarMulAny(n)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### escalarmulfix
-
-- `WindowMulFix()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `SegmentMulFix(nWindows)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `EscalarMulFix(n, BASE)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### escalarmulw4table
-
-- `pointAdd`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `EscalarMulW4Table`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### gates
-
-- `XOR`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `AND`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `OR`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `NOT`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `NAND`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `NOR`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `MultiAND`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### mimc
-
-Implementation of MiMC-7 hash in Fp being...  (link to description of the hash)
-
-- `MiMC7(nrounds)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `MultiMiMC7(nInputs, nRounds)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### mimcsponge
-
-- `MiMCSponge(nInputs, nRounds, nOutputs)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `MiMCFeistel(nrounds)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### montgomery
-
-- `Edwards2Montgomery()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `Montgomery2Edwards()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `MontgomeryAdd()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `MontgomeryDouble()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### multiplexer
-
-- `log2(a)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `EscalarProduct(w)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `Decoder(w)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `Multiplexer(wIn, nIn)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### mux1
-
-- `MultiMux1(n)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `Mux1()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### mux2
-
-- `MultiMux2(n)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `Mux2()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### mux3
-
-- `MultiMux3(n)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `Mux3()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### mux4
-
-- `MultiMux4(n)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `Mux4()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### pedersen_old
-
-Old version of the Pedersen hash (do not use any
-more?).
-
-### pedersen
-
-- `Window4()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `Segment(nWindows)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `Pedersen(n)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### pointbits
-
-- `sqrt(n)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `Bits2Point()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `Bits2Point_Strict()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `Point2Bits`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `Point2Bits_Strict`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### poseidon
-
-Implementation of Poseidon hash function (LINK)
-
-- `Sigma()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `Ark(t, C, r)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `Mix(t, M)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-- `Poseidon(nInputs)`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### sign
-
-- `Sign()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
-
-### switcher
-
-- `Switcher()`
-
-    - DESCRIPTION
-    - SCHEMA
-    - INPUT
-    - OUTPUT
-    - BENCHMARKS
-    - EXAMPLE
+Circuit templates for standard operations and cryptographic primitives, written in
+[circom](https://github.com/iden3/circom).
+
+Requires **circom 2.2.0 or later**: buses were introduced in circom 2.2.0 (tags in
+2.1.x). The `pragma` lines in the files state lower versions; they are minimums the
+compiler checks against itself and do not enforce this requirement.
+
+## Where the specifications live
+
+Each template is specified in a comment directly above it, in the form
+
+```
+/*
+*** TemplateName(params): what the template does
+        - Inputs:  in  -> what it is, and which tags it requires
+        - Outputs: out -> what it is, and which tags it satisfies
+
+    Example: ...
+*/
+```
+
+That comment is the reference for the template: what it computes, what it assumes
+about its inputs, and what it guarantees about its outputs. This file only indexes
+what exists and where.
+
+## Tags
+
+A tag records a property of a signal. The compiler propagates tags but does not
+check them, so a tag is an assumption at the point where it is required and an
+obligation at the point where it is granted. To attach one to a signal that does
+not carry it yet, pass the signal through the matching template in
+`tags-managing.circom`, which adds the constraints that make the property hold.
+
+| Tag              | Meaning                                                    |
+| ---------------- | ---------------------------------------------------------- |
+| `binary`         | `0 <= in <= 1`                                             |
+| `maxbit`         | `0 <= in <= 2**in.maxbit - 1`                              |
+| `maxvalue`       | `0 <= in <= in.maxvalue`                                   |
+| `minvalue`       | `in >= in.minvalue`                                        |
+| `max_abs`        | `-in.max_abs <= in <= in.max_abs`                          |
+| `unique`         | the bits of a `BinaryNumber` represent a value below `p`   |
+| `babyedwards`    | `168700*x^2 + y^2 = 1 + 168696*x^2*y^2`                    |
+| `babymontgomery` | `y^2 = x^3 + 168698*x^2 + x`                               |
+
+Tags on the inputs of the `main` component are assumed, never checked. A circuit
+whose `main` takes untrusted input must therefore add the checks itself, as the
+wrappers under `test/circuits` do.
+
+## Buses
+
+`buses.circom` groups signals that travel together:
+
+| Bus               | Fields                                |
+| ----------------- | ------------------------------------- |
+| `Point()`         | `x`, `y`                              |
+| `BinaryPoint(n)`  | `binY[n]`, `signX`, both `binary`     |
+| `BinaryNumber(n)` | `bits[n]`, `binary`                   |
+
+`smt/smtbuses.circom` adds `SMTVerifierState()` and `SMTProcessorState()` for the
+state machines of the sparse Merkle tree circuits.
+
+## Field
+
+Some files are written for the BN254 scalar field and some work over any prime.
+Each file says which at the top; the summary is:
+
+- **Any prime field**: `aliascheck`, `binsub`, `binsum`, `bitify`, `binnum`, `comparators`,
+  `gates`, `mux1`–`mux4`, `switcher`, `tags-managing`. These derive every size from the
+  field through `maxbits()` and `nbits()`; verified by compiling them for `bn128`,
+  `bls12381` and `goldilocks`, where `AliasCheck` takes 254, 255 and 64 inputs.
+- **BN254 only**: `babyjub`, `eddsapedersen`, `eddsapedersen_old`, `eddsaposeidon`,
+  `montgomery`, `pedersen`, `pedersen_old`, `pointbits`, and everything under
+  `escalarmul/`. They embed the Baby Jubjub curve or its subgroup order.
+- **Poseidon**: the round structure compiles for other primes, but the round constants were
+  generated for BN254 and the round numbers chosen for its security level; for another prime
+  the result is an unspecified function. The headers of `poseidon.circom` and
+  `poseidon_old.circom` say so. Treat Poseidon, and the `smt/` circuits built on it, as
+  BN254-only.
+- `sha256/` works on binary signals and has no field dependence.
+
+## Index
+
+### Numbers and bits
+
+| File            | Provides                                                                                     |
+| --------------- | -------------------------------------------------------------------------------------------- |
+| `bitify`        | `Num2Bits(n)`, `Num2Bits_strict()`, `Bits2Num(n)`, `Bits2Num_strict()`, `Num2BitsNeg(n)`, and the functions `maxbits()`, `nbits(a)` |
+| `binnum`        | `Num2Bin(n)`, `Bin2Num(n)`, `Num2BinNeg(n)` — the same conversions over the `BinaryNumber` bus |
+| `aliascheck`    | `AliasCheck()` — the bits represent a value below `p`                                          |
+| `binsum`        | `BinSum(n, ops)`                                                                               |
+| `binsub`        | `BinSub(n)`                                                                                    |
+
+### Comparison and logic
+
+| File            | Provides                                                                                     |
+| --------------- | -------------------------------------------------------------------------------------------- |
+| `comparators`   | `IsZero()`, `IsEqual()`, `ForceEqualIfEnabled()`, `LessThan(n)`, `LessEqThan(n)`, `GreaterThan(n)`, `GreaterEqThan(n)`, `Sign()`, `CompConstant(n, ct)` |
+| `gates`         | `XOR()`, `AND()`, `OR()`, `NOT()`, `NAND()`, `NOR()`, `MultiAND(n)`                            |
+| `switcher`      | `Switcher()`                                                                                   |
+| `mux1`          | `Mux1()`, `MultiMux1(n)`                                                                       |
+| `mux2`          | `Mux2()`, `MultiMux2(n)`                                                                       |
+| `mux3`          | `Mux3()`, `MultiMux3(n)`                                                                       |
+| `mux4`          | `Mux4()`, `MultiMux4(n)`                                                                       |
+
+### Tags
+
+| File             | Provides                                                                                    |
+| ---------------- | ------------------------------------------------------------------------------------------- |
+| `tags-managing`  | `BinaryCheck()`, `BinaryCheckArray(n)`, `MaxbitCheck(n)`, `MaxbitCheckArray(n, m)`, `MaxValueCheck(ct)`, `MinValueCheck(ct)`, `MinMaxValueCheck(ct1, ct2)`, `MaxAbsValueTagCheck(n)` |
+
+### Baby Jubjub
+
+[Baby Jubjub](https://github.com/barryWhiteHat/baby_jubjub) is the twisted Edwards
+curve `168700*x^2 + y^2 = 1 + 168696*x^2*y^2` over the BN254 scalar field.
+
+| File                          | Provides                                                                     |
+| ----------------------------- | ----------------------------------------------------------------------------- |
+| `babyjub`                     | `BabyAdd()`, `BabyDbl()`, `BabyCheck()`, `BabyPbk()`                           |
+| `montgomery`                  | `Edwards2Montgomery()`, `Montgomery2Edwards()`, `MontgomeryAdd()`, `MontgomeryDouble()`, `MontgomeryBabyCheck()` |
+| `pointbits`                   | `Bits2Point_Strict()`, `Point2Bits_Strict()`, and the function `sqrt(n)`       |
+| `escalarmul/escalarmul`       | `EscalarMul(n, base)`, `EscalarMulWindow(base, k)`                             |
+| `escalarmul/escalarmulany`    | `EscalarMulAny(n)` and its parts `SegmentMulAny(n)`, `BitElementMulAny()`, `MultiplexorEdwards2()`, `MultiplexorMontgomery2()` |
+| `escalarmul/escalarmulfix`    | `EscalarMulFix(n, BASE)` and its parts `SegmentMulFix(nWindows)`, `WindowMulFix()` |
+| `escalarmul/escalarmulw4table`| the functions `EscalarMulW4Table(base, k)`, `pointAdd(x1, y1, x2, y2)`         |
+
+`EscalarMulAny` assumes its point is in the prime order subgroup and is not the
+identity. No tag expresses that, so the caller is responsible for it.
+
+### Hashes
+
+| File                   | Provides                                                                            |
+| ---------------------- | ------------------------------------------------------------------------------------ |
+| `poseidon`             | `Poseidon(nInputs)`, `PoseidonEx(nInputs, nOuts)`, constants in `poseidon_constants`  |
+| `poseidon_old`         | `Poseidon(nInputs)`, the unoptimized formulation, constants in `poseidon_constants_old` |
+| `pedersen`             | `Pedersen(n)`, built from `Segment(nWindows)` and `Window4()`                          |
+| `pedersen_old`         | `Pedersen(n)`, the previous formulation                                                |
+| `sha256/sha256`        | `Sha256(nBits)`, with `Sha256compression()` and the round templates beside it          |
+| `sha256/sha256_2`      | `Sha256_2()` — two field elements to one                                               |
+
+`poseidon` and `poseidon_old` define the same template name, as do `pedersen` and
+`pedersen_old`, so a circuit includes one or the other, never both.
+
+The round functions these are built from are not meant to be instantiated directly:
+`Sigma()`, `Ark(t, C, r)`, `Mix(t, M)`, `MixLast(t, M, s)` and `MixS(t, S, r)` for
+Poseidon; `Window4()` and `Segment(nWindows)` for Pedersen; and, under `sha256/`,
+`Ch_t(n)`, `Maj_t(n)`, `Xor3(n)`, `RotR(n, r)`, `ShR(n, r)`, `SmallSigma(ra, rb, rc)`,
+`BigSigma(ra, rb, rc)`, `SigmaPlus()`, `T1()`, `T2()` and the constant tables
+`H(x)`, `K(x)`. `sha256/main.circom` is a worked example with its own `main`
+component rather than a template to include.
+
+### Signatures
+
+| File                 | Provides                                                                    |
+| -------------------- | ---------------------------------------------------------------------------- |
+| `eddsapedersen`      | `EdDSAPedersenVerifier(n)` — EdDSA over Baby Jubjub with the Pedersen hash    |
+| `eddsapedersen_old`  | `EdDSAPedersenVerifier(n)`, the previous formulation                          |
+| `eddsaposeidon`      | `EdDSAPoseidonVerifier()` — the same protocol with the Poseidon hash          |
+
+### Sparse Merkle tree
+
+An implementation of [sparse Merkle trees](https://ethresear.ch/t/optimizing-sparse-merkle-trees/3751).
+
+| File                    | Provides                                    |
+| ----------------------- | ------------------------------------------- |
+| `smt/smtverifier`       | `SMTVerifier(nLevels)` — inclusion and exclusion proofs |
+| `smt/smtprocessor`      | `SMTProcessor(nLevels)` — insert, update, delete         |
+| `smt/smtverifierlevel`  | `SMTVerifierLevel()`                        |
+| `smt/smtverifiersm`     | `SMTVerifierSM()`                           |
+| `smt/smtprocessorlevel` | `SMTProcessorLevel()`                       |
+| `smt/smtprocessorsm`    | `SMTProcessorSM()`                          |
+| `smt/smtlevins`         | `SMTLevIns(nLevels)`                        |
+| `smt/smthash_poseidon`  | `SMTHash1()`, `SMTHash2()`                  |
+| `smt/smtbuses`          | `SMTVerifierState()`, `SMTProcessorState()` |

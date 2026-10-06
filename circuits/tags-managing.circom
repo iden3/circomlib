@@ -138,17 +138,24 @@ template MaxValueCheck(ct){
 }
 
 /*
-*** MinValueCheck(ct): template that receives an input, checks its value is greater than or equal to the constant value ct given as a parameter, and returns the same input but with the tag minvalue with value ct 
+*** MinValueCheck(ct): template that receives an input, checks its value is greater than or equal to the constant value ct given as a parameter, and returns the same input but with the tag minvalue with value ct
         - Inputs: in -> field number
-        - Outputs: out -> field number 
+        - Outputs: out -> field number
                           satisfies tag minvalue with value ct
+
+    The comparison is made on the bits of in, so those bits must be the canonical
+    decomposition: for x < 2**maxbits() - p the bits of x + p also decompose x, and they
+    encode a larger integer. Num2Bits_strict runs the alias check that rules that out.
+    Without it, a prover could give the value 0 the bits of p and have it tagged
+    minvalue = ct for any ct <= p. Cost: 253 constraints more than a plain Num2Bits.
 */
 
 template MinValueCheck(ct){
+    assert(ct >= 1);
     input signal in;
     output signal {minvalue} out;
 
-    signal res <== CompConstant(maxbits(), ct-1)(Num2Bits(maxbits())(in));
+    signal res <== CompConstant(maxbits(), ct-1)(Num2Bits_strict()(in));
     res === 1;
     out.minvalue = ct;
     out <== in;
@@ -163,6 +170,7 @@ template MinValueCheck(ct){
 */
 
 template MinMaxValueCheck(ct1,ct2){
+    assert(ct1 >= 1);
     input signal in;
     output signal {minvalue,maxvalue} out;
 
@@ -200,7 +208,7 @@ template MaxAbsValueTagCheck(n){
     aux[0] <== MaxbitCheck(needed_bits)(in + n); // to ensure that 0 <= aux[0] < 2**nbits(2 * n)
     aux[1] <== 2 * n;
 
-    signal out1 <== LessEqThan(n)(aux); // checks that 0 <= in + n <= 2 * n <==> -n <= in <= n
+    signal out1 <== LessEqThan(needed_bits)(aux); // checks that 0 <= in + n <= 2 * n <==> -n <= in <= n
     out1 === 1;
     
     out.max_abs = n;
