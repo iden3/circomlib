@@ -89,6 +89,8 @@ function nbits(a) {
 
 template Num2Bits(n) {
     input signal in;
+    assert(n <= maxbits());
+
     output signal {binary} out[n];
     var lc1=0;
 
@@ -101,6 +103,11 @@ template Num2Bits(n) {
     }
     
     lc1 === in;
+
+    if (n == maxbits()) { // to ensure the determinism of the output if n == maxbits()
+       component aliasCheck = AliasCheck();
+       aliasCheck.in <== out.bits;
+    }
 }
 
 /* 
@@ -111,6 +118,8 @@ template Num2Bits(n) {
                   satisfies tag binary
          
     Example: Assuming p = 11, then Num2Bits_strict()(13) = [0, 1, 0, 0]
+
+    Obs: new version of Num2Bits() already include the AliasCheck, no need to use Num2Bits_strict now
 
 */
 
