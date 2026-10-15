@@ -27,8 +27,8 @@ include "bitify.circom";
 
 /*
 *** AliasCheck(): template that receives an input in representing a value in binary using maxbits() bits and checks that the value belongs to the prime field (that is, if in represents the value x in binary, then the template checks that x <= p-1)
-        - Inputs: in[maxbits()] -> array of maxbits() bits
-                                   requires tag binary
+        - Inputs: in -> BinaryNumber(maxbits()) bus with the bits of the value
+                        its bits require tag binary
         - Outputs: None
          
     Example: in case we are working in the prime field with p = 11, then AliasCheck()([1, 0, 0, 1]) is satisfiable as 9 < 11, but AliasCheck()([1, 0, 1, 1]) is not as 13 >= 11. In the second case the executable program (C or WASM) reaches a false assert, and the generated R1CS is not satisfiable
@@ -38,7 +38,7 @@ include "bitify.circom";
 
 template AliasCheck() {
 
-    input signal {binary} in[maxbits()];
+    BinaryNumber(maxbits()) input in;
 
     component  compConstant = CompConstant(maxbits(), -1);
 

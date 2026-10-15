@@ -4,8 +4,8 @@ include "constants.circom";
 include "sha256compression.circom";
 
 template Sha256(nBits) {
-    input signal {binary} in[nBits];
-    output signal {binary} out[256];
+    BinaryNumber(nBits) input in;
+    BinaryNumber(256) output out;
 
     var i;
     var k;
@@ -15,19 +15,19 @@ template Sha256(nBits) {
 
     nBlocks = ((nBits + 64)\512)+1;
 
-    signal {binary} paddedIn[nBlocks*512];
+    BinaryNumber(nBlocks*512) paddedIn;
 
     for (k=0; k<nBits; k++) {
-        paddedIn[k] <== in[k];
+        paddedIn.bits[k] <== in.bits[k];
     }
-    paddedIn[nBits] <== 1;
+    paddedIn.bits[nBits] <== 1;
 
     for (k=nBits+1; k<nBlocks*512-64; k++) {
-        paddedIn[k] <== 0;
+        paddedIn.bits[k] <== 0;
     }
 
     for (k = 0; k< 64; k++) {
-        paddedIn[nBlocks*512 - k -1] <== (nBits >> k)&1;
+        paddedIn.bits[nBlocks*512 - k -1] <== (nBits >> k)&1;
     }
 
     component ha0 = H(0);
@@ -47,35 +47,35 @@ template Sha256(nBits) {
 
         if (i==0) {
             for (k=0; k<32; k++ ) {
-                sha256compression[i].hin[0*32+k] <== ha0.out[k];
-                sha256compression[i].hin[1*32+k] <== hb0.out[k];
-                sha256compression[i].hin[2*32+k] <== hc0.out[k];
-                sha256compression[i].hin[3*32+k] <== hd0.out[k];
-                sha256compression[i].hin[4*32+k] <== he0.out[k];
-                sha256compression[i].hin[5*32+k] <== hf0.out[k];
-                sha256compression[i].hin[6*32+k] <== hg0.out[k];
-                sha256compression[i].hin[7*32+k] <== hh0.out[k];
+                sha256compression[i].hin.bits[0*32+k] <== ha0.out.bits[k];
+                sha256compression[i].hin.bits[1*32+k] <== hb0.out.bits[k];
+                sha256compression[i].hin.bits[2*32+k] <== hc0.out.bits[k];
+                sha256compression[i].hin.bits[3*32+k] <== hd0.out.bits[k];
+                sha256compression[i].hin.bits[4*32+k] <== he0.out.bits[k];
+                sha256compression[i].hin.bits[5*32+k] <== hf0.out.bits[k];
+                sha256compression[i].hin.bits[6*32+k] <== hg0.out.bits[k];
+                sha256compression[i].hin.bits[7*32+k] <== hh0.out.bits[k];
             }
         } else {
             for (k=0; k<32; k++ ) {
-                sha256compression[i].hin[32*0+k] <== sha256compression[i-1].out[32*0+31-k];
-                sha256compression[i].hin[32*1+k] <== sha256compression[i-1].out[32*1+31-k];
-                sha256compression[i].hin[32*2+k] <== sha256compression[i-1].out[32*2+31-k];
-                sha256compression[i].hin[32*3+k] <== sha256compression[i-1].out[32*3+31-k];
-                sha256compression[i].hin[32*4+k] <== sha256compression[i-1].out[32*4+31-k];
-                sha256compression[i].hin[32*5+k] <== sha256compression[i-1].out[32*5+31-k];
-                sha256compression[i].hin[32*6+k] <== sha256compression[i-1].out[32*6+31-k];
-                sha256compression[i].hin[32*7+k] <== sha256compression[i-1].out[32*7+31-k];
+                sha256compression[i].hin.bits[32*0+k] <== sha256compression[i-1].out.bits[32*0+31-k];
+                sha256compression[i].hin.bits[32*1+k] <== sha256compression[i-1].out.bits[32*1+31-k];
+                sha256compression[i].hin.bits[32*2+k] <== sha256compression[i-1].out.bits[32*2+31-k];
+                sha256compression[i].hin.bits[32*3+k] <== sha256compression[i-1].out.bits[32*3+31-k];
+                sha256compression[i].hin.bits[32*4+k] <== sha256compression[i-1].out.bits[32*4+31-k];
+                sha256compression[i].hin.bits[32*5+k] <== sha256compression[i-1].out.bits[32*5+31-k];
+                sha256compression[i].hin.bits[32*6+k] <== sha256compression[i-1].out.bits[32*6+31-k];
+                sha256compression[i].hin.bits[32*7+k] <== sha256compression[i-1].out.bits[32*7+31-k];
             }
         }
 
         for (k=0; k<512; k++) {
-            sha256compression[i].inp[k] <== paddedIn[i*512+k];
+            sha256compression[i].inp.bits[k] <== paddedIn.bits[i*512+k];
         }
     }
 
     for (k=0; k<256; k++) {
-        out[k] <== sha256compression[nBlocks-1].out[k];
+        out.bits[k] <== sha256compression[nBlocks-1].out.bits[k];
     }
 
 }

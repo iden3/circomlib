@@ -19,6 +19,7 @@
 pragma circom 2.1.5;
 
 include "bitify.circom";
+include "binnum.circom";
 include "montgomery.circom";
 include "escalarmul/escalarmulfix.circom";
 include "buses.circom";
@@ -177,7 +178,7 @@ template BabyPbk() {
         16950150798460657717958625567821834550301663161624707787222815936182638968203
     ];
 
-    component pvkBits = Num2Bits(253);
+    component pvkBits = Num2Bin(253);
     pvkBits.in <== in;
 
     component mulFix = EscalarMulFix(253, BASE8);

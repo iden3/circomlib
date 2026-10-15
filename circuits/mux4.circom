@@ -19,6 +19,8 @@
 
 pragma circom 2.1.5;
 
+include "buses.circom";
+
 // The templates and functions in this file are general and work for any prime field
 
 
@@ -34,8 +36,8 @@ pragma circom 2.1.5;
     - If s == 14 then out = c[14]
     - If s == 15 then out = c[15]
     
-        - Inputs: s[4] -> binary values, selector
-                          requires tag binary
+        - Inputs: s -> BinaryNumber(4) bus, selector (s.bits[0] is the least significant bit)
+                       its bits require tag binary
                   c[n][16] -> 16 arrays of n elements that correspond to the inputs of the mux: c[i][0] => first input, c[i][1] => second input, ... 
         - Output: out[n] -> array of n elements, it takes the value c[i][0] if s == [0, 0, 0, 0], c[i][1] if s == [1, 0, 0, 0], ... , c[i][15] if s == [1, 1, 1, 1]
         
@@ -45,7 +47,7 @@ pragma circom 2.1.5;
 
 template MultiMux4(n) {
     input signal c[n][16];  // Constants
-    input signal {binary} s[4];   // Selector
+    BinaryNumber(4) input s;   // Selector
     output signal out[n];
 
     signal a3210[n];
@@ -68,13 +70,13 @@ template MultiMux4(n) {
 
     // 4 constrains for the intermediary variables
     signal  s10;
-    s10 <== s[1] * s[0];
+    s10 <== s.bits[1] * s.bits[0];
     signal  s20;
-    s20 <== s[2] * s[0];
+    s20 <== s.bits[2] * s.bits[0];
     signal  s21;
-    s21 <== s[2] * s[1];
+    s21 <== s.bits[2] * s.bits[1];
     signal s210;
-    s210 <==  s21 * s[0];
+    s210 <==  s21 * s.bits[0];
 
 
     for (var i=0; i<n; i++) {
@@ -84,21 +86,21 @@ template MultiMux4(n) {
          a321[i] <==  ( c[i][14]-c[i][12]-c[i][10]+c[i][ 8] - c[i][ 6]+c[i][ 4]+c[i][ 2]-c[i][ 0] ) * s21;
          a320[i] <==  ( c[i][13]-c[i][12]-c[i][ 9]+c[i][ 8] - c[i][ 5]+c[i][ 4]+c[i][ 1]-c[i][ 0] ) * s20;
          a310[i] <==  ( c[i][11]-c[i][10]-c[i][ 9]+c[i][ 8] - c[i][ 3]+c[i][ 2]+c[i][ 1]-c[i][ 0] ) * s10;
-          a32[i] <==  ( c[i][12]-c[i][ 8]-c[i][ 4]+c[i][ 0] ) * s[2];
-          a31[i] <==  ( c[i][10]-c[i][ 8]-c[i][ 2]+c[i][ 0] ) * s[1];
-          a30[i] <==  ( c[i][ 9]-c[i][ 8]-c[i][ 1]+c[i][ 0] ) * s[0];
+          a32[i] <==  ( c[i][12]-c[i][ 8]-c[i][ 4]+c[i][ 0] ) * s.bits[2];
+          a31[i] <==  ( c[i][10]-c[i][ 8]-c[i][ 2]+c[i][ 0] ) * s.bits[1];
+          a30[i] <==  ( c[i][ 9]-c[i][ 8]-c[i][ 1]+c[i][ 0] ) * s.bits[0];
            a3[i] <==  ( c[i][ 8]-c[i][ 0] );
 
          a210[i] <==  ( c[i][ 7]-c[i][ 6]-c[i][ 5]+c[i][ 4] - c[i][ 3]+c[i][ 2]+c[i][ 1]-c[i][ 0] ) * s210;
           a21[i] <==  ( c[i][ 6]-c[i][ 4]-c[i][ 2]+c[i][ 0] ) * s21;
           a20[i] <==  ( c[i][ 5]-c[i][ 4]-c[i][ 1]+c[i][ 0] ) * s20;
           a10[i] <==  ( c[i][ 3]-c[i][ 2]-c[i][ 1]+c[i][ 0] ) * s10;
-           a2[i] <==  ( c[i][ 4]-c[i][ 0] ) * s[2];
-           a1[i] <==  ( c[i][ 2]-c[i][ 0] ) * s[1];
-           a0[i] <==  ( c[i][ 1]-c[i][ 0] ) * s[0];
+           a2[i] <==  ( c[i][ 4]-c[i][ 0] ) * s.bits[2];
+           a1[i] <==  ( c[i][ 2]-c[i][ 0] ) * s.bits[1];
+           a0[i] <==  ( c[i][ 1]-c[i][ 0] ) * s.bits[0];
             a[i] <==  ( c[i][ 0] );
 
-          out[i] <== ( a3210[i] + a321[i] + a320[i] + a310[i] + a32[i] + a31[i] + a30[i] + a3[i] ) * s[3] +
+          out[i] <== ( a3210[i] + a321[i] + a320[i] + a310[i] + a32[i] + a31[i] + a30[i] + a3[i] ) * s.bits[3] +
                      (  a210[i] +  a21[i] +  a20[i] +  a10[i] +  a2[i] +  a1[i] +  a0[i] +  a[i] );
 
 
@@ -119,8 +121,8 @@ template MultiMux4(n) {
     - If s == 14 then out = c[14]
     - If s == 15 then out = c[15]
 
-        - Inputs: s[4] -> binary values, selector
-                          requires tag binary
+        - Inputs: s -> BinaryNumber(4) bus, selector (s.bits[0] is the least significant bit)
+                       its bits require tag binary
                   c[16] -> 16 elements that correspond to the inputs of the mux: c[0] => first input, c[1] => second input, ...
         - Output: out -> field element, it takes the value c[0] if s == [0, 0, 0, 0], c[1] if s == [1, 0, 0, 0], . . ., c[15] if s == [1, 1, 1, 1] 
         
@@ -131,7 +133,7 @@ template MultiMux4(n) {
 template Mux4() {
     var i;
     input signal c[16];  // Constants
-    input signal {binary} s[4];   // Selector
+    BinaryNumber(4) input s;   // Selector
     output signal out;
 
     component mux = MultiMux4(1);
@@ -140,9 +142,7 @@ template Mux4() {
         mux.c[0][i] <== c[i];
     }
 
-    for (i=0; i<4; i++) {
-      s[i] ==> mux.s[i];
-    }
+    s ==> mux.s;
 
     mux.out[0] ==> out;
 }

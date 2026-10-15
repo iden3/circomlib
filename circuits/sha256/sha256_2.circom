@@ -21,6 +21,7 @@ pragma circom 2.0.0;
 include "constants.circom";
 include "sha256compression.circom";
 include "../bitify.circom";
+include "../binnum.circom";
 
 template Sha256_2() {
     input signal a;
@@ -33,8 +34,8 @@ template Sha256_2() {
     component bits2num = Bits2Num(216);
     component num2bits[2];
 
-    num2bits[0] = Num2Bits(216);
-    num2bits[1] = Num2Bits(216);
+    num2bits[0] = Num2Bin(216);
+    num2bits[1] = Num2Bin(216);
 
     num2bits[0].in <== a;
     num2bits[1].in <== b;
@@ -52,42 +53,42 @@ template Sha256_2() {
     component hh0 = H(7);
 
     for (k=0; k<32; k++ ) {
-        sha256compression.hin[0*32+k] <== ha0.out[k];
-        sha256compression.hin[1*32+k] <== hb0.out[k];
-        sha256compression.hin[2*32+k] <== hc0.out[k];
-        sha256compression.hin[3*32+k] <== hd0.out[k];
-        sha256compression.hin[4*32+k] <== he0.out[k];
-        sha256compression.hin[5*32+k] <== hf0.out[k];
-        sha256compression.hin[6*32+k] <== hg0.out[k];
-        sha256compression.hin[7*32+k] <== hh0.out[k];
+        sha256compression.hin.bits[0*32+k] <== ha0.out.bits[k];
+        sha256compression.hin.bits[1*32+k] <== hb0.out.bits[k];
+        sha256compression.hin.bits[2*32+k] <== hc0.out.bits[k];
+        sha256compression.hin.bits[3*32+k] <== hd0.out.bits[k];
+        sha256compression.hin.bits[4*32+k] <== he0.out.bits[k];
+        sha256compression.hin.bits[5*32+k] <== hf0.out.bits[k];
+        sha256compression.hin.bits[6*32+k] <== hg0.out.bits[k];
+        sha256compression.hin.bits[7*32+k] <== hh0.out.bits[k];
     }
 
     for (i=0; i<216; i++) {
-        sha256compression.inp[i] <== num2bits[0].out[215-i];
-        sha256compression.inp[i+216] <== num2bits[1].out[215-i];
+        sha256compression.inp.bits[i] <== num2bits[0].out.bits[215-i];
+        sha256compression.inp.bits[i+216] <== num2bits[1].out.bits[215-i];
     }
-    
+
     signal {binary} aux1 <== 1;
     signal {binary} aux0 <== 0;
 
-    sha256compression.inp[432] <== aux1;
+    sha256compression.inp.bits[432] <== aux1;
 
     for (i=433; i<503; i++) {
-        sha256compression.inp[i] <== aux0;
+        sha256compression.inp.bits[i] <== aux0;
     }
 
-    sha256compression.inp[503] <== aux1;
-    sha256compression.inp[504] <== aux1;
-    sha256compression.inp[505] <== aux0;
-    sha256compression.inp[506] <== aux1;
-    sha256compression.inp[507] <== aux1;
-    sha256compression.inp[508] <== aux0;
-    sha256compression.inp[509] <== aux0;
-    sha256compression.inp[510] <== aux0;
-    sha256compression.inp[511] <== aux0;
+    sha256compression.inp.bits[503] <== aux1;
+    sha256compression.inp.bits[504] <== aux1;
+    sha256compression.inp.bits[505] <== aux0;
+    sha256compression.inp.bits[506] <== aux1;
+    sha256compression.inp.bits[507] <== aux1;
+    sha256compression.inp.bits[508] <== aux0;
+    sha256compression.inp.bits[509] <== aux0;
+    sha256compression.inp.bits[510] <== aux0;
+    sha256compression.inp.bits[511] <== aux0;
 
     for (i=0; i<216; i++) {
-        bits2num.in[i] <== sha256compression.out[255-i];
+        bits2num.in[i] <== sha256compression.out.bits[255-i];
     }
 
     out <== bits2num.out;

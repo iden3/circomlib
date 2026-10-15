@@ -19,16 +19,18 @@
 
 pragma circom 2.1.5;
 
+include "buses.circom";
+
 // The templates and functions in this file are general and work for any prime field
 
 
 /*
 
 *** BinSub(n): template that receives two inputs of n bits representing values in[0] and in[1] in binary and returns n bits representing the result of in[0] - in[1]
-        - Inputs: in[2][n] -> two arrays representing the values in[0] and in[1] using n bits
-                              requires tag binary
-        - Output: out[n] -> result of in[0] - in[1] expressed using n bits
-                            satisfies tag binary
+        - Inputs: in[2] -> two BinaryNumber(n) buses representing the values in[0] and in[1] using n bits
+                           their bits require tag binary
+        - Output: out -> BinaryNumber(n) bus with the result of in[0] - in[1] expressed using n bits
+                         its bits satisfy tag binary
          
     Example: BinSub(3)([[1, 0, 1], [1, 1, 1]]) = [0, 1, 1]
     
@@ -53,8 +55,8 @@ pragma circom 2.1.5;
 
 
 template BinSub(n) {
-    input signal {binary} in[2][n];
-    output signal {binary} out[n];
+    BinaryNumber(n) input in[2];
+    BinaryNumber(n) output out;
 
     signal aux;
 
@@ -64,17 +66,17 @@ template BinSub(n) {
     var i;
 
     for (i=0; i<n; i++) {
-        lin = lin + in[0][i]*(2**i);
-        lin = lin - in[1][i]*(2**i);
+        lin = lin + in[0].bits[i]*(2**i);
+        lin = lin - in[1].bits[i]*(2**i);
     }
 
     for (i=0; i<n; i++) {
-        out[i] <-- (lin >> i) & 1;
+        out.bits[i] <-- (lin >> i) & 1;
 
         // Ensure out is binary
-        out[i] * (out[i] - 1) === 0;
+        out.bits[i] * (out.bits[i] - 1) === 0;
 
-        lout = lout + out[i]*(2**i);
+        lout = lout + out.bits[i]*(2**i);
     }
 
     aux <-- (lin >> n) & 1;

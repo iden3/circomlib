@@ -19,6 +19,8 @@
 
 pragma circom 2.1.5;
 
+include "buses.circom";
+
 // The templates and functions in this file are general and work for any prime field
 
 
@@ -30,8 +32,8 @@ pragma circom 2.1.5;
     - If s == 2 then out = c[2]
     - If s == 3 then out = c[3]
     
-        - Inputs: s[2] -> binary values, selector
-                          requires tag binary
+        - Inputs: s -> BinaryNumber(2) bus, selector (s.bits[0] is the least significant bit)
+                       its bits require tag binary
                   c[n][4] -> four arrays of n elements that correspond to the inputs of the mux: c[i][0] => first input, c[i][1] => second input, ... 
         - Output: out[n] -> array of n elements, it takes the value c[i][0] if s == [0, 0], c[i][1] if s == [1, 0], c[i][2] if s == [0, 1], c[i][3] if s == [1, 1]
         
@@ -41,7 +43,7 @@ pragma circom 2.1.5;
  
 template MultiMux2(n) {
     input signal c[n][4];  // Constants
-    input signal {binary} s[2];   // Selector
+    BinaryNumber(2) input s;   // Selector
     output signal out[n];
 
     signal a10[n];
@@ -50,13 +52,13 @@ template MultiMux2(n) {
     signal a[n];
 
     signal  s10;
-    s10 <== s[1] * s[0];
+    s10 <== s.bits[1] * s.bits[0];
 
     for (var i=0; i<n; i++) {
 
           a10[i] <==  ( c[i][ 3]-c[i][ 2]-c[i][ 1]+c[i][ 0] ) * s10;
-           a1[i] <==  ( c[i][ 2]-c[i][ 0] ) * s[1];
-           a0[i] <==  ( c[i][ 1]-c[i][ 0] ) * s[0];
+           a1[i] <==  ( c[i][ 2]-c[i][ 0] ) * s.bits[1];
+           a0[i] <==  ( c[i][ 1]-c[i][ 0] ) * s.bits[0];
             a[i] <==  ( c[i][ 0] );
 
           out[i] <==  (  a10[i] +  a1[i] +  a0[i] +  a[i] );
@@ -74,8 +76,8 @@ template MultiMux2(n) {
     - If s == 2 then out = c[2]
     - If s == 3 then out = c[3]
 
-        - Inputs: s[2] -> binary values, selector
-                          requires tag binary
+        - Inputs: s -> BinaryNumber(2) bus, selector (s.bits[0] is the least significant bit)
+                       its bits require tag binary
                   c[4] -> four elements that correspond to the inputs of the mux: c[0] => first input, c[1] => second input, ...
         - Output: out -> field element, it takes the value c[0] if s == [0, 0], c[1] if s == [1, 0], c[2] if s == [0, 1], c[3] if s == [1, 1] 
         
@@ -86,7 +88,7 @@ template MultiMux2(n) {
 template Mux2() {
     var i;
     input signal c[4];  // Constants
-    input signal {binary} s[2];   // Selector
+    BinaryNumber(2) input s;   // Selector
     output signal out;
 
     component mux = MultiMux2(1);
@@ -95,9 +97,7 @@ template Mux2() {
         mux.c[0][i] <== c[i];
     }
 
-    for (i=0; i<2; i++) {
-      s[i] ==> mux.s[i];
-    }
+    s ==> mux.s;
 
     mux.out[0] ==> out;
 }

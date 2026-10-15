@@ -74,10 +74,12 @@ a parent with a sibling != 0.
  */
  pragma circom 2.0.0;
 
+include "../buses.circom";
+
 template SMTLevIns(nLevels) {
     input signal {binary} enabled;
     input signal siblings[nLevels];
-    output signal {binary} levIns[nLevels];
+    BinaryNumber(nLevels) output levIns;
     signal done[nLevels-1];        // Indicates if the insLevel has aready been detected.
 
     var i;
@@ -92,12 +94,12 @@ template SMTLevIns(nLevels) {
     // The last level must always have a sibling of 0. If not, then it cannot be inserted.
     (isZero[nLevels-1].out - 1) * enabled === 0;
 
-    levIns[nLevels-1] <== (1-isZero[nLevels-2].out);
-    done[nLevels-2] <== levIns[nLevels-1];
+    levIns.bits[nLevels-1] <== (1-isZero[nLevels-2].out);
+    done[nLevels-2] <== levIns.bits[nLevels-1];
     for (i=nLevels-2; i>0; i--) {
-        levIns[i] <== (1-done[i])*(1-isZero[i-1].out);
-        done[i-1] <== levIns[i] + done[i];
+        levIns.bits[i] <== (1-done[i])*(1-isZero[i-1].out);
+        done[i-1] <== levIns.bits[i] + done[i];
     }
 
-    levIns[0] <== (1-done[0]);
+    levIns.bits[0] <== (1-done[0]);
 }

@@ -20,6 +20,8 @@ pragma circom 2.1.5;
 
 include "comparators.circom";
 include "bitify.circom";
+include "binnum.circom";
+include "buses.circom";
 
 
 // The templates and functions in this file are general and work for any prime field
@@ -49,8 +51,8 @@ template BinaryCheck () {
 /*
 *** BinaryCheckArray(n): template that adds the constraints needed to ensure that all signal of an array of n elements are binary and adds the tag binary to the input
         - Inputs: in[n] -> array of n field elements
-        - Output: out[n] -> same value as in, but including binary tag
-                         satisfies tag binary
+        - Output: out -> BinaryNumber(n) bus whose bits are the values of in
+                         its bits satisfy tag binary
          
     Example: BinaryCheckArray(2)([0,1]) = [0,1]
     Note: in case the input contains a non binary element then the generated system of constraints does not have any solution for that input. 
@@ -60,10 +62,10 @@ template BinaryCheck () {
 
 template BinaryCheckArray(n) {
     input signal in[n];
-    output signal {binary} out[n];
+    BinaryNumber(n) output out;
 
     for (var i = 0; i < n; i++) {
-    	out[i] <== BinaryCheck()(in[i]);
+    	out.bits[i] <== BinaryCheck()(in[i]);
     }
 }
 
@@ -131,7 +133,7 @@ template MaxValueCheck(ct){
     input signal in;
     output signal {maxvalue} out;
 
-    signal res <== CompConstant(nbits(ct), ct)(Num2Bits(nbits(ct))(in));
+    signal res <== CompConstant(nbits(ct), ct)(Num2Bin(nbits(ct))(in));
     res === 0;
     out.maxvalue = ct;
     out <== in;
@@ -145,9 +147,9 @@ template MaxValueCheck(ct){
 
     The comparison is made on the bits of in, so those bits must be the canonical
     decomposition: for x < 2**maxbits() - p the bits of x + p also decompose x, and they
-    encode a larger integer. Num2Bits_strict runs the alias check that rules that out.
+    encode a larger integer. Num2Bin(maxbits()) runs the alias check that rules that out.
     Without it, a prover could give the value 0 the bits of p and have it tagged
-    minvalue = ct for any ct <= p. Cost: 253 constraints more than a plain Num2Bits.
+    minvalue = ct for any ct <= p. Cost: 253 constraints more than a plain Num2Bin.
 */
 
 template MinValueCheck(ct){
@@ -155,7 +157,7 @@ template MinValueCheck(ct){
     input signal in;
     output signal {minvalue} out;
 
-    signal res <== CompConstant(maxbits(), ct-1)(Num2Bits_strict()(in));
+    signal res <== CompConstant(maxbits(), ct-1)(Num2Bin(maxbits())(in));
     res === 1;
     out.minvalue = ct;
     out <== in;
@@ -175,7 +177,8 @@ template MinMaxValueCheck(ct1,ct2){
     output signal {minvalue,maxvalue} out;
 
     var n = nbits(ct2);
-    signal inb[n] <== Num2Bits(n)(in);
+    BinaryNumber(n) inb;
+    inb <== Num2Bin(n)(in);
     signal res1 <== CompConstant(n, ct1-1)(inb);
     res1 === 1;
     out.minvalue = ct1;

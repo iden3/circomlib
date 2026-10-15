@@ -24,27 +24,28 @@ include "t2.circom";
 include "../binsum.circom";
 include "sigmaplus.circom";
 include "sha256compression_function.circom";
+include "../buses.circom";
 
 
 template Sha256compression() {
-    input signal {binary} hin[256];
-    input signal {binary} inp[512];
-    output signal {binary} out[256];
-    signal {binary} a[65][32];
-    signal {binary} b[65][32];
-    signal {binary} c[65][32];
-    signal {binary} d[65][32];
-    signal {binary} e[65][32];
-    signal {binary} f[65][32];
-    signal {binary} g[65][32];
-    signal {binary} h[65][32];
-    signal {binary} w[64][32];
+    BinaryNumber(256) input hin;
+    BinaryNumber(512) input inp;
+    BinaryNumber(256) output out;
+    BinaryNumber(32) a[65];
+    BinaryNumber(32) b[65];
+    BinaryNumber(32) c[65];
+    BinaryNumber(32) d[65];
+    BinaryNumber(32) e[65];
+    BinaryNumber(32) f[65];
+    BinaryNumber(32) g[65];
+    BinaryNumber(32) h[65];
+    BinaryNumber(32) w[64];
 
 
-    var outCalc[256] = sha256compression(hin, inp);
+    var outCalc[256] = sha256compression(hin.bits, inp.bits);
 
     var i;
-    for (i=0; i<256; i++) out[i] <-- outCalc[i];
+    for (i=0; i<256; i++) out.bits[i] <-- outCalc[i];
 
     component sigmaPlus[48];
     for (i=0; i<48; i++) sigmaPlus[i] = SigmaPlus();
@@ -73,94 +74,89 @@ template Sha256compression() {
     for (t=0; t<64; t++) {
         if (t<16) {
             for (k=0; k<32; k++) {
-                w[t][k] <== inp[t*32+31-k];
+                w[t].bits[k] <== inp.bits[t*32+31-k];
             }
         } else {
-            for (k=0; k<32; k++) {
-                sigmaPlus[t-16].in2[k] <== w[t-2][k];
-                sigmaPlus[t-16].in7[k] <== w[t-7][k];
-                sigmaPlus[t-16].in15[k] <== w[t-15][k];
-                sigmaPlus[t-16].in16[k] <== w[t-16][k];
-            }
+            sigmaPlus[t-16].in2 <== w[t-2];
+            sigmaPlus[t-16].in7 <== w[t-7];
+            sigmaPlus[t-16].in15 <== w[t-15];
+            sigmaPlus[t-16].in16 <== w[t-16];
 
-            for (k=0; k<32; k++) {
-                w[t][k] <== sigmaPlus[t-16].out[k];
-            }
+            w[t] <== sigmaPlus[t-16].out;
         }
     }
 
     for (k=0; k<32; k++ ) {
-        a[0][k] <== hin[k];
-        b[0][k] <== hin[32*1 + k];
-        c[0][k] <== hin[32*2 + k];
-        d[0][k] <== hin[32*3 + k];
-        e[0][k] <== hin[32*4 + k];
-        f[0][k] <== hin[32*5 + k];
-        g[0][k] <== hin[32*6 + k];
-        h[0][k] <== hin[32*7 + k];
+        a[0].bits[k] <== hin.bits[k];
+        b[0].bits[k] <== hin.bits[32*1 + k];
+        c[0].bits[k] <== hin.bits[32*2 + k];
+        d[0].bits[k] <== hin.bits[32*3 + k];
+        e[0].bits[k] <== hin.bits[32*4 + k];
+        f[0].bits[k] <== hin.bits[32*5 + k];
+        g[0].bits[k] <== hin.bits[32*6 + k];
+        h[0].bits[k] <== hin.bits[32*7 + k];
     }
 
     for (t = 0; t<64; t++) {
-        for (k=0; k<32; k++) {
-            t1[t].h[k] <== h[t][k];
-            t1[t].e[k] <== e[t][k];
-            t1[t].f[k] <== f[t][k];
-            t1[t].g[k] <== g[t][k];
-            t1[t].k[k] <== ct_k[t].out[k];
-            t1[t].w[k] <== w[t][k];
+        t1[t].h <== h[t];
+        t1[t].e <== e[t];
+        t1[t].f <== f[t];
+        t1[t].g <== g[t];
+        t1[t].k <== ct_k[t].out;
+        t1[t].w <== w[t];
 
-            t2[t].a[k] <== a[t][k];
-            t2[t].b[k] <== b[t][k];
-            t2[t].c[k] <== c[t][k];
+        t2[t].a <== a[t];
+        t2[t].b <== b[t];
+        t2[t].c <== c[t];
+
+        sume[t].in[0] <== d[t];
+        sume[t].in[1] <== t1[t].out;
+
+        suma[t].in[0] <== t1[t].out;
+        suma[t].in[1] <== t2[t].out;
+
+        h[t+1] <== g[t];
+        g[t+1] <== f[t];
+        f[t+1] <== e[t];
+        for (k=0; k<32; k++) {
+            e[t+1].bits[k] <== sume[t].out.bits[k];
         }
-
+        d[t+1] <== c[t];
+        c[t+1] <== b[t];
+        b[t+1] <== a[t];
         for (k=0; k<32; k++) {
-            sume[t].in[0][k] <== d[t][k];
-            sume[t].in[1][k] <== t1[t].out[k];
-
-            suma[t].in[0][k] <== t1[t].out[k];
-            suma[t].in[1][k] <== t2[t].out[k];
-        }
-
-        for (k=0; k<32; k++) {
-            h[t+1][k] <== g[t][k];
-            g[t+1][k] <== f[t][k];
-            f[t+1][k] <== e[t][k];
-            e[t+1][k] <== sume[t].out[k];
-            d[t+1][k] <== c[t][k];
-            c[t+1][k] <== b[t][k];
-            b[t+1][k] <== a[t][k];
-            a[t+1][k] <== suma[t].out[k];
+            a[t+1].bits[k] <== suma[t].out.bits[k];
         }
     }
 
+    fsum[0].in[1] <== a[64];
+    fsum[1].in[1] <== b[64];
+    fsum[2].in[1] <== c[64];
+    fsum[3].in[1] <== d[64];
+    fsum[4].in[1] <== e[64];
+    fsum[5].in[1] <== f[64];
+    fsum[6].in[1] <== g[64];
+    fsum[7].in[1] <== h[64];
+
     for (k=0; k<32; k++) {
-        fsum[0].in[0][k] <==  hin[32*0+k];
-        fsum[0].in[1][k] <==  a[64][k];
-        fsum[1].in[0][k] <==  hin[32*1+k];
-        fsum[1].in[1][k] <==  b[64][k];
-        fsum[2].in[0][k] <==  hin[32*2+k];
-        fsum[2].in[1][k] <==  c[64][k];
-        fsum[3].in[0][k] <==  hin[32*3+k];
-        fsum[3].in[1][k] <==  d[64][k];
-        fsum[4].in[0][k] <==  hin[32*4+k];
-        fsum[4].in[1][k] <==  e[64][k];
-        fsum[5].in[0][k] <==  hin[32*5+k];
-        fsum[5].in[1][k] <==  f[64][k];
-        fsum[6].in[0][k] <==  hin[32*6+k];
-        fsum[6].in[1][k] <==  g[64][k];
-        fsum[7].in[0][k] <==  hin[32*7+k];
-        fsum[7].in[1][k] <==  h[64][k];
+        fsum[0].in[0].bits[k] <==  hin.bits[32*0+k];
+        fsum[1].in[0].bits[k] <==  hin.bits[32*1+k];
+        fsum[2].in[0].bits[k] <==  hin.bits[32*2+k];
+        fsum[3].in[0].bits[k] <==  hin.bits[32*3+k];
+        fsum[4].in[0].bits[k] <==  hin.bits[32*4+k];
+        fsum[5].in[0].bits[k] <==  hin.bits[32*5+k];
+        fsum[6].in[0].bits[k] <==  hin.bits[32*6+k];
+        fsum[7].in[0].bits[k] <==  hin.bits[32*7+k];
     }
 
     for (k=0; k<32; k++) {
-        out[31-k]     === fsum[0].out[k];
-        out[32+31-k]  === fsum[1].out[k];
-        out[64+31-k]  === fsum[2].out[k];
-        out[96+31-k]  === fsum[3].out[k];
-        out[128+31-k] === fsum[4].out[k];
-        out[160+31-k] === fsum[5].out[k];
-        out[192+31-k] === fsum[6].out[k];
-        out[224+31-k] === fsum[7].out[k];
+        out.bits[31-k]     === fsum[0].out.bits[k];
+        out.bits[32+31-k]  === fsum[1].out.bits[k];
+        out.bits[64+31-k]  === fsum[2].out.bits[k];
+        out.bits[96+31-k]  === fsum[3].out.bits[k];
+        out.bits[128+31-k] === fsum[4].out.bits[k];
+        out.bits[160+31-k] === fsum[5].out.bits[k];
+        out.bits[192+31-k] === fsum[6].out.bits[k];
+        out.bits[224+31-k] === fsum[7].out.bits[k];
     }
 }

@@ -20,8 +20,8 @@ template Main() {
     in[1] ==> n2b[1].in;
 
     for  (i=0; i<250; i++) {
-        n2b[0].out[i] ==> pedersen.in[i];
-        n2b[1].out[i] ==> pedersen.in[250+i];
+        n2b[0].out[i] ==> pedersen.in.bits[i];
+        n2b[1].out[i] ==> pedersen.in.bits[250+i];
     }
 
     pedersen.pout ==> pout;

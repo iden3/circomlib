@@ -10,7 +10,7 @@ const F = new F1Field(q);
 
 const wasm_tester = require("circom_tester").wasm;
 
-// bitify_test.circom is Num2Bits(30) followed by Bits2Num(30), constrained to
+// bitify_test.circom is Num2Bin(30) followed by Bin2Num(30), constrained to
 // return the input it started from, so a witness exists exactly for the values
 // that 30 bits can represent.
 describe("Bitify test", function () {

@@ -11,7 +11,8 @@ template Main(){
     input signal inb[254];
 
     output signal {binary} bits[254] <== Num2Bits_strict()(in);
-    output signal {maxbit} num <== Bits2Num_strict()(BinaryCheckArray(254)(inb));
+    BinaryNumber(254) inbb <== BinaryCheckArray(254)(inb);
+    output signal {maxbit} num <== Bits2Num_strict()(inbb.bits);
 
     assert(num.maxbit == maxbits());
 }

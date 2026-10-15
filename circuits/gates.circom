@@ -19,6 +19,8 @@
 
 pragma circom 2.1.5;
 
+include "buses.circom";
+
 // The templates and functions in this file are general and work for any prime field
 
 /*
@@ -143,26 +145,26 @@ template NOR() {
 
 /*
 *** MultiAND(n): template that given as input an array of n signals representing booleans (0 or 1) in[0], ... , in[n-1] and returns the value of and[0] AND and[1] ... AND and[n-1] 
-        - Inputs: in[n] -> binary values
-                           requires tag binary
-        - Output: out[n] -> binary value, result of in[0] AND ... AND in[n-1]
+        - Inputs: in -> BinaryNumber(n) bus with the n values
+                        its bits require tag binary
+        - Output: out -> binary value, result of in[0] AND ... AND in[n-1]
                             satisfies tag binary
          
     Example: MultiAND(4)([1, 1, 0, 1]) = 0
 */
 
 template MultiAND(n) {
-    input signal {binary} in[n];
+    BinaryNumber(n) input in;
     output signal {binary} out;
     component and1;
     component and2;
     component ands[2];
     if (n==1) {
-        out <== in[0];
+        out <== in.bits[0];
     } else if (n==2) {
         and1 = AND();
-        and1.a <== in[0];
-        and1.b <== in[1];
+        and1.a <== in.bits[0];
+        and1.b <== in.bits[1];
         out <== and1.out;
     } else {
         and2 = AND();
@@ -171,8 +173,8 @@ template MultiAND(n) {
         ands[0] = MultiAND(n1);
         ands[1] = MultiAND(n2);
         var i;
-        for (i=0; i<n1; i++) ands[0].in[i] <== in[i];
-        for (i=0; i<n2; i++) ands[1].in[i] <== in[n1+i];
+        for (i=0; i<n1; i++) ands[0].in.bits[i] <== in.bits[i];
+        for (i=0; i<n2; i++) ands[1].in.bits[i] <== in.bits[n1+i];
         and2.a <== ands[0].out;
         and2.b <== ands[1].out;
         out <== and2.out;

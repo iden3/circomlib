@@ -2,7 +2,7 @@ Changes
 =======
 
 3.0.0-alpha.0, pre-release. BREAKING: this release converts the library to circom buses
-and signal tags. Of the 100 templates in the previous release, 2.0.5, 13 are removed, 31 have their ports reshaped, 46 keep their ports but now require
+and signal tags. Of the 100 templates in the previous release, 2.0.5, 13 are removed, 56 have their ports reshaped, 21 keep their ports but now require
 tags on their inputs, and 10 are unchanged (the Poseidon family, SMTHash1/SMTHash2 and
 the sha256 example). 110 input ports now require a tag. Migration notes are at the end.
 
@@ -53,9 +53,10 @@ Added
 -----
 
 - buses.circom: Point (x, y), BinaryPoint(n) (binY[n], signX; both binary),
-  BinaryNumber(n) (bits[n]; binary). smt/smtbuses.circom: SMTProcessorState,
+  BinaryNumber(n) (bits[n]; binary), which every template now uses for a port that
+  carries a number in binary. smt/smtbuses.circom: SMTProcessorState,
   SMTVerifierState, the state machines' state as one bus.
-- tags-managing.circom: BinaryCheck, BinaryCheckArray(n), MaxbitCheck(n),
+- tags-managing.circom: BinaryCheck, BinaryCheckArray(n) (returns a BinaryNumber(n)), MaxbitCheck(n),
   MaxbitCheckArray(n, m), MaxValueCheck(ct), MinValueCheck(ct),
   MinMaxValueCheck(ct1, ct2), MaxAbsValueTagCheck(n). Each adds the constraints that
   make a property hold and returns the input carrying the corresponding tag. This is
@@ -91,8 +92,10 @@ not checked. Tags in use:
   babyedwards     168700*x^2 + y^2 = 1 + 168696*x^2*y^2
   babymontgomery  y^2 = x^3 + 168698*x^2 + x
 
-Ports reshaped (31 templates). Coordinate pairs became Point buses and out[2] became
-pout; port names changed accordingly.
+Ports reshaped (56 templates). Coordinate pairs became Point buses and out[2] became
+pout; port names changed accordingly. Arrays of binary signals x[n] became
+BinaryNumber(n) buses, whose bits are x.bits[i]; the bits keep the {binary} tag, so
+the caller still has to supply it. See migration note 7.
 
   Curve arithmetic: BabyAdd (x1,y1,x2,y2 -> xout,yout is now pin1,pin2 -> pout),
     BabyDbl, BabyCheck (now also returns pout with babyedwards), BabyPbk (out Ax,Ay is
@@ -100,34 +103,41 @@ pout; port names changed accordingly.
     Montgomery2Edwards, MontgomeryAdd, MontgomeryDouble.
   Scalar multiplication: EscalarMul, EscalarMulWindow, EscalarMulAny, SegmentMulAny,
     BitElementMulAny, EscalarMulFix, SegmentMulFix, WindowMulFix. Points are buses,
-    scalar bits require {binary}.
-  Pedersen: Pedersen, Segment, Window4. Output is pout: Point; in requires {binary}.
-  Bits: AliasCheck, Bits2Num_strict, Num2Bits_strict, CompConstant, Sign. Inputs are
-    in[maxbits()] and require {binary}; outputs are tagged.
+    the scalar (in, e, sel) is a BinaryNumber.
+  Pedersen: Pedersen, Segment, Window4. Output is pout: Point; in is a BinaryNumber.
+  Bits: AliasCheck, CompConstant, Sign take in as a BinaryNumber (maxbits() bits, n
+    for CompConstant(n, ct)). Bits2Num_strict and Num2Bits_strict keep in[maxbits()]
+    and out[maxbits()] {binary}. Outputs are tagged.
   Encoding: Bits2Point_Strict (in[256] -> out[2] is now in: BinaryPoint(254) -> pout)
     and Point2Bits_Strict (in[2] -> out[256] is now pin -> out: BinaryPoint(254)).
     The bus holds 255 bits: binY[0..253] and signX. Bit 254 of the former 256-bit
     encoding, always 0, has no signal. See migration note 4.
-  EdDSA: EdDSAPedersenVerifier takes msg[n] {binary} and A, R8, S as BinaryPoint(254)
+  EdDSA: EdDSAPedersenVerifier takes msg as BinaryNumber(n) and A, R8, S as BinaryPoint(254)
     (were A[256], R8[256], S[256]). EdDSAPoseidonVerifier takes A and R8 as Point
     {babyedwards} (were Ax, Ay, R8x, R8y) and enabled as {binary}.
   SMT internals: SMTProcessorLevel, SMTProcessorSM, SMTVerifierLevel, SMTVerifierSM
     exchange their state as SMTProcessorState/SMTVerifierState buses instead of the
-    separate st_*/prev_* signals. SMTProcessor and SMTVerifier keep their ports.
+    separate st_*/prev_* signals. SMTProcessorSM takes fnc as BinaryNumber(2).
+  SMT: SMTProcessor takes fnc as BinaryNumber(2) (was fnc[2]); SMTLevIns returns
+    levIns as BinaryNumber(nLevels). SMTVerifier keeps its ports.
+  Binary arithmetic and gates: BinSum (in[ops] and out are BinaryNumber), BinSub (in[2]
+    and out), MultiAND (in).
+  Multiplexers: Mux2..Mux4 and MultiMux2..MultiMux4 take the selector s as a
+    BinaryNumber. Mux1 and MultiMux1 keep a single {binary} selector.
+  SHA-256: Sha256 (in, out), Sha256compression (hin, inp, out), Ch_t, Maj_t, Xor3,
+    RotR, ShR, SmallSigma, BigSigma, SigmaPlus, T1, T2, and the constants H, K: every
+    32-bit word and every bit string is a BinaryNumber. Sha256_2 keeps its ports.
 
-Same ports, inputs now require tags (46 templates). The code looks compatible and
+Same ports, inputs now require tags (21 templates). The code looks compatible and
 fails at compile time until the caller supplies the tag.
 
-  {binary}  AND, OR, XOR, NOT, NAND, NOR, MultiAND; Mux1..Mux4, MultiMux1..MultiMux4
-            (selectors), Switcher (sel); BinSum, BinSub, Bits2Num;
-            ForceEqualIfEnabled (enabled); Sha256, Sha256compression, Ch_t, Maj_t,
-            Xor3, RotR, ShR, SmallSigma, BigSigma, SigmaPlus, T1, T2;
-            SMTVerifier (enabled, isOld0, fnc), SMTProcessor (isOld0, fnc),
-            SMTLevIns (enabled).
+  {binary}  AND, OR, XOR, NOT, NAND, NOR; Mux1, MultiMux1 (selector), Switcher (sel);
+            Bits2Num; ForceEqualIfEnabled (enabled);
+            SMTVerifier (enabled, isOld0, fnc).
   {maxbit}  LessThan, LessEqThan, GreaterThan, GreaterEqThan, on both inputs;
             in.maxbit must not exceed the template's n.
   Output tags only, no caller change: IsZero, IsEqual, Num2Bits, Num2BitsNeg,
-            Sha256_2, H, K.
+            Sha256_2.
 
 Semantics.
 - GreaterEqThan and LessEqThan were changed to satisfy tags.
@@ -144,7 +154,7 @@ from the field: maxbits() gives the bit length of the prime, nbits(x) the bit le
 of a value, and (p-1)/2 is written as -1 \ 2. The templates and the files that state
 "any prime field" are:
 
-  aliascheck     AliasCheck (in[maxbits()], was in[254])
+  aliascheck     AliasCheck (in: BinaryNumber(maxbits()), was in[254])
   bitify         Num2Bits, Num2Bits_strict, Bits2Num, Bits2Num_strict, Num2BitsNeg
   binnum         Num2Bin, Bin2Num, Num2BinNeg
   comparators    IsZero, IsEqual, ForceEqualIfEnabled, LessThan, LessEqThan,
@@ -238,7 +248,7 @@ Migration
 
      LessThan(n)([a, b])        ->  LessThan(n)(MaxbitCheckArray(n, 2)([a, b]))
      XOR()(a, b)                ->  XOR()(BinaryCheck()(a), BinaryCheck()(b))
-     Bits2Num(n)(bits)          ->  Bits2Num(n)(BinaryCheckArray(n)(bits))
+     MultiAND(n)(bits)          ->  MultiAND(n)(BinaryCheckArray(n)(bits))
 
    Outputs of Num2Bits already carry {binary}, outputs of Bits2Num carry {maxbit}, so
    chains of library templates usually need no checks; checks are needed at the
@@ -256,3 +266,21 @@ Migration
    BabyCheck()(A_raw), and enabled through BinaryCheck.
 
 6. CompConstant(ct) becomes CompConstant(maxbits(), ct) for the previous behaviour.
+
+7. Binary numbers are buses. A port that carried n bits as signal {binary} x[n] is
+   now a BinaryNumber(n), and bit i is x.bits[i]. The bits are still tagged {binary}.
+   Ways to obtain one:
+
+     MultiAND(n)(BinaryCheckArray(n)(bits))     // untrusted array: check and wrap
+
+     BinaryNumber(2) sel <== Num2Bin(2)(x);     // from a field value
+     out <== Mux2()(c, sel);
+
+     signal {binary} tb[n] <== Num2Bits(n)(x);  // array that already has {binary}
+     BinaryNumber(n) bb;
+     bb.bits <== tb;
+
+   and back to an array with signal {binary} a[n] <== bb.bits. Templates that wired
+   bits one at a time (mux.s[i] <== in[i]) write mux.s.bits[i] <== in.bits[i], or
+   assign the whole bus when the sizes match (mux.s <== in). Num2Bits and Bits2Num
+   keep their arrays; Num2Bin and Bin2Num are the bus versions.

@@ -92,12 +92,13 @@ fnc[0]  fnc[1]
 ***************************************************************************************************/
 pragma circom 2.0.0;
 include "smtbuses.circom";
+include "../buses.circom";
 
 template SMTProcessorSM() {
   input signal {binary} xor;
   input signal {binary} is0;
   input signal {binary} levIns;
-  input signal {binary} fnc[2];
+  BinaryNumber(2) input fnc;
 
   input SMTProcessorState prev; 
 
@@ -107,7 +108,7 @@ template SMTProcessorSM() {
   signal aux2;
 
   aux1 <==                  prev.top * levIns;
-  aux2 <== aux1*fnc[0];  // prev_top * levIns * fnc[0]
+  aux2 <== aux1*fnc.bits[0];  // prev_top * levIns * fnc[0]
 
   // st_top = prev_top*(1-levIns)
   //    = + prev_top

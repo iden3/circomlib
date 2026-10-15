@@ -35,13 +35,15 @@ out = a*(b-c) + c
 */
 pragma circom 2.0.0;
 
+include "../buses.circom";
+
 template Ch_t(n) {
-    input signal {binary} a[n];
-    input signal {binary} b[n];
-    input signal {binary} c[n];
-    output signal {binary} out[n];
+    BinaryNumber(n) input a;
+    BinaryNumber(n) input b;
+    BinaryNumber(n) input c;
+    BinaryNumber(n) output out;
 
     for (var k=0; k<n; k++) {
-        out[k] <== a[k] * (b[k]-c[k]) + c[k];
+        out.bits[k] <== a.bits[k] * (b.bits[k]-c.bits[k]) + c.bits[k];
     }
 }

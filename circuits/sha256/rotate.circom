@@ -18,11 +18,13 @@
 */
 pragma circom 2.0.0;
 
+include "../buses.circom";
+
 template RotR(n, r) {
-    input signal {binary} in[n];
-    output signal {binary} out[n];
+    BinaryNumber(n) input in;
+    BinaryNumber(n) output out;
 
     for (var i=0; i<n; i++) {
-        out[i] <== in[ (i+r)%n ];
+        out.bits[i] <== in.bits[ (i+r)%n ];
     }
 }

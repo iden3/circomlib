@@ -10,7 +10,7 @@ template A() {
     var lc = 0;
     var e = 1;
     for (var i=0; i<32; i++) {
-        lc = lc + e*h0.out[i];
+        lc = lc + e*h0.out.bits[i];
         e *= 2;
     }
 

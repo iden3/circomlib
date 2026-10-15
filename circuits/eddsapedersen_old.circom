@@ -30,8 +30,8 @@ include "escalarmul/escalarmulfix.circom";
 /*
 
 *** EdDSAPedersenVerifier(n): template that implements the EdDSA verification protocol based on Pedersen hash for a message of size n. The circuit receives the message that we want to verify, the public key and the signature, and checks that the signature is valid.
-        - Inputs: msg[n] -> msg encoded in bits
-                            requires tag binary
+        - Inputs: msg -> BinaryNumber(n) bus with the message encoded in bits
+                         its bits require tag binary
                   A -> public key, a point of the curve in Edwards representation, as a
                        BinaryPoint(254) bus: binY[0..253] are the bits of y and signX is
                        the sign of x
@@ -51,7 +51,7 @@ include "escalarmul/escalarmulfix.circom";
 
 
 template EdDSAPedersenVerifier(n) {
-    input signal {binary} msg[n];
+    BinaryNumber(n) input msg;
 
     input BinaryPoint(254) A;
     input BinaryPoint(254) R8;
@@ -68,7 +68,7 @@ template EdDSAPedersenVerifier(n) {
 
     component  compConstant = CompConstant(maxbits(), 2736030358979909402780800718157159386076813972158567259200215660948447373040);
 
-    S.binY ==> compConstant.in;
+    S.binY ==> compConstant.in.bits;
     compConstant.out === 0;
     S.signX === 0;
 
@@ -84,19 +84,19 @@ template EdDSAPedersenVerifier(n) {
     component hash = Pedersen(512+n);
 
     for (i=0; i<254; i++) {
-        hash.in[i] <== R8.binY[i];
+        hash.in.bits[i] <== R8.binY[i];
     }
-    hash.in[254] <== aux_0;
-    hash.in[255] <== R8.signX;
-    
+    hash.in.bits[254] <== aux_0;
+    hash.in.bits[255] <== R8.signX;
+
     for (i=0; i<254; i++) {
-        hash.in[256 + i] <== A.binY[i];
+        hash.in.bits[256 + i] <== A.binY[i];
     }
-    hash.in[256 + 254] <== aux_0;
-    hash.in[256 + 255] <== A.signX;
-    
+    hash.in.bits[256 + 254] <== aux_0;
+    hash.in.bits[256 + 255] <== A.signX;
+
     for (i=0; i<n; i++) {
-        hash.in[512+i] <== msg[i];
+        hash.in.bits[512+i] <== msg.bits[i];
     }
 
     component point2bitsH = Point2Bits_Strict();
@@ -120,10 +120,10 @@ template EdDSAPedersenVerifier(n) {
 
     component mulAny = EscalarMulAny(256);
     for (i=0; i<254; i++) {
-        mulAny.e[i] <== point2bitsH.out.binY[i];
+        mulAny.e.bits[i] <== point2bitsH.out.binY[i];
     }
-    mulAny.e[254] <== aux_0; 
-    mulAny.e[255] <== point2bitsH.out.signX;
+    mulAny.e.bits[254] <== aux_0;
+    mulAny.e.bits[255] <== point2bitsH.out.signX;
     
     mulAny.pin <== dbl3.pout;
 
@@ -141,10 +141,10 @@ template EdDSAPedersenVerifier(n) {
     ];
     component mulFix = EscalarMulFix(256, BASE8);
     for (i=0; i<254; i++) {
-        mulFix.e[i] <== S.binY[i];
+        mulFix.e.bits[i] <== S.binY[i];
     }
-    mulFix.e[254] <== aux_0;
-    mulFix.e[255] <== S.signX;
+    mulFix.e.bits[254] <== aux_0;
+    mulFix.e.bits[255] <== S.signX;
 
 // Do the comparation left == right
 

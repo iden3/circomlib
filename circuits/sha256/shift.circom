@@ -18,15 +18,17 @@
 */
 pragma circom 2.0.0;
 
+include "../buses.circom";
+
 template ShR(n, r) {
-    input signal {binary} in[n];
-    output signal {binary} out[n];
+    BinaryNumber(n) input in;
+    BinaryNumber(n) output out;
 
     for (var i=0; i<n; i++) {
         if (i+r >= n) {
-            out[i] <== 0;
+            out.bits[i] <== 0;
         } else {
-            out[i] <== in[ i+r ];
+            out.bits[i] <== in.bits[ i+r ];
         }
     }
 }

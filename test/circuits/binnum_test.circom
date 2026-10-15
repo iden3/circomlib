@@ -10,14 +10,14 @@ template Main(){
     input signal inb[254];
     
     BinaryNumber(254)  aux1 <== Num2Bin(254)(in);
-    AliasCheck()(aux1.bits);
+    AliasCheck()(aux1);
     aux1.bits === inb;
-    
+
     signal s <== Bin2Num(254)(aux1);
     s === in;
 
     BinaryNumber(254)  aux2 <== Num2BinNeg(254)(in);
-    AliasCheck()(aux2.bits);
+    AliasCheck()(aux2);
 
     signal iz <== IsZero()(in);
     signal ns <== Bin2Num(254)(aux2);

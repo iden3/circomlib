@@ -10,7 +10,8 @@ template A(n){
     input signal ina[n];
 
     output signal {binary} out <== BinaryCheck()(in);
-    output signal {binary} outa[n] <== BinaryCheckArray(n)(ina);
+    BinaryNumber(n) ba <== BinaryCheckArray(n)(ina);
+    output signal {binary} outa[n] <== ba.bits;
 }
 
 component main = A(3);

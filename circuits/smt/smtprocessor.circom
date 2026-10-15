@@ -148,13 +148,13 @@ template SMTProcessor(nLevels) {
     input signal {binary} isOld0;
     input signal newKey;
     input signal newValue;
-    input signal {binary} fnc[2];
+    BinaryNumber(2) input fnc;
 
     signal {binary} enabled;
 
     var i;
 
-    enabled <== fnc[0] + fnc[1] - fnc[0]*fnc[1];
+    enabled <== fnc.bits[0] + fnc.bits[1] - fnc.bits[0]*fnc.bits[1];
 
     component hash1Old = SMTHash1();
     hash1Old.key <== oldKey;
@@ -196,9 +196,8 @@ template SMTProcessor(nLevels) {
         }
         sm[i].is0 <== isOld0;
         sm[i].xor <== xors[i].out;
-        sm[i].fnc[0] <== fnc[0];
-        sm[i].fnc[1] <== fnc[1];
-        sm[i].levIns <== smtLevIns.levIns[i];
+        sm[i].fnc <== fnc;
+        sm[i].levIns <== smtLevIns.levIns.bits[i];
     }
     sm[nLevels-1].st.na + sm[nLevels-1].st.new1 + sm[nLevels-1].st.old0 +sm[nLevels-1].st.upd === 1;
 
@@ -224,7 +223,7 @@ template SMTProcessor(nLevels) {
 
     component topSwitcher = Switcher();
 
-    signal {binary} switch_sel <== fnc[0]*fnc[1];
+    signal {binary} switch_sel <== fnc.bits[0]*fnc.bits[1];
     topSwitcher.sel <== switch_sel;
     topSwitcher.L <== levels[0].oldRoot;
     topSwitcher.R <== levels[0].newRoot;
@@ -245,11 +244,11 @@ template SMTProcessor(nLevels) {
     areKeyEquals.in[1] <== newKey;
 
     component keysOk = MultiAND(3);
-    signal {binary} keys_0 <== 1-fnc[0];
+    signal {binary} keys_0 <== 1-fnc.bits[0];
     signal {binary} keys_2 <== 1-areKeyEquals.out;
-    keysOk.in[0] <== keys_0;
-    keysOk.in[1] <== fnc[1];
-    keysOk.in[2] <== keys_2;
+    keysOk.in.bits[0] <== keys_0;
+    keysOk.in.bits[1] <== fnc.bits[1];
+    keysOk.in.bits[2] <== keys_2;
 
     keysOk.out === 0;
 }

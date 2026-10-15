@@ -26,14 +26,14 @@ include "buses.circom";
 /*
 
 *** Pedersen(n): template that performs the Pedersen protocol on the input in, that is the binary representation of a value x using n bits. It calculates the output point of the protocol out in Edwards representation
-        - Inputs: in[n] -> binary representation of the scalar
-                           requires tag binary
+        - Inputs: in -> BinaryNumber(n) bus with the binary representation of the scalar
+                        its bits require tag binary
         - Outputs: out[2] -> output curve point in Edwards representation
     
  */
 
 template Pedersen(n) {
-    input signal {binary} in[n];
+    BinaryNumber(n) input in;
     output Point {babyedwards} pout;
 
     var nexps = ((n-1) \ 250) + 1;
@@ -66,7 +66,7 @@ template Pedersen(n) {
         escalarMuls[i] = EscalarMul(nexpbits, PBASE[i]);
 
         for (j=0; j<nexpbits; j++) {
-            escalarMuls[i].in[j] <== in[250*i + j];
+            escalarMuls[i].in.bits[j] <== in.bits[250*i + j];
         }
 	
 	

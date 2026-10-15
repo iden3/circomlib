@@ -83,7 +83,7 @@ template SMTVerifier(nLevels) {
         }
         sm[i].is0 <== isOld0;
         sm[i].fnc <== fnc;
-        sm[i].levIns <== smtLevIns.levIns[i];
+        sm[i].levIns <== smtLevIns.levIns.bits[i];
     }
     sm[nLevels-1].st.na + sm[nLevels-1].st.iold + sm[nLevels-1].st.inew + sm[nLevels-1].st.i0 === 1;
 
@@ -113,10 +113,10 @@ template SMTVerifier(nLevels) {
 
     signal {binary} keys_1 <== 1-isOld0;
     component keysOk = MultiAND(4);
-    keysOk.in[0] <== fnc;
-    keysOk.in[1] <== keys_1;
-    keysOk.in[2] <== areKeyEquals.out;
-    keysOk.in[3] <== enabled;
+    keysOk.in.bits[0] <== fnc;
+    keysOk.in.bits[1] <== keys_1;
+    keysOk.in.bits[2] <== areKeyEquals.out;
+    keysOk.in.bits[3] <== enabled;
 
     keysOk.out === 0;
 

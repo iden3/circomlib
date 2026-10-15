@@ -31,15 +31,17 @@ out = a*( 1 - 2*b -2*c + 4*mid ) + b + c - 2 * mid
 */
 pragma circom 2.0.0;
 
+include "../buses.circom";
+
 template Xor3(n) {
-    input signal {binary} a[n];
-    input signal {binary} b[n];
-    input signal {binary} c[n];
-    output signal {binary} out[n];
-    signal {binary} mid[n];
+    BinaryNumber(n) input a;
+    BinaryNumber(n) input b;
+    BinaryNumber(n) input c;
+    BinaryNumber(n) output out;
+    BinaryNumber(n) mid;
 
     for (var k=0; k<n; k++) {
-        mid[k] <== b[k]*c[k];
-        out[k] <== a[k] * (1 -2*b[k]  -2*c[k] +4*mid[k]) + b[k] + c[k] -2*mid[k];
+        mid.bits[k] <== b.bits[k]*c.bits[k];
+        out.bits[k] <== a.bits[k] * (1 -2*b.bits[k]  -2*c.bits[k] +4*mid.bits[k]) + b.bits[k] + c.bits[k] -2*mid.bits[k];
     }
 }

@@ -19,7 +19,7 @@ template Main() {
 
     e ==> n2b.in;
 
-    n2b.out ==> escalarMul.e;
+    n2b.out ==> escalarMul.e.bits;
 
     escalarMul.pout ==> pout;
 }

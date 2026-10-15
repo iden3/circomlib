@@ -105,7 +105,7 @@ template Bits2Point_Strict() {
 
     // Check aliasing
     component aliasCheckY = AliasCheck();
-    aliasCheckY.in <== in.binY;
+    aliasCheckY.in.bits <== in.binY;
 
     component b2nY = Bits2Num(254);
     b2nY.in <== in.binY;
@@ -126,10 +126,8 @@ template Bits2Point_Strict() {
     component babyCheck = BabyCheck();
     babyCheck.pin <== pout;
 
-    component n2bX = Num2Bits(254);
+    component n2bX = Num2Bin(254);
     n2bX.in <== pout.x;
-    component aliasCheckX = AliasCheck();
-    aliasCheckX.in <== n2bX.out;
 
     component signCalc = CompConstant(maxbits(), 10944121435919637611123202872628637544274182200208017171849102093287904247808);
     signCalc.in <== n2bX.out;
@@ -158,19 +156,15 @@ template Point2Bits_Strict() {
 
     var i;
 
-    component n2bX = Num2Bits(254);
+    component n2bX = Num2Bin(254);
     n2bX.in <== pin.x;
-    component n2bY = Num2Bits(254);
+    component n2bY = Num2Bin(254);
     n2bY.in <== pin.y;
 
-    component aliasCheckX = AliasCheck();
-    component aliasCheckY = AliasCheck();
-    aliasCheckX.in <== n2bX.out;
-    aliasCheckY.in <== n2bY.out;
 
     component signCalc = CompConstant(maxbits(), 10944121435919637611123202872628637544274182200208017171849102093287904247808);
     signCalc.in <== n2bX.out;
 
-    out.binY <== n2bY.out;
+    out.binY <== n2bY.out.bits;
     out.signX <== signCalc.out;
 }

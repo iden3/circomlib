@@ -19,10 +19,10 @@ template A() {
     n2ba.in <== a;
     n2bb.in <== b;
 
-    sub.in[0] <== n2ba.out;
-    sub.in[1] <== n2bb.out;
+    sub.in[0].bits <== n2ba.out;
+    sub.in[1].bits <== n2bb.out;
     
-    b2n.in <== sub.out;
+    b2n.in <== sub.out.bits;
 
     out <== b2n.out;
 }

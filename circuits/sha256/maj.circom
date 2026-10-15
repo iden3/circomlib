@@ -31,15 +31,17 @@ out = a*( b + c - 2*mid ) + mid
 */
 pragma circom 2.0.0;
 
+include "../buses.circom";
+
 template Maj_t(n) {
-    input signal {binary} a[n];
-    input signal {binary} b[n];
-    input signal {binary} c[n];
-    output signal {binary} out[n];
-    signal {binary} mid[n];
+    BinaryNumber(n) input a;
+    BinaryNumber(n) input b;
+    BinaryNumber(n) input c;
+    BinaryNumber(n) output out;
+    BinaryNumber(n) mid;
 
     for (var k=0; k<n; k++) {
-        mid[k] <== b[k]*c[k];
-        out[k] <== a[k] * (b[k]+c[k]-2*mid[k]) + mid[k];
+        mid.bits[k] <== b.bits[k]*c.bits[k];
+        out.bits[k] <== a.bits[k] * (b.bits[k]+c.bits[k]-2*mid.bits[k]) + mid.bits[k];
     }
 }

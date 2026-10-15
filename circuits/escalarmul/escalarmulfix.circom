@@ -51,8 +51,8 @@ include "../buses.circom";
         out8 = 8*base
 
     This circuit is used in order to multiply a fixed point of the BabyJub curve by a escalar (k * p with p a fixed point of the curve). 
-        - Inputs: in[3] -> binary value
-                         requires tag binary
+        - Inputs: in -> BinaryNumber(3) bus
+                        its bits require tag binary
                   base[2] -> input curve point in Montgomery representation
         - Outputs: out[2] -> output curve point in Montgomery representation
                    out8[2] -> output curve point in Montgomery representation
@@ -60,16 +60,16 @@ include "../buses.circom";
  */
  
 template WindowMulFix() {
-    input signal {binary} in[3];
+    BinaryNumber(3) input in;
     input Point {babymontgomery} base;
     output Point {babymontgomery} pout;
     output Point {babymontgomery} pout8;   // Returns 8*Base (To be linked)
 
     component mux = MultiMux3(2);
 
-    mux.s[0] <== in[0];
-    mux.s[1] <== in[1];
-    mux.s[2] <== in[2];
+    mux.s.bits[0] <== in.bits[0];
+    mux.s.bits[1] <== in.bits[1];
+    mux.s.bits[2] <== in.bits[2];
 
     component dbl2 = MontgomeryDouble();
     component adr3 = MontgomeryAdd();
@@ -135,8 +135,8 @@ template WindowMulFix() {
 /*
 
 *** SegmentMulFix(nWindows): template used to perform a segment of the multiplications needed to perform a multiplication of a scalar times a fix base (k * BASE). 
-        - Inputs: e[3 * nWindows] -> binary representation of the scalar
-                                     requires tag binary
+        - Inputs: e -> BinaryNumber(3 * nWindows) bus with the binary representation of the scalar
+                       its bits require tag binary
                   base[2] -> input curve point in Edwards representation
         - Outputs: out[2] -> output curve point in Edwards representation
                    dbl[2] -> output curve point in Montgomery representation (to be linked to the next segment)
@@ -144,7 +144,7 @@ template WindowMulFix() {
  */
 
 template SegmentMulFix(nWindows) {
-    input signal {binary} e[nWindows*3];
+    BinaryNumber(nWindows*3) input e;
     input Point {babyedwards} base;
     output Point {babyedwards} pout;
     output Point {babymontgomery} dbl;
@@ -175,7 +175,7 @@ template SegmentMulFix(nWindows) {
             cadders[i].pin1 <== cadders[i-1].pout;
         }
         for (j=0; j<3; j++) {
-            windows[i].in[j] <== e[3*i+j];
+            windows[i].in.bits[j] <== e.bits[3*i+j];
         }
         if (i<nWindows-1) {
             cadders[i].pin2 <== windows[i].pout8;
@@ -218,15 +218,15 @@ template SegmentMulFix(nWindows) {
 /*
 
 *** EscalarMulFix(n, BASE): template that does a multiplication of a scalar times a fixed point BASE. It receives a point in Edwards representation BASE and a binary input e representing a value k using n bits, and calculates the point k * p.
-        - Inputs: e[n] -> binary representation of the scalar k
-                          requires tag binary
+        - Inputs: e -> BinaryNumber(n) bus with the binary representation of the scalar k
+                       its bits require tag binary
         - Outputs: out[2] -> output curve point in Edwards representation out = k * BASE
     
  */
  
  
 template EscalarMulFix(n, BASE) {
-    input signal {binary} e[n];              // Input in binary format
+    BinaryNumber(n) input e;              // Input in binary format
     output Point {babyedwards} pout;           // Point (Twisted format)
 
     var nsegments = (n-1)\249 +1;       // 249 bits per segment, matching nseg and the indexing of e below
@@ -256,11 +256,11 @@ template EscalarMulFix(n, BASE) {
         segments[s] = SegmentMulFix(nWindows);
 
         for (i=0; i<nseg; i++) {
-            segments[s].e[i] <== e[s*249+i];
+            segments[s].e.bits[i] <== e.bits[s*249+i];
         }
 
         for (i = nseg; i<nWindows*3; i++) {
-            segments[s].e[i] <== aux_0;
+            segments[s].e.bits[i] <== aux_0;
         }
 
         if (s==0) {

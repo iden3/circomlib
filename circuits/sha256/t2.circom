@@ -21,31 +21,30 @@ pragma circom 2.0.0;
 include "../binsum.circom";
 include "sigma.circom";
 include "maj.circom";
+include "../buses.circom";
 
 template T2() {
-    input signal {binary} a[32];
-    input signal {binary} b[32];
-    input signal {binary} c[32];
-    output signal {binary} out[32];
+    BinaryNumber(32) input a;
+    BinaryNumber(32) input b;
+    BinaryNumber(32) input c;
+    BinaryNumber(32) output out;
     var k;
 
     component bigsigma0 = BigSigma(2, 13, 22);
     component maj = Maj_t(32);
-    for (k=0; k<32; k++) {
-        bigsigma0.in[k] <== a[k];
-        maj.a[k] <== a[k];
-        maj.b[k] <== b[k];
-        maj.c[k] <== c[k];
-    }
+    bigsigma0.in <== a;
+    maj.a <== a;
+    maj.b <== b;
+    maj.c <== c;
 
     component sum = BinSum(32, 2);
 
+    sum.in[0] <== bigsigma0.out;
+    sum.in[1] <== maj.out;
+    // BinSum(32,2) returns 33 bits: keep the 32 least significant ones
+    // (addition modulo 2**32)
     for (k=0; k<32; k++) {
-        sum.in[0][k] <== bigsigma0.out[k];
-        sum.in[1][k] <== maj.out[k];
+        out.bits[k] <== sum.out.bits[k];
     }
 
-    for (k=0; k<32; k++) {
-        out[k] <== sum.out[k];
-    }
 }

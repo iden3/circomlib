@@ -18,10 +18,10 @@ template A() {
     n2ba.in <== a;
     n2bb.in <== b;
 
-    sum.in[0] <== n2ba.out;
-    sum.in[1] <== n2bb.out;
+    sum.in[0].bits <== n2ba.out;
+    sum.in[1].bits <== n2bb.out;
 
-    b2n.in <== sum.out;
+    b2n.in <== sum.out.bits;
 
     out <== b2n.out;
 }

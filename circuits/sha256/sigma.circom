@@ -21,57 +21,44 @@ pragma circom 2.0.0;
 include "xor3.circom";
 include "rotate.circom";
 include "shift.circom";
+include "../buses.circom";
 
 template SmallSigma(ra, rb, rc) {
-    input signal {binary} in[32];
-    output signal {binary} out[32];
-    var k;
+    BinaryNumber(32) input in;
+    BinaryNumber(32) output out;
 
     component rota = RotR(32, ra);
     component rotb = RotR(32, rb);
     component shrc = ShR(32, rc);
 
-    for (k=0; k<32; k++) {
-        rota.in[k] <== in[k];
-        rotb.in[k] <== in[k];
-        shrc.in[k] <== in[k];
-    }
+    rota.in <== in;
+    rotb.in <== in;
+    shrc.in <== in;
 
     component xor3 = Xor3(32);
-    for (k=0; k<32; k++) {
-        xor3.a[k] <== rota.out[k];
-        xor3.b[k] <== rotb.out[k];
-        xor3.c[k] <== shrc.out[k];
-    }
+    xor3.a <== rota.out;
+    xor3.b <== rotb.out;
+    xor3.c <== shrc.out;
 
-    for (k=0; k<32; k++) {
-        out[k] <== xor3.out[k];
-    }
+    out <== xor3.out;
 }
 
 template BigSigma(ra, rb, rc) {
-    input signal {binary} in[32];
-    output signal {binary} out[32];
-    var k;
+    BinaryNumber(32) input in;
+    BinaryNumber(32) output out;
 
     component rota = RotR(32, ra);
     component rotb = RotR(32, rb);
     component rotc = RotR(32, rc);
-    for (k=0; k<32; k++) {
-        rota.in[k] <== in[k];
-        rotb.in[k] <== in[k];
-        rotc.in[k] <== in[k];
-    }
+    rota.in <== in;
+    rotb.in <== in;
+    rotc.in <== in;
 
     component xor3 = Xor3(32);
 
-    for (k=0; k<32; k++) {
-        xor3.a[k] <== rota.out[k];
-        xor3.b[k] <== rotb.out[k];
-        xor3.c[k] <== rotc.out[k];
-    }
+    xor3.a <== rota.out;
+    xor3.b <== rotb.out;
+    xor3.c <== rotc.out;
 
-    for (k=0; k<32; k++) {
-        out[k] <== xor3.out[k];
-    }
+    out <== xor3.out;
 }

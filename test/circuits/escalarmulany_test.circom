@@ -16,7 +16,7 @@ template Main() {
     escalarMulAny.pin <== checked_p;
 
     e ==> n2b.in;
-    n2b.out ==> escalarMulAny.e;
+    n2b.out ==> escalarMulAny.e.bits;
 
     escalarMulAny.pout ==> pout;
 

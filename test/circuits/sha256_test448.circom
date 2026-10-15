@@ -11,7 +11,7 @@ template Main() {
     component sha256_2 = Sha256(448);
 
     sha256_2.in <== BinaryCheckArray(448)(in);
-    out <== sha256_2.out;
+    out <== sha256_2.out.bits;
 }
 
 component main = Main();

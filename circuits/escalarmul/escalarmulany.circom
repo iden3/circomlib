@@ -106,8 +106,8 @@ template BitElementMulAny() {
 /*
 
 *** SegmentMulAny(n): template that receives two inputs p[2] and e[n] representing a point of BabyJub curve in its Edwards representation and the binary representation of a field value k respectively, and returns the value out according to the scheme below. This circuit is used in order to multiply a point of the BabyJub curve by a escalar (k * p with p in the curve). 
-        - Inputs: e[n] -> binary representation of k
-                           requires tag binary
+        - Inputs: e -> BinaryNumber(n) bus with the binary representation of k
+                       its bits require tag binary
                   p[2] -> input curve point in Edwards representation
         - Outputs: out[2] -> output curve point in Edwards representation
 
@@ -116,7 +116,7 @@ TODO: ADD SCHEME
 */
 
 template SegmentMulAny(n) {
-    input signal {binary}  e[n];
+    BinaryNumber(n) input e;
     input Point {babyedwards} pin;
     output Point {babyedwards} pout;
     output Point {babymontgomery} dbl;
@@ -132,14 +132,14 @@ template SegmentMulAny(n) {
     bits[0] = BitElementMulAny();
     e2m.pout ==> bits[0].dblIn;
     e2m.pout ==> bits[0].addIn;
-    e[1] ==> bits[0].sel;
+    e.bits[1] ==> bits[0].sel;
 
     for (i=1; i<n-1; i++) {
         bits[i] = BitElementMulAny();
 
         bits[i-1].dblOut ==> bits[i].dblIn;
         bits[i-1].addOut ==> bits[i].addIn;
-        e[i+1] ==> bits[i].sel;
+        e.bits[i+1] ==> bits[i].sel;
     }
 
     bits[n-2].dblOut ==> dbl;
@@ -158,7 +158,7 @@ template SegmentMulAny(n) {
 
     component lastSel = MultiplexorEdwards2();
 
-    e[0] ==> lastSel.sel;
+    e.bits[0] ==> lastSel.sel;
     eadder.pout ==> lastSel.pin[0];
     m2e.pout ==> lastSel.pin[1];
 
@@ -168,8 +168,8 @@ template SegmentMulAny(n) {
 /*
 
 *** EscalarMulAny(n): template that receives two inputs p[2] and e[n] representing a point of BabyJub curve in its Edwards representation and the binary representation of a field value k respectively, and returns the value out according to the scheme below. This circuit is used in order to multiply a point of the BabyJub curve by a escalar (k * p with p in the curve). The input e is the binary representation of the value k and p is the point of the curve.
-        - Inputs: e[n] -> binary representation of k
-                           requires tag binary
+        - Inputs: e -> BinaryNumber(n) bus with the binary representation of k
+                       its bits require tag binary
                   p[2] -> input curve point to be multiplied in Edwards representation
         - Outputs: out[2] -> output curve point k * p in Edwards representation
 
@@ -180,7 +180,7 @@ TODO: ADD SCHEME
 */
 
 template EscalarMulAny(n) {
-    input signal {binary} e[n];              // Input in binary format
+    BinaryNumber(n) input e;              // Input in binary format
     input Point {babyedwards} pin;              // Point (Twisted format)
     output Point {babyedwards} pout;           // Point (Twisted format)
 
@@ -207,7 +207,7 @@ template EscalarMulAny(n) {
         segments[s] = SegmentMulAny(nseg);
 
         for (i=0; i<nseg; i++) {
-            e[s*148+i] ==> segments[s].e[i];
+            e.bits[s*148+i] ==> segments[s].e.bits[i];
         }
 
         if (s==0) {

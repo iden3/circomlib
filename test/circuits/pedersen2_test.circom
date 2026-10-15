@@ -18,11 +18,11 @@ template Main() {
     in ==> n2b.in;
 
     for  (i=0; i<253; i++) {
-        pedersen.in[i] <== n2b.out[i];
+        pedersen.in.bits[i] <== n2b.out[i];
     }
     signal {binary} aux_0 <== 0;
     for (i=253; i<256; i++) {
-        pedersen.in[i] <== aux_0;
+        pedersen.in.bits[i] <== aux_0;
     }
 
     pedersen.pout ==> pout;

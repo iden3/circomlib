@@ -32,8 +32,8 @@ include "../buses.circom";
 /*
 *** EscalarMulWindow(base, k): template that receives two inputs in[2]  and a sel[4] representing a value of the prime field and a binary value respectively, and returns the point out according to the scheme below. This circuit is used in order to multiply a curve of the BabyJub curve by a escalar (val * base with base in the curve). The parameter k indicates the number of window in the protocol 
         - Inputs: in[2] -> field values
-                  sel[4] -> binary values
-                            requires tag binary
+                  sel -> BinaryNumber(4) bus
+                         its bits require tag binary
         - Outputs: out[2] -> field values
     
   Scheme:
@@ -82,7 +82,7 @@ include "../buses.circom";
 template EscalarMulWindow(base, k) {
 
     input Point {babyedwards} pin;
-    input signal {binary} sel[4];
+    BinaryNumber(4) input sel;
     output Point {babyedwards} pout;
 
     var table[16][2];
@@ -117,8 +117,8 @@ template EscalarMulWindow(base, k) {
 /*
 
 *** EscalarMul(n, base): template that receives two inputs inp[2] and in[n] representing a point of BabyJub curve in its Edwards representation and the binary representation of a field value k respectively, and returns the value out according to the scheme below. This circuit is used in order to multiply a point of the BabyJub curve by a escalar (k * inp with inp in the curve). The input in is the binary representation of the value k and in is the point of the curve.
-        - Inputs: in[n] -> binary representation of k
-                           requires tag binary
+        - Inputs: in -> BinaryNumber(n) bus with the binary representation of k
+                        its bits require tag binary
                   inp[2] -> input curve point to be multiplied
         - Outputs: out[2] -> output curve point k * inp
     
@@ -146,7 +146,7 @@ template EscalarMulWindow(base, k) {
  */
 
 template EscalarMul(n, base) {
-    input signal {binary} in[n];
+    BinaryNumber(n) input in;
     input Point {babyedwards} pin;   // Point input to be added
     output Point {babyedwards} pout;
 
@@ -166,9 +166,9 @@ template EscalarMul(n, base) {
     for (i=0; i<nBlocks; i++) {
         for (j=0; j<4; j++) {
             if (i*4+j >= n) {
-                windows[i].sel[j] <== aux_0;
+                windows[i].sel.bits[j] <== aux_0;
             } else {
-                windows[i].sel[j] <== in[i*4+j];
+                windows[i].sel.bits[j] <== in.bits[i*4+j];
             }
         }
     }

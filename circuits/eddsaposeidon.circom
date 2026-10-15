@@ -23,6 +23,7 @@ pragma circom 2.1.5;
 include "comparators.circom";
 include "poseidon.circom";
 include "bitify.circom";
+include "binnum.circom";
 include "escalarmul/escalarmulany.circom";
 include "escalarmul/escalarmulfix.circom";
 include "buses.circom";
@@ -55,17 +56,17 @@ template EdDSAPoseidonVerifier() {
 
 // Ensure S<Subgroup Order
 
-    component snum2bits = Num2Bits(253);
+    component snum2bits = Num2Bin(253);
     snum2bits.in <== S;
 
     component  compConstant = CompConstant(maxbits(), 2736030358979909402780800718157159386076813972158567259200215660948447373040);
 
     for (i=0; i<253; i++) {
-        snum2bits.out[i] ==> compConstant.in[i];
+        snum2bits.out.bits[i] ==> compConstant.in.bits[i];
     }
-    
+
     signal {binary} aux_0 <== 0;
-    compConstant.in[253] <== aux_0;
+    compConstant.in.bits[253] <== aux_0;
     compConstant.out*enabled === 0;
 
 // Calculate the h = H(R,A, msg)
@@ -98,7 +99,7 @@ template EdDSAPoseidonVerifier() {
     isZero.out*enabled === 0;
 
     component mulAny = EscalarMulAny(254);
-    mulAny.e <== h2bits.out;
+    mulAny.e.bits <== h2bits.out;
     mulAny.pin <== dbl3.pout;
 
 

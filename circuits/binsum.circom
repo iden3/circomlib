@@ -20,16 +20,17 @@
  pragma circom 2.1.5;
 
 include "bitify.circom";
+include "buses.circom";
 
 // The templates and functions in this file are general and work for any prime field
 
 /*
 
 *** BinSum(n, ops): template that receives ops inputs of n bits representing values in[0], ..., in[ops-1] in binary and returns n + nbits(ops) bits representing the result of in[0] + ... + in[ops - 1]
-        - Inputs: in[ops][n] -> ops arrays representing the values in[0], ... , in[ops - 1] using n bits
-                           satisfies tag binary
-        - Output: out[n + nbits(ops - 1)] -> result of in[0] + ... + in[ops - 1] expressed using n + nbits(ops) bits
-                         satisfies tag binary
+        - Inputs: in[ops] -> ops BinaryNumber(n) buses representing the values in[0], ... , in[ops - 1] using n bits
+                             their bits require tag binary
+        - Output: out -> BinaryNumber(nbits((2**n - 1) * ops)) bus with the result of in[0] + ... + in[ops - 1]
+                         its bits satisfy tag binary
          
     Example: BinSum(3, 3)([[1, 0, 1], [1, 1, 1], [0, 0, 1]]) = [0, 0, 0, 0, 1]
     
@@ -55,8 +56,8 @@ include "bitify.circom";
 
 template BinSum(n, ops) {
     var nout = nbits((2**n -1)*ops);
-    input signal {binary} in[ops][n];
-    output signal {binary} out[nout];
+    BinaryNumber(n) input in[ops];
+    BinaryNumber(nout) output out;
 
     var lin = 0;
     var lout = 0;
@@ -69,19 +70,19 @@ template BinSum(n, ops) {
     e2 = 1;
     for (k=0; k<n; k++) {
         for (j=0; j<ops; j++) {
-            lin += in[j][k] * e2;
+            lin += in[j].bits[k] * e2;
         }
         e2 = e2 + e2;
     }
 
     e2 = 1;
     for (k=0; k<nout; k++) {
-        out[k] <-- (lin >> k) & 1;
+        out.bits[k] <-- (lin >> k) & 1;
 
         // Ensure out is binary
-        out[k] * (out[k] - 1) === 0;
+        out.bits[k] * (out.bits[k] - 1) === 0;
 
-        lout += out[k] * e2;
+        lout += out.bits[k] * e2;
 
         e2 = e2+e2;
     }

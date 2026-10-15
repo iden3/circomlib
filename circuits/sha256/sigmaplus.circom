@@ -20,31 +20,30 @@ pragma circom 2.0.0;
 
 include "../binsum.circom";
 include "sigma.circom";
+include "../buses.circom";
 
 template SigmaPlus() {
-    input signal {binary} in2[32];
-    input signal {binary} in7[32];
-    input signal {binary} in15[32];
-    input signal {binary} in16[32];
-    output signal {binary} out[32];
+    BinaryNumber(32) input in2;
+    BinaryNumber(32) input in7;
+    BinaryNumber(32) input in15;
+    BinaryNumber(32) input in16;
+    BinaryNumber(32) output out;
     var k;
 
     component sigma1 = SmallSigma(17,19,10);
     component sigma0 = SmallSigma(7, 18, 3);
-    for (k=0; k<32; k++) {
-        sigma1.in[k] <== in2[k];
-        sigma0.in[k] <== in15[k];
-    }
+    sigma1.in <== in2;
+    sigma0.in <== in15;
 
     component sum = BinSum(32, 4);
-    for (k=0; k<32; k++) {
-        sum.in[0][k] <== sigma1.out[k];
-        sum.in[1][k] <== in7[k];
-        sum.in[2][k] <== sigma0.out[k];
-        sum.in[3][k] <== in16[k];
-    }
+    sum.in[0] <== sigma1.out;
+    sum.in[1] <== in7;
+    sum.in[2] <== sigma0.out;
+    sum.in[3] <== in16;
 
+    // BinSum(32,4) returns 34 bits: keep the 32 least significant ones
+    // (addition modulo 2**32, as SHA-256 requires)
     for (k=0; k<32; k++) {
-        out[k] <== sum.out[k];
+        out.bits[k] <== sum.out.bits[k];
     }
 }

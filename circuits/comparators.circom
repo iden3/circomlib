@@ -19,6 +19,7 @@
 pragma circom 2.1.5;
 
 include "bitify.circom";
+include "binnum.circom";
 include "binsum.circom";
 include "gates.circom";
 include "buses.circom";
@@ -115,11 +116,11 @@ template LessThan(n) {
     
     assert(in.maxbit <= n);
 
-    component n2b = Num2Bits(n+1);
+    component n2b = Num2Bin(n+1);
 
     n2b.in <== in[0]+ (1<<n) - in[1];
 
-    out <== 1-n2b.out[n];
+    out <== 1-n2b.out.bits[n];
 }
 
 
@@ -207,8 +208,8 @@ template GreaterEqThan(n) {
 
 /*
 *** Sign(): template that receives an input in representing a value in binary using maxbits() bits and checks if the value is positive or negative. We consider a number positive in case in <= p \ 2 and negative otherwise 
-        - Inputs: in[maxbits()] -> array of maxbits() bits
-                             requires tag binary
+        - Inputs: in -> BinaryNumber(maxbits()) bus with the bits of the value
+                        its bits require tag binary
         - Outputs: sign -> 0 in case in <= prime \ 2, 1 otherwise
                            satisfies tag binary
          
@@ -216,7 +217,7 @@ template GreaterEqThan(n) {
 */
 
 template Sign() {
-    input signal {binary} in[maxbits()];
+    BinaryNumber(maxbits()) input in;
     output signal {binary} sign;
 
     component comp = CompConstant(maxbits(), - 1 \ 2);
@@ -233,8 +234,8 @@ template Sign() {
 /*
 *** CompConstant(n,ct): template that receives an input in representing a value in binary using n bits and checks if its value is greater than the constant value ct given as a parameter. De constant must be representable with n bits.
 
-        - Inputs: in[maxbits()] -> array of maxbits() bits
-                             requires tag binary
+        - Inputs: in -> BinaryNumber(n) bus with the bits of the value
+                        its bits require tag binary
         - Outputs: out -> binary value, out = in > ct
                           satisfies tag binary
  
@@ -244,23 +245,23 @@ template Sign() {
 
 template CompConstant(n,ct) {
     assert(nbits(ct) <= n);
-    input signal {binary} in[n];
+    BinaryNumber(n) input in;
     output signal {binary} out;
 
-    signal {binary} res[n];
+    BinaryNumber(n) res;
     if (ct & 1 == 0) {
-        res[0] <== in[0];
+        res.bits[0] <== in.bits[0];
     } else {
-        res[0] <== 0;
+        res.bits[0] <== 0;
     }
     for (var i=1; i < n; i++) {
         // re[i-1] says if in[0..i-1] > ct[0..i-1] (upto bit i-1)
         if ((ct >> i) & 1 == 0) {
-            res[i] <== OR()(res[i-1],in[i]);
+            res.bits[i] <== OR()(res.bits[i-1],in.bits[i]);
         } else {
-            res[i] <== AND()(res[i-1],in[i]);
+            res.bits[i] <== AND()(res.bits[i-1],in.bits[i]);
 	}
     }
-    out <== res[n-1];
-}    
+    out <== res.bits[n-1];
+}
 

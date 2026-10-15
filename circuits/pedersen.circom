@@ -34,8 +34,8 @@ include "buses.circom";
         out8 = 8*base
 
     This circuit is used in order to perform the Pedersen protocol on an input in.
-        - Inputs: in[4] -> binary value
-                         requires tag binary
+        - Inputs: in -> BinaryNumber(4) bus
+                        its bits require tag binary
                   base[2] -> input curve point in Montgomery representation
         - Outputs: out[2] -> output curve point in Montgomery representation
                    out8[2] -> output curve point in Montgomery representation
@@ -43,16 +43,16 @@ include "buses.circom";
  */
 
 template Window4() {
-    input signal {binary} in[4];
+    BinaryNumber(4) input in;
     input Point {babymontgomery} base;
     output Point {babymontgomery} pout;
     output Point {babymontgomery} pout8;   // Returns 8*Base (To be linked)
 
     component mux = MultiMux3(2);
 
-    mux.s[0] <== in[0];
-    mux.s[1] <== in[1];
-    mux.s[2] <== in[2];
+    mux.s.bits[0] <== in.bits[0];
+    mux.s.bits[1] <== in.bits[1];
+    mux.s.bits[2] <== in.bits[2];
 
     component dbl2 = MontgomeryDouble();
     component adr3 = MontgomeryAdd();
@@ -111,14 +111,14 @@ template Window4() {
     pout8 <== adr8.pout;
 
     pout.x <== mux.out[0];
-    pout.y <== - mux.out[1]*2*in[3] + mux.out[1];  // Negate y if in[3] is one
+    pout.y <== - mux.out[1]*2*in.bits[3] + mux.out[1];  // Negate y if in[3] is one
 }
 
 /*
 
 *** Segment(nWindows):template used to perform a segment of the multiplications needed to perform a the Pedersen protocol. 
-        - Inputs: in[4 * nWindows] -> binary representation of the scalar
-                                      requires tag binary
+        - Inputs: in -> BinaryNumber(4 * nWindows) bus with the binary representation of the scalar
+                        its bits require tag binary
                   base[2] -> input curve point in Edwards representation
         - Outputs: out[2] -> output curve point in Edwards representation
     
@@ -126,7 +126,7 @@ template Window4() {
 
 
 template Segment(nWindows) {
-    input signal {binary} in[nWindows*4];
+    BinaryNumber(nWindows*4) input in;
     input Point {babyedwards} base;
     output Point {babyedwards} pout;
 
@@ -145,7 +145,7 @@ template Segment(nWindows) {
     for (i=0; i<nWindows; i++) {
         windows[i] = Window4();
         for (j=0; j<4; j++) {
-            windows[i].in[j] <== in[4*i+j];
+            windows[i].in.bits[j] <== in.bits[4*i+j];
         }
         if (i==0) {
             windows[i].base <== e2m.pout;
@@ -182,14 +182,14 @@ template Segment(nWindows) {
 /*
 
 *** Pedersen(n): template that performs the Pedersen protocol on the input in, that is the binary representation of the field using n bits. It calculates the output point of the Pedersen protocol in Edwards representation
-        - Inputs: in[n] -> binary representation of the scalar
-                          requires tag binary
+        - Inputs: in -> BinaryNumber(n) bus with the binary representation of the scalar
+                        its bits require tag binary
         - Outputs: out[2] -> output curve point in Edwards representation
     
  */
 
 template Pedersen(n) {
-    input signal {binary} in[n];
+    BinaryNumber(n) input in;
     output Point {babyedwards} pout;
 
     var BASE[10][2] = [
@@ -225,11 +225,11 @@ template Pedersen(n) {
         aux[i].y <== BASE[i][1];
         segments[i].base <== aux[i];
         for (j = 0; j<nBits; j++) {
-            segments[i].in[j] <== in[i*200+j];
+            segments[i].in.bits[j] <== in.bits[i*200+j];
         }
         // Fill padding bits
         for (j = nBits; j < nWindows*4; j++) {
-            segments[i].in[j] <== aux_0;
+            segments[i].in.bits[j] <== aux_0;
         }
     }
 

@@ -126,7 +126,7 @@ template Num2Bits_strict() {
     in ==> n2b.in;
 
     n2b.out ==> out;
-    n2b.out ==> aliasCheck.in;
+    n2b.out ==> aliasCheck.in.bits;
 }
 
 /*
@@ -185,7 +185,7 @@ template Bits2Num_strict() {
     component b2n = Bits2Num(max_nbits);
     
     in ==> b2n.in;
-    in ==> aliasCheck.in;
+    in ==> aliasCheck.in.bits;
 
     out.maxbit = max_nbits;
     b2n.out ==> out;

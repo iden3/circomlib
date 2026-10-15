@@ -58,6 +58,11 @@ wrappers under `test/circuits` do.
 | `BinaryPoint(n)`  | `binY[n]`, `signX`, both `binary`     |
 | `BinaryNumber(n)` | `bits[n]`, `binary`                   |
 
+Every port that carries a number as `n` bits is a `BinaryNumber(n)`: the gates, binary
+arithmetic, multiplexer selectors, comparators on bits, scalar multiplication, Pedersen,
+SHA-256 and the SMT function selector. `bitify.circom` keeps the array versions
+(`Num2Bits`, `Bits2Num` and their `_strict` variants); `binnum.circom` has the bus ones.
+
 `smt/smtbuses.circom` adds `SMTVerifierState()` and `SMTProcessorState()` for the
 state machines of the sparse Merkle tree circuits.
 
