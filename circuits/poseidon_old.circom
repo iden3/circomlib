@@ -1,7 +1,11 @@
 pragma circom 2.1.5;
 
 
-// The templates and functions in this file are general and work for any prime field
+// The templates of this file only work for prime field bn128 (21888242871839275222246405745257275088548364400416034343698204186575808495617).
+// The round structure is field-agnostic and compiles for any prime, but the round constants in
+// poseidon_constants_old.circom were generated for this prime and the round numbers were chosen for its
+// security level. Compiled for another prime the constants are reduced modulo it and the result is
+// a function with no specification and no security analysis.
 
 include "./poseidon_constants_old.circom";
 

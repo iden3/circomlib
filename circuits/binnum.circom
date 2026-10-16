@@ -35,6 +35,7 @@ include "bitify.circom";
 */
 
 template Num2Bin(n) {
+    assert(n <= maxbits()); // otherwise the tag unique cannot be guaranteed
     signal input in;
     BinaryNumber(n) output {unique} out;
     var lc1=0;
@@ -48,7 +49,7 @@ template Num2Bin(n) {
     }
     lc1 === in;
     
-    if (n == maxbits()) {
+    if (n >= maxbits()) {
        component aliasCheck = AliasCheck();
        aliasCheck.in <== out.bits;
     }
@@ -95,6 +96,7 @@ template Bin2Num(n) {
 */
 
 template Num2BinNeg(n) {
+    assert(n <= maxbits()); // otherwise the tag unique cannot be guaranteed
     signal input in;
     BinaryNumber(n) output {unique} out;
     var lc1=0;
@@ -115,7 +117,7 @@ template Num2BinNeg(n) {
     lc1 + isZero.out * 2**n === 2**n - in;
 
 
-    if (n == maxbits()) {
+    if (n >= maxbits()) {
        component aliasCheck = AliasCheck();
        aliasCheck.in <== out.bits;
     }

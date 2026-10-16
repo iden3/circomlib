@@ -80,14 +80,20 @@ function sqrt(n) {
 
 /*
 
-*** Bits2Point_Strict(): template that receives the encoding of a point of a curve using 256 bits and returns its Edwards representation
-        - Inputs: BinaryPoint(254) in -> encoding of the point using 255 bits plus sign 
-                                         requires tag binary
-        - Outputs: Point out  -> curve point using Edwards representation
+*** Bits2Point_Strict(): template that receives the encoding of a point of a curve and returns its Edwards representation
+        - Inputs: in -> BinaryPoint(254) bus encoding the point in 255 bits
+                        requires tag binary on both fields
+        - Outputs: pout -> curve point using Edwards representation
+                           satisfies tag babyedwards
                                
     Encoding:
-       in.binY[0..253] -> binary representation of out[1]
-       in.signX -> if out[0] is positive then 0, else 1
+       in.binY[0..253] -> binary representation of pout.y
+       in.signX -> if pout.x is positive then 0, else 1
+
+    The encoding of a point on the wire is usually 256 bits, of which bit 254 is always 0
+    and bit 255 carries the sign. A BinaryPoint has no bit 254, so code that converts such
+    an encoding into the bus must check that bit itself and reject a non-zero one. Two
+    encodings otherwise map to the same point. See test/circuits/eddsapedersen_test.circom.
 */
 
 
@@ -134,15 +140,16 @@ template Bits2Point_Strict() {
 
 /*
 
-*** Point2Bits_Strict(): template that receives a point as an input and returns its encoding using 256 bits
-        - Inputs: in[2] -> curve point using Edwards representation
-        - Outputs: out[256] -> encoding of the point using 256 bits
-                               satisfies tag binary
+*** Point2Bits_Strict(): template that receives a point as an input and returns its encoding
+        - Inputs: pin -> curve point using Edwards representation
+        - Outputs: out -> BinaryPoint(254) bus encoding the point in 255 bits
+                          both fields satisfy tag binary
                                
     Encoding:
-       out[0..253] -> binary representation of in[1]
-       out[254] -> 0
-       out[255] -> if in[0] is positive then 0, else 1
+       out.binY[0..253] -> binary representation of pin.y
+       out.signX -> if pin.x is positive then 0, else 1
+
+    To widen this to the usual 256 bit encoding, bit 254 is 0 and bit 255 is out.signX.
 */
 
 template Point2Bits_Strict() {

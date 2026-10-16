@@ -32,7 +32,7 @@ include "buses.circom";
         - Outputs: out -> in == 0
                           satisfies tag binary
          
-    Example: IsZero()(5) = 0, IsZero()(0) = 0
+    Example: IsZero()(5) = 0, IsZero()(0) = 1
           
 */
 
@@ -56,7 +56,7 @@ template IsZero() {
         - Outputs: out -> in[0] == in[1]
                           satisfies tag binary
          
-    Example: IsEqual()([5, 2]) = 0, IsZero()([2, 2]) = 0
+    Example: IsEqual()([5, 2]) = 0, IsEqual()([2, 2]) = 1
           
 */
 
@@ -186,7 +186,7 @@ template GreaterThan(n) {
         - Outputs: out -> in[0] >= in[1]
                           satisfies tag binary
          
-    Example: GreterEqThan()([5, 2]) = 1, GreaterEqThan()([2, 2]) = 1
+    Example: GreaterEqThan()([5, 2]) = 1, GreaterEqThan()([2, 2]) = 1
           
 */
 

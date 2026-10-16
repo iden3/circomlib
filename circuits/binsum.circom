@@ -19,6 +19,7 @@
 
  pragma circom 2.1.5;
 
+include "bitify.circom";
 
 // The templates and functions in this file are general and work for any prime field
 
