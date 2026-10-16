@@ -21,6 +21,7 @@ pragma circom 2.1.5;
 include "bitify.circom";
 include "montgomery.circom";
 include "escalarmul/escalarmulfix.circom";
+include "comparators.circom";
 include "buses.circom";
 
 // The templates and functions of this file only work for finite field F_p = bn128,
@@ -178,4 +179,13 @@ template BabyPbk() {
 
     mulFix.e <== pvkBits.out;
     A <== mulFix.pout;
+}
+
+template NonZeroXCheck() {
+  input Point in;
+  output Point {nonzerox} out;
+
+  isz <== IsZero()(in.x);
+  isz === 1;
+  out <== in;
 }
