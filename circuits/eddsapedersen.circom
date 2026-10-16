@@ -64,11 +64,11 @@ template EdDSAPedersenVerifier(n) {
     S.signX === 0;
 
 // Convert A to Field elements (And verify A)
-    pA <== Bits2Point_Strict()(A);
+    pA <== Bits2Point_Strict()(A); //pA has tag babyedwards
 
 
 // Convert R8 to Field elements (And verify R8)
-    pR8 <== Bits2Point_Strict()(R8);
+    pR8 <== Bits2Point_Strict()(R8);  //pR8 has tag babyedwards
 
 // Calculate the h = H(R,A, msg)
 
@@ -124,8 +124,12 @@ template EdDSAPedersenVerifier(n) {
 
     // We check that A is not zero.
     component isZero = IsZero();
-    isZero.in <== dbl3.pin.x;
+    //isZero.in <== dbl3.pin.x;
+    isZero.in <== dbl3.pout.x;
     isZero.out === 0;
+    //We have that dbl3.pout is not (0,1)
+    //******* NO need! also checked in EscalarMulAny!!!!
+    
 /*
     component mulAny = EscalarMulAny(255);
     for (i=0; i<254; i++) {
@@ -142,7 +146,8 @@ template EdDSAPedersenVerifier(n) {
     
     mulAny.e[254] <== BinaryCheck()(0);
     mulAny.e[255] <== point2bitsH.out.signX;
-    
+
+    // non-zero dbl3.pout;
     mulAny.pin <== dbl3.pout;
 
 // Compute the right side: right =  R8 + right2
