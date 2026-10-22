@@ -191,7 +191,7 @@ template NonZeroXCheck() {
   input Point in;
   output Point {nonzerox} out;
 
-  isz <== IsZero()(in.x);
-  isz === 1;
+  signal isz <== IsZero()(in.x);
+  isz === 0;
   out <== in;
 }
