@@ -22,6 +22,7 @@ include "bitify.circom";
 include "aliascheck.circom";
 include "compconstant.circom";
 include "babyjub.circom";
+include "babyjub_params.circom";
 
 
 function sqrt(n) {
@@ -95,8 +96,8 @@ template Bits2Point_Strict() {
 
     out[1] <== b2nY.out;
 
-    var a = 168700;
-    var d = 168696;
+    var a = babyjub_a();
+    var d = babyjub_d();
 
     var y2 = out[1] * out[1];
 
