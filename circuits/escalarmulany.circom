@@ -18,10 +18,21 @@
 */
 pragma circom 2.0.0;
 
+include "babyjub_params.circom";
 include "montgomery.circom";
 include "babyjub.circom";
 include "comparators.circom";
 
+/*
+    Variable-base scalar multiplication on Baby Jubjub: out = (sum_i e[i]*2^i) * p,
+    where p is a signal (known only at proving time).
+
+    LSB-first binary double-and-add, using the cheap but incomplete Montgomery
+    formulas (see montgomery.circom). Each bit costs about 9 constraints
+    (double 4 + add 3 + select 2).
+*/
+
+// out = sel ? in[1] : in[0]. sel must be a bit (not checked).
 template Multiplexor2() {
     signal input sel;
     signal input in[2][2];
@@ -31,6 +42,11 @@ template Multiplexor2() {
     out[1] <== (in[1][1] - in[0][1])*sel + in[0][1];
 }
 
+/*
+    One double-and-add step, in Montgomery form:
+        dblOut = 2 * dblIn
+        addOut = sel ? addIn + dblOut : addIn
+*/
 template BitElementMulAny() {
     signal input sel;
     signal input dblIn[2];
@@ -42,156 +58,171 @@ template BitElementMulAny() {
     component adder = MontgomeryAdd();
     component selector = Multiplexor2();
 
+    selector.sel <== sel;
 
-    sel ==> selector.sel;
+    doubler.in[0] <== dblIn[0];
+    doubler.in[1] <== dblIn[1];
+    adder.in1[0] <== doubler.out[0];
+    adder.in1[1] <== doubler.out[1];
+    adder.in2[0] <== addIn[0];
+    adder.in2[1] <== addIn[1];
+    selector.in[0][0] <== addIn[0];
+    selector.in[0][1] <== addIn[1];
+    selector.in[1][0] <== adder.out[0];
+    selector.in[1][1] <== adder.out[1];
 
-    dblIn[0] ==> doubler.in[0];
-    dblIn[1] ==> doubler.in[1];
-    doubler.out[0] ==> adder.in1[0];
-    doubler.out[1] ==> adder.in1[1];
-    addIn[0] ==> adder.in2[0];
-    addIn[1] ==> adder.in2[1];
-    addIn[0] ==> selector.in[0][0];
-    addIn[1] ==> selector.in[0][1];
-    adder.out[0] ==> selector.in[1][0];
-    adder.out[1] ==> selector.in[1][1];
-
-    doubler.out[0] ==> dblOut[0];
-    doubler.out[1] ==> dblOut[1];
-    selector.out[0] ==> addOut[0];
-    selector.out[1] ==> addOut[1];
+    dblOut[0] <== doubler.out[0];
+    dblOut[1] <== doubler.out[1];
+    addOut[0] <== selector.out[0];
+    addOut[1] <== selector.out[1];
 }
 
-// p is montgomery point
-// n must be <= 248
-// returns out in twisted edwards
-// Double is in montgomery to be linked;
+/*
+    out = (sum_i e[i]*2^i) * p, with p and out in Edwards form.
+    dbl = 2^(n-1) * p is in Montgomery form and is linked to the next segment.
 
+    The identity cannot be represented in Montgomery form, so the accumulator
+    starts at p instead of O and processes bits e[1..n-1]:
+        acc = p + sum_{i>=1} e[i]*2^i * p
+    The extra p is then absorbed by bit 0: out = e[0] ? acc : acc - p, where the
+    subtraction uses the complete BabyAdd.
+
+    Safety (p of prime order l, p != O): at step i the accumulator is k*p with
+    1 <= k <= 2^i - 1 and the doubler holds 2^i * p. They are never equal, and
+    never opposite while k + 2^i < l, which holds for n <= 250.
+*/
 template SegmentMulAny(n) {
     signal input e[n];
     signal input p[2];
     signal output out[2];
     signal output dbl[2];
 
-    component bits[n-1];
+    component bits[n - 1];
 
     component e2m = Edwards2Montgomery();
+    e2m.in[0] <== p[0];
+    e2m.in[1] <== p[1];
 
-    p[0] ==> e2m.in[0];
-    p[1] ==> e2m.in[1];
-
-    var i;
-
+    // acc = dbl = p
     bits[0] = BitElementMulAny();
-    e2m.out[0] ==> bits[0].dblIn[0];
-    e2m.out[1] ==> bits[0].dblIn[1];
-    e2m.out[0] ==> bits[0].addIn[0];
-    e2m.out[1] ==> bits[0].addIn[1];
-    e[1] ==> bits[0].sel;
+    bits[0].dblIn[0] <== e2m.out[0];
+    bits[0].dblIn[1] <== e2m.out[1];
+    bits[0].addIn[0] <== e2m.out[0];
+    bits[0].addIn[1] <== e2m.out[1];
+    bits[0].sel <== e[1];
 
-    for (i=1; i<n-1; i++) {
+    for (var i = 1; i < n - 1; i++) {
         bits[i] = BitElementMulAny();
-
-        bits[i-1].dblOut[0] ==> bits[i].dblIn[0];
-        bits[i-1].dblOut[1] ==> bits[i].dblIn[1];
-        bits[i-1].addOut[0] ==> bits[i].addIn[0];
-        bits[i-1].addOut[1] ==> bits[i].addIn[1];
-        e[i+1] ==> bits[i].sel;
+        bits[i].dblIn[0] <== bits[i - 1].dblOut[0];
+        bits[i].dblIn[1] <== bits[i - 1].dblOut[1];
+        bits[i].addIn[0] <== bits[i - 1].addOut[0];
+        bits[i].addIn[1] <== bits[i - 1].addOut[1];
+        bits[i].sel <== e[i + 1];
     }
 
-    bits[n-2].dblOut[0] ==> dbl[0];
-    bits[n-2].dblOut[1] ==> dbl[1];
+    dbl[0] <== bits[n - 2].dblOut[0];
+    dbl[1] <== bits[n - 2].dblOut[1];
 
     component m2e = Montgomery2Edwards();
+    m2e.in[0] <== bits[n - 2].addOut[0];
+    m2e.in[1] <== bits[n - 2].addOut[1];
 
-    bits[n-2].addOut[0] ==> m2e.in[0];
-    bits[n-2].addOut[1] ==> m2e.in[1];
-
+    // acc - p
     component eadder = BabyAdd();
+    eadder.x1 <== m2e.out[0];
+    eadder.y1 <== m2e.out[1];
+    eadder.x2 <== -p[0];
+    eadder.y2 <== p[1];
 
-    m2e.out[0] ==> eadder.x1;
-    m2e.out[1] ==> eadder.y1;
-    -p[0] ==> eadder.x2;
-    p[1] ==> eadder.y2;
-
+    // out = e[0] ? acc : acc - p
     component lastSel = Multiplexor2();
+    lastSel.sel <== e[0];
+    lastSel.in[0][0] <== eadder.xout;
+    lastSel.in[0][1] <== eadder.yout;
+    lastSel.in[1][0] <== m2e.out[0];
+    lastSel.in[1][1] <== m2e.out[1];
 
-    e[0] ==> lastSel.sel;
-    eadder.xout ==> lastSel.in[0][0];
-    eadder.yout ==> lastSel.in[0][1];
-    m2e.out[0] ==> lastSel.in[1][0];
-    m2e.out[1] ==> lastSel.in[1][1];
-
-    lastSel.out[0] ==> out[0];
-    lastSel.out[1] ==> out[1];
+    out[0] <== lastSel.out[0];
+    out[1] <== lastSel.out[1];
 }
 
-// This function assumes that p is in the subgroup and it is different to 0
+/*
+    out = (sum_i e[i]*2^i) * p, with p and out in Edwards form.
 
+    e must be bits (e.g. from Num2Bits). This template does not check it.
+    p must be in the prime-order subgroup (e.g. clear the cofactor first, as the
+    EdDSA verifiers do by multiplying by 8). The identity is handled: if
+    p[0] == 0, the computation runs on BASE8 instead (Edwards2Montgomery would
+    divide by zero) and the output is forced to O = (0, 1).
+
+    The scalar is split into segments of 148 bits, well within the bound of
+    SegmentMulAny. Segment s uses base 2^(148*s) * p, obtained by doubling the
+    previous segment's dbl, and the segment results are summed with BabyAdd,
+    which is complete.
+*/
 template EscalarMulAny(n) {
-    signal input e[n];              // Input in binary format
-    signal input p[2];              // Point (Twisted format)
-    signal output out[2];           // Point (Twisted format)
+    signal input e[n];
+    signal input p[2];
+    signal output out[2];
 
-    var nsegments = (n-1)\148 +1;
-    var nlastsegment = n - (nsegments-1)*148;
+    var nsegments = (n - 1) \ 148 + 1;
+    var nlastsegment = n - (nsegments - 1)*148;
 
     component segments[nsegments];
-    component doublers[nsegments-1];
-    component m2e[nsegments-1];
-    component adders[nsegments-1];
+    component doublers[nsegments - 1];
+    component m2e[nsegments - 1];
+    component adders[nsegments - 1];
+
     component zeropoint = IsZero();
     zeropoint.in <== p[0];
 
-    var s;
-    var i;
-    var nseg;
+    var BASE8[2] = babyjub_base8();
 
-    for (s=0; s<nsegments; s++) {
-
-        nseg = (s < nsegments-1) ? 148 : nlastsegment;
+    for (var s = 0; s < nsegments; s++) {
+        var nseg = (s < nsegments - 1) ? 148 : nlastsegment;
 
         segments[s] = SegmentMulAny(nseg);
 
-        for (i=0; i<nseg; i++) {
-            e[s*148+i] ==> segments[s].e[i];
+        for (var i = 0; i < nseg; i++) {
+            segments[s].e[i] <== e[s*148 + i];
         }
 
-        if (s==0) {
-            // force G8 point if input point is zero
-            segments[s].p[0] <== p[0] + (5299619240641551281634865583518297030282874472190772894086521144482721001553 - p[0])*zeropoint.out;
-            segments[s].p[1] <== p[1] + (16950150798460657717958625567821834550301663161624707787222815936182638968203 - p[1])*zeropoint.out;
+        if (s == 0) {
+            // Use BASE8 if p is the identity
+            segments[s].p[0] <== p[0] + (BASE8[0] - p[0])*zeropoint.out;
+            segments[s].p[1] <== p[1] + (BASE8[1] - p[1])*zeropoint.out;
         } else {
-            doublers[s-1] = MontgomeryDouble();
-            m2e[s-1] = Montgomery2Edwards();
-            adders[s-1] = BabyAdd();
+            doublers[s - 1] = MontgomeryDouble();
+            m2e[s - 1] = Montgomery2Edwards();
+            adders[s - 1] = BabyAdd();
 
-            segments[s-1].dbl[0] ==> doublers[s-1].in[0];
-            segments[s-1].dbl[1] ==> doublers[s-1].in[1];
+            doublers[s - 1].in[0] <== segments[s - 1].dbl[0];
+            doublers[s - 1].in[1] <== segments[s - 1].dbl[1];
 
-            doublers[s-1].out[0] ==> m2e[s-1].in[0];
-            doublers[s-1].out[1] ==> m2e[s-1].in[1];
+            m2e[s - 1].in[0] <== doublers[s - 1].out[0];
+            m2e[s - 1].in[1] <== doublers[s - 1].out[1];
 
-            m2e[s-1].out[0] ==> segments[s].p[0];
-            m2e[s-1].out[1] ==> segments[s].p[1];
+            segments[s].p[0] <== m2e[s - 1].out[0];
+            segments[s].p[1] <== m2e[s - 1].out[1];
 
-            if (s==1) {
-                segments[s-1].out[0] ==> adders[s-1].x1;
-                segments[s-1].out[1] ==> adders[s-1].y1;
+            if (s == 1) {
+                adders[s - 1].x1 <== segments[s - 1].out[0];
+                adders[s - 1].y1 <== segments[s - 1].out[1];
             } else {
-                adders[s-2].xout ==> adders[s-1].x1;
-                adders[s-2].yout ==> adders[s-1].y1;
+                adders[s - 1].x1 <== adders[s - 2].xout;
+                adders[s - 1].y1 <== adders[s - 2].yout;
             }
-            segments[s].out[0] ==> adders[s-1].x2;
-            segments[s].out[1] ==> adders[s-1].y2;
+            adders[s - 1].x2 <== segments[s].out[0];
+            adders[s - 1].y2 <== segments[s].out[1];
         }
     }
 
+    // Force O = (0, 1) if p is the identity
     if (nsegments == 1) {
-        segments[0].out[0]*(1-zeropoint.out) ==> out[0];
-        segments[0].out[1]+(1-segments[0].out[1])*zeropoint.out ==> out[1];
+        out[0] <== segments[0].out[0]*(1 - zeropoint.out);
+        out[1] <== segments[0].out[1] + (1 - segments[0].out[1])*zeropoint.out;
     } else {
-        adders[nsegments-2].xout*(1-zeropoint.out) ==> out[0];
-        adders[nsegments-2].yout+(1-adders[nsegments-2].yout)*zeropoint.out ==> out[1];
+        out[0] <== adders[nsegments - 2].xout*(1 - zeropoint.out);
+        out[1] <== adders[nsegments - 2].yout + (1 - adders[nsegments - 2].yout)*zeropoint.out;
     }
 }
