@@ -93,3 +93,56 @@ describe("Escalarmul test", function () {
 
 });
 
+describe("EscalarMulFix exceptional segment scalars", function () {
+    let babyJub;
+    let Fr;
+    let circuit253;
+
+    this.timeout(100000);
+
+    // With 83 windows, the accumulator before the last window plus the last
+    // window output equals 2^250 + sum_{k<83} 8^k + s (s = the low 249 bits).
+    // It reaches l, i.e. acc = -w, for s0 = l - 2^250 - sum_{k<83} 8^k.
+    function exceptionalScalar(subOrder) {
+        let q = Scalar.e(0);
+        for (let k = 0; k < 83; k++) {
+            q = Scalar.add(q, Scalar.shl(1, 3*k));
+        }
+        return Scalar.sub(Scalar.sub(subOrder, Scalar.shl(1, 250)), q);
+    }
+
+    before( async() => {
+        babyJub = await buildBabyjub();
+        Fr = babyJub.F;
+        circuit253 = await wasm_tester(path.join(__dirname, "circuits", "escalarmulfix_test.circom"));
+    });
+
+    async function check(circuit, s) {
+        const w = await circuit.calculateWitness({"e": s}, true);
+        await circuit.checkConstraints(w);
+        const expectedRes = babyJub.mulPointEscalar(babyJub.Base8, s);
+        await circuit.assertOut(w, {out: [Fr.toObject(expectedRes[0]), Fr.toObject(expectedRes[1])]});
+    }
+
+    it("Should compute the formerly exceptional scalar (n = 253)", async () => {
+        const s0 = exceptionalScalar(babyJub.subOrder);
+        assert(Scalar.lt(s0, Scalar.shl(1, 249)));
+        await check(circuit253, s0);
+        await check(circuit253, Scalar.add(s0, Scalar.shl(1, 249)));   // with higher bits set
+        await check(circuit253, Scalar.add(s0, Scalar.shl(1, 252)));
+    });
+
+    it("Should compute scalars at the segment boundary (n = 253)", async () => {
+        await check(circuit253, Scalar.sub(Scalar.shl(1, 246), 1));
+        await check(circuit253, Scalar.shl(1, 246));
+        await check(circuit253, Scalar.sub(Scalar.shl(1, 253), 1));
+    });
+
+    it("Should compile and compute with n = 249", async () => {
+        const circuit249 = await wasm_tester(path.join(__dirname, "circuits", "escalarmulfix249_test.circom"));
+        await check(circuit249, 0);
+        await check(circuit249, 1);
+        await check(circuit249, exceptionalScalar(babyJub.subOrder));
+        await check(circuit249, Scalar.sub(Scalar.shl(1, 249), 1));
+    });
+});
