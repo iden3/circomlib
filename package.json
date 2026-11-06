@@ -28,6 +28,6 @@
     "chai": "^4.3.4",
     "circom_tester": "0.0.21",
     "circomlibjs": "^0.1.7",
-    "mocha": "^11.1.0"
+    "mocha": "^11.8.0"
   }
 }

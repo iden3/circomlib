@@ -1,6 +1,7 @@
 const chai = require("chai");
 const path = require("path");
 const wasm_tester = require("circom_tester").wasm;
+const buildBabyjub = require("circomlibjs").buildBabyjub;
 
 const F1Field = require("ffjavascript").F1Field;
 const Scalar = require("ffjavascript").Scalar;
@@ -49,3 +50,56 @@ describe("Escalarmul test", function () {
 
 });
 
+describe("EscalarMulAny one-bit segment", function () {
+    let babyJub;
+    let F;
+    let circuit1;
+    let circuit149;
+
+    this.timeout(100000);
+
+    before( async() => {
+        babyJub = await buildBabyjub();
+        F = babyJub.F;
+        circuit1 = await wasm_tester(path.join(__dirname, "circuits", "escalarmulany1_test.circom"));
+        circuit149 = await wasm_tester(path.join(__dirname, "circuits", "escalarmulany149_test.circom"));
+    });
+
+    function toObj(P) {
+        return [F.toObject(P[0]), F.toObject(P[1])];
+    }
+
+    async function check(circuit, e, P) {
+        const w = await circuit.calculateWitness({"e": e, "p": toObj(P)}, true);
+        await circuit.checkConstraints(w);
+        await circuit.assertOut(w, {out: toObj(babyJub.mulPointEscalar(P, e))});
+    }
+
+    it("Should multiply by a single bit (n = 1)", async () => {
+        const points = [babyJub.Base8, babyJub.mulPointEscalar(babyJub.Base8, 5)];
+        for (const P of points) {
+            await check(circuit1, 0, P);
+            await check(circuit1, 1, P);
+        }
+    });
+
+    it("Should return the identity for the identity point (n = 1)", async () => {
+        const w = await circuit1.calculateWitness({"e": 1, "p": [0, 1]}, true);
+        await circuit1.checkConstraints(w);
+        await circuit1.assertOut(w, {out: [0, 1]});
+    });
+
+    it("Should handle a one-bit last segment (n = 149)", async () => {
+        const P = babyJub.mulPointEscalar(babyJub.Base8, 5);
+        const scalars = [
+            Scalar.e(0),
+            Scalar.e(1),
+            Scalar.shl(1, 148),                                // only the one-bit segment set
+            Scalar.add(Scalar.shl(1, 148), 12345),
+            Scalar.sub(Scalar.shl(1, 149), 1),                 // all bits set
+        ];
+        for (const e of scalars) {
+            await check(circuit149, e, P);
+        }
+    });
+});
