@@ -97,7 +97,7 @@ template WindowMulFix() {
     Safety: the accumulator is always >= D = 2*8^nWindows, and each window output
     is <= 8^nWindows, so the two inputs of an add are never equal. They are also
     never opposite (acc + w != 0 mod l) as long as acc + w < l, which holds for
-    nWindows <= 82 (246 bits) but not for 83.
+    nWindows <= 82 (246 bits) but not for 83. EscalarMulFix guarantees this bound.
 */
 template SegmentMulFix(nWindows) {
     signal input e[nWindows*3];
@@ -185,33 +185,31 @@ template SegmentMulFix(nWindows) {
     out = (sum_i e[i]*2^i) * BASE, with BASE a constant point in Edwards form.
 
     e must be bits (e.g. from Num2Bits). This template does not check it.
-    The scalar is split into segments. Segment s uses base 2^(249*s) * BASE,
+    The scalar is split into segments of 246 bits (82 windows), within the
+    safety bound of SegmentMulFix. Segment s uses base 2^(246*s) * BASE,
     obtained from the previous segment's dbl, and the segment results are
     summed with BabyAdd, which is complete.
-
-    NOTE: segments are counted with 246 bits but filled with 249. As a result,
-    n = 247..249 does not compile, and 249-bit segments exceed the safety bound
-    of SegmentMulFix, which leaves some scalars unprovable.
 */
 template EscalarMulFix(n, BASE) {
     signal input e[n];
     signal output out[2];
 
-    var nsegments = (n - 1) \ 246 + 1;
-    var nlastsegment = n - (nsegments - 1)*249;
+    var segmentSize = 246;
+    var nsegments = (n - 1) \ segmentSize + 1;
+    var nlastsegment = n - (nsegments - 1)*segmentSize;
 
     component segments[nsegments];
     component m2e[nsegments - 1];
     component adders[nsegments - 1];
 
     for (var s = 0; s < nsegments; s++) {
-        var nseg = (s < nsegments - 1) ? 249 : nlastsegment;
+        var nseg = (s < nsegments - 1) ? segmentSize : nlastsegment;
         var nWindows = ((nseg - 1) \ 3) + 1;
 
         segments[s] = SegmentMulFix(nWindows);
 
         for (var i = 0; i < nseg; i++) {
-            segments[s].e[i] <== e[s*249 + i];
+            segments[s].e[i] <== e[s*segmentSize + i];
         }
         for (var i = nseg; i < nWindows*3; i++) {
             segments[s].e[i] <== 0;   // padding

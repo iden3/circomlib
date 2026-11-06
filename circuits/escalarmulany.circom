@@ -80,6 +80,7 @@ template BitElementMulAny() {
 /*
     out = (sum_i e[i]*2^i) * p, with p and out in Edwards form.
     dbl = 2^(n-1) * p is in Montgomery form and is linked to the next segment.
+    n = 1 is handled separately: out = e[0] ? p : O.
 
     The identity cannot be represented in Montgomery form, so the accumulator
     starts at p instead of O and processes bits e[1..n-1]:
@@ -103,47 +104,56 @@ template SegmentMulAny(n) {
     e2m.in[0] <== p[0];
     e2m.in[1] <== p[1];
 
-    // acc = dbl = p
-    bits[0] = BitElementMulAny();
-    bits[0].dblIn[0] <== e2m.out[0];
-    bits[0].dblIn[1] <== e2m.out[1];
-    bits[0].addIn[0] <== e2m.out[0];
-    bits[0].addIn[1] <== e2m.out[1];
-    bits[0].sel <== e[1];
+    if (n == 1) {
+        // out = e[0] ? p : O
+        out[0] <== p[0]*e[0];
+        out[1] <== (p[1] - 1)*e[0] + 1;
 
-    for (var i = 1; i < n - 1; i++) {
-        bits[i] = BitElementMulAny();
-        bits[i].dblIn[0] <== bits[i - 1].dblOut[0];
-        bits[i].dblIn[1] <== bits[i - 1].dblOut[1];
-        bits[i].addIn[0] <== bits[i - 1].addOut[0];
-        bits[i].addIn[1] <== bits[i - 1].addOut[1];
-        bits[i].sel <== e[i + 1];
+        dbl[0] <== e2m.out[0];
+        dbl[1] <== e2m.out[1];
+    } else {
+        // acc = dbl = p
+        bits[0] = BitElementMulAny();
+        bits[0].dblIn[0] <== e2m.out[0];
+        bits[0].dblIn[1] <== e2m.out[1];
+        bits[0].addIn[0] <== e2m.out[0];
+        bits[0].addIn[1] <== e2m.out[1];
+        bits[0].sel <== e[1];
+
+        for (var i = 1; i < n - 1; i++) {
+            bits[i] = BitElementMulAny();
+            bits[i].dblIn[0] <== bits[i - 1].dblOut[0];
+            bits[i].dblIn[1] <== bits[i - 1].dblOut[1];
+            bits[i].addIn[0] <== bits[i - 1].addOut[0];
+            bits[i].addIn[1] <== bits[i - 1].addOut[1];
+            bits[i].sel <== e[i + 1];
+        }
+
+        dbl[0] <== bits[n - 2].dblOut[0];
+        dbl[1] <== bits[n - 2].dblOut[1];
+
+        component m2e = Montgomery2Edwards();
+        m2e.in[0] <== bits[n - 2].addOut[0];
+        m2e.in[1] <== bits[n - 2].addOut[1];
+
+        // acc - p
+        component eadder = BabyAdd();
+        eadder.x1 <== m2e.out[0];
+        eadder.y1 <== m2e.out[1];
+        eadder.x2 <== -p[0];
+        eadder.y2 <== p[1];
+
+        // out = e[0] ? acc : acc - p
+        component lastSel = Multiplexor2();
+        lastSel.sel <== e[0];
+        lastSel.in[0][0] <== eadder.xout;
+        lastSel.in[0][1] <== eadder.yout;
+        lastSel.in[1][0] <== m2e.out[0];
+        lastSel.in[1][1] <== m2e.out[1];
+
+        out[0] <== lastSel.out[0];
+        out[1] <== lastSel.out[1];
     }
-
-    dbl[0] <== bits[n - 2].dblOut[0];
-    dbl[1] <== bits[n - 2].dblOut[1];
-
-    component m2e = Montgomery2Edwards();
-    m2e.in[0] <== bits[n - 2].addOut[0];
-    m2e.in[1] <== bits[n - 2].addOut[1];
-
-    // acc - p
-    component eadder = BabyAdd();
-    eadder.x1 <== m2e.out[0];
-    eadder.y1 <== m2e.out[1];
-    eadder.x2 <== -p[0];
-    eadder.y2 <== p[1];
-
-    // out = e[0] ? acc : acc - p
-    component lastSel = Multiplexor2();
-    lastSel.sel <== e[0];
-    lastSel.in[0][0] <== eadder.xout;
-    lastSel.in[0][1] <== eadder.yout;
-    lastSel.in[1][0] <== m2e.out[0];
-    lastSel.in[1][1] <== m2e.out[1];
-
-    out[0] <== lastSel.out[0];
-    out[1] <== lastSel.out[1];
 }
 
 /*
