@@ -133,17 +133,17 @@ x < 2x < ... < 8x
 // babyedwards indicates it must be a point in the babyjub elliptic curve in edwards form
 
 
-template Segment(nWindows) {
+template Segment(nWindows,Id) {
     input signal {binary} in[nWindows*4];
-    input Point {nonzerox, base, min_scalar, max_scalar,babyedwards} base;
-    output Point {nonzerox, base, min_scalar, max_scalar,babyedwards} pout;
+    input Point {nonzerox, babyedwards} base;
+    output Point {nonzerox, babyedwards} pout;
 
     var i;
     var j;
 
     // Convert the base to montgomery
 
-    component e2m = Edwards2Montgomery();
+    component e2m = Edwards2Montgomery(Id);
     e2m.pin <== base;
 
     component windows[nWindows];
@@ -176,11 +176,7 @@ template Segment(nWindows) {
     }
 
     component m2e = Montgomery2Edwards();
-    log(nWindows-2);
     if (nWindows > 1) {
-        log(doublers1[nWindows-2].pout.base, doublers1[nWindows-2].pout.min_scalar, doublers1[nWindows-2].pout.max_scalar); 
-        log(doublers2[nWindows-2].pout.base, doublers2[nWindows-2].pout.min_scalar, doublers2[nWindows-2].pout.max_scalar); 
-        log(adders[nWindows-2].pout.base, adders[nWindows-2].pout.min_scalar, adders[nWindows-2].pout.max_scalar); 
         m2e.pin <== adders[nWindows-2].pout;
     } else {
         m2e.pin <== windows[0].pout;
@@ -233,11 +229,11 @@ template Pedersen(n) {
     for (i=0; i<nSegments; i++) {
         nBits = (i == (nSegments-1)) ? n - (nSegments-1)*200 : 200;
         nWindows = ((nBits - 1)\4)+1;
-        segments[i] = Segment(nWindows);
+        segments[i] = Segment(nWindows,i);
         //assert(BASE[i][0] != 0); //check no x is 0 in the BASE
         aux[i].x <== BASE[i][0];
         aux[i].y <== BASE[i][1];
-        segments[i].base <== NonZeroXCheck()(AddBasePointId(i)(BabyCheck()(aux[i])));
+        segments[i].base <== NonZeroXCheck()(BabyCheck()(aux[i]));
         for (j = 0; j<nBits; j++) {
             segments[i].in[j] <== in[i*200+j];
         }

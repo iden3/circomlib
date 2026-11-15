@@ -76,10 +76,8 @@ include "buses.circom";
 */
 
 template BabyAdd() {
-    input Point {base, min_scalar, max_scalar,babyedwards} pin1,pin2;
-    output Point {base, min_scalar, max_scalar,babyedwards} pout;
-
-    assert(pin1.base == pin2.base);
+    input Point {babyedwards} pin1,pin2;
+    output Point {babyedwards} pout;
     
     signal beta;
     signal gamma;
@@ -94,10 +92,6 @@ template BabyAdd() {
     delta <== (-a*pin1.x + pin1.y)*(pin2.x + pin2.y);
     tau <== beta * gamma;
     
-    pout.base = pin1.base;
-    pout.min_scalar = pin1.min_scalar + pin2.min_scalar;
-    pout.max_scalar = pin1.max_scalar + pin2.min_scalar;
-
     pout.x <-- (beta + gamma) / (1 + d*tau);
     (1 + d*tau) * pout.x === (beta + gamma);
 
@@ -117,8 +111,8 @@ template BabyAdd() {
 */
 
 template BabyDbl() {
-    input Point {base, min_scalar, max_scalar, babyedwards} pin;
-    output Point {base, min_scalar, max_scalar, babyedwards} pout;
+    input Point {babyedwards} pin;
+    output Point {babyedwards} pout;
     component adder = BabyAdd();
 
     adder.pin1 <== pin;
@@ -193,22 +187,10 @@ template BabyPbk() {
 }
 
 template NonZeroXCheck() {
-  input Point {base, min_scalar, max_scalar,babyedwards} in;
-  output Point {nonzerox, base, min_scalar, max_scalar,babyedwards} out;
-
-  signal isz <== IsZero()(in.x);
-  isz === 0;
-  out <== in;
-}
-
-template AddBasePointId(Id) {
   input Point {babyedwards} in;
-  output Point {base, min_scalar, max_scalar,babyedwards} out;
+  output Point {nonzerox,babyedwards} out;
 
   signal isz <== IsZero()(in.x);
   isz === 0;
-  out.base = Id;
-  out.min_scalar = 1;
-  out.max_scalar = 1;
   out <== in;
 }

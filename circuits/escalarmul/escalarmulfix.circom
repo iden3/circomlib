@@ -143,18 +143,18 @@ template WindowMulFix() {
     
  */
 
-template SegmentMulFix(nWindows) {
+template SegmentMulFix(nWindows,Id) {
     input signal {binary} e[nWindows*3];
     input Point {babyedwards} base;
-    output Point {babyedwards} pout;
-    output Point {babymontgomery} dbl;
+    output Point {nonzerox, babyedwards} pout;
+    output Point {base, min_scalar, max_scalar, babymontgomery} dbl;
 
     var i;
     var j;
 
     // Convert the base to montgomery
 
-    component e2m = Edwards2Montgomery();
+    component e2m = Edwards2Montgomery(Id);
     e2m.pin <== base;
 
     component windows[nWindows];
@@ -253,7 +253,7 @@ template EscalarMulFix(n, BASE) {
         nseg = (s < nsegments-1) ? 249 : nlastsegment;
         nWindows = ((nseg - 1)\3)+1;
 
-        segments[s] = SegmentMulFix(nWindows);
+        segments[s] = SegmentMulFix(nWindows,s);
 
         for (i=0; i<nseg; i++) {
             segments[s].e[i] <== e[s*249+i];

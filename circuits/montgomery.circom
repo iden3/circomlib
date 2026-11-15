@@ -82,13 +82,13 @@ include "comparators.circom";
   
 */
 
-template Edwards2Montgomery() {
-    input Point {nonzerox, base, min_scalar, max_scalar,babyedwards} pin;
+template Edwards2Montgomery(Id) {
+    input Point {nonzerox, babyedwards} pin;
     output Point {base, min_scalar, max_scalar, babymontgomery} pout;
 
-    pout.base = pin.base;
-    pout.min_scalar = pin.min_scalar;
-    pout.max_scalar = pin.max_scalar;
+    pout.base = Id;
+    pout.min_scalar = 1;
+    pout.max_scalar = 1;
     
     pout.x <-- (1 + pin.y) / (1 - pin.y);
     pout.y <-- pout.x / pin.x;
@@ -111,9 +111,9 @@ template Edwards2Montgomery() {
     
 */
 
-template Edwards2MontgomeryStrict() {
-    input Point {base, min_escalar, max_escalar, babyedwards} pin;
-    output Point {base, min_escalar, max_escalar, babymontgomery} pout;
+template Edwards2MontgomeryStrict(Id) {
+    input Point {babyedwards} pin;
+    output Point {base, min_scalar, max_scalar, babymontgomery} pout;
 
     pout.x <-- pin.y != -1 ? (1 + pin.y) / (1 - pin.y) : 0;
     pout.y <-- pin.x != 0 ? pout.x / pin.x : 0;
@@ -122,9 +122,9 @@ template Edwards2MontgomeryStrict() {
     pout.y * pin.x === pout.x;
     signal iszx <== IsZero()(pin.x);
     iszx * pout.y === 0; // this ensures that for point (0,-1) the result is (0,0)
-    pout.base = pin.base;
-    pout.min_escalar = pin.min_escalar;
-    pout.max_escalar = pin.max_escalar;
+    pout.base = Id;
+    pout.min_scalar = 1;
+    pout.max_scalar = 1;
 }
 
 /*
@@ -143,18 +143,17 @@ template Edwards2MontgomeryStrict() {
  */
 
 template Montgomery2Edwards() {
-    input Point {base, min_escalar, max_escalar, babymontgomery} pin;
-    output Point {base, min_escalar, max_escalar, babyedwards} pout;
+    input Point {base, min_scalar, max_scalar, babymontgomery} pin;
+    output Point {nonzerox, babyedwards} pout;
 
+    assert(pin.max_scalar < 2**249); //revise to ensure nonzero
+    
     pout.x <-- pin.x / pin.y;
     pout.y <-- (pin.x - 1) / (pin.x + 1);
 
     pout.x * pin.y === pin.x;
     pout.y * (pin.x + 1) === pin.x - 1;
 
-    pout.base = pin.base;
-    pout.min_escalar = pin.min_escalar;
-    pout.max_escalar = pin.max_escalar;
 }
 
 /*
@@ -172,8 +171,8 @@ template Montgomery2Edwards() {
  */
 
 template Montgomery2EdwardsStrict() {
-    input Point {base, min_escalar, max_escalar, babymontgomery} pin;
-    output Point {base, min_escalar, max_escalar, babyedwards} pout;
+    input Point {babymontgomery} pin; // base, min_scalar, max_scalar,
+    output Point {babyedwards} pout;
 
     pout.x <-- pin.y != 0 ? pin.x / pin.y : 0;
     pout.y <-- (pin.x - 1) / (pin.x + 1);
@@ -182,9 +181,6 @@ template Montgomery2EdwardsStrict() {
     pout.y * (pin.x + 1) === pin.x - 1;
     signal iszx <== IsZero()(pin.x);
     iszx * pout.x === 0; // this ensures that for point (0,0) the result is (0,-1)
-    pout.base = pin.base;
-    pout.min_escalar = pin.min_escalar;
-    pout.max_escalar = pin.max_escalar;
 }
 
 
