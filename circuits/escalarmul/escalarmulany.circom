@@ -181,7 +181,7 @@ TODO: ADD SCHEME
 
 template EscalarMulAny(n) {
     input signal {binary} e[n];              // Input in binary format
-    input Point {babyedwards} pin;              // Point (Twisted format)
+    input Point {babyedwards} pin;              // Point (Twisted format) non-zero x
     output Point {babyedwards} pout;           // Point (Twisted format)
 
     var nsegments = (n-1)\148 +1;

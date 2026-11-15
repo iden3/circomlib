@@ -41,12 +41,13 @@ include "buses.circom";
                    out8[2] -> output curve point in Montgomery representation
     
  */
+// babymontgomery indicates it must be a point in the babyjub elliptic curve in montgomery form
 
 template Window4() {
     input signal {binary} in[4];
-    input Point {babymontgomery} base;
-    output Point {babymontgomery} pout;
-    output Point {babymontgomery} pout8;   // Returns 8*Base (To be linked)
+    input Point {base, min_scalar, max_scalar, babymontgomery} base;
+    output Point {base, min_scalar, max_scalar, babymontgomery} pout;
+    output Point {base, min_scalar, max_scalar, babymontgomery} pout8;   // Returns 8*Base (To be linked)
 
     component mux = MultiMux3(2);
 
@@ -112,23 +113,30 @@ template Window4() {
 
     pout.x <== mux.out[0];
     pout.y <== - mux.out[1]*2*in[3] + mux.out[1];  // Negate y if in[3] is one
+    pout.base = base.base;
+    pout.min_scalar = base.min_scalar;
+    pout.max_scalar = base.max_scalar*8;
+    
 }
 
 /*
+min <= x <= 8*max
 
+x < 2x < ... < 8x
 *** Segment(nWindows):template used to perform a segment of the multiplications needed to perform a the Pedersen protocol. 
         - Inputs: in[4 * nWindows] -> binary representation of the scalar
                                       requires tag binary
-                  base[2] -> input curve point in Edwards representation
+                  base -> input curve point in Edwards representation
         - Outputs: out[2] -> output curve point in Edwards representation
     
  */
+// babyedwards indicates it must be a point in the babyjub elliptic curve in edwards form
 
 
 template Segment(nWindows) {
     input signal {binary} in[nWindows*4];
-    input Point {babyedwards} base;
-    output Point {babyedwards} pout;
+    input Point {nonzerox, base, min_scalar, max_scalar,babyedwards} base;
+    output Point {nonzerox, base, min_scalar, max_scalar,babyedwards} pout;
 
     var i;
     var j;
@@ -168,8 +176,11 @@ template Segment(nWindows) {
     }
 
     component m2e = Montgomery2Edwards();
-
+    log(nWindows-2);
     if (nWindows > 1) {
+        log(doublers1[nWindows-2].pout.base, doublers1[nWindows-2].pout.min_scalar, doublers1[nWindows-2].pout.max_scalar); 
+        log(doublers2[nWindows-2].pout.base, doublers2[nWindows-2].pout.min_scalar, doublers2[nWindows-2].pout.max_scalar); 
+        log(adders[nWindows-2].pout.base, adders[nWindows-2].pout.min_scalar, adders[nWindows-2].pout.max_scalar); 
         m2e.pin <== adders[nWindows-2].pout;
     } else {
         m2e.pin <== windows[0].pout;
@@ -182,6 +193,7 @@ template Segment(nWindows) {
 /*
 
 *** Pedersen(n): template that performs the Pedersen protocol on the input in, that is the binary representation of the field using n bits. It calculates the output point of the Pedersen protocol in Edwards representation
+        n <= 2000
         - Inputs: in[n] -> binary representation of the scalar
                           requires tag binary
         - Outputs: out[2] -> output curve point in Edwards representation
@@ -190,8 +202,10 @@ template Segment(nWindows) {
 
 template Pedersen(n) {
     input signal {binary} in[n];
-    output Point {babyedwards} pout;
+    output Point {pedersen, babyedwards} pout;
 
+    assert(n <= 2000); //at most 10 segments of 200 bits
+    
     var BASE[10][2] = [
         [10457101036533406547632367118273992217979173478358440826365724437999023779287,19824078218392094440610104313265183977899662750282163392862422243483260492317],
         [2671756056509184035029146175565761955751135805354291559563293617232983272177,2663205510731142763556352975002641716101654201788071096152948830924149045094],
@@ -203,7 +217,6 @@ template Pedersen(n) {
         [6814338563135591367010655964669793483652536871717891893032616415581401894627,13660303521961041205824633772157003587453809761793065294055279768121314853695],
         [3571615583211663069428808372184817973703476260057504149923239576077102575715,11981351099832644138306422070127357074117642951423551606012551622164230222506],
         [18597552580465440374022635246985743886550544261632147935254624835147509493269,6753322320275422086923032033899357299485124665258735666995435957890214041481]
-
     ];
 
     var nSegments = ((n-1)\200)+1;
@@ -214,16 +227,17 @@ template Pedersen(n) {
     var j;
     var nBits;
     var nWindows;
-    Point {babyedwards} aux[nSegments];
+    Point aux[nSegments]; 
     
     signal {binary} aux_0 <== 0;
     for (i=0; i<nSegments; i++) {
         nBits = (i == (nSegments-1)) ? n - (nSegments-1)*200 : 200;
         nWindows = ((nBits - 1)\4)+1;
         segments[i] = Segment(nWindows);
+        //assert(BASE[i][0] != 0); //check no x is 0 in the BASE
         aux[i].x <== BASE[i][0];
         aux[i].y <== BASE[i][1];
-        segments[i].base <== aux[i];
+        segments[i].base <== NonZeroXCheck()(AddBasePointId(i)(BabyCheck()(aux[i])));
         for (j = 0; j<nBits; j++) {
             segments[i].in[j] <== in[i*200+j];
         }
