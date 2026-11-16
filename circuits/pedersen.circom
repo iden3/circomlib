@@ -26,6 +26,28 @@ include "babyjub.circom";
 include "buses.circom";
 
 /*
+    Pedersen hash over Baby Jubjub (windowed, Zcash Sapling style).
+
+    The n input bits are split into segments of 200 bits. Each segment is split
+    into 50 windows of 4 bits [b0, b1, b2, b3], and each window is encoded as a
+    signed digit:
+
+        enc = (1 + b0 + 2*b1 + 4*b2) * (1 - 2*b3)    in {-8..-1, 1..8}
+
+        pout = sum_s ( sum_j enc_{s,j} * 32^j ) * BASE[s]
+
+    Windows are spaced by 32 = 2^5 > 2*8, so the encoding is injective. Missing
+    bits in the last window are padded with 0.
+
+    BASE[s] = 8 * (a point derived from blake256("PedersenGenerator_<s>_<try>")),
+    so it lies in the prime-order subgroup. Only 10 bases exist, so n <= 2000.
+
+    Collision resistance holds only for a fixed n. Zero padding means, for
+    example, that Pedersen(3)([1,0,1]) == Pedersen(4)([1,0,1,0]).
+*/
+
+
+/*
   pedersen_min_scalar: (only make sense for point with the babymontgomery, base tags and pedersen_max_scalar). 
   pedersen_max_scalar: (only make sense for point with the babymontgomery, base tags and min_scalar).
   1 <= pedersen_min_scalar <= pedersen_max_scalar
@@ -78,21 +100,12 @@ template PedersenMontgomeryAdd() {
 
 
 /*
-
-*** Window4(): template that given a point in Montgomery representation base and a binary input in, calculates:
-        out = base + base*in[0] + 2*base*in[1] + 4*base*in[2] in case in[3] == 0, in case in[3] == 1 then it negates out[1] --> out = base * (in[0..2] + 1) if in[3] == 0, out = - base * (in[0..2] + 1) if in[3] == 1
-        
-        out8 = 8*base
-
-    This circuit is used in order to perform the Pedersen protocol on an input in.
-        - Inputs: in[4] -> binary value
-                         requires tag binary
-                  base[2] -> input curve point in Montgomery representation
-        - Outputs: out[2] -> output curve point in Montgomery representation
-                   out8[2] -> output curve point in Montgomery representation
-    
- */
-
+    One 4-bit window, in Montgomery form:
+        pout  = enc(in) * base
+        pout8 = 8 * base
+    The table (1..8)*base is built with one double and six adds, MultiMux3
+    selects it with in[0..2], and in[3] negates the result, since -(u, v) = (u, -v).
+*/
 // babymontgomery indicates it must be a point in the babyjub elliptic curve in montgomery form
 
 template Window4() {
@@ -172,13 +185,12 @@ template Window4() {
 }
 
 /*
-*** Segment(nWindows):template used to perform a segment of the multiplications needed to perform a the Pedersen protocol. 
-        - Inputs: in[4 * nWindows] -> binary representation of the scalar
-                                      requires tag binary
-                  base -> input curve point in Edwards representation
-        - Outputs: out[2] -> output curve point in Edwards representation
-    
- */
+    One segment: pout = (sum_j enc_j * 32^j) * base, with base and pout in Edwards form.
+    Window j uses 32^j * base, computed as two doublings of the previous pout8.
+    The Montgomery accumulator never meets an exceptional case: with at most 50
+    windows, |sum_{k<j} enc_k * 32^k| < 32^j <= |enc_j * 32^j|, and every partial
+    sum is below 2^249 < l.
+*/
 // babyedwards indicates it must be a point in the babyjub elliptic curve in edwards form
 
 
@@ -236,14 +248,9 @@ template Segment(nWindows,Id) {
 
 
 /*
-
-*** Pedersen(n): template that performs the Pedersen protocol on the input in, that is the binary representation of the field using n bits. It calculates the output point of the Pedersen protocol in Edwards representation
-        n <= 2000
-        - Inputs: in[n] -> binary representation of the scalar
-                          requires tag binary
-        - Outputs: out[2] -> output curve point in Edwards representation
-    
- */
+    pout = Pedersen hash of the n bits in[0..n-1] (in[0] first), as an Edwards
+    point. Segment results are summed with BabyAdd, which is complete.
+*/
 
 template Pedersen(n) {
     input signal {binary} in[n];

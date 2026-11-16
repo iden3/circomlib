@@ -28,27 +28,40 @@ include "buses.circom";
 // with the prime number p = 21888242871839275222246405745257275088548364400416034343698204186575808495617.
 
 /*
-    The Baby-Jubjub Montgomery elliptic curve defined over the finite field bn128 is given by the equation
+    Baby Jubjub elliptic curve
+    ==========================
 
-    B*v^2 = u^3 + A*u^2 + u, A = 168698, B = 1
+    Reference: EIP-2494 "Baby Jubjub Elliptic Curve"
+               https://eips.ethereum.org/EIPS/eip-2494
 
-    This curve is birationally equivalent to the twisted Edwards elliptic curve
+    Baby Jubjub is a twisted Edwards curve defined over the scalar field F_r of
+    BN254, the field circom works in by default. All curve arithmetic below is
+    therefore native field arithmetic and needs no non-native emulation.
 
-    a*x^2 + y^2 = 1 + d*x^2*y^2, a = 168700 = (A+2)/B, d = 168696 = (A-2)/B
+        r = 21888242871839275222246405745257275088548364400416034343698204186575808495617
 
-                                    u     u-1                                     1+y       1+y
-    via the map (u,v) -> (x,y) = [ --- , ----- ] with inverse (x,y) -> (u,v) = [ ----- , --------- ]
-                                    v     u+1                                     1-y     (1-y)*x
+    Twisted Edwards form:
 
-    Since a is a square in bn128, the twisted Edwards curve is isomorphic to the Edwards curve
-    
-    x'^2 + y'^2 = 1 + d'*x'^2*y'^2
+        a*x^2 + y^2 = 1 + d*x^2*y^2,  with a = 168700, d = 168696
 
-    via the map (x,y) -> (x',y') = [ sqrt(a)*x , y ]
+    Group structure:
 
-    where d' = 9706598848417545097372247223557719406784115219466060233080913168975159366771.
-    We will be working with the twisted Edwards form of the Baby-Jubjub curve because the algorithms for adding, doubling
-    and multiplying points by a scalar are faster this way. 
+        curve order  n = 8 * l
+        cofactor     h = 8
+        subgroup     l = 2736030358979909402780800718157159386076813972158567259200215660948447373041
+                         (251-bit prime)
+
+    Distinguished points:
+
+        identity   O = (0, 1)
+        negation   -(x, y) = (-x, y)
+        generator  G = (995203441582195749578291179787384436505546430278305826713579947235728471134,
+                        5472060717959818805561601436314318772137091100104008585924551046643952123905)
+                   generates the full group of order n.
+        base point B = 8*G
+                     = (5299619240641551281634865583518297030282874472190772894086521144482721001553,
+                        16950150798460657717958625567821834550301663161624707787222815936182638968203)
+                   generates the prime-order subgroup of order l.
 */
 
 /*
@@ -73,6 +86,8 @@ include "buses.circom";
     no precondition from the caller. MontgomeryAdd in montgomery.circom is cheaper but
     incomplete, so it is the right choice only where the caller can guarantee that the two
     points differ in x.
+
+    Inputs must be on the curve.
 */
 
 template BabyAdd() {
@@ -107,6 +122,7 @@ template BabyAdd() {
         - Outputs: pout = (x2, y2) -> bus representing a point of the curve in twisted Edwards form, 2 * pin = pout
          
     Twisted Edwards Doubling Law: 2 * [x, y] = [x, y] + [x, y]
+    Via BabyAdd (the addition law is complete).
     
 */
 
