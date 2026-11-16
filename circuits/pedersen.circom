@@ -58,7 +58,7 @@ template PedersenMontgomeryAdd() {
     assert(pin2.pedersen_max_scalar <= 2**248);
     assert(pin1.pedersen_min_scalar <= pin1.pedersen_max_scalar);
     assert(pin2.pedersen_min_scalar <= pin2.pedersen_max_scalar);
-    assert(pin1.pedersen_max_scalar < 2*pin2.pedersen_min_scalar);
+    assert(2*pin1.pedersen_max_scalar < pin2.pedersen_min_scalar);
     // This ensures they are different points
     
     var A = 168698;
@@ -72,7 +72,7 @@ template PedersenMontgomeryAdd() {
     pout.x <== B*lamda*lamda - A - pin1.x - pin2.x;
     pout.y <== lamda * (pin1.x - pout.x) - pin1.y;
     pout.base = pin1.base;
-    pout.pedersen_min_scalar = pin2.pedersen_min_scalar - pin2.pedersen_max_scalar;
+    pout.pedersen_min_scalar = pin2.pedersen_min_scalar - pin1.pedersen_max_scalar;
     pout.pedersen_max_scalar = pin1.pedersen_max_scalar + pin2.pedersen_max_scalar;
 }
 
