@@ -77,8 +77,8 @@ include "comparators.circom";
 /* Montgomery Point tags:
   babymontgomery: it indicates that it is a point in the babyjub curve in Montgomery from;
   base: provides an identifier for the Edwards point it originates by scalar multiplication. The point P is of the form K*P_base for some K. If two Points have the same base they are both obtained by scalar multiplication from the same point;
-  min_scalar: (only make sense for point with the babymontgomery and base tags). The point P is K*P_base for some abs(K) >= min_scalar;
-  max_scalar: (only make sense for point with the babymontgomery and base tags). The point P is K*P_base for some abs(K) <= max_scalar;
+  min_scalar: (only make sense for point with the babymontgomery and base tags). The point P is K*P_base for some K >= min_scalar;
+  max_scalar: (only make sense for point with the babymontgomery and base tags). The point P is K*P_base for some K <= max_scalar;
   
 */
 
@@ -218,6 +218,8 @@ template MontgomeryAdd() {
     //assert(pin2.x != 0 || pin2.y != 1); 
     //assert(pin1.x != pin2.x || pin1.y != pin2.y );
     assert(pin1.base == pin2.base);
+    assert(pin1.max_scalar <= 2**249);
+    assert(pin2.max_scalar <= 2**249);
     assert(pin1.max_scalar < pin2.min_scalar || pin2.max_scalar < pin1.min_scalar);
     // This ensures they are different points
     
@@ -270,6 +272,7 @@ template MontgomeryDouble() {
     input Point {base, min_scalar, max_scalar, babymontgomery} pin;
     output Point {base, min_scalar, max_scalar, babymontgomery} pout;
 
+    assert(pin.max_scalar <= 2**249);
     //assert(pin.x != 0 || pin.y != 1);
     
     var A = 168698;

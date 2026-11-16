@@ -25,6 +25,57 @@ include "mux3.circom";
 include "babyjub.circom";
 include "buses.circom";
 
+/*
+  pedersen_min_scalar: (only make sense for point with the babymontgomery, base tags and pedersen_max_scalar). 
+  pedersen_max_scalar: (only make sense for point with the babymontgomery, base tags and min_scalar).
+  1 <= pedersen_min_scalar <= pedersen_max_scalar
+  The point P is K*P_base for some K s.t either pedersen_min_scalar <= K <= pedersen_max_scalar or -pedersen_max_scalar <= K <= -pedersen_min_scalar;
+*/
+
+template PedersenMontgomery2Edwards() {
+    input Point {base, pedersen_max_scalar, babymontgomery} pin;
+    output Point {nonzerox, babyedwards} pout;
+
+    assert(pin.pedersen_max_scalar <= 2**249); //revise to ensure nonzero
+    
+    pout.x <-- pin.x / pin.y;
+    pout.y <-- (pin.x - 1) / (pin.x + 1);
+
+    pout.x * pin.y === pin.x;
+    pout.y * (pin.x + 1) === pin.x - 1;
+
+}
+
+template PedersenMontgomeryAdd() {
+    input Point {base, pedersen_min_scalar, pedersen_max_scalar, babymontgomery} pin1, pin2;
+    output Point {base, pedersen_min_scalar, pedersen_max_scalar, babymontgomery} pout;
+
+    //assert(pin1.x != 0 || pin1.y != 1); 
+    //assert(pin2.x != 0 || pin2.y != 1); 
+    //assert(pin1.x != pin2.x || pin1.y != pin2.y );
+    assert(pin1.base == pin2.base);
+    assert(pin1.pedersen_max_scalar <= 2**248);
+    assert(pin2.pedersen_max_scalar <= 2**248);
+    assert(pin1.pedersen_min_scalar <= pin1.pedersen_max_scalar);
+    assert(pin2.pedersen_min_scalar <= pin2.pedersen_max_scalar);
+    assert(pin1.pedersen_max_scalar < 2*pin2.pedersen_min_scalar);
+    // This ensures they are different points
+    
+    var A = 168698;
+    var B = 1;
+
+    signal lamda;
+
+    lamda <-- (pin2.y - pin1.y) / (pin2.x - pin1.x);
+    lamda * (pin2.x - pin1.x) === pin2.y - pin1.y;
+
+    pout.x <== B*lamda*lamda - A - pin1.x - pin2.x;
+    pout.y <== lamda * (pin1.x - pout.x) - pin1.y;
+    pout.base = pin1.base;
+    pout.pedersen_min_scalar = pin2.pedersen_min_scalar - pin2.pedersen_max_scalar;
+    pout.pedersen_max_scalar = pin1.pedersen_max_scalar + pin2.pedersen_max_scalar;
+}
+
 
 /*
 
@@ -41,12 +92,13 @@ include "buses.circom";
                    out8[2] -> output curve point in Montgomery representation
     
  */
+
 // babymontgomery indicates it must be a point in the babyjub elliptic curve in montgomery form
 
 template Window4() {
     input signal {binary} in[4];
     input Point {base, min_scalar, max_scalar, babymontgomery} base;
-    output Point {base, min_scalar, max_scalar, babymontgomery} pout;
+    output Point {base, pedersen_min_scalar, pedersen_max_scalar, babymontgomery} pout;
     output Point {base, min_scalar, max_scalar, babymontgomery} pout8;   // Returns 8*Base (To be linked)
 
     component mux = MultiMux3(2);
@@ -114,15 +166,12 @@ template Window4() {
     pout.x <== mux.out[0];
     pout.y <== - mux.out[1]*2*in[3] + mux.out[1];  // Negate y if in[3] is one
     pout.base = base.base;
-    pout.min_scalar = base.min_scalar;
-    pout.max_scalar = base.max_scalar*8;
+    pout.pedersen_min_scalar = base.min_scalar;
+    pout.pedersen_max_scalar = base.max_scalar*8;
     
 }
 
 /*
-min <= x <= 8*max
-
-x < 2x < ... < 8x
 *** Segment(nWindows):template used to perform a segment of the multiplications needed to perform a the Pedersen protocol. 
         - Inputs: in[4 * nWindows] -> binary representation of the scalar
                                       requires tag binary
@@ -165,7 +214,7 @@ template Segment(nWindows,Id) {
 
             windows[i].base <== doublers2[i-1].pout;
 
-            adders[i-1] = MontgomeryAdd();
+            adders[i-1] = PedersenMontgomeryAdd();
             if (i==1) {
                 adders[i-1].pin1 <== windows[0].pout;
             } else {
@@ -175,7 +224,7 @@ template Segment(nWindows,Id) {
         }
     }
 
-    component m2e = Montgomery2Edwards();
+    component m2e = PedersenMontgomery2Edwards();
     if (nWindows > 1) {
         m2e.pin <== adders[nWindows-2].pout;
     } else {
