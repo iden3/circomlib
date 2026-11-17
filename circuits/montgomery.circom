@@ -55,6 +55,13 @@ include "comparators.circom";
 */
 
 /*
+    Montgomery addition and doubling are cheaper than the Edwards ones in
+    babyjub.circom (3-4 constraints instead of 6), but they are NOT complete:
+    the identity cannot be represented, and the formulas fail for P1 = +-P2.
+    Callers must rule these cases out.
+
+    Edwards points are (x, y) and Montgomery points are (u, v).
+
     spec tag babyedwards: 168700*(p.x)^2 + (p.y)^2 = 1 + 168696*(p.x)^2*(p.y)^2
     spec tag babymontgomery: (p.y)^2 = (p.x)^3 + 168698*(p.x)^2 + p.x
 */
@@ -62,7 +69,7 @@ include "comparators.circom";
 /*
 *** Edwards2Montgomery(): template that receives a point of the Baby-Jubjub curve in twisted Edwards form
                           and returns the equivalent point in Montgomery form.
-                          Assumes pin.x is not 0 (avoids the failing case (0,-1))
+                          Undefined for x = 0 or y = 1, which includes the identity (0, 1).
         - Inputs: pin -> bus representing a point of the Baby-Jubjub curve in twisted Edwards form
         - Outputs: pout -> bus representing a point of the Baby-Jubjub curve in Montgomery form
          
@@ -130,7 +137,7 @@ template Edwards2MontgomeryStrict(Id) {
 /*
 *** Montgomery2Edwards(): template that receives an input pin representing a point of the Baby-Jubjub curve in Montgomery form
                           and returns the equivalent point in twisted Edwards form.
-                          Assumes pin is not (0,-1)
+                          Undefined for v = 0 or u = -1.
         - Inputs: pin -> bus representing a point of the Baby-Jubjub curve in Montgomery form
         - Outputs: pout -> bus representing a point of the curve Baby-Jubjub in twisted Edwards form
          
@@ -189,7 +196,8 @@ template Montgomery2EdwardsStrict() {
                      and returns the addition of the points.
         - Inputs: pin1 -> bus representing a point of the Baby-Jubjub curve in Montgomery form
                   pin2 -> bus representing a point of the Baby-Jubjub curve in Montgomery form
-                  pin1 != (0,1), pin2 != (0,1), pin1 != pin2
+                  Requires u1 != u2, i.e. pin1 != +-pin2. If pin1 = pin2, the lamda constraint
+                  becomes 0 === 0 and the output is unconstrained.
         - Outputs: pout -> bus representing the point pin1 + pin2 of the Baby-Jubjub curve in Montgomery form
          
     Montgomery Addition Law:
@@ -243,7 +251,7 @@ template MontgomeryAdd() {
 *** MontgomeryDouble(): template that receives an input pin representing a point of the Baby-Jubjub curve in Montgomery form
                         and returns the point 2 * pin.
         - Inputs: pin -> bus representing a point of the Baby-Jubjub curve in Montgomery form
-                      pin != (0,1)
+                      Requires pin.x != 0 (pin is not a point of order 2)
         - Outputs: pout -> bus representing the point 2*pin of the Baby-Jubjub curve in Montgomery form
          
          

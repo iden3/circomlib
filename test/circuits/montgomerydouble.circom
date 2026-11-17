@@ -5,7 +5,12 @@ include "../../circuits/montgomery.circom";
 template Main(){
     input Point a;
     output Point out;
-    out <== MontgomeryDouble()(MontgomeryBabyCheck()(a));
+    Point {base, min_scalar, max_scalar, babymontgomery} a_aux;
+    a_aux.base = 0;
+    a_aux.min_scalar = 1;
+    a_aux.max_scalar = 1;
+    a_aux <== MontgomeryBabyCheck()(a);
+    out <== MontgomeryDouble()(a_aux);
 }
 
 
