@@ -62,6 +62,8 @@ function log2(a) {
 
 pragma circom 2.0.0;
 
+include "comparators.circom";
+
 template EscalarProduct(w) {
     signal input in1[w];
     signal input in2[w];
@@ -75,10 +77,41 @@ template EscalarProduct(w) {
     out <== lc;
 }
 
+// in case inp >= w then witness = 0, in other case witness = 1, out[i] = 1 if i = inp and 0 otherwise
+/* 
+Specification:
+  - Success := w < inp
+  - for i in 0..w: out[i] = 1 if i = inp, else out[i] = 0 
+*/
+
 template Decoder(w) {
     signal input inp;
     signal output out[w];
     signal output success;
+    var lc=0;
+    
+    component checkZero[w];
+
+    for (var i=0; i<w; i++) {
+        checkZero[i] = IsZero();
+        checkZero[i].in <== inp - i;
+        out[i] <== checkZero[i].out;
+        lc = lc + out[i];
+    }
+
+    lc ==> success;
+}
+
+// in case inp >= w does not accept any solution -> does not generate witness
+/* 
+Specification:
+  In case inp < w:
+     - for i in 0..w: out[i] = 1 if i = inp, else out[i] = 0 
+  If w >= inp => the sysetm of constraints does not have any solution
+*/
+template Decoder_strict(w) {
+    signal input inp;
+    signal output out[w];
     var lc=0;
 
     for (var i=0; i<w; i++) {
@@ -87,16 +120,16 @@ template Decoder(w) {
         lc = lc + out[i];
     }
 
-    lc ==> success;
-    success * (success -1) === 0;
+    lc === 1;
 }
+
 
 
 template Multiplexer(wIn, nIn) {
     signal input inp[nIn][wIn];
     signal input sel;
     signal output out[wIn];
-    component dec = Decoder(nIn);
+    component dec = Decoder_strict(nIn);
     component ep[wIn];
 
     for (var k=0; k<wIn; k++) {
@@ -111,5 +144,5 @@ template Multiplexer(wIn, nIn) {
         }
         ep[j].out ==> out[j];
     }
-    dec.success === 1;
 }
+
