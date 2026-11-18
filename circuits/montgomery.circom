@@ -52,6 +52,13 @@ include "comparators.circom";
     where d' = 9706598848417545097372247223557719406784115219466060233080913168975159366771.
     Here circuits are provided to transform a point of the Baby-Jubjub curve in twisted Edwards to its Montgomery form and vice versa.
     Circuits to add and double points of the Baby-Jubjub Montgomery curve are provided as well.
+
+    Group structure (Baby Jubjub):
+
+        curve order  n = 8 * l
+        cofactor     h = 8
+        subgroup     l = 2736030358979909402780800718157159386076813972158567259200215660948447373041
+                         (251-bit prime)
 */
 
 /*
@@ -116,7 +123,6 @@ template Edwards2Montgomery(Id) {
     (x, y) -> (u, v) = [ -------  , ----------- ]
                           1 - y      (1 - y)*x
     
-*/
 
 template Edwards2MontgomeryStrict(Id) {
     input Point {babyedwards} pin;
@@ -133,6 +139,7 @@ template Edwards2MontgomeryStrict(Id) {
     pout.min_scalar = 1;
     pout.max_scalar = 1;
 }
+*/
 
 /*
 *** Montgomery2Edwards(): template that receives an input pin representing a point of the Baby-Jubjub curve in Montgomery form
@@ -151,9 +158,10 @@ template Edwards2MontgomeryStrict(Id) {
 
 template Montgomery2Edwards() {
     input Point {base, min_scalar, max_scalar, babymontgomery} pin;
-    output Point {nonzerox, babyedwards} pout;
+    output Point {babyedwards} pout;
 
-    assert(pin.max_scalar < 2**249); //revise to ensure nonzero
+    var l = 2736030358979909402780800718157159386076813972158567259200215660948447373041;
+    assert(pin.max_scalar < l); 
     
     pout.x <-- pin.x / pin.y;
     pout.y <-- (pin.x - 1) / (pin.x + 1);
@@ -226,8 +234,6 @@ template MontgomeryAdd() {
     //assert(pin2.x != 0 || pin2.y != 1); 
     //assert(pin1.x != pin2.x || pin1.y != pin2.y );
     assert(pin1.base == pin2.base);
-    assert(pin1.max_scalar <= 2**249);
-    assert(pin2.max_scalar <= 2**249);
     assert(pin1.max_scalar < pin2.min_scalar || pin2.max_scalar < pin1.min_scalar);
     // This ensures they are different points
     
@@ -244,6 +250,9 @@ template MontgomeryAdd() {
     pout.base = pin1.base;
     pout.min_scalar = pin1.min_scalar + pin2.min_scalar;
     pout.max_scalar = pin1.max_scalar + pin2.max_scalar;
+    
+    var l = 2736030358979909402780800718157159386076813972158567259200215660948447373041;
+    assert(pout.max_scalar < l);
 
 }
 

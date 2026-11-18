@@ -58,7 +58,8 @@ template PedersenMontgomery2Edwards() {
     input Point {base, pedersen_max_scalar, babymontgomery} pin;
     output Point {nonzerox, babyedwards} pout;
 
-    assert(pin.pedersen_max_scalar <= 2**249); //revise to ensure nonzero
+    var l = 2736030358979909402780800718157159386076813972158567259200215660948447373041;
+    assert(pin.pedersen_max_scalar < l);
     
     pout.x <-- pin.x / pin.y;
     pout.y <-- (pin.x - 1) / (pin.x + 1);
@@ -76,8 +77,6 @@ template PedersenMontgomeryAdd() {
     //assert(pin2.x != 0 || pin2.y != 1); 
     //assert(pin1.x != pin2.x || pin1.y != pin2.y );
     assert(pin1.base == pin2.base);
-    assert(pin1.pedersen_max_scalar <= 2**248);
-    assert(pin2.pedersen_max_scalar <= 2**248);
     assert(pin1.pedersen_min_scalar <= pin1.pedersen_max_scalar);
     assert(pin2.pedersen_min_scalar <= pin2.pedersen_max_scalar);
     assert(2*pin1.pedersen_max_scalar < pin2.pedersen_min_scalar);
@@ -96,6 +95,8 @@ template PedersenMontgomeryAdd() {
     pout.base = pin1.base;
     pout.pedersen_min_scalar = pin2.pedersen_min_scalar - pin1.pedersen_max_scalar;
     pout.pedersen_max_scalar = pin1.pedersen_max_scalar + pin2.pedersen_max_scalar;
+    var l = 2736030358979909402780800718157159386076813972158567259200215660948447373041;
+    assert(pout.pedersen_max_scalar < l);
 }
 
 
