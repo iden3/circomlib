@@ -18,6 +18,14 @@
 */
 pragma circom 2.0.0;
 
+/*
+Boolean logic gates.
+
+Inputs generally must be constrained to 0 or 1, using Num2Bits or a*(a-1) === 0 etc.
+Most languages extend boolean logic to non boolean types, but using non-booleans here will lead to subtle soundness bugs.
+*/
+
+// Requires binary inputs: [2,2] -> -4, should be 0
 template XOR() {
     signal input a;
     signal input b;
@@ -26,6 +34,7 @@ template XOR() {
     out <== a + b - 2*a*b;
 }
 
+// Applies to non-binary numbers: gives non-zero output iff both inputs are non-zero because a and b are coprime with p
 template AND() {
     signal input a;
     signal input b;
@@ -34,6 +43,7 @@ template AND() {
     out <== a*b;
 }
 
+// Requires binary inputs: [2,2] -> 0, should be non-zero
 template OR() {
     signal input a;
     signal input b;
@@ -42,6 +52,7 @@ template OR() {
     out <== a + b - a*b;
 }
 
+// Requires binary inputs: 2 -> -1, should be 0
 template NOT() {
     signal input in;
     signal output out;
@@ -49,6 +60,7 @@ template NOT() {
     out <== 1 + in - 2*in;
 }
 
+// Requires binary inputs: [2,1] -> -1, should be 0
 template NAND() {
     signal input a;
     signal input b;
@@ -57,6 +69,7 @@ template NAND() {
     out <== 1 - a*b;
 }
 
+// Requires binary inputs: [2,1] -> 0, should be non-zero
 template NOR() {
     signal input a;
     signal input b;
