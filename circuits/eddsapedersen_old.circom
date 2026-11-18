@@ -106,7 +106,10 @@ template EdDSAPedersenVerifier(n) {
 
     // Multiply by 8 and check that the result is not zero. This ensures that
     // the result has order l.
-    Point {insubgroupl, babyedwards} A8 <== CheckandAddSubgroupLOnly()(pA);
+    Point {base, babyedwards} pA_aux;
+    pA_aux.base = 1;
+    pA_aux <== pA;
+    Point {insubgroupl, babyedwards} A8 <== CheckandAddSubgroupLOnly()(pA_aux);
 
     component mulAny = EscalarMulAny(256);
     for (i=0; i<254; i++) {

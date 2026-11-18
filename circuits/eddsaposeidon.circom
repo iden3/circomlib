@@ -85,7 +85,10 @@ template EdDSAPoseidonVerifier() {
 
     // Multiply by 8. This also ensures that the result is in the subgroup
     // (of order l, or the identity).
-    Point {insubgrouplorunit, babyedwards} A8 <== CheckandAddSubgroupLOrUnit()(A);
+    Point {base, babyedwards} A_aux;
+    A_aux.base = 1;
+    A_aux <== A;
+    Point {insubgrouplorunit, babyedwards} A8 <== CheckandAddSubgroupLOrUnit()(A_aux);
 
     // We check that 8*A is not zero if enabled.
     component isZero = IsZero();
