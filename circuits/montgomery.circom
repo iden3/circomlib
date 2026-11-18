@@ -183,7 +183,6 @@ template Montgomery2Edwards() {
     (u, v) -> (x, y) = [ ---, ------- ]
                           v    u + 1
 
- */
 
 template Montgomery2EdwardsStrict() {
     input Point {babymontgomery} pin; // base, min_scalar, max_scalar,
@@ -197,6 +196,8 @@ template Montgomery2EdwardsStrict() {
     signal iszx <== IsZero()(pin.x);
     iszx * pout.x === 0; // this ensures that for point (0,0) the result is (0,-1)
 }
+
+*/
 
 
 /*
