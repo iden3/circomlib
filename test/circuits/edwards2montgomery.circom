@@ -6,7 +6,9 @@ include "../../circuits/babyjub.circom";
 template Main(){
     input Point a;
     output Point out;
-    out <== Edwards2Montgomery(0)(NonZeroXCheck()(BabyCheck()(a)));
+    // a is assumed to be in the subgroup of order l (the test uses BASE8)
+    Point {insubgroupl, babyedwards} checked_a <== BabyCheck()(a);
+    out <== Edwards2Montgomery(0)(checked_a);
 }
 
 

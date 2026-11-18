@@ -103,20 +103,9 @@ template EdDSAPedersenVerifier(n) {
 
 // Calculate second part of the right side:  right2 = h*8*A
 
-    // Multiply by 8 by adding it 3 times.  This also ensure that the result is in
-    // the subgroup.
-    component dbl1 = BabyDbl();
-    dbl1.pin <== pA;
-    component dbl2 = BabyDbl();
-    dbl2.pin <== dbl1.pout;
-    component dbl3 = BabyDbl();
-    dbl3.pin <== dbl2.pout;
-
-    // We check that A is not zero.
-    component isZero = IsZero();
-    //isZero.in <== dbl3.pin.x;
-    isZero.in <== dbl3.pout.x;
-    isZero.out === 0;
+    // Multiply by 8 and check that the result is not zero. This ensures that
+    // the result has order l.
+    Point {insubgroupl, babyedwards} A8 <== CheckandAddSubgroupLOnly()(pA);
 
     component mulAny = EscalarMulAny(256);
     for (i=0; i<254; i++) {
@@ -126,8 +115,7 @@ template EdDSAPedersenVerifier(n) {
     mulAny.e[254] <== BinaryCheck()(0);
     mulAny.e[255] <== point2bitsH.out.signX;
 
-    // non-zero dbl3.pout;
-    mulAny.pin <== dbl3.pout;
+    mulAny.pin <== A8;
 
 // Compute the right side: right =  R8 + right2
 

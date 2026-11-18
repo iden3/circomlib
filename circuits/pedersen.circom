@@ -56,7 +56,7 @@ include "buses.circom";
 
 template PedersenMontgomery2Edwards() {
     input Point {base, pedersen_max_scalar, babymontgomery} pin;
-    output Point {nonzerox, babyedwards} pout;
+    output Point {insubgroupl, babyedwards} pout;
 
     var l = 2736030358979909402780800718157159386076813972158567259200215660948447373041;
     assert(pin.pedersen_max_scalar < l);
@@ -197,8 +197,8 @@ template Window4() {
 
 template Segment(nWindows,Id) {
     input signal {binary} in[nWindows*4];
-    input Point {nonzerox, babyedwards} base;
-    output Point {nonzerox, babyedwards} pout;
+    input Point {insubgroupl, babyedwards} base;
+    output Point {insubgroupl, babyedwards} pout;
 
     var i;
     var j;
@@ -280,17 +280,13 @@ template Pedersen(n) {
     var j;
     var nBits;
     var nWindows;
-    Point aux[nSegments]; 
-    
+
     signal {binary} aux_0 <== 0;
     for (i=0; i<nSegments; i++) {
         nBits = (i == (nSegments-1)) ? n - (nSegments-1)*200 : 200;
         nWindows = ((nBits - 1)\4)+1;
         segments[i] = Segment(nWindows,i);
-        //assert(BASE[i][0] != 0); //check no x is 0 in the BASE
-        aux[i].x <== BASE[i][0];
-        aux[i].y <== BASE[i][1];
-        segments[i].base <== NonZeroXCheck()(BabyCheck()(aux[i]));
+        segments[i].base <== SubgroupLOnlyCheckFix(BASE[i])();
         for (j = 0; j<nBits; j++) {
             segments[i].in[j] <== in[i*200+j];
         }

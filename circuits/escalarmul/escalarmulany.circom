@@ -110,7 +110,7 @@ template BitElementMulAny() {
 
 template SegmentMulAny(n, Id) {
     input signal {binary}  e[n];
-    input Point {nonzerox, babyedwards} pin;
+    input Point {insubgroupl, babyedwards} pin;
     output Point {babyedwards} pout;
     output Point {base, min_scalar, max_scalar, babymontgomery} dbl;
 
@@ -168,10 +168,8 @@ template SegmentMulAny(n, Id) {
 /*
     pout = (sum_i e[i]*2^i) * pin, with pin and pout in Edwards form.
 
-    pin must be in the prime-order subgroup (e.g. clear the cofactor first, as the
-    EdDSA verifiers do by multiplying by 8). The identity is handled: if
-    pin.x == 0, the computation runs on BASE8 instead (Edwards2Montgomery would
-    divide by zero) and the output is forced to O = (0, 1).
+    pin must have order l (tag insubgroupl). For a pin that may also be the
+    identity (0, 1), use EscalarMulAnyOrUnit.
 
     The scalar is split into segments of 148 bits, well within the bound of
     SegmentMulAny. Segment s uses base 2^(148*s) * pin, obtained by doubling the
@@ -181,7 +179,7 @@ template SegmentMulAny(n, Id) {
 
 template EscalarMulAny(n) {
     input signal {binary} e[n];              // Input in binary format
-    input Point {babyedwards} pin;              // Point (Twisted format) non-zero x
+    input Point {insubgroupl, babyedwards} pin; // Point (Twisted format) of order l
     output Point {babyedwards} pout;           // Point (Twisted format)
 
     var nsegments = (n-1)\148 +1;
@@ -191,14 +189,10 @@ template EscalarMulAny(n) {
     component doublers[nsegments-1];
     component m2e[nsegments-1];
     component adders[nsegments-1];
-    component zeropoint = IsZero();
-    zeropoint.in <== pin.x;
 
     var s;
     var i;
     var nseg;
-    
-    Point {babyedwards} aux;
 
     for (s=0; s<nsegments; s++) {
 
@@ -211,10 +205,7 @@ template EscalarMulAny(n) {
         }
 
         if (s==0) {
-            // Use BASE8 if pin is the identity
-            aux.x <== pin.x + (5299619240641551281634865583518297030282874472190772894086521144482721001553 - pin.x)*zeropoint.out;
-            aux.y <== pin.y + (16950150798460657717958625567821834550301663161624707787222815936182638968203 - pin.y)*zeropoint.out;
-            segments[s].pin <== NonZeroXCheck()(aux);
+            segments[s].pin <== pin;
         } else {
             doublers[s-1] = MontgomeryDouble();
             m2e[s-1] = Montgomery2Edwards();
@@ -233,12 +224,61 @@ template EscalarMulAny(n) {
         }
     }
 
-    // Force O = (0, 1) if pin is the identity
     if (nsegments == 1) {
-        segments[0].pout.x*(1-zeropoint.out) ==> pout.x;
-        segments[0].pout.y+(1-segments[0].pout.y)*zeropoint.out ==> pout.y;
+        segments[0].pout ==> pout;
     } else {
-        adders[nsegments-2].pout.x*(1-zeropoint.out) ==> pout.x;
-        adders[nsegments-2].pout.y+(1-adders[nsegments-2].pout.y)*zeropoint.out ==> pout.y;
+        adders[nsegments-2].pout ==> pout;
     }
+}
+
+/*
+    pout = isunit ? alt : pin, with isunit = (pin.x == 0).
+
+    pin has order l or it is the identity (tag insubgrouplorunit). The only point
+    of that kind with x = 0 is the identity (0, 1), so pout always has order l:
+    it is pin if pin is not the identity, and alt otherwise.
+*/
+
+template MultiplexorSubgroupL() {
+    input Point {insubgrouplorunit, babyedwards} pin;
+    input Point {insubgroupl, babyedwards} alt;
+    output signal {binary} isunit;
+    output Point {insubgroupl, babyedwards} pout;
+
+    isunit <== IsZero()(pin.x);
+
+    pout.x <== (alt.x - pin.x)*isunit + pin.x;
+    pout.y <== (alt.y - pin.y)*isunit + pin.y;
+}
+
+/*
+    pout = (sum_i e[i]*2^i) * pin, with pin and pout in Edwards form.
+
+    pin has order l or it is the identity (tag insubgrouplorunit), e.g. 8*A
+    computed with CheckandAddSubgroupLOrUnit. If pin is the identity, the
+    multiplication runs on BASE8 instead (EscalarMulAny needs a point of order l)
+    and the output is forced to O = (0, 1).
+*/
+
+template EscalarMulAnyOrUnit(n) {
+    input signal {binary} e[n];              // Input in binary format
+    input Point {insubgrouplorunit, babyedwards} pin; // Point (Twisted format) of order l or (0, 1)
+    output Point {babyedwards} pout;           // Point (Twisted format)
+
+    var BASE8[2] = [
+        5299619240641551281634865583518297030282874472190772894086521144482721001553,
+        16950150798460657717958625567821834550301663161624707787222815936182638968203
+    ];
+    Point {insubgroupl, babyedwards} base8 <== SubgroupLOnlyCheckFix(BASE8)();
+
+    // Use BASE8 if pin is the identity
+    component sel = MultiplexorSubgroupL();
+    sel.pin <== pin;
+    sel.alt <== base8;
+
+    Point {babyedwards} mul <== EscalarMulAny(n)(e, sel.pout);
+
+    // Force O = (0, 1) if pin is the identity
+    pout.x <== mul.x*(1-sel.isunit);
+    pout.y <== mul.y+(1-mul.y)*sel.isunit;
 }

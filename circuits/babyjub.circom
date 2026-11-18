@@ -68,6 +68,7 @@ include "buses.circom";
     spec tag babyedwards: 168700*(p.x)^2 + (p.y)^2 = 1 + 168696*(p.x)^2*(p.y)^2
     spec tag babymontgomery: (p.y)^2 = (p.x)^3 + 168698*(p.x)^2 + p.x
     informal spec insubgroupl: the point only belongs to the subgroup of order l of the curve (and no other subgroup).
+    informal spec insubgrouplorunit: the point belongs to the subgroup of order l of the curve, i.e. it has order l or it is the identity (0, 1).
 */
 
 /*
@@ -203,15 +204,115 @@ template BabyPbk() {
     A <== mulFix.pout;
 }
 
+/*
+*** CheckandAddSubgroupLOnly(): template that receives a point of the Baby-Jubjub curve in twisted Edwards
+                          form and returns 8 times the point, checking that it is not the identity.
+        - Inputs: in -> bus representing a point of the curve in twisted Edwards form
+        - Outputs: out8 -> bus representing the point 8*in in twisted Edwards form, with out8.x != 0 (checked)
+
+    Multiplying by the cofactor 8 sends the point to the subgroup of order l, and out8.x != 0
+    ensures that 8*in is not the identity, so out8 has order l.
+    The multiplication is done with three BabyDbl, which is complete.
+*/
+
 template CheckandAddSubgroupLOnly() {
-  input Point {babyedwards} in;
+  input Point {base, babyedwards} in;
   output Point {insubgroupl,babyedwards} out8;
 
-// ....
+  out8.insubgroupl = in.base;
+  out8 <== BabyDbl()(BabyDbl()(BabyDbl()(in)));
+
+  signal isz <== IsZero()(out8.x);
+  isz === 0;
 }
 
-template SubgroupLOnlyCheckFix(Base,n) {
-  output Point {insubgroupl,babyedwards} out[n];
+/*
+*** CheckandAddSubgroupLOrUnit(): template that receives a point of the Baby-Jubjub curve in twisted Edwards
+                          form and returns 8 times the point.
+        - Inputs: in -> bus representing a point of the curve in twisted Edwards form
+        - Outputs: out8 -> bus representing the point 8*in in twisted Edwards form
 
-// ....
+    Multiplying by the cofactor 8 sends the point to the subgroup of order l, so out8 has
+    order l or it is the identity (0, 1). Nothing else needs to be checked.
+    The multiplication is done with three BabyDbl, which is complete.
+*/
+
+template CheckandAddSubgroupLOrUnit() {
+  input Point {base, babyedwards} in;
+  output Point {insubgrouplorunit,babyedwards} out8;
+
+  out8.insubgrouplorunit = in.base;
+  out8 <== BabyDbl()(BabyDbl()(BabyDbl()(in)));
+}
+
+/*
+*** isSubgroupLPoint(x, y): function that returns 1 if (x, y) is one of the constant points used in
+                          the library that are known to have order l, and 0 otherwise.
+
+    Each of these points has been checked to be on the curve, to have x != 0 and to satisfy
+    l * P = O, so it has order l. A new constant base must be checked and added here.
+*/
+
+function isSubgroupLPoint(x, y) {
+    //Component x of all these points must be different.
+    var POINTS[11][2] = [
+        // BASE8 (babyjub.circom, eddsa*.circom)
+        [5299619240641551281634865583518297030282874472190772894086521144482721001553,
+         16950150798460657717958625567821834550301663161624707787222815936182638968203],
+        // Pedersen BASE[0] (pedersen.circom)
+        [10457101036533406547632367118273992217979173478358440826365724437999023779287,
+         19824078218392094440610104313265183977899662750282163392862422243483260492317],
+        // Pedersen BASE[1] (pedersen.circom)
+        [2671756056509184035029146175565761955751135805354291559563293617232983272177,
+         2663205510731142763556352975002641716101654201788071096152948830924149045094],
+        // Pedersen BASE[2] (pedersen.circom)
+        [5802099305472655231388284418920769829666717045250560929368476121199858275951,
+         5980429700218124965372158798884772646841287887664001482443826541541529227896],
+        // Pedersen BASE[3] (pedersen.circom)
+        [7107336197374528537877327281242680114152313102022415488494307685842428166594,
+         2857869773864086953506483169737724679646433914307247183624878062391496185654],
+        // Pedersen BASE[4] (pedersen.circom)
+        [20265828622013100949498132415626198973119240347465898028410217039057588424236,
+         1160461593266035632937973507065134938065359936056410650153315956301179689506],
+        // Pedersen BASE[5] (pedersen.circom)
+        [1487999857809287756929114517587739322941449154962237464737694709326309567994,
+         14017256862867289575056460215526364897734808720610101650676790868051368668003],
+        // Pedersen BASE[6] (pedersen.circom)
+        [14618644331049802168996997831720384953259095788558646464435263343433563860015,
+         13115243279999696210147231297848654998887864576952244320558158620692603342236],
+        // Pedersen BASE[7] (pedersen.circom)
+        [6814338563135591367010655964669793483652536871717891893032616415581401894627,
+         13660303521961041205824633772157003587453809761793065294055279768121314853695],
+        // Pedersen BASE[8] (pedersen.circom)
+        [3571615583211663069428808372184817973703476260057504149923239576077102575715,
+         11981351099832644138306422070127357074117642951423551606012551622164230222506],
+        // Pedersen BASE[9] (pedersen.circom)
+        [18597552580465440374022635246985743886550544261632147935254624835147509493269,
+         6753322320275422086923032033899357299485124665258735666995435957890214041481]
+    ];
+
+    for (var i = 0; i < 11; i++) {
+        if (x == POINTS[i][0] && y == POINTS[i][1]) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+/*
+*** SubgroupLOnlyCheckFix(Base, n): template that receives n constant points Base[i] = [x, y] of the Baby-Jubjub curve
+                          in twisted Edwards form and returns them as buses.
+        - Outputs: out[i] -> bus representing the point Base[i] in twisted Edwards form
+
+    Each Base[i] is checked at compile time to be one of the points of isSubgroupLPoint, which
+    have order l. No constraints are generated.
+*/
+
+template SubgroupLOnlyCheckFix(Base) {
+  output Point {insubgroupl,babyedwards} out;
+
+    out.insubgroupl = Base[0];
+    assert(isSubgroupLPoint(Base[0], Base[1]) == 1);
+    out.x <== Base[0];
+    out.y <== Base[1];
 }
