@@ -67,6 +67,7 @@ include "buses.circom";
 /*
     spec tag babyedwards: 168700*(p.x)^2 + (p.y)^2 = 1 + 168696*(p.x)^2*(p.y)^2
     spec tag babymontgomery: (p.y)^2 = (p.x)^3 + 168698*(p.x)^2 + p.x
+    informal spec insubgroupl: the point only belongs to the subgroup of order l of the curve (and no other subgroup).
 */
 
 /*
@@ -202,11 +203,15 @@ template BabyPbk() {
     A <== mulFix.pout;
 }
 
-template NonZeroXCheck() {
+template CheckandAddSubgroupLOnly() {
   input Point {babyedwards} in;
-  output Point {nonzerox,babyedwards} out;
+  output Point {insubgroupl,babyedwards} out8;
 
-  signal isz <== IsZero()(in.x);
-  isz === 0;
-  out <== in;
+// ....
+}
+
+template SubgroupLOnlyCheckFix(Base,n) {
+  output Point {insubgroupl,babyedwards} out[n];
+
+// ....
 }

@@ -97,7 +97,7 @@ include "comparators.circom";
 */
 
 template Edwards2Montgomery(Id) {
-    input Point {nonzerox, babyedwards} pin;
+    input Point {insubgroupl, babyedwards} pin;
     output Point {base, min_scalar, max_scalar, babymontgomery} pout;
 
     pout.base = Id;
@@ -158,7 +158,7 @@ template Edwards2MontgomeryStrict(Id) {
 
 template Montgomery2Edwards() {
     input Point {base, min_scalar, max_scalar, babymontgomery} pin;
-    output Point {babyedwards} pout;
+    output Point {insubgroupl, babyedwards} pout;
 
     var l = 2736030358979909402780800718157159386076813972158567259200215660948447373041;
     assert(pin.max_scalar < l); 
