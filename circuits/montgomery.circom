@@ -16,17 +16,27 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
+pragma circom 2.0.0;
+
+include "babyjub_params.circom";
 
 /*
-    Source: https://en.wikipedia.org/wiki/Montgomery_curve
+    Baby Jubjub in Montgomery form:
 
-                1 + y       1 + y
-    [u, v] = [ -------  , ---------- ]
-                1 - y      (1 - y)x
+        B*v^2 = u^3 + A*u^2 + u,  with A = 2*(a + d)/(a - d) = 168698, B = 4/(a - d) = 1
 
- */
- pragma circom 2.0.0;
+    Montgomery addition and doubling are cheaper than the Edwards ones in
+    babyjub.circom (3-4 constraints instead of 6), but they are NOT complete:
+    the identity cannot be represented, and the formulas fail for P1 = +-P2.
+    Callers must rule these cases out.
 
+    Edwards points are (x, y) and Montgomery points are (u, v).
+*/
+
+/*
+    (u, v) = ((1 + y)/(1 - y), u/x)
+    Undefined for x = 0 or y = 1, which includes the identity (0, 1).
+*/
 template Edwards2Montgomery() {
     signal input in[2];
     signal output out[2];
@@ -34,18 +44,14 @@ template Edwards2Montgomery() {
     out[0] <-- (1 + in[1]) / (1 - in[1]);
     out[1] <-- out[0] / in[0];
 
-
-    out[0] * (1-in[1]) === (1 + in[1]);
+    out[0] * (1 - in[1]) === 1 + in[1];
     out[1] * in[0] === out[0];
 }
 
 /*
-
-                u    u - 1
-    [x, y] = [ ---, ------- ]
-                v    u + 1
-
- */
+    (x, y) = (u/v, (u - 1)/(u + 1))
+    Undefined for v = 0 or u = -1.
+*/
 template Montgomery2Edwards() {
     signal input in[2];
     signal output out[2];
@@ -57,85 +63,58 @@ template Montgomery2Edwards() {
     out[1] * (in[0] + 1) === in[0] - 1;
 }
 
-
 /*
-             x2 - x1
-    lamda = ---------
-             y2 - y1
-
-                                                    x3 + A + x1 + x2
-    x3 = B * lamda^2 - A - x1 -x2    =>  lamda^2 = ------------------
-                                                         B
-
-    y3 = (2*x1 + x2 + A)*lamda - B*lamda^3 - y1  =>
-
-
-    =>  y3 = lamda * ( 2*x1 + x2 + A  - x3 - A - x1 - x2)  - y1 =>
-
-    =>  y3 = lamda * ( x1 - x3 ) - y1
-
-----------
-
-             y2 - y1
-    lamda = ---------
-             x2 - x1
-
-    x3 = B * lamda^2 - A - x1 -x2
-
-    y3 = lamda * ( x1 - x3 ) - y1
-
- */
-
+    out = in1 + in2:
+        lambda = (v2 - v1) / (u2 - u1)
+        u3 = B*lambda^2 - A - u1 - u2
+        v3 = lambda*(u1 - u3) - v1
+    Requires u1 != u2, i.e. in1 != +-in2. If in1 = in2, the lambda constraint
+    becomes 0 === 0 and the output is unconstrained.
+*/
 template MontgomeryAdd() {
     signal input in1[2];
     signal input in2[2];
     signal output out[2];
 
-    var a = 168700;
-    var d = 168696;
+    var a = babyjub_a();
+    var d = babyjub_d();
 
-    var A = (2 * (a + d)) / (a - d);
+    var A = 2*(a + d) / (a - d);
     var B = 4 / (a - d);
 
     signal lamda;
 
     lamda <-- (in2[1] - in1[1]) / (in2[0] - in1[0]);
-    lamda * (in2[0] - in1[0]) === (in2[1] - in1[1]);
+    lamda * (in2[0] - in1[0]) === in2[1] - in1[1];
 
-    out[0] <== B*lamda*lamda - A - in1[0] -in2[0];
+    out[0] <== B*lamda*lamda - A - in1[0] - in2[0];
     out[1] <== lamda * (in1[0] - out[0]) - in1[1];
 }
 
 /*
-
-    x1_2 = x1*x1
-
-             3*x1_2 + 2*A*x1 + 1
-    lamda = ---------------------
-                   2*B*y1
-
-    x3 = B * lamda^2 - A - x1 -x1
-
-    y3 = lamda * ( x1 - x3 ) - y1
-
- */
+    out = 2*in:
+        lambda = (3*u1^2 + 2*A*u1 + 1) / (2*B*v1)
+        u3 = B*lambda^2 - A - 2*u1
+        v3 = lambda*(u1 - u3) - v1
+    Requires v1 != 0 (in is not a point of order 2).
+*/
 template MontgomeryDouble() {
     signal input in[2];
     signal output out[2];
 
-    var a = 168700;
-    var d = 168696;
+    var a = babyjub_a();
+    var d = babyjub_d();
 
-    var A = (2 * (a + d)) / (a - d);
+    var A = 2*(a + d) / (a - d);
     var B = 4 / (a - d);
 
     signal lamda;
     signal x1_2;
 
-    x1_2 <== in[0] * in[0];
+    x1_2 <== in[0]*in[0];
 
-    lamda <-- (3*x1_2 + 2*A*in[0] + 1 ) / (2*B*in[1]);
-    lamda * (2*B*in[1]) === (3*x1_2 + 2*A*in[0] + 1 );
+    lamda <-- (3*x1_2 + 2*A*in[0] + 1) / (2*B*in[1]);
+    lamda * (2*B*in[1]) === 3*x1_2 + 2*A*in[0] + 1;
 
     out[0] <== B*lamda*lamda - A - 2*in[0];
     out[1] <== lamda * (in[0] - out[0]) - in[1];

@@ -18,9 +18,11 @@
 */
 pragma circom 2.0.0;
 
+include "babyjub_params.circom";
+
 function pointAdd(x1,y1,x2,y2) {
-    var a = 168700;
-    var d = 168696;
+    var a = babyjub_a();
+    var d = babyjub_d();
 
     var res[2];
     res[0] = (x1*y2 + y1*x2) / (1 + d*x1*x2*y1*y2);

@@ -18,6 +18,7 @@
 */
 pragma circom 2.0.0;
 
+include "babyjub_params.circom";
 include "compconstant.circom";
 include "pointbits.circom";
 include "pedersen.circom";
@@ -123,10 +124,7 @@ template EdDSAVerifier(n) {
 
 // Calculate left side of equation left = S*B8
 
-    var BASE8[2] = [
-        5299619240641551281634865583518297030282874472190772894086521144482721001553,
-        16950150798460657717958625567821834550301663161624707787222815936182638968203
-    ];
+    var BASE8[2] = babyjub_base8();
     component mulFix = EscalarMulFix(256, BASE8);
     for (i=0; i<256; i++) {
         mulFix.e[i] <== S[i];
