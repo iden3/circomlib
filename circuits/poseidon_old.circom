@@ -1,6 +1,6 @@
 pragma circom 2.0.0;
 
-include "./poseidon_constants.circom";
+include "./poseidon_constants_old.circom";
 
 template Sigma() {
     signal input in;
