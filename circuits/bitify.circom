@@ -90,17 +90,15 @@ template Num2BitsNeg(n) {
 
     isZero = IsZero();
 
-    var neg = n == 0 ? 0 : 2**n - in;
+    var neg = in < 0 ? 2**n + in : in;
 
     for (var i = 0; i<n; i++) {
         out[i] <-- (neg >> i) & 1;
-        out[i] * (out[i] -1 ) === 0;
         lc1 += out[i] * 2**i;
     }
 
     in ==> isZero.in;
 
-
-
-    lc1 + isZero.out * 2**n === 2**n - in;
+    lc1 + isZero.out * 2**n === (in < 0 ? 2**n + in : in);
 }
+
