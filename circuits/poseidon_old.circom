@@ -122,8 +122,8 @@ template Poseidon(nInputs) {
             }
         }
 
-        if (i < nRoundsF/2 || i >= nRoundsP + nRoundsF/2) {
-            k = i < nRoundsF/2 ? i : i - nRoundsP;
+        if (i < nRoundsF\2 || i >= nRoundsP + nRoundsF\2) {
+            k = i < nRoundsF\2 ? i : i - nRoundsP;
             mix[i] = Mix(t, M);
             for (var j=0; j<t; j++) {
                 sigmaF[k][j] = Sigma();
@@ -131,7 +131,7 @@ template Poseidon(nInputs) {
                 mix[i].in[j] <== sigmaF[k][j].out;
             }
         } else {
-            k = i - nRoundsF/2;
+            k = i - nRoundsF\2;
             mix[i] = Mix(t, M);
             sigmaP[k] = Sigma();
             sigmaP[k].in <== ark[i].out[0];
