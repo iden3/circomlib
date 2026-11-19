@@ -155,3 +155,16 @@ describe("Num2BitsNeg test", function () {
         }
     });
 });
+
+describe("nbits test", function () {
+    this.timeout(100000);
+
+    it("Should count bits as a value in [0, p), and let CompConstant(253, 2**252) compile", async () => {
+        const circuit = await wasm_tester(path.join(__dirname, "circuits", "nbits_test.circom"));
+        const two252 = Scalar.shl(1, 252);
+        let w = await circuit.calculateWitness({in: two252}, true);
+        await circuit.assertOut(w, {out: 0});
+        w = await circuit.calculateWitness({in: Scalar.add(two252, 1)}, true);
+        await circuit.assertOut(w, {out: 1});
+    });
+});
