@@ -141,6 +141,7 @@ template MixS(t, S, r) {
 */
 
 template PoseidonEx(nInputs, nOuts) {
+    assert(nInputs >= 1 && nInputs <= 16); // the round constants are generated for t = nInputs + 1 in [2, 17]
     input signal inputs[nInputs];
     input signal initialState;
     output signal out[nOuts];
