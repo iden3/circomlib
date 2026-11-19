@@ -31,6 +31,17 @@ describe("Baby Jub test", function () {
         circuitPbk = await wasm_tester(path.join(__dirname, "circuits", "babypbk_test.circom"));
     });
 
+    it("Should not compile BabyPbk with maxvalue = p - 1", async () => {
+        let compiled = false;
+        try {
+            await wasm_tester(path.join(__dirname, "circuits", "babypbk_badtag_test.circom"));
+            compiled = true;
+        } catch (err) {
+            assert(err.message.includes("compiler error"));
+        }
+        assert(!compiled, "the circuit should not compile");
+    });
+
     it("Should add point (0,1) and (0,1)", async () => {
 
         const input={
