@@ -8,10 +8,11 @@ template Main() {
     input Point p;
     output Point {babyedwards} pout;
     
-    Point checked_p <== BabyCheck()(p);
+    // p is assumed to be in the subgroup of order l or the identity (the test uses BASE8)
+    Point {insubgrouplorunit, babyedwards} checked_p <== BabyCheck()(p);
 
     component n2b = Num2Bits(253);
-    component escalarMulAny = EscalarMulAny(253);
+    component escalarMulAny = EscalarMulAnyOrUnit(253);
 
     escalarMulAny.pin <== checked_p;
 

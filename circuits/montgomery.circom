@@ -52,9 +52,23 @@ include "comparators.circom";
     where d' = 9706598848417545097372247223557719406784115219466060233080913168975159366771.
     Here circuits are provided to transform a point of the Baby-Jubjub curve in twisted Edwards to its Montgomery form and vice versa.
     Circuits to add and double points of the Baby-Jubjub Montgomery curve are provided as well.
+
+    Group structure (Baby Jubjub):
+
+        curve order  n = 8 * l
+        cofactor     h = 8
+        subgroup     l = 2736030358979909402780800718157159386076813972158567259200215660948447373041
+                         (251-bit prime)
 */
 
 /*
+    Montgomery addition and doubling are cheaper than the Edwards ones in
+    babyjub.circom (3-4 constraints instead of 6), but they are NOT complete:
+    the identity cannot be represented, and the formulas fail for P1 = +-P2.
+    Callers must rule these cases out.
+
+    Edwards points are (x, y) and Montgomery points are (u, v).
+
     spec tag babyedwards: 168700*(p.x)^2 + (p.y)^2 = 1 + 168696*(p.x)^2*(p.y)^2
     spec tag babymontgomery: (p.y)^2 = (p.x)^3 + 168698*(p.x)^2 + p.x
 */
@@ -62,7 +76,7 @@ include "comparators.circom";
 /*
 *** Edwards2Montgomery(): template that receives a point of the Baby-Jubjub curve in twisted Edwards form
                           and returns the equivalent point in Montgomery form.
-                          Assumes pin.x is not 0 (avoids the failing case (0,-1))
+                          Undefined for x = 0 or y = 1, which includes the identity (0, 1).
         - Inputs: pin -> bus representing a point of the Baby-Jubjub curve in twisted Edwards form
         - Outputs: pout -> bus representing a point of the Baby-Jubjub curve in Montgomery form
          
@@ -74,10 +88,22 @@ include "comparators.circom";
     
 */
 
-template Edwards2Montgomery() {
-    input Point {babyedwards,nonzerox} pin;
-    output Point {babymontgomery} pout;
+/* Montgomery Point tags:
+  babymontgomery: it indicates that it is a point in the babyjub curve in Montgomery from;
+  base: provides an identifier for the Edwards point it originates by scalar multiplication. The point P is of the form K*P_base for some K. If two Points have the same base they are both obtained by scalar multiplication from the same point;
+  min_scalar: (only make sense for point with the babymontgomery and base tags). The point P is K*P_base for some K >= min_scalar;
+  max_scalar: (only make sense for point with the babymontgomery and base tags). The point P is K*P_base for some K <= max_scalar;
+  
+*/
 
+template Edwards2Montgomery(Id) {
+    input Point {insubgroupl, babyedwards} pin;
+    output Point {base, min_scalar, max_scalar, babymontgomery} pout;
+
+    pout.base = Id;
+    pout.min_scalar = 1;
+    pout.max_scalar = 1;
+    
     pout.x <-- (1 + pin.y) / (1 - pin.y);
     pout.y <-- pout.x / pin.x;
 
@@ -97,11 +123,10 @@ template Edwards2Montgomery() {
     (x, y) -> (u, v) = [ -------  , ----------- ]
                           1 - y      (1 - y)*x
     
-*/
 
-template Edwards2MontgomeryStrict() {
+template Edwards2MontgomeryStrict(Id) {
     input Point {babyedwards} pin;
-    output Point {babymontgomery} pout;
+    output Point {base, min_scalar, max_scalar, babymontgomery} pout;
 
     pout.x <-- pin.y != -1 ? (1 + pin.y) / (1 - pin.y) : 0;
     pout.y <-- pin.x != 0 ? pout.x / pin.x : 0;
@@ -110,12 +135,16 @@ template Edwards2MontgomeryStrict() {
     pout.y * pin.x === pout.x;
     signal iszx <== IsZero()(pin.x);
     iszx * pout.y === 0; // this ensures that for point (0,-1) the result is (0,0)
+    pout.base = Id;
+    pout.min_scalar = 1;
+    pout.max_scalar = 1;
 }
+*/
 
 /*
 *** Montgomery2Edwards(): template that receives an input pin representing a point of the Baby-Jubjub curve in Montgomery form
                           and returns the equivalent point in twisted Edwards form.
-                          Assumes pin is not (0,0)
+                          Undefined for v = 0 or u = -1.
         - Inputs: pin -> bus representing a point of the Baby-Jubjub curve in Montgomery form
         - Outputs: pout -> bus representing a point of the curve Baby-Jubjub in twisted Edwards form
          
@@ -128,14 +157,18 @@ template Edwards2MontgomeryStrict() {
  */
 
 template Montgomery2Edwards() {
-    input Point {babymontgomery} pin;
-    output Point {babyedwards} pout;
+    input Point {base, min_scalar, max_scalar, babymontgomery} pin;
+    output Point {insubgroupl, babyedwards} pout;
 
+    var l = 2736030358979909402780800718157159386076813972158567259200215660948447373041;
+    assert(pin.max_scalar < l); 
+    
     pout.x <-- pin.x / pin.y;
     pout.y <-- (pin.x - 1) / (pin.x + 1);
 
     pout.x * pin.y === pin.x;
     pout.y * (pin.x + 1) === pin.x - 1;
+
 }
 
 /*
@@ -150,10 +183,9 @@ template Montgomery2Edwards() {
     (u, v) -> (x, y) = [ ---, ------- ]
                           v    u + 1
 
- */
 
 template Montgomery2EdwardsStrict() {
-    input Point {babymontgomery} pin;
+    input Point {babymontgomery} pin; // base, min_scalar, max_scalar,
     output Point {babyedwards} pout;
 
     pout.x <-- pin.y != 0 ? pin.x / pin.y : 0;
@@ -163,8 +195,9 @@ template Montgomery2EdwardsStrict() {
     pout.y * (pin.x + 1) === pin.x - 1;
     signal iszx <== IsZero()(pin.x);
     iszx * pout.x === 0; // this ensures that for point (0,0) the result is (0,-1)
-
 }
+
+*/
 
 
 /*
@@ -172,7 +205,8 @@ template Montgomery2EdwardsStrict() {
                      and returns the addition of the points.
         - Inputs: pin1 -> bus representing a point of the Baby-Jubjub curve in Montgomery form
                   pin2 -> bus representing a point of the Baby-Jubjub curve in Montgomery form
-                  pin1 != (0,1), pin2 != (0,1), pin1 != pin2
+                  Requires u1 != u2, i.e. pin1 != +-pin2. If pin1 = pin2, the lamda constraint
+                  becomes 0 === 0 and the output is unconstrained.
         - Outputs: pout -> bus representing the point pin1 + pin2 of the Baby-Jubjub curve in Montgomery form
          
     Montgomery Addition Law:
@@ -194,13 +228,16 @@ template Montgomery2EdwardsStrict() {
 // it is assumed that pin1 != (0,1) and pin2 != (0,1) and pin1 != pin2
 // Otherwise the constrains are not correct
 template MontgomeryAdd() {
-    input Point {babymontgomery} pin1, pin2;
-    output Point {babymontgomery} pout;
+    input Point {base, min_scalar, max_scalar, babymontgomery} pin1, pin2;
+    output Point {base, min_scalar, max_scalar, babymontgomery} pout;
 
-    assert(pin1.x != 0 || pin1.y != 1); 
-    assert(pin2.x != 0 || pin2.y != 1); 
-    assert(pin1.x != pin2.x || pin1.y != pin2.y ); 
-
+    //assert(pin1.x != 0 || pin1.y != 1); 
+    //assert(pin2.x != 0 || pin2.y != 1); 
+    //assert(pin1.x != pin2.x || pin1.y != pin2.y );
+    assert(pin1.base == pin2.base);
+    assert(pin1.max_scalar < pin2.min_scalar || pin2.max_scalar < pin1.min_scalar);
+    // This ensures they are different points
+    
     var A = 168698;
     var B = 1;
 
@@ -211,13 +248,20 @@ template MontgomeryAdd() {
 
     pout.x <== B*lamda*lamda - A - pin1.x - pin2.x;
     pout.y <== lamda * (pin1.x - pout.x) - pin1.y;
+    pout.base = pin1.base;
+    pout.min_scalar = pin1.min_scalar + pin2.min_scalar;
+    pout.max_scalar = pin1.max_scalar + pin2.max_scalar;
+    
+    var l = 2736030358979909402780800718157159386076813972158567259200215660948447373041;
+    assert(pout.max_scalar < l);
+
 }
 
 /*
 *** MontgomeryDouble(): template that receives an input pin representing a point of the Baby-Jubjub curve in Montgomery form
                         and returns the point 2 * pin.
         - Inputs: pin -> bus representing a point of the Baby-Jubjub curve in Montgomery form
-                      pin != (0,1)
+                      Requires pin.x != 0 (pin is not a point of order 2)
         - Outputs: pout -> bus representing the point 2*pin of the Baby-Jubjub curve in Montgomery form
          
          
@@ -243,10 +287,11 @@ template MontgomeryAdd() {
 // it is assumed that pin != (0,1)
 // Otherwise the constrains are not correct
 template MontgomeryDouble() {
-    input Point {babymontgomery} pin;
-    output Point {babymontgomery} pout;
+    input Point {base, min_scalar, max_scalar, babymontgomery} pin;
+    output Point {base, min_scalar, max_scalar, babymontgomery} pout;
 
-    assert(pin.x != 0 || pin.y != 1);
+    assert(pin.max_scalar <= 2**249);
+    //assert(pin.x != 0 || pin.y != 1);
     
     var A = 168698;
     var B = 1;
@@ -261,6 +306,10 @@ template MontgomeryDouble() {
 
     pout.x <== B*lamda*lamda - A - 2*pin.x;
     pout.y <== lamda * (pin.x - pout.x) - pin.y;
+    pout.base = pin.base;
+    pout.min_scalar = pin.min_scalar * 2;
+    pout.max_scalar = pin.max_scalar * 2;
+
 }
 
 

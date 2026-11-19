@@ -63,7 +63,7 @@ template EdDSAPedersenVerifier(n) {
 
     var i;
 
-// Ensure S<Subgroup Order
+// Ensure S<Subgroup Order = 2736030358979909402780800718157159386076813972158567259200215660948447373041
 
     component  compConstant = CompConstant(maxbits(), 2736030358979909402780800718157159386076813972158567259200215660948447373040);
 
@@ -103,20 +103,12 @@ template EdDSAPedersenVerifier(n) {
 
 // Calculate second part of the right side:  right2 = h*8*A
 
-    // Multiply by 8 by adding it 3 times.  This also ensure that the result is in
-    // the subgroup.
-    component dbl1 = BabyDbl();
-    dbl1.pin <== pA;
-    component dbl2 = BabyDbl();
-    dbl2.pin <== dbl1.pout;
-    component dbl3 = BabyDbl();
-    dbl3.pin <== dbl2.pout;
-
-    // We check that A is not zero.
-    component isZero = IsZero();
-    //isZero.in <== dbl3.pin.x;
-    isZero.in <== dbl3.pout.x;
-    isZero.out === 0;
+    // Multiply by 8 and check that the result is not zero. This ensures that
+    // the result has order l.
+    Point {base, babyedwards} pA_aux;
+    pA_aux.base = 1;
+    pA_aux <== pA;
+    Point {insubgroupl, babyedwards} A8 <== CheckandAddSubgroupLOnly()(pA_aux);
 
     component mulAny = EscalarMulAny(256);
     for (i=0; i<254; i++) {
@@ -126,8 +118,7 @@ template EdDSAPedersenVerifier(n) {
     mulAny.e[254] <== BinaryCheck()(0);
     mulAny.e[255] <== point2bitsH.out.signX;
 
-    // non-zero dbl3.pout;
-    mulAny.pin <== dbl3.pout;
+    mulAny.pin <== A8;
 
 // Compute the right side: right =  R8 + right2
 

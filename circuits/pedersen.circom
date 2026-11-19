@@ -25,28 +25,95 @@ include "mux3.circom";
 include "babyjub.circom";
 include "buses.circom";
 
+/*
+    Pedersen hash over Baby Jubjub (windowed, Zcash Sapling style).
+
+    The n input bits are split into segments of 200 bits. Each segment is split
+    into 50 windows of 4 bits [b0, b1, b2, b3], and each window is encoded as a
+    signed digit:
+
+        enc = (1 + b0 + 2*b1 + 4*b2) * (1 - 2*b3)    in {-8..-1, 1..8}
+
+        pout = sum_s ( sum_j enc_{s,j} * 32^j ) * BASE[s]
+
+    Windows are spaced by 32 = 2^5 > 2*8, so the encoding is injective. Missing
+    bits in the last window are padded with 0.
+
+    BASE[s] = 8 * (a point derived from blake256("PedersenGenerator_<s>_<try>")),
+    so it lies in the prime-order subgroup. Only 10 bases exist, so n <= 2000.
+
+    Collision resistance holds only for a fixed n. Zero padding means, for
+    example, that Pedersen(3)([1,0,1]) == Pedersen(4)([1,0,1,0]).
+*/
+
 
 /*
+  pedersen_min_scalar: (only make sense for point with the babymontgomery, base tags and pedersen_max_scalar). 
+  pedersen_max_scalar: (only make sense for point with the babymontgomery, base tags and min_scalar).
+  1 <= pedersen_min_scalar <= pedersen_max_scalar
+  The point P is K*P_base for some K s.t either pedersen_min_scalar <= K <= pedersen_max_scalar or -pedersen_max_scalar <= K <= -pedersen_min_scalar;
+*/
 
-*** Window4(): template that given a point in Montgomery representation base and a binary input in, calculates:
-        out = base + base*in[0] + 2*base*in[1] + 4*base*in[2] in case in[3] == 0, in case in[3] == 1 then it negates out[1] --> out = base * (in[0..2] + 1) if in[3] == 0, out = - base * (in[0..2] + 1) if in[3] == 1
-        
-        out8 = 8*base
+template PedersenMontgomery2Edwards() {
+    input Point {base, pedersen_max_scalar, babymontgomery} pin;
+    output Point {insubgroupl, babyedwards} pout;
 
-    This circuit is used in order to perform the Pedersen protocol on an input in.
-        - Inputs: in[4] -> binary value
-                         requires tag binary
-                  base[2] -> input curve point in Montgomery representation
-        - Outputs: out[2] -> output curve point in Montgomery representation
-                   out8[2] -> output curve point in Montgomery representation
+    var l = 2736030358979909402780800718157159386076813972158567259200215660948447373041;
+    assert(pin.pedersen_max_scalar < l);
     
- */
+    pout.x <-- pin.x / pin.y;
+    pout.y <-- (pin.x - 1) / (pin.x + 1);
+
+    pout.x * pin.y === pin.x;
+    pout.y * (pin.x + 1) === pin.x - 1;
+
+}
+
+template PedersenMontgomeryAdd() {
+    input Point {base, pedersen_min_scalar, pedersen_max_scalar, babymontgomery} pin1, pin2;
+    output Point {base, pedersen_min_scalar, pedersen_max_scalar, babymontgomery} pout;
+
+    //assert(pin1.x != 0 || pin1.y != 1); 
+    //assert(pin2.x != 0 || pin2.y != 1); 
+    //assert(pin1.x != pin2.x || pin1.y != pin2.y );
+    assert(pin1.base == pin2.base);
+    assert(pin1.pedersen_min_scalar <= pin1.pedersen_max_scalar);
+    assert(pin2.pedersen_min_scalar <= pin2.pedersen_max_scalar);
+    assert(2*pin1.pedersen_max_scalar < pin2.pedersen_min_scalar);
+    // This ensures they are different points
+    
+    var A = 168698;
+    var B = 1;
+
+    signal lamda;
+
+    lamda <-- (pin2.y - pin1.y) / (pin2.x - pin1.x);
+    lamda * (pin2.x - pin1.x) === pin2.y - pin1.y;
+
+    pout.x <== B*lamda*lamda - A - pin1.x - pin2.x;
+    pout.y <== lamda * (pin1.x - pout.x) - pin1.y;
+    pout.base = pin1.base;
+    pout.pedersen_min_scalar = pin2.pedersen_min_scalar - pin1.pedersen_max_scalar;
+    pout.pedersen_max_scalar = pin1.pedersen_max_scalar + pin2.pedersen_max_scalar;
+    var l = 2736030358979909402780800718157159386076813972158567259200215660948447373041;
+    assert(pout.pedersen_max_scalar < l);
+}
+
+
+/*
+    One 4-bit window, in Montgomery form:
+        pout  = enc(in) * base
+        pout8 = 8 * base
+    The table (1..8)*base is built with one double and six adds, MultiMux3
+    selects it with in[0..2], and in[3] negates the result, since -(u, v) = (u, -v).
+*/
+// babymontgomery indicates it must be a point in the babyjub elliptic curve in montgomery form
 
 template Window4() {
     input signal {binary} in[4];
-    input Point {babymontgomery} base;
-    output Point {babymontgomery} pout;
-    output Point {babymontgomery} pout8;   // Returns 8*Base (To be linked)
+    input Point {base, min_scalar, max_scalar, babymontgomery} base;
+    output Point {base, pedersen_min_scalar, pedersen_max_scalar, babymontgomery} pout;
+    output Point {base, min_scalar, max_scalar, babymontgomery} pout8;   // Returns 8*Base (To be linked)
 
     component mux = MultiMux3(2);
 
@@ -112,30 +179,33 @@ template Window4() {
 
     pout.x <== mux.out[0];
     pout.y <== - mux.out[1]*2*in[3] + mux.out[1];  // Negate y if in[3] is one
+    pout.base = base.base;
+    pout.pedersen_min_scalar = base.min_scalar;
+    pout.pedersen_max_scalar = base.max_scalar*8;
+    
 }
 
 /*
+    One segment: pout = (sum_j enc_j * 32^j) * base, with base and pout in Edwards form.
+    Window j uses 32^j * base, computed as two doublings of the previous pout8.
+    The Montgomery accumulator never meets an exceptional case: with at most 50
+    windows, |sum_{k<j} enc_k * 32^k| < 32^j <= |enc_j * 32^j|, and every partial
+    sum is below 2^249 < l.
+*/
+// babyedwards indicates it must be a point in the babyjub elliptic curve in edwards form
 
-*** Segment(nWindows):template used to perform a segment of the multiplications needed to perform a the Pedersen protocol. 
-        - Inputs: in[4 * nWindows] -> binary representation of the scalar
-                                      requires tag binary
-                  base[2] -> input curve point in Edwards representation
-        - Outputs: out[2] -> output curve point in Edwards representation
-    
- */
 
-
-template Segment(nWindows) {
+template Segment(nWindows,Id) {
     input signal {binary} in[nWindows*4];
-    input Point {babyedwards} base;
-    output Point {babyedwards} pout;
+    input Point {insubgroupl, babyedwards} base;
+    output Point {insubgroupl, babyedwards} pout;
 
     var i;
     var j;
 
     // Convert the base to montgomery
 
-    component e2m = Edwards2Montgomery();
+    component e2m = Edwards2Montgomery(Id);
     e2m.pin <== base;
 
     component windows[nWindows];
@@ -157,7 +227,7 @@ template Segment(nWindows) {
 
             windows[i].base <== doublers2[i-1].pout;
 
-            adders[i-1] = MontgomeryAdd();
+            adders[i-1] = PedersenMontgomeryAdd();
             if (i==1) {
                 adders[i-1].pin1 <== windows[0].pout;
             } else {
@@ -167,8 +237,7 @@ template Segment(nWindows) {
         }
     }
 
-    component m2e = Montgomery2Edwards();
-
+    component m2e = PedersenMontgomery2Edwards();
     if (nWindows > 1) {
         m2e.pin <== adders[nWindows-2].pout;
     } else {
@@ -180,18 +249,16 @@ template Segment(nWindows) {
 
 
 /*
-
-*** Pedersen(n): template that performs the Pedersen protocol on the input in, that is the binary representation of the field using n bits. It calculates the output point of the Pedersen protocol in Edwards representation
-        - Inputs: in[n] -> binary representation of the scalar
-                          requires tag binary
-        - Outputs: out[2] -> output curve point in Edwards representation
-    
- */
+    pout = Pedersen hash of the n bits in[0..n-1] (in[0] first), as an Edwards
+    point. Segment results are summed with BabyAdd, which is complete.
+*/
 
 template Pedersen(n) {
     input signal {binary} in[n];
-    output Point {babyedwards} pout;
+    output Point {pedersen, babyedwards} pout;
 
+    assert(n <= 2000); //at most 10 segments of 200 bits
+    
     var BASE[10][2] = [
         [10457101036533406547632367118273992217979173478358440826365724437999023779287,19824078218392094440610104313265183977899662750282163392862422243483260492317],
         [2671756056509184035029146175565761955751135805354291559563293617232983272177,2663205510731142763556352975002641716101654201788071096152948830924149045094],
@@ -203,7 +270,6 @@ template Pedersen(n) {
         [6814338563135591367010655964669793483652536871717891893032616415581401894627,13660303521961041205824633772157003587453809761793065294055279768121314853695],
         [3571615583211663069428808372184817973703476260057504149923239576077102575715,11981351099832644138306422070127357074117642951423551606012551622164230222506],
         [18597552580465440374022635246985743886550544261632147935254624835147509493269,6753322320275422086923032033899357299485124665258735666995435957890214041481]
-
     ];
 
     var nSegments = ((n-1)\200)+1;
@@ -214,16 +280,13 @@ template Pedersen(n) {
     var j;
     var nBits;
     var nWindows;
-    Point {babyedwards} aux[nSegments];
-    
+
     signal {binary} aux_0 <== 0;
     for (i=0; i<nSegments; i++) {
         nBits = (i == (nSegments-1)) ? n - (nSegments-1)*200 : 200;
         nWindows = ((nBits - 1)\4)+1;
-        segments[i] = Segment(nWindows);
-        aux[i].x <== BASE[i][0];
-        aux[i].y <== BASE[i][1];
-        segments[i].base <== aux[i];
+        segments[i] = Segment(nWindows,i);
+        segments[i].base <== SubgroupLOnlyCheckFix(BASE[i])();
         for (j = 0; j<nBits; j++) {
             segments[i].in[j] <== in[i*200+j];
         }

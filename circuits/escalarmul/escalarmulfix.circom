@@ -28,42 +28,27 @@ include "../buses.circom";
 // with the prime number p = 21888242871839275222246405745257275088548364400416034343698204186575808495617.
 
 /*
+    Fixed-base scalar multiplication on Baby Jubjub: pout = (sum_i e[i]*2^i) * BASE.
 
-    The scalar is s = a0 + a1*2^3 + a2*2^6 + ...... + a81*2^243
-    First We calculate Q = B + 2^3*B + 2^6*B + ......... + 2^246*B
-
-    Then we calculate S1 = 2*2^246*B + (1 + a0)*B + (2^3 + a1)*B + .....+ (2^243 + a81)*B
-
-    And Finaly we compute the result: RES = SQ - Q
-
-    As you can see the input of the adders cannot be equal nor zero, except for the last
-    substraction that it's done in montgomery.
-
-    A good way to see it is that the accumulator input of the adder >= 2^247*B and the other input
-    is the output of the windows that it's going to be <= 2^246*B
- */
+    The scalar is processed in 3-bit windows, using the cheap but incomplete
+    Montgomery formulas (see montgomery.circom). The windows are arranged so
+    that those formulas never meet an exceptional case.
+*/
  
  
 /*
-
-*** WindowMulFix(): template that given a point in Montgomery representation base and a binary input in, calculates:
-        out = base + base*in[0] + 2*base*in[1] + 4*base*in[2]
-        out8 = 8*base
-
-    This circuit is used in order to multiply a fixed point of the BabyJub curve by a escalar (k * p with p a fixed point of the curve). 
-        - Inputs: in[3] -> binary value
-                         requires tag binary
-                  base[2] -> input curve point in Montgomery representation
-        - Outputs: out[2] -> output curve point in Montgomery representation
-                   out8[2] -> output curve point in Montgomery representation
-    
- */
+    One 3-bit window, in Montgomery form. With v = in[0] + 2*in[1] + 4*in[2]:
+        pout  = (1 + v) * base     (never the identity)
+        pout8 = 8 * base           (it is the next window's base)
+    The table (1..8)*base is built with one double and six adds, and MultiMux3
+    selects from it.
+*/
  
 template WindowMulFix() {
     input signal {binary} in[3];
-    input Point {babymontgomery} base;
-    output Point {babymontgomery} pout;
-    output Point {babymontgomery} pout8;   // Returns 8*Base (To be linked)
+    input Point {base, min_scalar, max_scalar, babymontgomery} base;
+    output Point {base, min_scalar, max_scalar, babymontgomery} pout;
+    output Point {base, min_scalar, max_scalar, babymontgomery} pout8;   // Returns 8*Base (To be linked)
 
     component mux = MultiMux3(2);
 
@@ -129,40 +114,52 @@ template WindowMulFix() {
 
     pout.x <== mux.out[0];
     pout.y <== mux.out[1];
+    pout.base = base.base;
+    pout.min_scalar = base.min_scalar;
+    pout.max_scalar = base.max_scalar*8;
 }
 
 
 /*
+    pout = s * base, where s = sum_i v_i * 8^i and v_i is window i.
+    base and pout are in Edwards form. dbl = 8^nWindows * base is in Montgomery
+    form and is linked to the next segment.
 
-*** SegmentMulFix(nWindows): template used to perform a segment of the multiplications needed to perform a multiplication of a scalar times a fix base (k * BASE). 
-        - Inputs: e[3 * nWindows] -> binary representation of the scalar
-                                     requires tag binary
-                  base[2] -> input curve point in Edwards representation
-        - Outputs: out[2] -> output curve point in Edwards representation
-                   dbl[2] -> output curve point in Montgomery representation (to be linked to the next segment)
-    
- */
+    Each window contributes (1 + v_i) * 8^i * base, so the sum carries an extra
+    C = sum_i 8^i * base. To keep the Montgomery additions safe, the accumulator
+    also starts at D = 2 * 8^nWindows * base. Then:
+        adders:  D + sum_i (1 + v_i) * 8^i * base  = D + C + s*base
+        cadders: C + D                                  (compensation)
+        pout   = (D + C + s*base) - (C + D)  = s*base   (complete BabyAdd)
 
-template SegmentMulFix(nWindows) {
+    Safety: the accumulator is always >= D = 2*8^nWindows, and each window output
+    is <= 8^nWindows, so the two inputs of an add are never equal. They are also
+    never opposite (acc + w != 0 mod l) as long as acc + w < l, which holds for
+    nWindows <= 82 (246 bits) but not for 83. EscalarMulFix guarantees this bound.
+*/
+
+template SegmentMulFix(nWindows,Id) {
     input signal {binary} e[nWindows*3];
-    input Point {babyedwards} base;
+    input Point {insubgroupl, babyedwards} base;
     output Point {babyedwards} pout;
-    output Point {babymontgomery} dbl;
+    output Point {base, min_scalar, max_scalar, babymontgomery} dbl;
 
     var i;
     var j;
 
     // Convert the base to montgomery
 
-    component e2m = Edwards2Montgomery();
+    component e2m = Edwards2Montgomery(Id);
     e2m.pin <== base;
 
     component windows[nWindows];
     component adders[nWindows];
     component cadders[nWindows];
 
-    // In the last step we add an extra doubler so that numbers do not match.
+    // D = 2 * 8^nWindows * base
     component dblLast = MontgomeryDouble();
+
+    // Windows and compensation chain: cadders = base + 8*base + ... + 8^(nWindows-1)*base + D
 
     for (i=0; i<nWindows; i++) {
         windows[i] = WindowMulFix();
@@ -185,6 +182,7 @@ template SegmentMulFix(nWindows) {
         }
     }
 
+    // Accumulator chain: D + sum of window outputs
     for (i=0; i<nWindows; i++) {
         adders[i] = MontgomeryAdd();
         if (i==0) {
@@ -201,6 +199,7 @@ template SegmentMulFix(nWindows) {
     m2e.pin <== adders[nWindows-1].pout;
     cm2e.pin <== cadders[nWindows-1].pout;
 
+    // pout = acc - compensation
     component cAdd = BabyAdd();
     cAdd.pin1 <== m2e.pout;
     
@@ -216,30 +215,29 @@ template SegmentMulFix(nWindows) {
 
 
 /*
+    pout = (sum_i e[i]*2^i) * BASE, with BASE a constant point in Edwards form.
 
-*** EscalarMulFix(n, BASE): template that does a multiplication of a scalar times a fixed point BASE. It receives a point in Edwards representation BASE and a binary input e representing a value k using n bits, and calculates the point k * p.
-        - Inputs: e[n] -> binary representation of the scalar k
-                          requires tag binary
-        - Outputs: out[2] -> output curve point in Edwards representation out = k * BASE
-    
- */
+    The scalar is split into segments of 246 bits (82 windows), within the
+    safety bound of SegmentMulFix. Segment s uses base 2^(246*s) * BASE,
+    obtained from the previous segment's dbl, and the segment results are
+    summed with BabyAdd, which is complete.
+*/
  
  
 template EscalarMulFix(n, BASE) {
     input signal {binary} e[n];              // Input in binary format
     output Point {babyedwards} pout;           // Point (Twisted format)
 
-    var nsegments = (n-1)\249 +1;       // 249 bits per segment, matching nseg and the indexing of e below
-    var nlastsegment = n - (nsegments-1)*249;
+    var segmentSize = 246;
+    var nsegments = (n-1)\segmentSize +1;
+    var nlastsegment = n - (nsegments-1)*segmentSize;
 
     component segments[nsegments];
 
     component m2e[nsegments-1];
     component adders[nsegments-1];
     
-    Point {babyedwards} aux_base;
-    aux_base.x <== BASE[0];
-    aux_base.y <== BASE[1];
+    Point {insubgroupl, babyedwards} aux_base <== SubgroupLOnlyCheckFix(BASE)();
 
     var s;
     var i;
@@ -250,17 +248,17 @@ template EscalarMulFix(n, BASE) {
 
     for (s=0; s<nsegments; s++) {
 
-        nseg = (s < nsegments-1) ? 249 : nlastsegment;
+        nseg = (s < nsegments-1) ? segmentSize : nlastsegment;
         nWindows = ((nseg - 1)\3)+1;
 
-        segments[s] = SegmentMulFix(nWindows);
+        segments[s] = SegmentMulFix(nWindows,s);
 
         for (i=0; i<nseg; i++) {
-            segments[s].e[i] <== e[s*249+i];
+            segments[s].e[i] <== e[s*segmentSize+i];
         }
 
         for (i = nseg; i<nWindows*3; i++) {
-            segments[s].e[i] <== aux_0;
+            segments[s].e[i] <== aux_0;   // padding
         }
 
         if (s==0) {
