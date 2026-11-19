@@ -60,9 +60,13 @@ template Num2Bin(n) {
 
 *** Bin2Num(n): template that transforms an input bus representing a value x in binary into the decimal representation of x
         - Inputs: in -> BinaryNumber(n) bus with the binary representation of out using n bits
-                           requires tag "unique"
+                        its bits require tag binary
         - Output: out -> value represented by the input
                          satisfies tag maxbit with out.maxbit =  n
+
+    For n < maxbits() an n-bit value is below the prime by width. For n == maxbits() the
+    template runs AliasCheck on the input, so that out is the integer the bits encode and
+    not that integer minus p. n > maxbits() is rejected at compile time.
          
     Example: Bits2Num(3)([1, 0, 1]) = 5
           
@@ -70,7 +74,8 @@ template Num2Bin(n) {
 
 
 template Bin2Num(n) {
-    BinaryNumber(n) input {unique} in;
+    assert(n <= maxbits());
+    BinaryNumber(n) input in;
     signal output {maxbit} out;
     var lc1=0;
 
@@ -81,6 +86,11 @@ template Bin2Num(n) {
     }
     out.maxbit = n;
     lc1 ==> out;
+
+    if (n == maxbits()) {
+       component aliasCheck = AliasCheck();
+       aliasCheck.in <== in;
+    }
 }
 
 
