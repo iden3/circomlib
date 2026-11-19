@@ -87,16 +87,20 @@ template Bin2Num(n) {
 /*
 *** Num2BinNeg(n): template that given an input x returns the binary representation of 2 ** n - x using n bits, in case in == 0 then it returns 0
         - Inputs: in -> field value
-        - Output: out -> BinaryNumber(n) bus with the  binary representation of 2 ** n - in using n bits  if in != 0,
-	                          and all 0's otherwise.
-                      It has the bus tag "unique" which indicates that the number represented is below the prime
-         
-    Example: Num2BitsNeg(3)(2) = [0, 1, 1], Num2Bits(3)(8) = [0, 0, 0]
-          
+        - Output: out -> BinaryNumber(n) bus with the binary representation of 2 ** n - in using n bits if in != 0,
+                         and all 0's otherwise.
+                         It has the bus tag "unique" which indicates that the number represented is below the prime
+
+    Requires n < maxbits(). For n >= maxbits() the integer 2 ** n is not a field element, so
+    the template would compute (2 ** n mod p) - in instead, which is neither a negation
+    modulo 2 ** n nor modulo p. Such n are rejected at compile time. Below maxbits() the
+    n-bit value is below the prime, so the tag unique holds without an alias check.
+
+    Example: Num2BinNeg(3)(2) = {bits: [0, 1, 1]}, Num2BinNeg(3)(8) = {bits: [0, 0, 0]}
 */
 
 template Num2BinNeg(n) {
-    assert(n <= maxbits()); // otherwise the tag unique cannot be guaranteed
+    assert(n < maxbits()); // 2 ** n must be a field element, see above
     signal input in;
     BinaryNumber(n) output {unique} out;
     var lc1=0;
@@ -115,11 +119,4 @@ template Num2BinNeg(n) {
     }
     in ==> isZero.in;
     lc1 + isZero.out * 2**n === 2**n - in;
-
-
-    if (n >= maxbits()) {
-       component aliasCheck = AliasCheck();
-       aliasCheck.in <== out.bits;
-    }
-
 }

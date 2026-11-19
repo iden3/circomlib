@@ -197,12 +197,16 @@ template Bits2Num_strict() {
         - Inputs: in -> field value
         - Output: out[n] -> if in != 0 then binary representation of 2 ** n - in using n bits, else 0
                             satisfies tag binary
-         
-    Example: Num2BitsNeg(3)(2) = [0, 1, 1], Num2Bits(3)(8) = [0, 0, 0]
-          
+
+    Requires n < maxbits(). For n >= maxbits() the integer 2 ** n is not a field element, so
+    the template would compute (2 ** n mod p) - in instead, which is neither a negation
+    modulo 2 ** n nor modulo p. Such n are rejected at compile time.
+
+    Example: Num2BitsNeg(3)(2) = [0, 1, 1], Num2BitsNeg(3)(8) = [0, 0, 0]
 */
 
 template Num2BitsNeg(n) {
+    assert(n < maxbits()); // 2 ** n must be a field element, see above
     input signal in;
     output signal {binary} out[n];
     var lc1=0;
