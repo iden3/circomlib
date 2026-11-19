@@ -26,21 +26,24 @@ See smtverifiersm.circom to see more details of the behavior of this machine
  pragma circom 2.1.9;
 
 
+// Every field is a bit and exactly one of them is 1 at any level: the state is one hot.
+// The level templates rely on both, multiplying by the fields as booleans.
 bus SMTVerifierState() {
-    signal top;
-    signal i0;
-    signal iold;
-    signal inew;
-    signal na;
+    signal {binary} top;
+    signal {binary} i0;
+    signal {binary} iold;
+    signal {binary} inew;
+    signal {binary} na;
 }
 
 
+// As above: one hot over six states.
 bus SMTProcessorState() {
-    signal top;
-    signal old0;
-    signal bot;
-    signal new1;
-    signal na;
-    signal upd;
+    signal {binary} top;
+    signal {binary} old0;
+    signal {binary} bot;
+    signal {binary} new1;
+    signal {binary} na;
+    signal {binary} upd;
 }
 

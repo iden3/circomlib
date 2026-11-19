@@ -80,6 +80,8 @@ template SMTVerifierSM() {
     // st_top = prev_top * (1-levIns)
     //    = + prev_top
     //      - prev_top * levIns
+    // Binary by the machine's invariant, not per line: prev_top_lev_ins is prev.top AND
+    // levIns, so it is 1 only when prev.top is, and the difference stays in {0, 1}.
     st.top <== prev.top - prev_top_lev_ins;
 
     // st_inew = prev_top * levIns * (1-fnc)

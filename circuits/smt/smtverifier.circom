@@ -70,14 +70,18 @@ template SMTVerifier(nLevels) {
     smtLevIns.enabled <== enabled;
 
     component sm[nLevels];
+
+    // the initial state's constant bits, tagged so they can enter the state bus
+    signal {binary} zero <== 0;
+    signal {binary} notEnabled <== NOT()(enabled);
     for (i=0; i<nLevels; i++) {
         sm[i] = SMTVerifierSM();
         if (i==0) {
             sm[i].prev.top <== enabled;
-            sm[i].prev.i0 <== 0;
-            sm[i].prev.inew <== 0;
-            sm[i].prev.iold <== 0;
-            sm[i].prev.na <== 1-enabled;
+            sm[i].prev.i0 <== zero;
+            sm[i].prev.inew <== zero;
+            sm[i].prev.iold <== zero;
+            sm[i].prev.na <== notEnabled;
         } else {
             sm[i].prev <== sm[i-1].st;
         }

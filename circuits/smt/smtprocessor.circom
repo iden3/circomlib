@@ -182,15 +182,19 @@ template SMTProcessor(nLevels) {
     }
 
     component sm[nLevels];
+
+    // the initial state's constant bits, tagged so they can enter the state bus
+    signal {binary} zero <== 0;
+    signal {binary} notEnabled <== NOT()(enabled);
     for (i=0; i<nLevels; i++) {
         sm[i] = SMTProcessorSM();
         if (i==0) {
             sm[i].prev.top <== enabled;
-            sm[i].prev.old0 <== 0;
-            sm[i].prev.bot <== 0;
-            sm[i].prev.new1 <== 0;
-            sm[i].prev.na <== 1-enabled;
-            sm[i].prev.upd <== 0;
+            sm[i].prev.old0 <== zero;
+            sm[i].prev.bot <== zero;
+            sm[i].prev.new1 <== zero;
+            sm[i].prev.na <== notEnabled;
+            sm[i].prev.upd <== zero;
         } else {
             sm[i].prev <== sm[i-1].st;
         }
