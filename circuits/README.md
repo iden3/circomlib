@@ -61,6 +61,35 @@ wrappers under `test/circuits` do.
 `smt/smtbuses.circom` adds `SMTVerifierState()` and `SMTProcessorState()` for the
 state machines of the sparse Merkle tree circuits.
 
+## `binnums/`: the `BinaryNumber` version
+
+`binnums/` holds a second version of the library in which every port that carries a
+number as `n` bits is a `BinaryNumber(n)` bus instead of an array `signal {binary} x[n]`,
+and the internal uses of `Num2Bits`/`Bits2Num` become `Num2Bin`/`Bin2Num`. Bit `i` of
+such a port is `x.bits[i]`; the bits keep the `binary` tag.
+
+| Area                  | Templates whose ports are `BinaryNumber`                                          |
+| --------------------- | --------------------------------------------------------------------------------- |
+| Gates and arithmetic  | `MultiAND`, `BinSum`, `BinSub`                                                    |
+| Multiplexers          | `Mux2`..`Mux4`, `MultiMux2`..`MultiMux4` (selector `s`)                           |
+| Bits                  | `AliasCheck`, `CompConstant`, `Sign`, `BinaryCheckArray` (output)                 |
+| Scalar multiplication | `EscalarMul`, `EscalarMulWindow`, `EscalarMulAny`, `SegmentMulAny`, `EscalarMulFix`, `SegmentMulFix`, `WindowMulFix` |
+| Pedersen and EdDSA    | `Pedersen`, `Segment`, `Window4` (also in `pedersen_old`), `EdDSAPedersenVerifier` (`msg`) |
+| SHA-256               | `Sha256`, `Sha256compression`, `Ch_t`, `Maj_t`, `Xor3`, `RotR`, `ShR`, `SmallSigma`, `BigSigma`, `SigmaPlus`, `T1`, `T2`, `H`, `K` |
+| SMT                   | `SMTLevIns` (`levIns`), `SMTProcessor` and `SMTProcessorSM` (`fnc`)               |
+
+Every other template keeps its interface. `Num2Bits`, `Bits2Num` and their `_strict`
+variants keep their arrays; `binnum.circom` has the bus conversions.
+
+The templates keep their names, so **a circuit includes from `circuits/` or from
+`circuits/binnums/`, never from both**: the compiler rejects two templates with the
+same name. The directory layout is the same as here. A file is in `binnums/` when its
+interface changes or when it includes one that does; the rest (`buses`, `montgomery`,
+`mux1`, `switcher`, `poseidon*`, `escalarmul/escalarmulw4table`, `smt/smtbuses`,
+`smt/smthash_poseidon`, `smt/smt*level`, `smt/smtverifiersm`) is included from here.
+
+The tests are in `test/binnums/`, over the circuits of `test/circuits/binnums/`.
+
 ## Field
 
 Some files are written for the BN254 scalar field and some work over any prime.

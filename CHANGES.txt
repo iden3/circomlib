@@ -71,6 +71,14 @@ Added
   tags it requires and grants; every file states which prime field it works over.
 - circuits/README.md is now an index: where the specifications live, the tags and what
   each asserts, the buses, the field requirement per file, and every template by file.
+- circuits/binnums/: a second version of the library in which every port that carries
+  a number as n bits is a BinaryNumber(n) bus instead of signal {binary} x[n] (bit i is
+  x.bits[i]), and the internal uses of Num2Bits/Bits2Num are Num2Bin/Bin2Num. It covers
+  the gates, binary arithmetic, multiplexers, CompConstant, Sign, AliasCheck, scalar
+  multiplication, Pedersen, EdDSAPedersenVerifier, SHA-256 and the SMT selector; the
+  list is in circuits/README.md. Template names are unchanged, so a circuit includes
+  from circuits/ or from circuits/binnums/, never both. Nothing in circuits/ changes.
+  Tests in test/binnums/; npm test runs both sets.
 
 
 Changed interfaces

@@ -1,0 +1,13 @@
+pragma circom 2.1.5;
+
+include "../../../circuits/binnums/comparators.circom";
+include "../../../circuits/binnums/tags-managing.circom";
+
+
+template A(n){
+    input signal in[2];
+    output signal out <== GreaterEqThan(n)(MaxbitCheckArray(n, 2)(in));
+
+}
+
+component main = A(30);
