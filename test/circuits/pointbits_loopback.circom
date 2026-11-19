@@ -11,8 +11,10 @@ template Main() {
     component p2b = Point2Bits_Strict();
     component b2p = Bits2Point_Strict();
 
-    p2b.pin.x <== in[0];
-    p2b.pin.y <== in[1];
+    Point p;
+    p.x <== in[0];
+    p.y <== in[1];
+    p2b.pin <== BabyCheck()(p);
 
     b2p.in <== p2b.out;
 

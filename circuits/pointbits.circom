@@ -140,8 +140,9 @@ template Bits2Point_Strict() {
 
 /*
 
-*** Point2Bits_Strict(): template that receives a point as an input and returns its encoding
+*** Point2Bits_Strict(): template that receives a point of the curve as an input and returns its encoding
         - Inputs: pin -> curve point using Edwards representation
+                         requires tag babyedwards
         - Outputs: out -> BinaryPoint(254) bus encoding the point in 255 bits
                           both fields satisfy tag binary
                                
@@ -153,7 +154,7 @@ template Bits2Point_Strict() {
 */
 
 template Point2Bits_Strict() {
-    input Point pin;
+    input Point {babyedwards} pin;
     BinaryPoint(254) output out;
 
     var i;
