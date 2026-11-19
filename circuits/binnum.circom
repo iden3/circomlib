@@ -49,7 +49,7 @@ template Num2Bin(n) {
     }
     lc1 === in;
     
-    if (n >= maxbits()) {
+    if (n == maxbits()) {
        component aliasCheck = AliasCheck();
        aliasCheck.in <== out.bits;
     }
@@ -117,7 +117,7 @@ template Num2BinNeg(n) {
     lc1 + isZero.out * 2**n === 2**n - in;
 
 
-    if (n >= maxbits()) {
+    if (n == maxbits()) {
        component aliasCheck = AliasCheck();
        aliasCheck.in <== out.bits;
     }
