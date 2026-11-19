@@ -50,28 +50,22 @@ function maxbits(){
         - Inputs: x -> field value 
         - Output: number of bits needed to represent x
         
-    Example: nbits(7) = 3, nbits(10) = 4
+    Example: nbits(7) = 3, nbits(10) = 4, nbits(2**252) = 253, nbits(-1) = nbits(p - 1) = maxbits()
 
 */
 
 function nbits(a) {
-    if (a == 0){
-       return 1;
-    } else if (a < 0){ // in case a > p \ 2 -> we need maxbits()
-       return(maxbits()); 
-    } else{
-        var n = 1;
-        var r = 0;
-    
-        while (n-1<a && n >= 0) {
-            r++;
-            n *= 2;
-        }
-        if (n-1 < 0){
-            return maxbits();
-        }
-        return r;
+    // Compile-time comparisons are signed (values above p/2 read as negative), so the bit
+    // count is taken with shifts, which act on the value in [0, p). nbits(0) is 1.
+    if (a == 0) {
+        return 1;
     }
+    var r = 0;
+    while (a != 0) {
+        a = a >> 1;
+        r++;
+    }
+    return r;
 }
 
 
