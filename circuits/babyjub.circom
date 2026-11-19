@@ -189,7 +189,9 @@ template BabyPbk() {
 
 
     var r = 2736030358979909402780800718157159386076813972158567259200215660948447373041;
-    assert(in.minvalue > 0 && in.maxvalue < r);
+    // Compile-time comparisons are signed: a tag value above p/2 reads as negative and would
+    // pass "< r". Requiring maxvalue >= 0 keeps the check to the range it names.
+    assert(in.minvalue > 0 && in.maxvalue >= 0 && in.maxvalue < r);
     var BASE8[2] = [
         5299619240641551281634865583518297030282874472190772894086521144482721001553,
         16950150798460657717958625567821834550301663161624707787222815936182638968203
