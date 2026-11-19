@@ -66,17 +66,36 @@ describe("Sign test (binnums)", function() {
         await circuit.assertOut(w, {sign: 1});
     });
 
-    it("Sign of q", async () => {
+    it("Should reject the bits of q (not a field element)", async () => {
         const inp = getBits(q, 254);
-        const w = await circuit.calculateWitness({in: inp}, true);
-
-        await circuit.assertOut(w, {sign: 1});
+        let rejected = false;
+        try {
+            await circuit.calculateWitness({in: inp}, true);
+        } catch (err) {
+            rejected = true;
+        }
+        if (!rejected) throw new Error("bits of q were accepted");
     });
 
-    it("Sign of all ones", async () => {
-        const inp = getBits(Scalar.sub(Scalar.shl(1,254),1), 254);
-        const w = await circuit.calculateWitness({in: inp}, true);
+    it("Should reject the bits of 1 + q, the other encoding of 1", async () => {
+        const inp = getBits(Scalar.add(q, 1), 254);
+        let rejected = false;
+        try {
+            await circuit.calculateWitness({in: inp}, true);
+        } catch (err) {
+            rejected = true;
+        }
+        if (!rejected) throw new Error("bits of q + 1 were accepted");
+    });
 
-        await circuit.assertOut(w, {sign: 1});
+    it("Should reject all ones", async () => {
+        const inp = getBits(Scalar.sub(Scalar.shl(1,254),1), 254);
+        let rejected = false;
+        try {
+            await circuit.calculateWitness({in: inp}, true);
+        } catch (err) {
+            rejected = true;
+        }
+        if (!rejected) throw new Error("all ones were accepted");
     });
 });
