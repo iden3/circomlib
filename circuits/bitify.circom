@@ -84,6 +84,9 @@ function nbits(a) {
     Example: Num2Bits(3)(7) = [1, 1, 1]
     Note: in case the input in cannot be represented using n bits then the generated system of constraints does not have any solution for that input. 
           For instance, Num2Bits(3)(10) -> no solution
+    Note: if n == maxbits() then 2^n > p, so some field values have two n-bit
+          representations (x and x + p). In that case out is alias-checked
+          (out represents a value <= p-1), so the representation is unique.
           
 */
 
@@ -101,6 +104,11 @@ template Num2Bits(n) {
     }
     
     lc1 === in;
+
+    if (n == maxbits()) {
+        component aliasCheck = AliasCheck();
+        aliasCheck.in <== out;
+    }
 }
 
 /* 
@@ -121,12 +129,11 @@ template Num2Bits_strict() {
     input signal in;
     output signal {binary} out[max_nbits];
 
-    component aliasCheck = AliasCheck();
+    // Num2Bits(maxbits()) already alias-checks its output
     component n2b = Num2Bits(max_nbits);
     in ==> n2b.in;
 
     n2b.out ==> out;
-    n2b.out ==> aliasCheck.in;
 }
 
 /*
