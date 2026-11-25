@@ -78,3 +78,18 @@ describe("Poseidon Circuit test", function () {
     });
 
 });
+
+describe("Poseidon arity", function () {
+    this.timeout(100000);
+
+    it("Should not compile Poseidon(17)", async () => {
+        let compiled = false;
+        try {
+            await wasm_tester(path.join(__dirname, "circuits", "poseidon17_test.circom"));
+            compiled = true;
+        } catch (err) {
+            assert(err.message.includes("compiler error"));
+        }
+        assert(!compiled, "the circuit should not compile");
+    });
+});

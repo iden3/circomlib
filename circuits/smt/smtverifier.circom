@@ -59,10 +59,7 @@ template SMTVerifier(nLevels) {
     hash1New.key <== key;
     hash1New.value <== value;
 
-    component n2bOld = Num2Bits_strict();
     component n2bNew = Num2Bits_strict();
-
-    n2bOld.in <== oldKey;
     n2bNew.in <== key;
 
     component smtLevIns = SMTLevIns(nLevels);
