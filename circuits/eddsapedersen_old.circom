@@ -47,6 +47,11 @@ include "escalarmul/escalarmulfix.circom";
     the sign. A BinaryPoint has no bit 254, so code that converts such an encoding into
     these buses must check that bit itself and reject a non-zero one, or two encodings map
     to the same key. See test/circuits/eddsapedersen_test.circom.
+
+    Declaring a BinaryPoint grants the binary tag to its fields without any constraint, so
+    the tag does not prove that the bits of A, R8 and S are 0 or 1. The template checks them
+    itself: S here, A and R8 inside Bits2Point_Strict. With a non-binary bit of S the range
+    check and S*B8 stop meaning anything, and a signature can be forged for any key.
 */
 
 
@@ -71,6 +76,12 @@ template EdDSAPedersenVerifier(n) {
     S.binY ==> compConstant.in;
     compConstant.out === 0;
     S.signX === 0;
+
+    // The binary tag on S comes from declaring the bus, not from a constraint, so check
+    // the bits. S.signX is already forced to 0 above.
+    for (i=0; i<254; i++) {
+        S.binY[i] * (S.binY[i] - 1) === 0;
+    }
 
 // Convert A to Field elements (And verify A)
     pA <== Bits2Point_Strict()(A);
