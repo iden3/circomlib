@@ -3,6 +3,23 @@ const path = require("path");
 const Scalar = require("ffjavascript").Scalar;
 const wasm_tester = require("circom_tester").wasm;
 
+function toBits(x, n) {
+    const res = [];
+    for (let i = 0; i < n; i++) res.push((x >> BigInt(i)) & 1n);
+    return res;
+}
+
+async function shouldNotCompile(file) {
+    let compiled = false;
+    try {
+        await wasm_tester(path.join(__dirname, "circuits", file));
+        compiled = true;
+    } catch (err) {
+        if (!err.message.includes("compiler error")) throw err;
+    }
+    if (compiled) throw new Error(file + " should not compile");
+}
+
 function print(circuit, w, s) {
     console.log(s + ": " + w[circuit.getSignalIdx(s)]);
 }
@@ -49,4 +66,20 @@ describe("BinSub test", function () {
     });
 
 
+
+    it("Should subtract at the widest allowed size", async () => {
+        const wide = await wasm_tester(path.join(__dirname, "circuits", "binsub_max_test.circom"));
+        const ones = (1n << 252n) - 1n;
+        for (const [a, b] of [[0n, ones], [ones, 0n], [ones, ones], [5n, 7n]]) {
+            const w = await wide.calculateWitness({ in: [toBits(a, 252), toBits(b, 252)] }, true);
+            await wide.checkConstraints(w);
+            const diff = ((a - b) % (1n << 252n) + (1n << 252n)) % (1n << 252n);
+            await wide.assertOut(w, { out: toBits(diff, 252) });
+        }
+    });
+    it("Should refuse a width at which the result could alias mod p", async () => {
+        // BinSub(253): for 0 - (2^253 - 1) both out = 1 and out = p + 1 - 2^253 with
+        // the borrow flipped satisfied the constraints before the width was bounded.
+        await shouldNotCompile("binsub_wide_test.circom");
+    });
 });

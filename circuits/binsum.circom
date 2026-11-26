@@ -30,6 +30,10 @@ include "bitify.circom";
                            satisfies tag binary
         - Output: out[n + nbits(ops - 1)] -> result of in[0] + ... + in[ops - 1] expressed using n + nbits(ops) bits
                          satisfies tag binary
+        - Requires n + nbits(ops - 1) <= maxbits() - 2. The sum is then below 2^(maxbits() - 2),
+          hence below p, so its width is computed without wrapping and out is its only binary
+          representation. Wider instances are refused at compile time: from 254 output bits,
+          out and out + p would both satisfy the constraints.
          
     Example: BinSum(3, 3)([[1, 0, 1], [1, 1, 1], [0, 0, 1]]) = [0, 0, 0, 0, 1]
     
@@ -54,6 +58,8 @@ include "bitify.circom";
 */
 
 template BinSum(n, ops) {
+    // ops <= 2^nbits(ops - 1), so the sum is below 2^(n + nbits(ops - 1)).
+    assert(n + nbits(ops - 1) <= maxbits() - 2);
     var nout = nbits((2**n -1)*ops);
     input signal {binary} in[ops][n];
     output signal {binary} out[nout];
