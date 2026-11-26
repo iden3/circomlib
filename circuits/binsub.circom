@@ -19,6 +19,8 @@
 
 pragma circom 2.1.5;
 
+include "bitify.circom";
+
 // The templates and functions in this file are general and work for any prime field
 
 
@@ -29,6 +31,9 @@ pragma circom 2.1.5;
                               requires tag binary
         - Output: out[n] -> result of in[0] - in[1] expressed using n bits
                             satisfies tag binary
+        - Requires n <= maxbits() - 2. The n + 1 bits of out and aux then stay below p, so they
+          are the only binary representation of 2^n + in[0] - in[1]. Wider instances are refused
+          at compile time: from n = 253, a second decomposition forges both out and the borrow.
          
     Example: BinSub(3)([[1, 0, 1], [1, 1, 1]]) = [0, 1, 1]
     
@@ -53,6 +58,7 @@ pragma circom 2.1.5;
 
 
 template BinSub(n) {
+    assert(n <= maxbits() - 2);
     input signal {binary} in[2][n];
     output signal {binary} out[n];
 

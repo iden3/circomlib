@@ -10,6 +10,23 @@ const Fr = new F1Field(exports.p);
 
 const assert = chai.assert;
 
+function toBits(x, n) {
+    const res = [];
+    for (let i = 0; i < n; i++) res.push((x >> BigInt(i)) & 1n);
+    return res;
+}
+
+async function shouldNotCompile(file) {
+    let compiled = false;
+    try {
+        await wasm_tester(path.join(__dirname, "circuits", file));
+        compiled = true;
+    } catch (err) {
+        if (!err.message.includes("compiler error")) throw err;
+    }
+    if (compiled) throw new Error(file + " should not compile");
+}
+
 describe("Binary sum test", function () {
     this.timeout(100000000);
 
@@ -35,5 +52,20 @@ describe("Binary sum test", function () {
 
         assert(Fr.eq(Fr.e(witness[0]),Fr.e(1)));
         assert(Fr.eq(Fr.e(witness[1]),Fr.e("333")));
+    });
+    it("Should add four 250-bit values at the widest allowed size", async () => {
+        const circuit = await wasm_tester(path.join(__dirname, "circuits", "binsum_max_test.circom"));
+        const ones = (1n << 250n) - 1n;
+        for (const vals of [[ones, ones, ones, ones], [ones, 0n, 1n, 12345678901234567890n]]) {
+            const w = await circuit.calculateWitness({ in: vals.map(v => toBits(v, 250)) }, true);
+            await circuit.checkConstraints(w);
+            const sum = vals.reduce((x, y) => x + y, 0n);
+            await circuit.assertOut(w, { out: toBits(sum, 252) });
+        }
+    });
+    it("Should refuse a width at which the output bits could alias mod p", async () => {
+        // BinSum(252, 2): the sum needs 253 bits, and the bits of p satisfied the
+        // constraints for a sum of 0 before the width was bounded.
+        await shouldNotCompile("binsum_wide_test.circom");
     });
 });
