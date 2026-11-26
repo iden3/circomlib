@@ -194,11 +194,16 @@ template MinMaxValueCheck(ct1,ct2){
     Example: MaxValueTagCheck(15)(-14) = -14, which has absolute value 14 and hence it  is satisfied
     Note: in case the input in does not satisfy the specification of max_abs then the generated system of constraints does not have any solution for that input. 
           For instance, MaxAbsValueTagCheck(33)(-100) -> has no solution for the constraint system
+    Requires 0 <= n < 2^(maxbits() - 3). The bound is on n itself: 2 * n is computed mod p, so
+    an n above p / 2 whose double wraps to a small value would pass a bound on nbits(2 * n),
+    accept only inputs near p / 2, and emit a max_abs that compile-time comparisons read as
+    negative.
 */
 
 template MaxAbsValueTagCheck(n){
     input signal in;
     output signal {max_abs} out;
+    assert(n >= 0 && n < 2**(maxbits() - 3));
     var needed_bits = nbits(2 * n);
     assert(needed_bits <= maxbits() - 2); // for efficiency reasons only supports postive numbers n upto maxbits() - 3  
     signal {maxbit} aux[2];
