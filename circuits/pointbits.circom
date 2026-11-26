@@ -94,6 +94,10 @@ function sqrt(n) {
     and bit 255 carries the sign. A BinaryPoint has no bit 254, so code that converts such
     an encoding into the bus must check that bit itself and reject a non-zero one. Two
     encodings otherwise map to the same point. See test/circuits/eddsapedersen_test.circom.
+
+    Declaring a BinaryPoint grants the binary tag to its fields without any constraint, so
+    the template checks that the bits of in.binY are 0 or 1 (254 constraints). in.signX is
+    forced to 0 or 1 by the final sign comparison.
 */
 
 
@@ -102,6 +106,11 @@ template Bits2Point_Strict() {
     output Point {babyedwards} pout;
 
     var i;
+
+    // The binary tag on in.binY comes from declaring the bus, not from a constraint.
+    for (i=0; i<254; i++) {
+        in.binY[i] * (in.binY[i] - 1) === 0;
+    }
 
     // Check aliasing
     component aliasCheckY = AliasCheck();
