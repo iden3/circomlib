@@ -192,5 +192,29 @@ describe("Tags managing test", function () {
             await shouldNotSatisfy(cir, withInput("in3", 6));
             await shouldNotSatisfy(cir, withInput("in3", F.e(-6)));
         });
+
+        it("Should accept the largest n, 2^(maxbits() - 3) - 1", async () => {
+            const wide = await wasm_tester(path.join(__dirname, "circuits", "tagsmanaging_maxabs_wide_test.circom"));
+            const n = (1n << 251n) - 1n;
+            for (const v of [n, F.e(-n), 0n]) {
+                const w = await wide.calculateWitness({in: v}, true);
+                await wide.checkConstraints(w);
+            }
+            await shouldNotSatisfy(wide, {in: n + 1n});
+            await shouldNotSatisfy(wide, {in: F.e(-(n + 1n))});
+        });
+
+        it("Should reject an n at or above 2^(maxbits() - 3), or above p / 2", async () => {
+            // 201 / 2 is field division: n = (p + 201) / 2, whose double wraps to 201.
+            // Before n itself was bounded this compiled, accepted only inputs near p / 2
+            // and passed a consumer's assert(out.max_abs <= 100).
+            for (const n of ["2**251", "201 / 2", "1 / 2", "-1"]) {
+                await shouldNotCompile(
+                    "template A(){ signal input in; signal output {max_abs} out;\n" +
+                    "    out <== MaxAbsValueTagCheck(" + n + ")(in); }\n" +
+                    "component main = A();",
+                    "assert(n >= 0");
+            }
+        });
     });
 });
